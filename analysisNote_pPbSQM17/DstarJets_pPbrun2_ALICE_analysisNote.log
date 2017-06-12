@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.4.24)  5 JUN 2017 15:40
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.4.24)  12 JUN 2017 04:04
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -567,7 +567,7 @@ with the same identifier (name{page.1}) has been already used, duplicate ignore
 d
 <to be read again> 
                    \relax 
-l.29 ...Meson Selection Cuts}{22}{subsection.11.4}
+l.29 ...Meson Selection Cuts}{21}{subsection.11.4}
                                                    [1])
 \tf@toc=\write5
 \openout5 = `DstarJets_pPbrun2_ALICE_analysisNote.toc'.
@@ -833,11 +833,12 @@ traRatio_FASTwoSDD_eff_ptD3.pdf, page is rotated 90 degrees>] [14 <./pPbplots/p
 lotsSB_pt2_noDetails/jetPtSpectrumUnc_SB_Rebin_FASTwoSDD.pdf, page is rotated 9
 0 degrees> <./pPbplots/plotsSB_pt3_noDetails/jetPtSpectrumUnc_SB_Rebin_FASTwoSD
 D.pdf, page is rotated 90 degrees>]
-<pPbplots/ResponseMatrix/DetMatrix_Dpt3_36.png, id=1152, 798.985pt x 574.145pt>
-File: pPbplots/ResponseMatrix/DetMatrix_Dpt3_36.png Graphic file (type png)
-<use pPbplots/ResponseMatrix/DetMatrix_Dpt3_36.png>
-Package pdftex.def Info: pPbplots/ResponseMatrix/DetMatrix_Dpt3_36.png used on 
-input line 454.
+<pPbplots/ResponseMatrix/DetMatrix_Dpt0_100.png, id=1152, 798.985pt x 574.145pt
+>
+File: pPbplots/ResponseMatrix/DetMatrix_Dpt0_100.png Graphic file (type png)
+ <use pPbplots/ResponseMatrix/DetMatrix_Dpt0_100.png>
+Package pdftex.def Info: pPbplots/ResponseMatrix/DetMatrix_Dpt0_100.png used on
+ input line 454.
 (pdftex.def)             Requested size: 273.14922pt x 196.28429pt.
 
 
@@ -848,7 +849,7 @@ LaTeX Warning: Citation `ALICE:2015a' on page 15 undefined on input line 480.
 
 [15
 
- <./pPbplots/ResponseMatrix/DetMatrix_Dpt3_36.png>]
+ <./pPbplots/ResponseMatrix/DetMatrix_Dpt0_100.png>]
 <pPbplots/ResponseMatrix/DeltaPt.png, id=1163, 798.985pt x 574.145pt>
 File: pPbplots/ResponseMatrix/DeltaPt.png Graphic file (type png)
 
@@ -887,7 +888,7 @@ LaTeX Warning: Citation `Cacciari:2012b' on page 16 undefined on input line 536
 
 [16 <./pPbplots/ResponseMatrix/DeltaPt.png> <./pPbplots/ResponseMatrix/BkgMatri
 x.png>]
-Overfull \hbox (21.89365pt too wide) detected at line 598
+Overfull \hbox (21.89365pt too wide) detected at line 554
 []\OML/ztmcm/m/it/10.95 N[]\OT1/ztmcm/m/n/10.95 (\OML/ztmcm/m/it/10.95 p[]\OT1/
 ztmcm/m/n/10.95 ) = \OML/ztmcm/m/it/10.95 N[]\OT1/ztmcm/m/n/10.95 (\OML/ztmcm/m
 /it/10.95 p[]\OT1/ztmcm/m/n/10.95 ) \OMS/ztmcm/m/n/10.95 ^^@ \OML/ztmcm/m/it/10
@@ -897,131 +898,240 @@ ztmcm/m/n/10.95 ) = \OML/ztmcm/m/it/10.95 N[]\OT1/ztmcm/m/n/10.95 (\OML/ztmcm/m
  p[]\OT1/ztmcm/m/n/10.95 )\OML/ztmcm/m/it/10.95 ;
  []
 
-<missing.png, id=1177, 371.3875pt x 215.80624pt>
-File: missing.png Graphic file (type png)
- <use missing.png>
-Package pdftex.def Info: missing.png used on input line 625.
-(pdftex.def)             Requested size: 91.04742pt x 52.90427pt.
-File: missing.png Graphic file (type png)
 
-<use missing.png>
-Package pdftex.def Info: missing.png used on input line 633.
-(pdftex.def)             Requested size: 91.04742pt x 52.90427pt.
+<pPbplots/jetSpectra/JetPtSpectra_FDsub.pdf, id=1176, 569.12625pt x 440.64626pt
+>
+File: pPbplots/jetSpectra/JetPtSpectra_FDsub.pdf Graphic file (type pdf)
+ <use pPbplots/jetSpectra/JetPtSpectra_FDsub.pdf>
+Package pdftex.def Info: pPbplots/jetSpectra/JetPtSpectra_FDsub.pdf used on inp
+ut line 589.
+(pdftex.def)             Requested size: 241.2788pt x 186.8116pt.
+
+<pPbplots/jetSpectra/FDratio.pdf, id=1177, 569.12625pt x 270.00874pt>
+File: pPbplots/jetSpectra/FDratio.pdf Graphic file (type pdf)
+
+<use pPbplots/jetSpectra/FDratio.pdf>
+Package pdftex.def Info: pPbplots/jetSpectra/FDratio.pdf used on input line 590
+.
+(pdftex.def)             Requested size: 204.85844pt x 97.1907pt.
  [17]
-File: missing.png Graphic file (type png)
- <use missing.png>
-Package pdftex.def Info: missing.png used on input line 663.
-(pdftex.def)             Requested size: 91.04742pt x 52.90427pt.
-File: missing.png Graphic file (type png)
- <use missing.png>
-Package pdftex.def Info: missing.png used on input line 664.
-(pdftex.def)             Requested size: 91.04742pt x 52.90427pt.
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 681.
 
+LaTeX Warning: Reference `fUnfSpec_pPb' on page 18 undefined on input line 629.
+
+
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 640.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 681.
- [18 <./missing.png>]
-File: missing.png Graphic file (type png)
-<use missing.png>
-Package pdftex.def Info: missing.png used on input line 713.
-(pdftex.def)             Requested size: 91.04742pt x 52.90427pt.
-File: missing.png Graphic file (type png)
- <use missing.png>
-Package pdftex.def Info: missing.png used on input line 718.
-(pdftex.def)             Requested size: 91.04742pt x 52.90427pt.
-File: missing.png Graphic file (type png)
- <use missing.png>
-Package pdftex.def Info: missing.png used on input line 731.
-(pdftex.def)             Requested size: 91.04742pt x 52.90427pt.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 640.
 
+Underfull \vbox (badness 1715) has occurred while \output is active []
 
-LaTeX Warning: Reference `fig:MultiTrialSB_pttrials_pPB' on page 19 undefined o
-n input line 737.
+ [18 <./pPbplots/jetSpectra/JetPtSpectra_FDsub.pdf, page is rotated 90 degrees>
+ <./pPbplots/jetSpectra/FDratio.pdf, page is rotated 90 degrees>]
+<pPbplots/yieldExtraction/jetPtComparison_DataMVariation_SB.pdf, id=1280, 569.1
+2625pt x 408.52625pt>
+File: pPbplots/yieldExtraction/jetPtComparison_DataMVariation_SB.pdf Graphic fi
+le (type pdf)
 
+<use pPbplots/yieldExtraction/jetPtComparison_DataMVariation_SB.pdf>
+Package pdftex.def Info: pPbplots/yieldExtraction/jetPtComparison_DataMVariatio
+n_SB.pdf used on input line 672.
+(pdftex.def)             Requested size: 204.85844pt x 147.05063pt.
 
-LaTeX Warning: Reference `fig:MultiTrialSB_alltrials_pPB' on page 19 undefined 
-on input line 737.
+<pPbplots/yieldExtraction/SBRatio.pdf, id=1281, 569.12625pt x 194.7275pt>
+File: pPbplots/yieldExtraction/SBRatio.pdf Graphic file (type pdf)
 
-File: missing.png Graphic file (type png)
-<use missing.png>
-Package pdftex.def Info: missing.png used on input line 752.
-(pdftex.def)             Requested size: 91.04742pt x 52.90427pt.
-File: missing.png Graphic file (type png)
- <use missing.png>
-Package pdftex.def Info: missing.png used on input line 769.
-(pdftex.def)             Requested size: 91.04742pt x 52.90427pt.
+<use pPbplots/yieldExtraction/SBRatio.pdf>
+Package pdftex.def Info: pPbplots/yieldExtraction/SBRatio.pdf used on input lin
+e 677.
+(pdftex.def)             Requested size: 204.85844pt x 70.09293pt.
+
+<pPbplots/yieldExtraction/YieldExtSysUnc_SB.pdf, id=1284, 569.12625pt x 408.526
+25pt>
+File: pPbplots/yieldExtraction/YieldExtSysUnc_SB.pdf Graphic file (type pdf)
+ <use pPbplots/yieldExtraction/YieldExtSysUnc_SB.pdf>
+Package pdftex.def Info: pPbplots/yieldExtraction/YieldExtSysUnc_SB.pdf used on
+ input line 690.
+(pdftex.def)             Requested size: 227.62204pt x 163.3889pt.
+
+<pPbplots/yieldExtraction/yieldInDbins.png, id=1286, 899.36pt x 574.145pt>
+File: pPbplots/yieldExtraction/yieldInDbins.png Graphic file (type png)
+
+<use pPbplots/yieldExtraction/yieldInDbins.png>
+Package pdftex.def Info: pPbplots/yieldExtraction/yieldInDbins.png used on inpu
+t line 703.
+(pdftex.def)             Requested size: 204.85844pt x 130.78026pt.
+
+<pPbplots/yieldExtraction/yieldInDbins_log.png, id=1287, 899.36pt x 574.145pt>
+File: pPbplots/yieldExtraction/yieldInDbins_log.png Graphic file (type png)
+
+<use pPbplots/yieldExtraction/yieldInDbins_log.png>
+Package pdftex.def Info: pPbplots/yieldExtraction/yieldInDbins_log.png used on 
+input line 706.
+(pdftex.def)             Requested size: 204.85844pt x 130.78026pt.
  [19]
-File: missing.png Graphic file (type png)
- <use missing.png>
-Package pdftex.def Info: missing.png used on input line 811.
-(pdftex.def)             Requested size: 91.04742pt x 52.90427pt.
-File: missing.png Graphic file (type png)
- <use missing.png>
-Package pdftex.def Info: missing.png used on input line 830.
-(pdftex.def)             Requested size: 91.04742pt x 52.90427pt.
+<pPbplots/simulations/NonPromptspectra_DPt.pdf, id=1301, 569.12625pt x 367.3725
+pt>
+File: pPbplots/simulations/NonPromptspectra_DPt.pdf Graphic file (type pdf)
+ <use pPbplots/simulations/NonPromptspectra_DPt.pdf>
+Package pdftex.def Info: pPbplots/simulations/NonPromptspectra_DPt.pdf used on 
+input line 743.
+(pdftex.def)             Requested size: 204.85844pt x 132.23717pt.
 
-[20]
-File: missing.png Graphic file (type png)
- <use missing.png>
-Package pdftex.def Info: missing.png used on input line 851.
-(pdftex.def)             Requested size: 91.04742pt x 52.90427pt.
+<pPbplots/simulations/NonPromptspectra_DPt_ratio.pdf, id=1302, 569.12625pt x 36
+7.3725pt>
+File: pPbplots/simulations/NonPromptspectra_DPt_ratio.pdf Graphic file (type pd
+f)
+ <use pPbplots/simulations/NonPromptspectra_DPt_ratio.pdf>
+Package pdftex.def Info: pPbplots/simulations/NonPromptspectra_DPt_ratio.pdf us
+ed on input line 744.
+(pdftex.def)             Requested size: 204.85844pt x 132.23717pt.
+
+<pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_effScaled.pdf, id=1303, 56
+9.12625pt x 367.3725pt>
+File: pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_effScaled.pdf Graphic
+ file (type pdf)
+
+<use pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_effScaled.pdf>
+Package pdftex.def Info: pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_ef
+fScaled.pdf used on input line 752.
+(pdftex.def)             Requested size: 204.85844pt x 132.23717pt.
+
+<pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_effScaled_ratio.pdf, id=13
+04, 569.12625pt x 367.3725pt>
+File: pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_effScaled_ratio.pdf G
+raphic file (type pdf)
+
+<use pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_effScaled_ratio.pdf>
+Package pdftex.def Info: pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_ef
+fScaled_ratio.pdf used on input line 753.
+(pdftex.def)             Requested size: 204.85844pt x 132.23717pt.
+
+<pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_effScaled_un.pdf, id=1306,
+ 569.12625pt x 440.64626pt>
+File: pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_effScaled_un.pdf Grap
+hic file (type pdf)
+
+<use pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_effScaled_un.pdf>
+Package pdftex.def Info: pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_ef
+fScaled_un.pdf used on input line 764.
+(pdftex.def)             Requested size: 204.85844pt x 158.61235pt.
+
+<pPbplots/jetSpectra/FDUnc_beforeUnf.pdf, id=1307, 569.12625pt x 270.00874pt>
+File: pPbplots/jetSpectra/FDUnc_beforeUnf.pdf Graphic file (type pdf)
+
+<use pPbplots/jetSpectra/FDUnc_beforeUnf.pdf>
+Package pdftex.def Info: pPbplots/jetSpectra/FDUnc_beforeUnf.pdf used on input 
+line 765.
+(pdftex.def)             Requested size: 204.85844pt x 97.1907pt.
 
 
-LaTeX Warning: Citation `Hocker:1995' on page 21 undefined on input line 862.
+LaTeX Warning: Reference `fig:unfBayesReg_pPb' on page 20 undefined on input li
+ne 776.
 
-File: missing.png Graphic file (type png)
-<use missing.png>
-Package pdftex.def Info: missing.png used on input line 876.
-(pdftex.def)             Requested size: 91.04742pt x 52.90427pt.
-File: missing.png Graphic file (type png)
- <use missing.png>
-Package pdftex.def Info: missing.png used on input line 892.
-(pdftex.def)             Requested size: 91.04742pt x 52.90427pt.
-File: missing.png Graphic file (type png)
- <use missing.png>
-Package pdftex.def Info: missing.png used on input line 901.
-(pdftex.def)             Requested size: 91.04742pt x 52.90427pt.
+
+LaTeX Warning: Reference `fig:unfSVDReg_pPb' on page 20 undefined on input line
+ 776.
+
+
+LaTeX Warning: Citation `Hocker:1995' on page 20 undefined on input line 776.
+
+
+LaTeX Warning: Reference `fig:unfMethComp_pPb' on page 20 undefined on input li
+ne 777.
+
+[20 <./pPbplots/yieldExtraction/jetPtComparison_DataMVariation_SB.pdf, page is 
+rotated 90 degrees> <./pPbplots/yieldExtraction/SBRatio.pdf, page is rotated 90
+ degrees> <./pPbplots/yieldExtraction/YieldExtSysUnc_SB.pdf, page is rotated 90
+ degrees>] [21 <./pPbplots/yieldExtraction/yieldInDbins.png> <./pPbplots/yieldE
+xtraction/yieldInDbins_log.png> <./pPbplots/simulations/NonPromptspectra_DPt.pd
+f, page is rotated 90 degrees> <./pPbplots/simulations/NonPromptspectra_DPt_rat
+io.pdf, page is rotated 90 degrees>]
+
+Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
+(hyperref)                removing `subscript' on input line 828.
+
+[22 <./pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_effScaled.pdf, page 
+is rotated 90 degrees> <./pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_e
+ffScaled_ratio.pdf, page is rotated 90 degrees> <./pPbplots/simulations/NonProm
+ptspectra_JetPt_Dpt3_36_effScaled_un.pdf, page is rotated 90 degrees> <./pPbplo
+ts/jetSpectra/FDUnc_beforeUnf.pdf, page is rotated 90 degrees>]
+<pPbplots/jetSpectra/JetPtSpectra_final.pdf, id=1715, 569.12625pt x 440.64626pt
+>
+File: pPbplots/jetSpectra/JetPtSpectra_final.pdf Graphic file (type pdf)
+ <use pPbplots/jetSpectra/JetPtSpectra_final.pdf>
+Package pdftex.def Info: pPbplots/jetSpectra/JetPtSpectra_final.pdf used on inp
+ut line 1003.
+(pdftex.def)             Requested size: 241.2788pt x 186.8116pt.
+ [23]
+<pPbplots/simulations/Promptspectra_DPt.pdf, id=1729, 569.12625pt x 367.3725pt>
+File: pPbplots/simulations/Promptspectra_DPt.pdf Graphic file (type pdf)
+<use pPbplots/simulations/Promptspectra_DPt.pdf>
+Package pdftex.def Info: pPbplots/simulations/Promptspectra_DPt.pdf used on inp
+ut line 1039.
+(pdftex.def)             Requested size: 204.85844pt x 132.23717pt.
+
+<pPbplots/simulations/Promptspectra_DPt_ratio.pdf, id=1730, 569.12625pt x 367.3
+725pt>
+File: pPbplots/simulations/Promptspectra_DPt_ratio.pdf Graphic file (type pdf)
+ <use pPbplots/simulations/Promptspectra_DPt_ratio.pdf>
+Package pdftex.def Info: pPbplots/simulations/Promptspectra_DPt_ratio.pdf used 
+on input line 1040.
+(pdftex.def)             Requested size: 204.85844pt x 132.23717pt.
+
+<pPbplots/simulations/Promptspectra_JetPt_Dpt3_36.pdf, id=1731, 569.12625pt x 3
+67.3725pt>
+File: pPbplots/simulations/Promptspectra_JetPt_Dpt3_36.pdf Graphic file (type p
+df)
+ <use pPbplots/simulations/Promptspectra_JetPt_Dpt3_36.pdf>
+Package pdftex.def Info: pPbplots/simulations/Promptspectra_JetPt_Dpt3_36.pdf u
+sed on input line 1048.
+(pdftex.def)             Requested size: 204.85844pt x 132.23717pt.
+
+<pPbplots/simulations/Promptspectra_JetPt_Dpt3_36_ratio.pdf, id=1732, 569.12625
+pt x 367.3725pt>
+File: pPbplots/simulations/Promptspectra_JetPt_Dpt3_36_ratio.pdf Graphic file (
+type pdf)
+
+<use pPbplots/simulations/Promptspectra_JetPt_Dpt3_36_ratio.pdf>
+Package pdftex.def Info: pPbplots/simulations/Promptspectra_JetPt_Dpt3_36_ratio
+.pdf used on input line 1049.
+(pdftex.def)             Requested size: 204.85844pt x 132.23717pt.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `subscript' on input line 925.
+(hyperref)                removing `subscript' on input line 1081.
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [21]
-[22]
-File: missing.png Graphic file (type png)
- <use missing.png>
-Package pdftex.def Info: missing.png used on input line 1133.
-(pdftex.def)             Requested size: 91.04742pt x 52.90427pt.
-File: missing.png Graphic file (type png)
- <use missing.png>
-Package pdftex.def Info: missing.png used on input line 1152.
-(pdftex.def)             Requested size: 91.04742pt x 52.90427pt.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `subscript' on input line 1184.
-
-
-Overfull \hbox (8.69725pt too wide) in paragraph at lines 1185--1206
+Overfull \hbox (8.69725pt too wide) in paragraph at lines 1082--1085
 \OT1/ptm/m/n/10.95 The ef-fect of the $\OML/ztmcm/m/it/10.95 p[]$ \OT1/ptm/m/n/
 10.95 cut in the $[]$-jet dif-fer-en-tial cross sec-tion has been stud-ied in P
-OWHEG+PYTHIA6. 
+OWHEG+PYTHIA6.
  []
 
 
-Underfull \vbox (badness 1221) has occurred while \output is active []
-
- [23]
-[24] (./DstarJets_pPbrun2_ALICE_analysisNote.bbl))
+<pPbplots/simulations/JetSpectra_DptCut.pdf, id=1734, 510.40688pt x 286.06876pt
+>
+File: pPbplots/simulations/JetSpectra_DptCut.pdf Graphic file (type pdf)
+ <use pPbplots/simulations/JetSpectra_DptCut.pdf>
+Package pdftex.def Info: pPbplots/simulations/JetSpectra_DptCut.pdf used on inp
+ut line 1088.
+(pdftex.def)             Requested size: 250.38562pt x 140.33641pt.
+ [24 <./pPbplots/jetSpectra/JetPtSpectra_final.pdf, page is rotated 90 degrees>
+] [25 <./pPbplots/simulations/Promptspectra_DPt.pdf, page is rotated 90 degrees
+> <./pPbplots/simulations/Promptspectra_DPt_ratio.pdf, page is rotated 90 degre
+es> <./pPbplots/simulations/Promptspectra_JetPt_Dpt3_36.pdf, page is rotated 90
+ degrees> <./pPbplots/simulations/Promptspectra_JetPt_Dpt3_36_ratio.pdf, page i
+s rotated 90 degrees> <./pPbplots/simulations/JetSpectra_DptCut.pdf (PNG copy)>
+]
+(./DstarJets_pPbrun2_ALICE_analysisNote.bbl))
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 71.
- [25]
+ [26
+
+]
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 71.
 
 (./DstarJets_pPbrun2_ALICE_analysisNote.aux)
@@ -1040,13 +1150,13 @@ LaTeX Warning: There were multiply-defined labels.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 71.
  ) 
 Here is how much of TeX's memory you used:
- 9727 strings out of 494910
- 147168 string characters out of 6179836
- 245086 words of memory out of 5000000
- 12698 multiletter control sequences out of 15000+600000
+ 9815 strings out of 494910
+ 151593 string characters out of 6179836
+ 244631 words of memory out of 5000000
+ 12768 multiletter control sequences out of 15000+600000
  59516 words of font info for 130 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 42i,18n,45p,694b,499s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 42i,18n,45p,740b,467s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
 e/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texm
 f-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist
@@ -1058,11 +1168,11 @@ usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texli
 ve/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/
 fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw
 /times/utmri8a.pfb>
-Output written on DstarJets_pPbrun2_ALICE_analysisNote.pdf (27 pages, 761618 by
+Output written on DstarJets_pPbrun2_ALICE_analysisNote.pdf (28 pages, 954728 by
 tes).
 PDF statistics:
- 1322 PDF objects out of 1440 (max. 8388607)
- 771 compressed objects within 8 object streams
- 105 named destinations out of 1000 (max. 500000)
- 414 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 2028 PDF objects out of 2073 (max. 8388607)
+ 1054 compressed objects within 11 object streams
+ 102 named destinations out of 1000 (max. 500000)
+ 504 words of extra memory for PDF output out of 10000 (max. 10000000)
 

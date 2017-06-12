@@ -24,13 +24,13 @@
 \contentsline {section}{\numberline {10}Unfolding}{18}{section.10}
 \contentsline {section}{\numberline {11}Systematic Uncertainties}{18}{section.11}
 \contentsline {subsection}{\numberline {11.1}Raw Yield Extraction}{19}{subsection.11.1}
-\contentsline {subsection}{\numberline {11.2}B Feed-Down Correction}{20}{subsection.11.2}
-\contentsline {subsection}{\numberline {11.3}Unfolding}{21}{subsection.11.3}
-\contentsline {subsection}{\numberline {11.4}D-Meson Selection Cuts}{22}{subsection.11.4}
-\contentsline {subsection}{\numberline {11.5}Tracking Efficiency}{22}{subsection.11.5}
+\contentsline {subsection}{\numberline {11.2}B Feed-Down Correction}{19}{subsection.11.2}
+\contentsline {subsection}{\numberline {11.3}Unfolding}{20}{subsection.11.3}
+\contentsline {subsection}{\numberline {11.4}D-Meson Selection Cuts}{21}{subsection.11.4}
+\contentsline {subsection}{\numberline {11.5}Tracking Efficiency}{21}{subsection.11.5}
 \contentsline {subsection}{\numberline {11.6}\ensuremath {p_{\rm T}}\ Shape of the Monte Carlo Spectrum}{22}{subsection.11.6}
-\contentsline {subsection}{\numberline {11.7}Summary of Systematic Uncertainties}{22}{subsection.11.7}
+\contentsline {subsection}{\numberline {11.7}Summary of Systematic Uncertainties}{23}{subsection.11.7}
 \contentsline {section}{\numberline {12}Results}{23}{section.12}
-\contentsline {subsection}{\numberline {12.1}Monte Carlo Simulations}{23}{subsection.12.1}
+\contentsline {subsection}{\numberline {12.1}Monte Carlo Simulations}{24}{subsection.12.1}
 \contentsline {subsubsection}{\numberline {12.1.1}Effect of the \ensuremath {p_{\mathrm {T,D}}}\ Cut}{24}{subsubsection.12.1.1}
-\contentsline {section}{\numberline {13}Preliminary Figures}{25}{section.13}
+\contentsline {section}{\numberline {13}Preliminary Figures}{26}{section.13}
