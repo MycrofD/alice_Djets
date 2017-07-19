@@ -73,9 +73,6 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
    //D mesons -- PID
    gROOT->LoadMacro("$ALICE_ROOT/ANALYSIS/macros/AddTaskPIDResponse.C");
    AliAnalysisTaskSE *taskRespPID = AddTaskPIDResponse(bIsMC,kFALSE,kTRUE,"1");
-   
-   //Improver Task for MC
-   gROOT->LoadMacro("$ALICE_PHYSICS/PWGHF/vertexingHF/macros/AddTaskImproveITS.C");
     
    gROOT->LoadMacro("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
    // -- Physics selection task
@@ -93,10 +90,13 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
         if (!physSelTask) {
                 cout << "no physSelTask"; 
                 return; 
-        }
-        AliAnalysisTaskSEImproveITS *taskImprover = AddTaskImproveITS(kFALSE,"alien:///alice/cern.ch/user/a/afestant/filesForImprover/pPb2016/ITSgraphs_Current.root","alien:///alice/cern.ch/user/a/afestant/filesForImprover/pPb2016/ITSgraphs_NewAll-X0.3-Res4um.root",0 );    
+        }    
    }
    // --
+   
+    gROOT->LoadMacro("$ALICE_PHYSICS/PWGHF/vertexingHF/macros/AddTaskImproveITS.C");
+   AliAnalysisTaskSEImproveITS *taskImprover = AddTaskImproveITS(kFALSE,"alien:///alice/cern.ch/user/a/afestant/filesForImprover/pPb2016/ITSgraphs_Current.root","alien:///alice/cern.ch/user/a/afestant/filesForImprover/pPb2016/ITSgraphs_NewAll-X0.3-Res4um.root",0 );
+   
    
    
     //D meson filtering task
@@ -117,7 +117,7 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
 
     
     //In Pb-Pb there are no events with more than 5 candidates. For pp or p-Pb this number is probably smaller
-    for(Int_t i=0; i<3  ; i++)
+    for(Int_t i=0; i<2  ; i++)
     {
         
         TString TaskText = sText;
@@ -198,18 +198,18 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
         AliEmcalJetTask *taskFJMCDandTracks = AddTaskEmcalJet(MCDcandAndTracks,"",1,aRadius[0],AliJetContainer::kChargedJet,0.0,0.0,0.005,1,AKTJet,0.,kFALSE,kFALSE);
         taskFJMCDandTracks->SelectCollisionCandidates(uTriggerMask);  
         
-     //   TString KTJet = "KTJet";
-       // KTJet += TaskText;
+        TString KTJet = "KTJet";
+        KTJet += TaskText;
 
-       // rhoName = "Rho";
-       // rhoName += TaskText;
-        //AliEmcalJetTask *taskFJ2 = AddTaskEmcalJet(DcandAndTracks,"",0,aRadius[0],AliJetContainer::kChargedJet,0.15,0.30,0.005,1,KTJet,0.,kFALSE,kFALSE);
-       // taskFJ2->SelectCollisionCandidates(uTriggerMask);
+        rhoName = "Rho";
+        rhoName += TaskText;
+        AliEmcalJetTask *taskFJ2 = AddTaskEmcalJet(DcandAndTracks,"",0,aRadius[0],AliJetContainer::kChargedJet,0.15,0.30,0.005,1,KTJet,0.,kFALSE,kFALSE);
+        taskFJ2->SelectCollisionCandidates(uTriggerMask);
  
         // for pPb use rhoSparse
-        //rhotask = (AliAnalysisTaskRhoSparse*) AddTaskRhoSparse(taskFJ2->GetName(), taskFJDandTracks->GetName(), DcandAndTracks,"", rhoName, aRadius[0], "TPCFID", 0.01, 0., 0, 0, 2, kTRUE);
-        //rhotask->SelectCollisionCandidates(uTriggerMask);
-        //rhotask->SetVzRange(-10,10);
+        rhotask = (AliAnalysisTaskRhoSparse*) AddTaskRhoSparse(taskFJ2->GetName(), taskFJDandTracks->GetName(), DcandAndTracks,"", rhoName, aRadius[0], "TPCFID", 0.01, 0., 0, 0, 2, kTRUE);
+        rhotask->SelectCollisionCandidates(uTriggerMask);
+        rhotask->SetVzRange(-10,10);
         
         //For Data. Comment this part if you run on Monte Carlo
         AliAnalysisTaskFlavourJetCorrelationsTest *CorrTask = AddTaskDFilterAndCorrelations(
@@ -221,7 +221,7 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
                                                                                          taskFJDandTracks->GetName(),
                                                                                          DcandAndTracks,
                                                                                          "",
-                                                                                         "",
+                                                                                         rhoName,
                                                                                          "",
                                                                                          "",
                                                                                          "",
