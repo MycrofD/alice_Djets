@@ -1,5 +1,5 @@
-#ifndef AliAnalysisTaskSEDmesonsFilterCJTest_H
-#define AliAnalysisTaskSEDmesonsFilterCJTest_H
+#ifndef ALIANALYSISTASKSEDMESONSFILTERCJTEST_H
+#define ALIANALYSISTASKSEDMESONSFILTERCJTEST_H
 /**************************************************************************
  * Copyright(c) 1998-2009, ALICE Experiment at CERN, All rights reserved. *
  *                                                                        *

@@ -1,5 +1,5 @@
-#ifndef AliAnalysisTaskFlavourJetCorrelationsTest_H
-#define AliAnalysisTaskFlavourJetCorrelationsTest_H
+#ifndef ALIANALYSISTASKFLAVOURJETCORRELATIONSTEST_H
+#define ALIANALYSISTASKFLAVOURJETCORRELATIONSTEST_H
 /**************************************************************************
 * Copyright(c) 1998-2009, ALICE Experiment at CERN, All rights reserved. *
 *                                                                        *
@@ -138,6 +138,8 @@ private:
 
    Double_t fMinMass;               // mass lower limit histogram
    Double_t fMaxMass;               // mass upper limit histogram
+  
+   Int_t fLeadingJetIds[2];	// Ids of two leading jets
 
    TClonesArray *fCandidateArray;   //! contains candidates selected by AliRDHFCuts
    TClonesArray *fSideBandArray;    //! contains candidates selected by AliRDHFCuts::IsSelected(kTracks), to be used for side bands (DStar case only!!)
@@ -152,12 +154,16 @@ private:
    TH1I* fhstat;                    //!
    TH1F* fhCentDjet;                //!
    //generic jet and jet track distributions
+   TH1I *fhNjets;			//!
+   TH1I *fhNaccjets;			//!
    TH1F* fhPtJetTrks;		    //!
    TH1F* fhPhiJetTrks;              //!
    TH1F* fhEtaJetTrks;              //!
    TH1F* fhPtJet;                   //!
    TH1F* fhPhiJet;                  //!
    TH1F* fhEtaJet;                  //!
+   TH2F *fhPtJetArea;			//!
+   TH2F *fhJetAreaCent;			//!
    TH2D* fhRMRes;			//!
 
    //D mesons
@@ -166,6 +172,20 @@ private:
    TH2F* fhInvMassptDbg;            //!
    TH1F* fhPtPion;                  //!
                                     //!
+   TH1I *fhDleadStat;			//!
+   TH2F *fhRhoMult;			//!
+   TH2F *fhRhoLeadPt;			//!
+   TH1F *fhLeadPt;				//!
+   TH1F *fhLeadPt2;				//!
+   TH1F *fhLeadEta;				//!
+   TH1F *fhLeadEta2;				//!
+   TH1F *fhLeadPhi;				//!
+   TH1F *fhLeadPhi2;				//!
+   TH1F *fhLeadArea;				//!
+   TH1F *fhLeadArea2;				//!
+   TH2F *fhLeadDeltaEtaDeltaPhi;				//!
+
+
    //main histograms
    THnSparse* fhsDphiz;             //!
    THnSparse* fResponseMatrix;      //!

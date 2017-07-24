@@ -1418,8 +1418,6 @@ Double_t AliAnalysisTaskSEDmesonsFilterCJTest::AddDaughters(AliAODRecoDecay* can
 
   Int_t n = cand->GetNDaughters();
 
-  //Printf("\n\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! !!!!!!!!!!!!!! AddDaughters: the number of dauhters is %d\n\n", n);
-
   Int_t ntot = 0;
   
   Double_t pt = 0;
@@ -1498,7 +1496,6 @@ Double_t AliAnalysisTaskSEDmesonsFilterCJTest::AddMCDaughters(AliAODMCParticle* 
     Double_t pt = 0;
 
     for (Int_t i = 0; i < n; i++) {
-        //AliAODMCParticle* DDaughter = static_cast<AliAODMCParticle*>(mcArray->At(mcDmeson->GetDaughter(i)));
         AliAODMCParticle* DDaughter = static_cast<AliAODMCParticle*>(mcArray->At(nD0+i));
         if (!DDaughter) continue;
 

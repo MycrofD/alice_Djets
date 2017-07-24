@@ -70,6 +70,7 @@ fBranchName(),
 fCuts(0),
 fMinMass(),
 fMaxMass(),
+fLeadingJetIds(),
 fCandidateArray(0),
 fSideBandArray(0),
 fAnalyseDBkg(kFALSE),
@@ -114,6 +115,7 @@ fBranchName(),
 fCuts(0),
 fMinMass(),
 fMaxMass(),
+fLeadingJetIds(),
 fCandidateArray(0),
 fSideBandArray(0),
 fAnalyseDBkg(kFALSE),
@@ -146,6 +148,8 @@ fResponseMatrix()
    fCandidateType=candtype;
    const Int_t nptbins=fCuts->GetNPtBins();
    Float_t defaultSigmaD013[20]={0.012, 0.012, 0.012, 0.015, 0.015,0.018,0.018,0.020,0.020,0.030,0.030,0.037,0.040,0.040,0.040,0.040,0.040,0.040,0.040,0.040};
+   fLeadingJetIds[0]=-1;
+   fLeadingJetIds[1]=-1;
    
    switch(fCandidateType){
    case 0:
@@ -326,16 +330,17 @@ Bool_t AliAnalysisTaskFlavourJetCorrelationsTest::Run()
    if(!iseventselected) return kFALSE;
    
    fhstat->Fill(1);
+    Float_t lPercentile = 300;
     if(aodEvent->GetRunNumber()>200000)
     {
-    Float_t lPercentile = 300;
+   
     AliMultSelection *MultSelection = 0x0;
     MultSelection = (AliMultSelection*)aodEvent->FindListObject("MultSelection");
     if(!MultSelection) {
         //If you get this warning (and lPercentiles 300) please check that the AliMultSelectionTask actually ran (before your task)
         AliWarning("AliMultSelection object not found!");
     }else{
-        lPercentile = MultSelection->GetMultiplicityPercentile("V0M");
+        lPercentile = MultSelection->GetMultiplicityPercentile("V0A");
     }
 
     fhCentDjet->Fill(lPercentile);
@@ -401,6 +406,7 @@ if(fUseMCInfo && fBuildRMEff){
     }*/
 
 }
+
 else {
 
     AliJetContainer* JetCont = GetJetContainer(0);
@@ -432,15 +438,56 @@ else {
     JetCont->ResetCurrentID();
     AliEmcalJet* jet=0;
 
+
+    
+    Int_t maxJetIds[]   = {-1, -1};
+    Float_t maxJetPts[] = {0,  0};
+    Float_t maxJetAreas[] = {0, 0};
+    Float_t maxJetEta[] = {0, 0};
+    Float_t maxJetPhi[] = {0, 0};
+    //const Int_t Njets = JetCont->GetEntries();
+    //if(!Njets) return kFALSE;
+    Int_t counter = 0;
+    Int_t accjet = 0;
     while ((jet = JetCont->GetNextJet()))
+    //for (Int_t ij = 0; ij < Njets; ++ij) 
     {
+        //jet = static_cast<AliEmcalJet*>(JetCont->At(ij));
+        counter++;
+        if (!jet) {
+            //AliError(Form("%s: Could not receive jet %d", GetName(), ij));
+            continue;
+        } 
+      
         UInt_t rejectionReason = 0;
         Bool_t OKjet = JetCont->AcceptJet(jet, rejectionReason);
         if(!OKjet) {
             fhstat->Fill(5);
             continue;
         }
+        accjet++;
 
+         if (jet->Pt() > maxJetPts[0]) {
+            maxJetPts[1] = maxJetPts[0];
+            maxJetIds[1] = maxJetIds[0];
+            maxJetAreas[1] = maxJetAreas[0];
+            maxJetEta[1] = maxJetEta[0];
+            maxJetPhi[1] = maxJetPhi[0];
+            maxJetPts[0] = jet->Pt();
+            maxJetAreas[0] = jet->Area();
+            maxJetEta[0] = jet->Eta();
+            maxJetPhi[0] = jet->Phi();
+            //maxJetIds[0] = ij;
+            maxJetIds[0] = counter-1;
+        } else if (jet->Pt() > maxJetPts[1]) {
+            maxJetPts[1] = jet->Pt();
+            maxJetAreas[1] = jet->Area();
+            maxJetEta[1] = jet->Eta();
+            maxJetPhi[1] = jet->Phi();
+            //maxJetIds[1] = ij;
+            maxJetIds[1] = counter-1;
+        }
+        
         Double_t JetPtCorr = 0;
         if(fUseMCInfo && fUsePythia){
             JetPtCorr = jet->Pt();
@@ -456,6 +503,36 @@ else {
         fhPhiJet->Fill(jet->Phi());
         fhEtaJet->Fill(jet->Eta());
         fhPtJet->Fill(JetPtCorr);
+        fhPtJetArea->Fill(jet->Pt(),jet->Area());
+        fhJetAreaCent->Fill(lPercentile,jet->Area());
+    }
+    
+    fhNjets->Fill(counter);
+    fhNaccjets->Fill(accjet);
+    
+    fLeadingJetIds[0]=maxJetIds[0];
+    fLeadingJetIds[1]=maxJetIds[1];
+    Double_t rho = JetCont->GetRhoVal();
+    if(accjet){
+        fhRhoMult->Fill(lPercentile,rho);
+        if(maxJetIds[0] != -1) fhRhoLeadPt->Fill(maxJetPts[0],rho);
+        
+        if(maxJetIds[0] != -1) fhLeadPt->Fill(maxJetPts[0]);
+        if(maxJetIds[1] != -1) fhLeadPt2->Fill(maxJetPts[1]);
+        if(maxJetIds[0] != -1) fhLeadEta->Fill(maxJetEta[0]);
+        if(maxJetIds[1] != -1) fhLeadEta2->Fill(maxJetEta[1]);
+        if(maxJetIds[0] != -1) fhLeadPhi->Fill(maxJetPhi[0]);
+        if(maxJetIds[1] != -1) fhLeadPhi2->Fill(maxJetPhi[1]);
+        if(maxJetIds[0] != -1) fhLeadArea->Fill(maxJetAreas[0]);
+        if(maxJetIds[1] != -1) fhLeadArea2->Fill(maxJetAreas[1]);
+        
+        if(maxJetIds[0] != -1 && maxJetIds[1] != -1) {
+            Double_t deltaEta = maxJetEta[0]-maxJetEta[1];
+            Double_t deltaPhi = TMath::Abs(maxJetPhi[0]-maxJetPhi[1]);
+            if(deltaPhi>TMath::Pi()) deltaPhi = (2*TMath::Pi())-deltaPhi;
+            fhLeadDeltaEtaDeltaPhi->Fill(deltaPhi,deltaEta);
+            
+        } 
     }
 
     if(ParticlesCont->GetNParticles()>0) fhstat->Fill(2);
@@ -697,8 +774,10 @@ void AliAnalysisTaskFlavourJetCorrelationsTest::GetHFJet(AliEmcalJet*& jet, Bool
     Bool_t JetIsHF = kFALSE;
 
     JetCont->ResetCurrentID();
+    int counter = 0;
     while ((jet = JetCont->GetNextJet()))
     {
+        counter++;
         UInt_t rejectionReason = 0;
         Bool_t OKjet = JetCont->AcceptJet(jet, rejectionReason);
         if(!OKjet) continue;
@@ -730,6 +809,12 @@ void AliAnalysisTaskFlavourJetCorrelationsTest::GetHFJet(AliEmcalJet*& jet, Bool
     } //end of jet loop
 
     if(!JetIsHF) jet = 0;
+
+    if(JetIsHF){
+        if( (counter-1) == fLeadingJetIds[0] ) fhDleadStat->Fill(1);
+        else if( (counter-1) == fLeadingJetIds[1] ) fhDleadStat->Fill(2);
+        else fhDleadStat->Fill(0);
+    }
 
 }
 //_______________________________________________________________________________
@@ -919,6 +1004,13 @@ Bool_t  AliAnalysisTaskFlavourJetCorrelationsTest::DefineHistoForAnalysis(){
    fhstat->SetNdivisions(1);
    fOutput->Add(fhstat);
    
+   fhDleadStat = new TH1I("fhDleadStat","leading D-jet",3,-0.5,2.5);
+   fhDleadStat->GetXaxis()->SetBinLabel(1,"Not lead. jet");
+   fhDleadStat->GetXaxis()->SetBinLabel(2,"Lead. jet");
+   fhDleadStat->GetXaxis()->SetBinLabel(3,"2nd Lead. jet");
+   fhDleadStat->SetNdivisions(1);
+   fOutput->Add(fhDleadStat);
+   
    fhCentDjet=new TH1F("hCentDjet","Centrality",100,0,100);
    fOutput->Add(fhCentDjet);
     
@@ -945,6 +1037,10 @@ Bool_t  AliAnalysisTaskFlavourJetCorrelationsTest::DefineHistoForAnalysis(){
    
    // jet related fistograms
    
+   fhNjets = new TH1I("fhNjets","number of jets; nJets",40,-0.5,39.5);
+   fhNjets->Sumw2();
+   fhNaccjets = new TH1I("fhNaccjets","number of accepted jets; nAccJets",40,-0.5,39.5);
+   fhNaccjets->Sumw2();
    fhPhiJetTrks    = new TH1F("hPhiJetTrks","Jet tracks #phi distribution; #phi (rad)",  nbinsphi,philims[0],philims[1]);
    fhPhiJetTrks->Sumw2();
    fhEtaJetTrks    = new TH1F("hEtaJetTrks","Jet tracks #eta distribution; #eta",  nbinseta,etalims[0],etalims[1]);
@@ -959,13 +1055,69 @@ Bool_t  AliAnalysisTaskFlavourJetCorrelationsTest::DefineHistoForAnalysis(){
    fhPtJet      = new TH1F("hPtJet",  "Jet Pt distribution; p_{T} (GeV/c)",nbinsptjet,ptjetlims[0],ptjetlims[1]);
    fhPtJet->Sumw2();
    
+   fhPtJetArea = new TH2F("fhPtJetArea","Jet Area vs Jet p_{T}",nbinsptjet,ptjetlims[0],ptjetlims[1],100,0,1);
+   fhPtJetArea->GetXaxis()->SetTitle("p_{T} (GeV/c)");
+   fhPtJetArea->GetYaxis()->SetTitle("Area");
+   fhPtJetArea->Sumw2();
+   
+   fhJetAreaCent = new TH2F("fhJetAreaCent","Jet Area vs centrality",100,0,100,100,0,1);
+   fhJetAreaCent->GetXaxis()->SetTitle("centrality");
+   fhJetAreaCent->GetYaxis()->SetTitle("Area");
+   fhJetAreaCent->Sumw2();
+   
    fOutput->Add(fhPhiJetTrks);
    fOutput->Add(fhEtaJetTrks);
    fOutput->Add(fhPtJetTrks);
    fOutput->Add(fhPhiJet);
    fOutput->Add(fhEtaJet);
    fOutput->Add(fhPtJet);
-      
+   fOutput->Add(fhPtJetArea);
+   
+   fhRhoMult = new TH2F("fhRhoMult","#rho vs mult",100,0,100,200,0,20);
+   fhRhoMult->GetXaxis()->SetTitle("centrality");
+   fhRhoMult->GetYaxis()->SetTitle("#rho (GeV/c*rad^{-1})");
+   fhPtJetArea->Sumw2();
+   
+   fhRhoLeadPt = new TH2F("fhRhoLeadPt","#rho vs lead jet p_{T}",400,0,200,200,0,20);
+   fhRhoLeadPt->GetXaxis()->SetTitle("p_{t,lead}^{jet} (GeV/c)");
+   fhRhoLeadPt->GetYaxis()->SetTitle("#rho (GeV/c*rad^{-1})");
+   fhPtJetArea->Sumw2();
+   
+   fOutput->Add(fhRhoMult);
+   fOutput->Add(fhRhoLeadPt);
+   
+   fhLeadPt = new TH1F("fhLeadPt","leading jet p_{T}; p_{T} (GeV/c)",400,0,200);
+   fhLeadPt->Sumw2();
+   fhLeadPt2 = new TH1F("fhLeadPt2","2nd leading jet p_{T}; p_{T} (GeV/c)",400,0,200);
+   fhLeadPt2->Sumw2();
+   fhLeadEta = new TH1F("fhLeadEta","leading jet #eta",300,-1.5,1.5);
+   fhLeadEta->Sumw2();
+   fhLeadEta2 = new TH1F("fhLeadEta2","2nd leading jet #eta",300,-1.5,1.5);
+   fhLeadEta2->Sumw2();
+   fhLeadPhi = new TH1F("fhLeadPhi","leading jet #phi",130,0,6.5);
+   fhLeadPhi->Sumw2();
+   fhLeadPhi2 = new TH1F("fhLeadPhi2","2nd leading jet #phi",130,0,6.5);
+   fhLeadPhi2->Sumw2();
+   fhLeadArea = new TH1F("fhLeadArea","leading jet area",120,0,1.2);
+   fhLeadArea->Sumw2();
+   fhLeadArea2 = new TH1F("fhLeadArea2","2nd leading jet area",120,0,1.2);
+   fhLeadArea2->Sumw2();
+   fhLeadDeltaEtaDeltaPhi = new TH2F("fhLeadDeltaEtaDeltaPhi","leading jets #Delta #eta #Delta #phi",320,0,3.2,240,-1.2,1.2);
+   fhLeadDeltaEtaDeltaPhi->GetXaxis()->SetTitle("#Delta #phi");
+   fhLeadDeltaEtaDeltaPhi->GetYaxis()->SetTitle("#Delta #eta");
+   fhLeadDeltaEtaDeltaPhi->Sumw2();
+   
+   fOutput->Add(fhLeadPt);
+   fOutput->Add(fhLeadPt2);
+   fOutput->Add(fhLeadEta);
+   fOutput->Add(fhLeadEta2);
+   fOutput->Add(fhLeadPhi);
+   fOutput->Add(fhLeadPhi2);
+   fOutput->Add(fhLeadArea);
+   fOutput->Add(fhLeadArea2);
+   fOutput->Add(fhLeadDeltaEtaDeltaPhi);
+
+   
       if(fCandidateType==kDstartoKpipi) 
       {
 	 if(fAnalyseDBkg){
