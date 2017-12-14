@@ -12,7 +12,7 @@ The main analysis tasks (\texttt{C++} classes) used in the analysis are in the \
 \item \texttt{AliEmcalJetTask};
 \item \texttt{AliAnalysisTaskRhoSparse}.
 \end{itemize}
-The \texttt{AliPhysics} version used for this analysis is the analysis tag: \texttt{vAN-20170517} (with \texttt{AliRoot v5-09-06-1}).
+The \texttt{AliPhysics} version used for this analysis is the analysis tag: \texttt{vAN-20170826} (with \texttt{AliRoot v5-09-14-1}).
 
 The task used for this analysis generates a multiple axis histogram (\texttt{THnSparse}) that keep informations about: \zpar, jet \pt, D-meson \pt\ and D-meson invariant mass.
 
@@ -38,7 +38,7 @@ The post-processing is relatively light-weight and is performed directly in a pe
 \section{Dataset and Event Selection}
 
 For this analysis we use the data collected by ALICE in 2016 during the Minimum Bias period of the \pPb\ collisions at $\snn=5.02$~TeV. These data corresponds to the following data taking periods:
-LHC16q and LHC16t pass1, FAST and CENT\_woSDD productions were merged, the total number of events is 561.1 M (after all the selections outlined below) out of 825.6 M analysed.
+LHC16q and LHC16t pass1, FAST and CENT\_woSDD productions were merged, the total number of events is 603.1 M (after all the selections outlined below) out of 834.5 M analysed.
 The complete list of runs used in this analysis is:
 
 LHC16q: 265525, 265521, 265501, 265500, 265499, 265435, 265427, 265426, 265425, 265424, 265422, 265421, 265420, 265419, 265388, 265387, 265385, 265384, 265383, 265381, 265378, 265377, 265344, 265343, 265342, 265339, 265338, 265336, 265335, 265334, 265332, 265309  \\
@@ -54,7 +54,7 @@ and pileup
 %($0.09+1.07+1.65+1.18$~M~$ =  3.99$~M events rejected).
 \end{itemize}
 
-Results shown below come from the LEGO trains HFCJ\_pPb: \\188 (LHC16q\_pass1\_FAST), 189 (LHC16q\_pass1\_CENT\_woSDD), 190 ( LHC16t\_pass1\_FAST) and 191 (LHC16t\_pass1\_CENT\_woSDD).
+Results shown below come from the LEGO trains HFCJ\_pPb: \\343 (LHC16q\_pass1\_FAST), 344 (LHC16q\_pass1\_CENT\_woSDD), 345 ( LHC16t\_pass1\_FAST) and 346 (LHC16t\_pass1\_CENT\_woSDD).
 
 \subsubsection{Monte Carlo productions}
 
@@ -64,7 +64,7 @@ The charm content has been enhanced by requesting a \ccbar\ in 50\% of the event
 Furthermore, all D mesons are forced to decay hadronically.
 This MC production is used to compute the D-meson efficiency with jets, acceptance corrections and a response matrix of D-tagged jets with prompt and non-prompt \Dstar: c,~b~$\rightarrow$~\Dstar.
 
-%Results shown below come from the LEGO train Jets\_EMC\_pp\_MC, run numbers: 949 (LHC15i2b), 950 (LHC15i2c), 951 (LHC15i2d), 952 (LHC15i2e), 953 (LHC14j4b), 954 (LHC14j4c), 955 (LHC14j4d), 956 (LHC14j4e).
+Results shown below come from the LEGO trains HFCJ\_pPb\_MC: 77 (full simulation), and 76 (only Pythia part of the simulation).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -74,6 +74,7 @@ This MC production is used to compute the D-meson efficiency with jets, acceptan
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{D-Meson Selection}
+\label{sec:DmesonSel}
 The \Dstar mesons were reconstructed through their hadronic decay channels~\cite{PDG:2016}:
 
 \begin{center}
@@ -84,7 +85,7 @@ The selection strategy is based on the topological displacement of the secondary
 
 The candidate vertices are read from the \texttt{AOD} friend chain \texttt{AliAOD.VertexingHF.root}. A list of topological and kinematic cuts applied for \Dstar\ in \pPb\ collisions at $\snn=5.02$~TeV can be found in Table~\ref{DStarCutspPb}.
 The same quality track selection on the decay products used for the D-meson spectra analysis of the same datasets has been used in this analysis.
-D mesons are required to have $1 < \ptd< 36$~\GeVc, while for the final jet spectrum we will apply $\ptd> 3$~\GeVc\ on the D mesons. The accepted $|y_{\rm D}|$ range is \pt-dependent, with the upper limit growing from $0.5$ to $0.8$ at $\pt=5$~\GeVc.
+For the final jet spectrum we will apply $\ptd> 3$~\GeVc\ on the D mesons. The accepted $|y_{\rm D}|$ range is \pt-dependent, with the upper limit growing from $0.5$ to $0.8$ at $\pt=5$~\GeVc.
 
     
     \begin{table}[bth]
@@ -193,7 +194,8 @@ Figure~\ref{fig:eq_pPb_RSU_raw} shows a summary of the raw signal extraction: yi
 The invariant mass distributions shown here are not corrected for the reconstruction efficiency. This step is discussed in Sec.~\ref{sect:sub_DmesonRecEff}.
 
 The jet \pt\ bins are selected so that the significance of the D signal is above 5$\sigma$.
-The final jet \pt\ range for the \pPb\ analysis is 4 $< p_{T} < $ 40 \GeVc. The reason of the \Dstar\ signal visible in the Fig.~\ref{fig:eq_pPb_InvMass} below \ptjet\ of 3 \GeVc\ despite the \ptd\ cut above 3 \GeVc\ is a subtraction of the jet background, as it is described in the Sec.~\ref{sBackSub}.
+The reason of the \Dstar\ signal visible in the Fig.~\ref{fig:eq_pPb_InvMass} below \ptjet\ of 3 \GeVc\ despite the \ptd\ cut above 3 \GeVc\ is a subtraction of the jet background, as it is described in the Sec.~\ref{sBackSub}.
+%The final jet \pt\ range for the \pPb\ analysis is 4 $< p_{T} < $ 40 \GeVc. 
 
 
 \subsection{Side-Band Subtraction Method}
@@ -208,12 +210,12 @@ The invariant mass distributions in bins of D-meson \pt\ are shown in Fig.~\ref{
 
 \begin{figure}[bth]
 \centering
-\includegraphics[width=0.9\textwidth]{pPbplots/plotsSB_noEff_pt3_noDetails/invMass_FASTwoSDD}
+\includegraphics[width=0.9\textwidth]{pPbplots/plotsSB_noEff_pt3_noDetails/invMass_FASTwoSDD_pTD3}
 \caption{\Dstar\ signal extraction in bins of D-meson transverse momentum in \pPb\ collisions at $\snn=5.02$~TeV (raw yields).}
 \label{fig:eq_pPb_InvMass_Dbins}
 \end{figure}
 
-For \pPb\ the signal region is defined as $3\sigma$ around the peak and is shown as the red shadow area in Fig.~\ref{fig:eq_pPb_InvMass_Dbins};
+The signal region is defined as $3\sigma$ around the peak and is shown as the red shadow area in Fig.~\ref{fig:eq_pPb_InvMass_Dbins};
 the background region, $5\sigma$ away from the peak mean position, is depicted as the blue area in Fig.~\ref{fig:eq_pPb_InvMass_Dbins}.
 
 The jet \pt\ distributions are shown in Fig.~\ref{fig:eq_pPb_signBkgJet_Dbins}, along with the jet distributions for the background region. 
@@ -222,14 +224,14 @@ Figure~\ref{fig:eq_pPb_signBkgJet_tot} shows the sum of the jet \pt\ distributio
 
 \begin{figure}[bth]
 \centering
-\includegraphics[width=0.9\textwidth]{pPbplots/plotsSB_noEff_pt3_noDetails/jetRawSpectrumFASTwoSDD}
+\includegraphics[width=0.9\textwidth]{pPbplots/plotsSB_noEff_pt3_noDetails/jetRawSpectrumFASTwoSDD_pTD3}
 \caption{Raw jet \pt\ distributions in bins of D-meson transverse momentum in \pPb\ collisions at $\snn=5.02$~TeV.}
 \label{fig:eq_pPb_signBkgJet_Dbins}
 \end{figure}
 
 \begin{figure}[bth]
 \centering
-\includegraphics[width=0.5\textwidth]{pPbplots/plotsSB_noEff_pt3_noDetails/jetPtSpectrum_SB_FASTwoSDD}
+\includegraphics[width=0.5\textwidth]{pPbplots/plotsSB_noEff_pt3_noDetails/jetPtSpectrum_SB_FASTwoSDD_pTD3}
 \caption{Total raw jet \pt\ distributions in \pPb\ collisions at $\snn=5.02$~TeV, obtained summing together all the \Dstar\ \pt\ bins.}
 \label{fig:eq_pPb_signBkgJet_tot}
 \end{figure}
@@ -239,7 +241,7 @@ yield, relative statistical uncertainty, signal / background ratio and significa
 
 \begin{figure}[bth]
 \centering
-\includegraphics[width=0.7\textwidth]{pPbplots/plotsSB_noEff_pt3_noDetails/signalParams_FASTwoSDD}
+\includegraphics[width=0.7\textwidth]{pPbplots/plotsSB_noEff_pt3_noDetails/signalParams_FASTwoSDD_pTD3}
 \caption{\Dstar-jet raw signal extraction in \pPb\ collisions at $\s=5.02$~TeV for $\ptd>3$~\GeVc\ with the Side Band method.}
 \label{fig:eq_pPb_RSU_raw_Dbins}
 \end{figure}
@@ -333,7 +335,7 @@ The background subtracted distributions are summed up to obtain the corrected je
 
 \begin{figure}[bth]
 \centering
-\includegraphics[width=0.6\textwidth]{pPbplots/plotsSB_pt3_noDetails/jetPtSpectrum_SB_FASTwoSDD}
+\includegraphics[width=0.6\textwidth]{pPbplots/plotsSB_pt3_noDetails/jetPtSpectrum_SB_FASTwoSDD_pTD3}
 \caption{Efficiency corrected \Dstar-jets yield obtained for the Side-Band subtraction method in \pPb\ collisions at $\snn=5.02$~TeV. D mesons are required to have $\ptd>3$~\GeVc.}
 \label{fig:eq_pPb_InvMass_corrDrec}
 \end{figure}
@@ -345,8 +347,9 @@ The efficiency corrected jet $p_{T}$ spectra for both methods with the same binn
 Figure~\ref{fig:JetPt_pPb_corrDrec} shows a comparison of the efficiency-corrected yields obtained using the invariant mass method and the side band method
 for \Dstar-jets with $\ptd>2$~\GeVc\ and $\ptd>3$~\GeVc. 
 As mentioned before, the invariant mass method is sensitive to weighing with low efficiency, low $p_{T}$ D* mesons. Therefore, discrepancies for higher \ptjet\ ranges between two methods are visible with $\ptd>2$~\GeVc\ cut. With $\ptd>3$~\GeVc\ cut the two methods agree very well with each other within the statistical uncertainties.
-Figure~\ref{fig:JetPt_pPb_SBUnc} shows relative statistical uncertanties for the Side-Band subtraction method with $\ptd>2$~\GeVc\ and $\ptd>3$~\GeVc;
-$\ptd>3$~\GeVc\ cut reduces also uncertainties on the jet spectra for higher \ptjet. 
+$\ptd>3$~\GeVc\ cut reduces also uncertainties on the jet spectra for higher \ptjet. Figure~\ref{fig:JetPt_pPb_SBUnc} shows relative statistical uncertainties for the Side-Band subtraction method with $\ptd>3$~\GeVc.
+
+F%igure~\ref{fig:JetPt_pPb_SBUnc} shows relative statistical uncertanties for the Side-Band subtraction method with $\ptd>2$~\GeVc\ and $\ptd>3$~\GeVc; $\ptd>3$~\GeVc\ cut reduces also uncertainties on the jet spectra for higher \ptjet. 
 
 \begin{figure}[bth]
 \centering
@@ -373,88 +376,18 @@ Reconstruction efficiency correction is applied in both cases.}
 
 \begin{figure}[bth]
 \centering
-\begin{subfigure}[b]{0.45\textwidth}
-\includegraphics[width=\textwidth]{pPbplots/plotsSB_pt2_noDetails/jetPtSpectrumUnc_SB_Rebin_FASTwoSDD}
+%\begin{subfigure}[b]{0.45\textwidth}
+%\includegraphics[width=\textwidth]{pPbplots/plotsSB_pt2_noDetails/jetPtSpectrumUnc_SB_Rebin_FASTwoSDD}
+%\end{subfigure}
+%\begin{subfigure}[b]{0.45\textwidth}
+\includegraphics[width=0.45\textwidth]{pPbplots/plotsSB_pt3_noDetails/jetPtSpectrumUnc_SB_Rebin_FASTwoSDD_pTD3}
 
-\end{subfigure}
-\begin{subfigure}[b]{0.45\textwidth}
-\includegraphics[width=\textwidth]{pPbplots/plotsSB_pt3_noDetails/jetPtSpectrumUnc_SB_Rebin_FASTwoSDD}
-
-\end{subfigure}
-\caption{Comparison of the statistical uncertainties obtained using the side band method for \Dstar-jets in \pPb\ at $\snn=5.02$~TeV, with two cuts on \ptd: $\ptd>2$~\GeVc\ (left) and $\ptd>3$~\GeVc\ (right).
-Reconstruction efficiency correction is applied in both cases.}
+%\end{subfigure}
+\caption{Statistical uncertainties obtained using the side band method for \Dstar-jets in \pPb\ at $\snn=5.02$~TeV, with $\ptd>3$~\GeVc\. Reconstruction efficiency correction is applied.}
 \label{fig:JetPt_pPb_SBUnc}
 \end{figure}
 
 The default method used for the further analysis is the Side Band method with $\ptd>3$~\GeVc\ cut. The method is more stable, Gaussian fits perform better when they are done in \ptd\ bins, and it is easier to perform the jet spectra analysis with more fine binning if needed.
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%  DETECTOR RESPONSE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Jet Momentum Detector Response}
-
-The detector response is studied with a Monte Carlo simulation in which particles generated by an event generator are
-run through a transport code (GEANT3), that simulates the response of the detector elements, and then the same event reconstruction
-used in data is performed. Only \ccbar\ events are used.
-
-Two sets of jets are obtained from the same event. One of them is obtained from the generator-level information and the second from the reconstructed signals
-after the detector simulation. 
-The generated and reconstructed jets are matched by looking for the same D meson at both levels (using its MC label).
-
-%\subsection{Jet Momentum Resolution}
-%
-%The jet momentum resolution and energy scale shift are estimated calculating the variable:
-%\begin{equation}
-%(p_{\mathrm{T,ch\, jet}}^{\mathrm{det}} - p_{\mathrm{T,ch\, jet}}^{\mathrm{part}}) / p_{\mathrm{T,ch\, jet}}^{\mathrm{part}}
-%\label{eq:detResp}
-%\end{equation}
-%for each matched pair of a particle-level jet with a detector-level jet.
-%Figure~\ref{fig:pp_DetectorResponse} shows the probability density distribution of Eq.~\ref{eq:detResp} for \Dzero-jets in \pp\ collisions at $\s=7$~TeV.
-%The median and the mean of these distributions are shown as a function of \ptchjetgen\ in Fig.~\ref{fig:pp_EnergyScaleShift}.
-%This gives an estimate of the relative energy scale shift that needs to be corrected for.
-%The jet momentum resolution is estimated looking at the standard deviation of the distribution of Eq.~\ref{eq:detResp} as a function
-%of \ptchjetgen, shown in Fig.~\ref{fig:pp_Resolution}. The standard deviation is defined here as 
-%the square root of the second central moment of the distribution (also known as root-mean-square).
-%\begin{figure}[bth]
-%\centering
-%\begin{subfigure}[b]{.9\textwidth}
-%  \centering
-%  \includegraphics[width=1.0\linewidth]{pp_plots/DetectorResponse/D0_Jet_AKTChargedR040_pt_scheme_JetPtSpectrum_DPt_30_DetectorResponse}
-%  \caption{Probability density distribution}
-%  \label{fig:pp_DetectorResponse}
-%\end{subfigure}\\
-%\begin{subfigure}{0.49\textwidth}
-%  \centering
-%  \includegraphics[width=1.0\linewidth]{pp_plots/DetectorResponse/D0_Jet_AKTChargedR040_pt_scheme_JetPtSpectrum_DPt_30_DetectorResponse_EnergyScaleShift_canvas}
-%  \caption{Energy scale shift}
-%  \label{fig:pp_EnergyScaleShift}
-%\end{subfigure}
-%\begin{subfigure}{0.49\textwidth}
-%  \centering
-%  \includegraphics[width=1.0\linewidth]{pp_plots/DetectorResponse/D0_Jet_AKTChargedR040_pt_scheme_JetPtSpectrum_DPt_30_DetectorResponse_Resolution_canvas}
-%  \caption{Resolution}
-%  \label{fig:pp_Resolution}
-%\end{subfigure}
-%\caption{The variable (\ptchjetdet $-$ \ptchjetgen) / \ptchjetgen\ is used to estimate the corrections that need to be applied for the detector effects.}
-%\label{fig:pp_ResJESshift}
-%\end{figure}
-
-\subsection{Response Matrix}
-\label{Det_Resp}
-
-The detector response matrix for prompt D*-jets is shown in Fig.~\ref{fRMdet_pPb}. Only PYTHIA part of the simulation is 
-The Monte Carlo production is with Hijing. However, in order to avoid Hijing imperfection of describing the underlying event, only the Pythia part of the production is used to extract the detector response matrix, and the background fluctuations matrix is obtained from data~\ref{sBackFluc}.
-
-\begin{figure}[bth]
-\centering
-\includegraphics[width=0.6\textwidth]{pPbplots/ResponseMatrix/DetMatrix_Dpt0_100}
-\caption{Detector response matrix calculated with a full simulation of \pPb\ events at $\snn=5.02$~TeV.}
-\label{fRMdet_pPb}
-\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -490,14 +423,23 @@ C = \frac{\sum_{j}A_{j}}{A_{\rm acc}}.
 \end{equation}
 $A_{j}$ is the area of each \kt\ jet with at least one real track (i.e. excluding ghosts), $A_{\rm acc}$ is the area of charged-particle acceptance.
 
+Figure~\ref{fig:rho} presents $\rho$ distributions calculated in events that include D-jet candidates (the analysed events), and requiring that an event is with the leading jet that has $p_{T}>$ 5 GeV/$c$, for 0-10\% (left) and 20-40\% (right) centrality. The distributions are compared to $\rho$ from events where a presence of D meson within a jet is not required (called inclusive-jet events).
+
+\begin{figure}[bth]
+\centering
+\includegraphics[width=0.45\textwidth]{pPbplots/ResponseMatrix/hRho_ptleadbin5_cent0_10}
+\includegraphics[width=0.45\textwidth]{pPbplots/ResponseMatrix/hRho_ptleadbin5_cent20_40}
+\caption{$\rho$ distributions from events with D-jet candidates, and with a leading jet that has $p_{T}>$ 5 GeV/$c$, for 0-10\% (left) and 20-40\% (right) centrality, compared to $\rho$ from events from inclusive-jet events. \pPb\ events with $R=0.4$.}
+\label{fig:rho}
+\end{figure}
+
 \subsection{Jet Background Fluctuations}
 \label{sBackFluc}
 The amount of the jet background fluctuation was evaluated using the Random Cone method.
 This method consists in generating a random direction in $\eta-\phi$ inside the jet detector acceptance and 
 take all tracks in the event that satisfy $\Delta R<R_{\rm cone}$ with $R_{\rm cone}$ equal to the resolution parameter used in the analysis. 
 The raw cone \pt\ is the sum of the transverse momenta of all particles within the cone.
-The background fluctuation \deltapt\ is calculated  as shown in Eq.~\ref{edeltapt}.
-The distribution is shown in Fig.~\ref{fDeltaPt}.  
+The background fluctuation \deltapt\ is calculated as shown in Eq.~\ref{edeltapt}, using events that include D-jet candidates excluding the leading jet in an event, and with the leading jet $p_{T}>$ 5 GeV/$c$. The distribution is shown in Fig.~\ref{fig:DeltaPt} as the left panel. Based on this distribution, a background fluctuation matrix is build which is then used to unfold the measured \Dstar-jet\ \pt spectrum, together with the detector response matrix. The background fluctuation matrix is shown on the right panel of Fig.~\ref{fig:DeltaPt}.
 
 \begin{equation}
 \deltapt = p_{\rm T, cone} - \rho \pi R_{\rm cone}^{2}
@@ -506,11 +448,72 @@ The distribution is shown in Fig.~\ref{fDeltaPt}.
 
 \begin{figure}[bth]
 \centering
-\includegraphics[width=0.45\textwidth]{pPbplots/ResponseMatrix/DeltaPt}
-\includegraphics[width=0.45\textwidth]{pPbplots/ResponseMatrix/BkgMatrix}
+\includegraphics[width=0.45\textwidth]{pPbplots/ResponseMatrix/DeltaPt_Djet5Excl}
+\includegraphics[width=0.45\textwidth]{pPbplots/ResponseMatrix/BkgMatrix_Djet5Excl}
 \caption{Left: \deltapt\ distribution obtained with Random Cone method. Right: The background fluctuation matrix built based of the \deltapt\ distribution. \pPb\ events with $R=0.4$.}
-\label{fDeltaPt}
+\label{fig:DeltaPt}
 \end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%  DETECTOR RESPONSE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Jet Momentum Detector Response}
+
+The detector response is studied with a Monte Carlo simulation in which particles generated by an event generator are
+run through a transport code (GEANT3), that simulates the response of the detector elements, and then the same event reconstruction used in data is performed. Only \ccbar\ events are used.
+
+Two sets of jets are obtained from the same event. One of them is obtained from the generator-level information and the second from the reconstructed signals after the detector simulation. 
+The generated and reconstructed jets are matched by looking for the same D meson at both levels (using its MC label).
+
+
+\subsection{Detector Response Matrix}
+\label{Det_Resp}
+
+The detector response matrix for prompt \Dstar-jets is shown in Fig.~\ref{fig:fRMdet_pPb}.
+The Monte Carlo production is with Hijing. However, in order to avoid Hijing imperfection of describing the underlying event, only the Pythia part of the production is used to extract the detector response matrix, and the background fluctuations matrix is obtained from data~\ref{sBackFluc}.
+
+\begin{figure}[bth]
+\centering
+\includegraphics[width=0.49\textwidth]{pPbplots/ResponseMatrix/DetMatrix_Dpt0_100}
+\includegraphics[width=0.49\textwidth]{pPbplots/ResponseMatrix/DetMatrix_Dpt0_100_FD}
+\caption{Detector response matrix calculated with the PYTHIA part of the simulation of \pPb\ events at $\snn=5.02$~TeV, for prompt (left) and non-prompt (right) \Dstar-jet.}
+\label{fig:fRMdet_pPb}
+\end{figure}
+
+The prompt detector response matrix is used to unfold the measured \Dstar-jet \pt spectrum after subtraction of the B feed-down component. The B feed-down is estimated based on simulations, as described later, that is folded with the presented non-prompt detector response matrix combined with the background fluctuation matrix.
+%
+%Figure~\ref{fig:pPb_ResponseMatrixProj} shows projections of the response on the detector level jet \pt\ in bins of a particle level jet \pt.
+%
+%\begin{figure}[bth]
+%\centering
+%\includegraphics[width=0.9\textwidth]{pPbplots/ResponseMatrix/DetMatrixProjectionsComparison_Dpt3_36}
+%\caption{Projections of the response on the detector level jet \pt\ in bins of a particle level jet \pt\ calculated with the Pythia simulation of \pPb\ events at $\snn=5.02$~TeV.}
+%\label{fig:pPb_ResponseMatrixProj}
+%\end{figure}
+%
+%\subsection{Jet Momentum Resolution}
+%
+%The jet momentum resolution and energy scale shift are estimated calculating the variable:
+%\begin{equation}
+%(p_{\mathrm{T,ch\, jet}}^{\mathrm{det}} - p_{\mathrm{T,ch\, jet}}^{\mathrm{part}}) / p_{\mathrm{T,ch\, jet}}^{\mathrm{part}}
+%\label{eq:detResp}
+%\end{equation}
+%for each matched pair of a particle-level jet with a detector-level jet.
+%Figure~\ref{fig:pPb_DetectorResponse} shows the probability density distribution of Eq.~\ref{eq:detResp} for \Dstar-jets in \pPb\ collisions at $\snn=5.02$~TeV.
+%
+%\begin{figure}[bth]
+%\centering
+%\includegraphics[width=0.9\textwidth]{pPbplots/ResponseMatrix/DetMatrixResProjectionsComparison}
+%\caption{Jet momentum resolution calculated with a full simulation of \pPb\ events at $\snn=5.02$~TeV.}
+%\label{fig:pPb_DetectorResponse}
+%\end{figure}
+%
+%Figure~\ref{fig:pPb_ResponseMatrixProj} and~\ref{fig:pPb_DetectorResponse} include also a comparison of responses for prompt (red) and non-prompt (blue) \Dstar-jet\ production. The non-prompt response is used at the B feed-down subtraction level, as described in~\ref{sect:FD}.
+%
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -524,7 +527,7 @@ The distribution is shown in Fig.~\ref{fDeltaPt}.
 A fraction of the measured D mesons originates from the decays of B mesons. These D mesons are usually referred to as non-prompt,
 to distinguish them from the prompt fraction, i.e. the ones that come directly from the fragmentation of a charm quark or decays of higher excited charm states.
 The longer decay length of B mesons combined with the topological cuts applied in the D meson selection causes the reconstruction efficiency 
-to be higher for the non-prompt fraction compared to the prompt fraction. This is shown in Fig.Fig.~\ref{eq_pPb_DrecEff}.
+to be higher for the non-prompt fraction compared to the prompt fraction. This is shown in Fig.~\ref{eq_pPb_DrecEff}.
 As a consequence, the admixture of the prompt and non-prompt $D-jets$ is biased in a detector-specific way towards the non-prompt.
 In order to make meaningful comparisons with theoretical and other experimental results one needs to either correct the bias or remove completely the non-prompt fraction and report only the prompt fraction. Both approaches require to use theoretical models or Monte Carlo simulations.
 In ALICE the second approach has been preferred so far, and for this analysis we decided to follow it.
@@ -538,10 +541,10 @@ The second part of the parton shower and the fragmentation into hadrons is provi
 
 We generated 25 M \ccbar\ events and 25 M \bbbar\ events for the baseline parameters: 
 $m_{\rm c} = 1.5$~\GeVcsq, $m_{\rm b} = 4.75$~\GeVcsq, $\mu_{\rm R} = \mu_{\rm F} =\mu_{0} = \sqrt{m^2+\pt^2}$,
-where $m_{\rm c}$ and $m_{\rm b}$ are repectively the charm and beauty masses, $\mu_{\rm R}$ and $\mu_{\rm F}$ are respectively the renormalization and factorization scale factors.  Used based PDF set is: CTEQ6 and nPDF: EPS09NLO.
+where $m_{\rm c}$ and $m_{\rm b}$ are receptively the charm and beauty masses, $\mu_{\rm R}$ and $\mu_{\rm F}$ are respectively the renormalization and factorization scale factors.  Used based PDF set is: CT10NLO and nPDF: EPS09NLO.
 %Figures~\ref{fig:pp_POWHEGvsFONLL_ccbar} and~\ref{fig:pp_POWHEGvsFONLL_bbbar} show a comparison of the D-meson spectra generated by POWHEG+PYTHIA with a FONLL calculation, for \ccbar\ and \bbbar\ events respectively.
 
-The reconstruction of D-meson jets is performed in the POWHEG+PYTHIA events using the same code employed for the main data analysis.
+The reconstruction of D-meson jets is performed in the POWHEG+PYTHIA events using the same procedure used for the main data analysis.
 
 
 \subsection{Feed-Down Subtraction}
@@ -572,23 +575,22 @@ where:
 The POWHEG \Dstar-jet spectrum is weighted with the ratio of the prompt over non-prompt efficiency because it is subtracted from the measured yield.
 
 %Projections of prompt and non-prompt \Dstar-jets response matrices in slices \ptchjetgen are shown in Fig.~\ref{fig:pPbres_prompt_nonprompt}. There are small differences between the prompt and non-prompt response seen. 
-There are small differences between the prompt and non-prompt response, for this reason the FD has to be subtracted before unfolding the measured spectrum; furthermore, as illustrated in Eq.~\ref{eq:bFDsub}, the spectrum obtained
-from the POWHEG simulation is smeared using the detector response of non-prompt \Dstar-jets. 
+There are differences between the prompt and non-prompt response, for this reason the FD has to be subtracted before unfolding the measured spectrum; furthermore, as illustrated in Eq.~\ref{eq:bFDsub}, the spectrum obtained
+from the POWHEG simulation is smeared using the response of non-prompt \Dstar-jets. Combined response matrix used to fold the simulated non-prompt spectrum is shown in Fig~\ref{fig:pPb_ResponseMatrix_nonprompt}.
 Figure~\ref{fig:pPbFD_corr} compares the measured \Dstar-jet \pt\ spectrum with the FD spectrum and the subtracted spectrum.
-%
-%\begin{figure}[bth]
-%\centering
-%\includegraphics[width=.2\textwidth]{missing}
-%\caption{Response matrix in \ptchjetgen\ for prompt (red full markers) and non-prompt (open blue markers) \Dstar-jets.}
-%\label{fig:pPbres_prompt_nonprompt}
-%\end{figure}
 
+\begin{figure}[bth]
+\centering
+\includegraphics[width=0.6\textwidth]{pPbplots/ResponseMatrix/combMatrixFD_DjetExcl5}
+\caption{Combined response matrix calculated with a full simulation of \pPb\ events at $\snn=5.02$~TeV.}
+\label{fig:pPb_ResponseMatrix_nonprompt}
+\end{figure}
 
 \begin{figure}[bth]
 \centering
 \includegraphics[width=.53\textwidth]{pPbplots/jetSpectra/JetPtSpectra_FDsub}
 \includegraphics[width=.45\textwidth]{pPbplots/jetSpectra/FDratio}
-\caption{Left: Efficiency-corrected measured \Dstar-jet spectrum in \pPb\ collisions at $\snn=5.02$~TeV before FD correction (red full circles) and after FD correction (red open squares). The FD spectrum is also plotted (blue open circles) with its uncertainties. Right plots show ratio of non-prompt to inclusive \Dstar-jet spectrum.}
+\caption{Left: Efficiency-corrected measured \Dstar-jet spectrum in \pPb\ collisions at $\snn=5.02$~TeV before FD correction (green) and after FD correction (red). The FD spectrum is also plotted (blue) with its uncertainties. Right plots show ratio of non-prompt to inclusive \Dstar-jet spectrum.}
 \label{fig:pPbFD_corr}
 \end{figure}
 
@@ -605,32 +607,34 @@ Due to detector finite momentum resolution and tracking inefficiency the jet \pt
 in the previous sections are distorted. In addition, in \pPb\ collisions, fluctuations in the background momentum density
 introduce additional distortions. These distortions are detector-specific and do not allow a direct comparison
 with theoretical models and other independent experimental results.
-An unfolding procedure is employed to correct for these distortions to the best of our knowledge.
 
 In order to correct for these distortions, we first need to assess the detector performance and quantify
 the detector response to the D-meson jets. In addition, for the \pPb\ analysis the background fluctuations are quantified in a
 fully data-driven fashion.
 
-%Figure~\ref{fUnfSpec_pPb} left shows 
-Combined detector and response matrices in \pPb\, used for the jet \pt\ spectra unfolding.
+Figure~\ref{pPb_ResponseMatrix} shows a combined response matrix in \pPb\, used for the jet \pt\ spectra unfolding.
 The matrix is rebinned according to the binning used for the final jet \pt\ spectra. Then, the unfolding matrix, a distribution used as a prior and the corrected jet \pt\ spectrum obtained from the data are passed to the unfolding algorithm. The algorithm returns an unfolded jet \pt spectrum. As a prior, the spectrum obtained from the Monte Carlo simulation at the generator level is used.
 
-{\textbf{ TO BE UPDATED WITH UNFOLDING} }
+\begin{figure}[bth]
+\centering
+\includegraphics[width=0.49\textwidth]{pPbplots/ResponseMatrix/PythiaRM__Djet5Excl_2_bayes5_weight_MatrixProd}
+\includegraphics[width=0.49\textwidth]{pPbplots/ResponseMatrix/PythiaRM__Djet5Excl_2_bayes5_weight_Matrix}
+\caption{Combined response matrix calculated with a full simulation of \pPb\ events at $\snn=5.02$~TeV.}
+\label{fig:pPb_ResponseMatrix}
+\end{figure}
 
-%\begin{figure}[bth]
-%\centering
-%\includegraphics[width=0.2\textwidth]{missing}
-%\includegraphics[width=0.2\textwidth]{missing}
-%\caption{Left:Combined response matrix calculated with a full simulation of \pPb\ events at $\snn=5.02$~TeV.
-%Right:Corrected jet \pt spectrum before (blue) and after (red) the unfolding procedure (Bayesian method with four iterations), \pPb\ events at $\snn=5.02$~TeV.}
-%\label{fUnfSpec_pPb}
-%\end{figure}
+\begin{figure}[bth]
+\centering
+\includegraphics[width=0.55\textwidth]{pPbplots/ResponseMatrix/PythiaRM__Djet5Excl_2_bayes5_weight_UnfSpectrum}
+\includegraphics[width=0.44\textwidth]{pPbplots/ResponseMatrix/PythiaRM__Djet5Excl_2_bayes5_weight_foldedRatio}
+\caption{Left: Corrected jet \pt spectrum before (blue) and after (red) the unfolding procedure (Bayesian method with five iterations), \pPb\ events at $\snn=5.02$~TeV. Right: ratio to the measured spectrum to the folded for up to 10 iterations in the Bayesian unfolding, the considered jet \pt\ range is above 5 GeV/$c$.}
+\label{fUnfSpec_pPb}
+\end{figure}
 
-Figure~\ref{fUnfSpec_pPb} right presents corrected for the reconstruction efficiency and B feed-down jet \pt\ spectra before the unfolding (blue) and after the unfolding (red), for the side-band method.
-Unfolding is done with Bayesian and SVD (see~\ref{sUnfoldSys}) techniques using the \texttt{RooUnfold} software package. The default method is the Bayesian with four iterations.
+Figure~\ref{fUnfSpec_pPb} presents corrected for the reconstruction efficiency and B feed-down jet \pt\ spectra before the unfolding (blue) and after the unfolding (red), for the side-band method.
+Unfolding is done with Bayesian and SVD (see~\ref{sUnfoldSys}) techniques using the \texttt{RooUnfold} software package. The default method is the Bayesian with five iterations. The green line represents folded back spectrum, and is compared to the measured jet spectrum before unfolding with different iterations in the Bayes unfolding - right panel of Fig.~\ref{fUnfSpec_pPb}, a considered in the analysis jet \pt\ range is above 5 GeV/$c$.
 
 Comparison of unfolded spectra with different methods and priors is presented in the systematic uncertainties section. 
-%For the variations, the spectra were obtained from a modified power-law function:
 
 \section{Systematic Uncertainties}
 
@@ -638,9 +642,9 @@ We considered the following sources of systematic uncertainties:
 
 \begin{easylist}[itemize]
 & Raw yield extraction
-& B Feed-Down
-& Unfolding 
 & D-Meson Selection Cuts
+& B Feed-Down
+& Unfolding and background fluctuation matrix
 & Tracking Efficiency
 & \pt\ Shape of the Monte Carlo Spectrum
 \end{easylist}
@@ -688,7 +692,7 @@ the multi-trial fit with filled rectangles representing the RMS of all the multi
 \begin{figure}[bth]
 \begin{center}
 \includegraphics[width=0.5\textwidth]{pPbplots/yieldExtraction/YieldExtSysUnc_SB}
-\caption{The RMS of the multi-trial (systematic uncertainties)} 
+\caption{The RMS of the multi-trial (systematic uncertainties).} 
 \label{fig:MultiTrialRMS_pPB}
 \end{center}
 \end{figure}
@@ -705,20 +709,58 @@ Figure~\ref{fig:MultiTrialSB_trials_pPB} shows average of the multi-trial proced
 \begin{subfigure}[b]{.45\textwidth}
 \includegraphics[width=\textwidth]{pPbplots/yieldExtraction/yieldInDbins_log}
 \end{subfigure}
-\caption{Average of the multi-trial procedure for the side-band method as a function of jet \pt\ for each \Dstar\ \pt\ bin scaled by the corresponding efficiency, and average of the all \Dstar \pt bins (blue)} 
+\caption{Average of the multi-trial procedure for the side-band method as a function of jet \pt\ for each \Dstar\ \pt\ bin scaled by the corresponding efficiency, and average of the all \Dstar \pt bins (blue).} 
 \label{fig:MultiTrialSB_trials_pPB}
 \end{center}
 \end{figure}
 
+\subsection{D-Meson Selection Cuts}
+Uncertainties of the D-meson cut selection is estimated by varying applied in the analysis D-meson selection criteria, as reported in~\ref{sec:DmesonSel}. Four variations are considered, two looser sets and two tighter sets of cuts with $\pm$10\% and $\pm$15\% variation from a default cut value. Raw \Dstar-jet \pt\ distributions with these different cut sets and corresponding \Dstar-jet efficiencies are shown in Fig.~\ref{fig:JetPtRawSys}, and ratios in Fig.~\ref{fig:JetPtRawSysRatio}. Figure
+
+\begin{figure}[bth]
+\begin{center}
+\includegraphics[width=0.49\textwidth]{pPbplots/jetSpectra/jetRawSpectra_pTD_pTD3}
+\includegraphics[width=0.49\textwidth]{pPbplots/jetSpectra/efficiencies}
+\caption{Left: \Dstar-jet \pt\ distributions with different cut sets for systematic uncertainties estimation. Right: corresponding \Dstar-jet efficiencies.} 
+\label{fig:JetPtRawSys}
+\end{center}
+\end{figure}
+
+\begin{figure}[bth]
+\begin{center}
+\includegraphics[width=0.49\textwidth]{pPbplots/jetSpectra/jetRawSpectraRatio_pTD_pTD3}
+\includegraphics[width=0.49\textwidth]{pPbplots/jetSpectra/efficienciesRatio}
+\caption{Left: Ratios of \Dstar-jet \pt\ distributions with different cut sets for systematic uncertainties estimation. Right: ratios of the corresponding \Dstar-jet efficiencies.} 
+\label{fig:JetPtRawSysRatio}
+\end{center}
+\end{figure}
+
+Corrected for the corresponding efficiency \Dstar-jet \pt\ distributions are presented in Fig.~\ref{fig:JetPtSys}. Systematic uncertainties are estimated by taking ratio of the efficiency-corrected \Dstar-jet \pt\ distributions with different cut variations to the \Dstar-jet \pt\ spectrum obtained with the default cut set and taking RMS of them, as shown in Fig
+
+\begin{figure}[bth]
+\begin{center}
+\includegraphics[width=0.49\textwidth]{pPbplots/jetSpectra/jetSpectra_pTD_pTD3}
+\caption{Efficiency-corrected \Dstar-jet \pt\ distributions with different cut sets for systematic uncertainties estimation.} 
+\label{fig:JetPtSys}
+\end{center}
+\end{figure}
+
+\begin{figure}[bth]
+\begin{center}
+\includegraphics[width=0.49\textwidth]{pPbplots/jetSpectra/jetSpectraRatio_pTD_pTD3}
+\includegraphics[width=0.49\textwidth]{pPbplots/jetSpectra/jetSpectraSys_pTD_pTD3}
+\caption{Left: Ratio of the efficiency-corrected \Dstar-jet \pt\ distributions with different cut sets for systematic uncertainties estimation. Right: RMS - systematic uncertainties.} 
+\label{fig:JetPtSys}
+\end{center}
+\end{figure}
 
 
 \subsection{B Feed-Down Correction}
 
 The B Feed-Down (FD) cross section is obtained from a POWHEG+PYTHIA6 simulation, as discussed in Section~\ref{sect:FD}.
-In order to assess the systematic uncertainty the same simulation is performed with different choices of the quark mass $m_{\rm b}$, the factorization scale factor $\mu_{\rm F}$, the renormalization scale factor $\mu_{\rm R}$ and the Parton Distribution Functions (PDFs).
+In order to assess the systematic uncertainty the same simulation is performed with different choices of the quark mass $m_{\rm b}$, the factorization scale factor $\mu_{\rm F}$, and the renormalization scale factor $\mu_{\rm R}$.
 Table~\ref{tab:FDpars} shows the list of parameters used to determine the central points and the variations used to determine the systematic uncertainty.
 
-{\textbf{ TO BE UPDATED WITH VARIATIONS WITH NEW DEFAULT PDF: CT10NL0 AND IT'S UNCERTAINTIES} }
 
 \begin{table}[bth]
 \caption{Parameters of the POWHEG+PYTHIA6 simulations used to estimate the B Feed-Down.}
@@ -728,7 +770,7 @@ Table~\ref{tab:FDpars} shows the list of parameters used to determine the centra
     \hline
     Parameter & Central Value & Variations \\ \hline
     $m_{\rm b}$ & $4.75$~\GeVcsq & $4.5$, $5.0$~\GeVcsq \\ 
-    PDF & CTEQ6 (10042) & CT10nlo (11000) \\ 
+    PDF & CT10nlo (11000) & -- \\ 
     nPDF & EPS09nlo & -- \\
     ($\mu_{\rm F}$, $\mu_{\rm R}$) & (1,1) & (0.5,0.5), (0.5, 1), (1, 0.5), (2,2), (2,1), (1,2)
     \end{tabular}
@@ -773,64 +815,117 @@ Figures~\ref{fig:BFeedDown_GeneratorLevel_Spectrum_canvas} shows the final diffe
 \label{sUnfoldSys}
 
 
-Figure~\ref{fig:unfBayesReg_pPb} shows how the unfolded  \Dstar-jet spectrum in \pPb\ collisions evolves with increasing number of iterations, and Fig.~\ref{fig:unfSVDReg_pPb} presents SVD method~\cite{Hocker:1995}.
-Figure~\ref{fig:unfMethComp_pPb} compares the baseline unfolded result (obtained using the Bayesian iterative approach) with the regularized SVD ($k=$ 6) method and the bin-by-bin correction method.
-%The three methods agree well with each other, despite very large statistical uncertainties.
+Figure~\ref{fig:unfBayesReg_pPb} shows how the unfolded  \Dstar-jet\ spectrum in \pPb\ collisions evolves with increasing number of iterations, and ratios of folded spectra with different iterations to the default iteration.
+Fig.~\ref{fig:unfSVDReg_pPb} presents unfolded jet spectrum from the SVD method~\cite{Hocker:1995} on the left, and the right plot shows ratio of folded to measured spectra with different iterations.
+For the systematic uncertainty estimation also priors used for unfolding are varied. The baseline prior used for unfolding is the spectrum obtained (at generator level) from PYTHIA.
+For the variations, the spectra were obtained from a modified power-law function:
+\begin{equation}
+f(\ptjet) = \ptjet^{-a}e^{-\frac{ab}{\ptjet}},
+\end{equation}
+where $a$ is the power-law index (we used two variations: $a=3,6$) and $b=3$~\GeVc\ is the position of the local maximum of the distribution. The exponential factor $e^{-\frac{ab}{\ptjet}}$ was added
+to avoid infinities at zero and have a more realistic spectrum (the physical cross-section goes to zero for $\ptjet \to 0$).
 
-{\textbf{ UNFOLDING STABILITY UNDER INVESTIGATION} }
+Figure~\ref{fig:unfcomparison} compares the unfolded results obtained starting from three different priors in the Bayesian iterative method: PYTHIA spectrum, modified power-law with indexes $3$ and $6$ with 5 iterations, in the Bayesian iterative method with 8 iterations, and unfolded spectrum obtained using SVD with 5 iterations. Figure~\ref{fig:unfcomparisonSys} presents ratio of these different unfolded spectra and RMS - systematic uncertainty.
 
-%\begin{figure}[bth]
-%\centering
-%
-%\includegraphics[width=.2\textwidth]{missing}
-%\caption{The evolution of the unfolded spectra with increasing number of iterations for the Bayesian method is shown in different colors from 1 to 6 iterations.
-%The ratios between each number-of-iteration choices and the baseline (4 iterations) are shown on the right.}
-%\label{fig:unfBayesReg_pPb}
-%\end{figure}
-%
-%\begin{figure}[bth]
-%\centering
-%\includegraphics[width=.2\textwidth]{missing}
-%\caption{The evolution of the unfolded spectra with increasing number of iterations for the SVD method is shown in different colors from $k=$ 3 to 8.
-%The ratios between each number-of-iteration choices and the baseline ($k=$ 6) are shown on the right.}
-%\label{fig:unfSVDReg_pPb}
-%\end{figure}
-%
-%
-%\begin{figure}[bth]
-%\centering
-%\includegraphics[width=.2\textwidth]{missing}
-%%\includegraphics[width=0.5\textwidth]{pPbplots/unfolding/unfoldingComparison}
-%\caption{The ratios between SVD($k=6$)/Bayesian(four iterations) and bin-by-bin/Bayesian(four iterations).}
-%\label{fig:unfMethComp_pPb}
-%\end{figure}
+\begin{figure}[bth]
+\centering
+\includegraphics[width=.45\textwidth]{pPbplots/unfolding/PythiaRM__Djet5Excl_2_bayes5_weight_unfSpectra}
+\includegraphics[width=.45\textwidth]{pPbplots/unfolding/PythiaRM__Djet5Excl_2_bayes5_weight_unfRatio}
+\caption{The evolution of the unfolded spectra with increasing number of iterations for the Bayesian method is shown in different colors.
+The ratios between each number-of-iteration choices and the baseline (5 iterations) are shown on the right.}
+\label{fig:unfBayesReg_pPb}
+\end{figure}
+
+\begin{figure}[bth]
+\centering
+\includegraphics[width=.45\textwidth]{pPbplots/unfolding/PythiaRM__Djet5Excl_SVD5_weight_UnfSpectrum}
+\includegraphics[width=.45\textwidth]{pPbplots/unfolding/PythiaRM__Djet5Excl_SVD5_weight_foldedRatio}
+\caption{The spectrum unfolded with the SVD method $k=$ 5 is shown on the left plot, and a comparison to the unfolded spectrum obtained using the Bayesian method is shown on the right.
+The ratios between folded and measured spectrum for each number-of-iteration choices are shown on the right.}
+\label{fig:unfSVDReg_pPb}
+\end{figure}
 
 
-\subsection{D-Meson Selection Cuts}
-Previous studies undertaken for the published D meson spectra have resulted in uncertainties below 1-3\%, largely independent of \pt. 
-Therefore we can assume that this measurement is affected by a similar uncertainty of 3\%. More detailed studies related to this analysis are ongoing, however the effect is not expected to be larger.
-%For this preliminary result we assign a \pt-independent 5\% uncertainty. For the final result we will cross check this uncertainty.
+\begin{figure}[bth]
+\centering
+\includegraphics[width=.45\textwidth]{pPbplots/unfolding/jetSpectra_unfSys}
+\caption{Comparison of the unfolded results obtained starting from three different priors in the Bayesian iterative method: PYTHIA spectrum, modified power-law with indexes $3$ and $6$ with 5 iterations, in the Bayesian iterative method with 8 iterations, and unfolded spectrum obtained using SVD with 5 iterations.}
+\label{fig:unfcomparison}
+\end{figure}
+
+\begin{figure}[bth]
+\centering
+\includegraphics[width=.45\textwidth]{pPbplots/unfolding/jetSpectraRatio_unfSys}
+\includegraphics[width=.45\textwidth]{pPbplots/unfolding/jetSpectraSys_unfSys}
+\caption{Left: Ratio of the unfolded results obtained starting from three different priors in the Bayesian iterative method: PYTHIA spectrum, modified power-law with indexes $3$ and $6$ with 5 iterations, in the Bayesian iterative method with 8 iterations, and unfolded spectrum obtained using SVD with 5 iterations. Right: RMS -- systematic uncertainty. }
+\label{fig:unfcomparisonSys}
+\end{figure}
+
+
+\subsection{Background fluctuation matrix}
+
+The background fluctuation matrix is determined in a data-driven way using the Random Cone method.
+The default background fluctuation \deltapt\ is calculated using events that include D-jet candidates excluding the leading jet in an event, and with the leading jet $p_{T}>$ 5 GeV/$c$. For a systematic uncertainty estimation the \deltapt\ is also calculated in inclusive-jet events, and with a requirement of the leading jet $p_{T}>$ 10 GeV/$c$ for both D-jet candidate and inclusive-jet events.
+These different distributions are shown in Fig.~\ref{fig:DeltaPtSys} for events with the leading jet $p_{T}>$ 5 GeV/$c$ (left) and 10 GeV/$c$ (right). Based on these \deltapt\ distributions, new background fluctuation matrices are build. They are then used to build a combined prompt response matrix and the measured \Dstar-jet\ \pt spectrum is unfolded. Ratios of the unfolded spectra and RMS are shown in Fig.~\ref{fig:BkgFlucSys}.
+ 
+\begin{figure}[bth]
+\centering
+\includegraphics[width=0.49\textwidth]{pPbplots/unfolding/hDeltaPt_ptleadbin5_exlcuding_exlD}
+\includegraphics[width=0.49\textwidth]{pPbplots/unfolding/hDeltaPt_ptleadbin10_exlcuding_exlD}
+\caption{ \deltapt\ distributions from D-jet candidate (red) and inclusive-jet (blue) events, and with a requirement of the leading jet $p_{T}>$ 5 GeV/$c$ (left) and 10 GeV/$c$ (right).}
+\label{fig:DeltaPtSys}
+\end{figure}
+
+\begin{figure}[bth]
+\centering
+\includegraphics[width=0.49\textwidth]{pPbplots/unfolding/jetSpectra_afterUnfolding_bkgFlucSys}
+\caption{ Comparison of unfolded \Dstar-jet \pt\ spectra with different background fluctuation matrices.}
+\label{fig:BkgFlucSpec}
+\end{figure}
+
+
+\begin{figure}[bth]
+\centering
+\includegraphics[width=0.49\textwidth]{pPbplots/unfolding/jetSpectraRatio_afterUnfolding_bkgFlucSys}
+\includegraphics[width=0.49\textwidth]{pPbplots/unfolding/jetSpectraSys_afterUnfolding_bkgFlucSys}
+\caption{ Left: Ratio of unfolded \Dstar-jet \pt\ spectra with different background fluctuation matrices. Right: RMS -- systematic uncertainty.}
+\label{fig:BkgFlucSys}
+\end{figure}
+
 
 \subsection{Tracking Efficiency}
 %For this dataset the uncertainty on the tracking efficiency is estimated to be about 5\%, based on past studies.
 Uncertainties on the tracking efficiency affect the measurement in two ways. 
 
-First, it introduces an uncertainty on the D-meson reconstruction
-efficiency. This was evaluated in the past for the D-meson spectra to be 4\% (\pt-independent). Since we have verified that the reconstruction 
-efficiency itself does not depend on \ptchjet\ we can assume that our measurement is affected by the same uncertainty.
+First, it introduces an uncertainty on the D-meson reconstruction efficiency. This was evaluated for the D-meson spectra to be 4-4.5\% (mostly \pt-independent). Since we have verified that the reconstruction efficiency itself does not depend on \ptchjet\ we can assume that our measurement is affected by the same uncertainty.
 
-Tracking efficiency also affects the detector response. To estimate the uncertainty on the final yield, a new detector response has been built where the
-efficiency has been reduced to 95\% of its normal value, by throwing randomly away 5\% of the reconstructed track in the simulation.
-%The raw spectrum is unfolded using this modified response matrix and the outcome is compared with the reference result.
 
-{\textbf{ FINAL NUMBER TO BE GIVEN} }
+Tracking efficiency also affects the detector response. To estimate the uncertainty on the final yield, a new detector response has been built where the efficiency has been reduced to 96\% of its normal value, by throwing randomly away 4\% of the reconstructed track in the simulation.
+The raw spectrum is unfolded using this modified response matrix and the outcome is compared with the reference result. The resulting systematic uncertainty is presented in Fig.~\ref{fig:JESsys}. As a cross-check of the observed effect the efficiency was also reduced to 95\%, the value used for the previous pp analysis - the found uncertainties agree between the two analysis.
+
+\begin{figure}[bth]
+\centering
+\includegraphics[width=0.49\textwidth]{pPbplots/unfolding/jetSpectra_JESsys}
+\includegraphics[width=0.49\textwidth]{pPbplots/unfolding/jetSpectraRatio_JESsys}
+\caption{Unfolded spectra (left) and a ratio (right) between default unfolding result and with reduced tracking efficiency to 96 and 95\%.}
+\label{fig:JESsys}
+\end{figure}
+
+The systematic uncertainty is estimated by fitting the ratio and as the uncertainty the value obtained from the fitted function is used. The three cases, of 4, 5 and 10\% inefficiency are fitted in order to check linearity, the quoted uncertainty is assumed to be symmetric. 
+
+\begin{figure}[bth]
+\centering
+\includegraphics[width=0.55\textwidth]{pPbplots/unfolding/jetSpectraUncFit_JESsys}
+\caption{Systematic uncertainty from the JES, for 4, 5 and 10\% inefficiency. The final uncertainty is taken from the 96\% efficiency case. }
+\label{fig:JESsys}
+\end{figure}
 
 \subsection{\pt\ Shape of the Monte Carlo Spectrum}
 The \Dstar\ reconstruction efficiency is estimated using a PYTHIA6+GEANT3 simulation.
-A possibile source of systematic uncertainty is the \pt\ shape of the Monte Carlo spectrum.
-In order to test the magnitude of this uncertainty we started by comparing the \pt\ spectrum obtained from PYTHIA6 with the \pt\ spectrum obtained from a POWHEG+PYTHIA6 simulation.
+A possible source of systematic uncertainty is the \ptd\ shape of the Monte Carlo spectrum.
+Since the efficiency is calculated as a function of D meson , the shape of the D meson \ptd\ spectrum is compared to FONLL, a parallel studies within the D2H group were performed. In this Monte Carlo production the generated shape and the FONLL shape agree with each other very well. Therefore, no systematic uncertainties from the \ptd\ shape of the Monte Carlo Spectrum are assigned.
 
-{\textbf{ FINAL NUMBER TO BE GIVEN} }
+%In order to test the magnitude of this uncertainty we started by comparing the \pt\ spectrum obtained from PYTHIA6 with the \pt\ spectrum obtained from a POWHEG+PYTHIA6 simulation.
 
 %The comparisons are shown, for \Dzero\ mesons and \Dzero\ jets, respectively in Fig.~\ref{fig:PYTHIA_POWHEG_DPtSpectrumComparison} and Fig.~\ref{fig:PYTHIA_POWHEG_JetPtSpectrumComparison}.
 %
@@ -868,7 +963,7 @@ In order to test the magnitude of this uncertainty we started by comparing the \
 %\end{center}
 %\end{figure}
 
-The ratios of the PYTHIA6 spectra over the POWHEG+PYTHIA6 have been fit with a fourth-order polynomial in order to smooth out statistical fluctuations. Then, the fit function of the \ptd-spectrum ratio has been used to reweigh all the \Dzero-mesons of the PYTHIA6+GEANT3 simulation. The same weight is applied both at generator level and at detector level in order to probe the sensitivity on the \pt-spectrum shape. The \Dstar\ reconstruction efficiency is recalculated in the reweighed simulation. 
+%The ratios of the PYTHIA6 spectra over the POWHEG+PYTHIA6 have been fit with a fourth-order polynomial in order to smooth out statistical fluctuations. Then, the fit function of the \ptd-spectrum ratio has been used to reweigh all the \Dzero-mesons of the PYTHIA6+GEANT3 simulation. The same weight is applied both at generator level and at detector level in order to probe the sensitivity on the \pt-spectrum shape. The \Dstar\ reconstruction efficiency is recalculated in the reweighed simulation. 
 %It is shown in Fig.~\ref{fig:ReconstructionEfficiencyMCShape}, where it is compared with the PYTHIA6+GEANT3 unweighted case.
 %The two efficiencies are almost identical.
 %
@@ -880,7 +975,8 @@ The ratios of the PYTHIA6 spectra over the POWHEG+PYTHIA6 have been fit with a f
 %\end{center}
 %\end{figure}
 
-The effect has been propagated to the raw yields and compared to the default one. 
+%The effect has been propagated to the raw yields and compared to the default one. 
+
 %The comparison is shown in Fig.~\ref{fig:RawYieldComparisonMCShape}. Since the difference is much smaller than $0.5$\%, we have considered this source of uncertainty negligible.
 %
 %\begin{figure}[bth]
@@ -933,10 +1029,10 @@ The summary of all uncertainties, including statistical uncertainties are listed
     \begin{tabular}{lr}
     \hline
 Source & Uncertainty (\%) \\ \hline
-Branching Ratio & 1.5 \\
+Branching Ratio & 1.3 \\
 Luminosity &  3.7\\
 \hline
-Total &  \\
+Total & 3.9 \\
 \hline
     \end{tabular}
     \end{center}
@@ -949,21 +1045,20 @@ Total &  \\
     \begin{tabular}{lrrrrrrr}
     \hline
 Source & \multicolumn{6}{c}{Uncertainty (\%)} \\ \hline
-\ptchjet\ (\GeVc) & 4 - 6 & 6 - 8 & 8 - 10 & 10 - 12 & 12 - 16 & 16 - 24 & 24 - 40\\ \hline
-Tracking Eff. (Jet Energy Scale) &  &  &  &  &  & &\\
-Raw Yield Extraction & 1 & 2 & 2.5 & 2.5 & 2 & 3 & 7\\
-B Feed-Down & 5 & 3 & 2.5 & 2.5 & 3 & 4 & 5\\
-Unfolding &  &  &  &  &  & &\\
-Selection Cuts & 3 & 3 & 3 & 3 & 3 & 3 & 3\\
-Tracking Eff. (D-Meson) & 4 & 4 & 4 & 4 & 4 & 4 & 4\\
+\ptchjet\ (\GeVc) & 5 - 6 & 6 - 8 & 8 - 10 & 10 - 14 & 14 - 20 & 20 - 30\\ \hline
+Raw Yield Extraction & 2 & 2 & 2 & 3 & 4 & 4 \\
+Selection Cuts & 5 & 4 & 4 & 4 & 6 & 7 \\
+B Feed-Down & 5 & 5 & 5 & 5 & 8 & 9 \\
+Unfolding & 12 & 6 & 4 & 5 & 6 & 6\\
+Bkg. fluctuations & 2 & 7 & 10 & 6 & 3 & 2\\
+Tracking Eff. (D-Meson) & 4 & 4 & 4 & 4 & 4 & 4 \\
+Tracking Eff. (Jet Energy Scale) & 0  & 1 & 1 & 2 & 3 & 5\\
 \hline
-Normalization Uncertainty & \multicolumn{6}{c}{ } \\
+Total Systematic Uncertainty & 15 & 12 & 13 & 11 & 14 & 15   \\
 \hline
-Total Systematic Uncertainty &  &  &  &  &  & \\
+Normalization Uncertainty & \multicolumn{6}{c}{ 3.9 } \\
 \hline
-Statistical &  &  &  &  &  & \\
-\hline
-Total Uncertainty &  &  &  &  &  & \\
+Statistical & 5.6 & 6.8 & 9.7 & 10.2 & 18.6 & 26.6  \\
 \hline
     \end{tabular}
     \end{center}
@@ -986,7 +1081,7 @@ Total Uncertainty &  &  &  &  &  & \\
 
 \section{Results}
 This Section contains a summary of the results.
-The  \Dstar-jet \pt-differential cross-section in \pPb\ collisions at $\snn=5.02$~TeV  with all corrections applied (reconstruction efficiency, B feed-down subtraction, unfolding for detector momentum resolution);
+The  $D^{*+}$-jet \pt-differential cross-section in \pPb\ collisions at $\snn=5.02$~TeV  with all corrections applied (reconstruction efficiency, B feed-down subtraction, unfolding for detector momentum resolution);
 The cross-section is calculated according to the following formula:
 \begin{equation}
 \frac{{\rm d}^2\sigma}{{\rm d}\eta {\rm d}\pt}=\frac{1}{L_{\rm int}f_{\rm BR}} \frac{N_{\rm D-jets}(\ptjet)}{\Delta\ptjet\Delta\eta},
@@ -994,25 +1089,27 @@ The cross-section is calculated according to the following formula:
 where $L_{\rm int}=N_{\rm evt}/\sigma_{\rm inel}$ is the integrated luminosity ($\sigma_{\rm pPb, inel} = 2.09$~b), $f_{\rm BR}$ is the branching
 ratio of the D-meson decay channel used in the analysis, $N_{\rm D-jets}(\ptjet)$ is the measured number of D-jets in a given \ptjet\ bin (with all corrections applied).
 
-The \Dstar-tagged jet \pt\ differential cross section in \pPb\ collisions at $\snn=5.02$~TeV is shown in Fig~\ref{fig:pPbJetPt_final}.
-
-{\textbf{ TO BE UPDATED WITH UNFOLDING} }
-
+The $D^{*+}$-tagged jet \pt\ differential cross section in \pPb\ collisions at $\snn=5.02$~TeV is shown in Fig~\ref{fig:pPbJetPt_final}.
 \begin{figure}[bth]
 \centering
 \includegraphics[width=.53\textwidth]{pPbplots/jetSpectra/JetPtSpectra_final}
-\caption{Left: Efficiency-corrected measured \Dstar-jet spectrum in \pPb\ collisions at $\snn=5.02$~TeV before FD correction (red full circles) and after FD correction (red open squares). The FD spectrum is also plotted (blue open circles) with its uncertainties. Right plots show ratio of non-prompt to inclusive \Dstar-jet spectrum.}
+\caption{Unfolded \Dstar-jet\ spectrum in \pPb\ collisions at $\snn=5.02$~TeV compared to PYTHIA+POWHEG simulations, with the simulation uncertainty.}
 \label{fig:pPbJetPt_final}
 \end{figure}
+
+\begin{figure}[bth]
+\centering
+\includegraphics[width=.53\textwidth]{pPbplots/jetSpectra/JetPtSpectra_final_wpp}
+\caption{$D^{*+}$-jet\ spectrum in \pPb\ collisions at $\snn=5.02$~TeV compared \Dzero-jet\ spectrum in \pp\ collisions at $\s=72$~TeV and PYTHIA+POWHEG simulations for pp.}
+\label{fig:pPbJetPt_final_wpp}
+\end{figure}
+
 
 
 \subsection{Monte Carlo Simulations}
 We performed a set of Monte Carlo simulations using POWHEG and PYTHIA6 to compare with our measurement.
 The simulations follow the same recipe used for simulating the non-prompt fraction for the B feed-down correction.
-We simulated 25 M \ccbar\ events with POWHEG+PYTHIA6 for the central points plus several variations of the parameters of the simulation,
-listed in Table~\ref{tab:PromptDpars}.
-
-{\textbf{ TO BE UPDATED WITH VARIATIONS WITH NEW DEFAULT PDF: CT10NL0 AND IT'S UNCERTAINTIES} }
+We simulated 25 M \ccbar\ events with POWHEG+PYTHIA6 for the central points plus several variations of the parameters of the simulation, listed in Table~\ref{tab:PromptDpars}.
 
 \begin{table}[bth]
 \caption{Parameters of the POWHEG+PYTHIA6 simulations of \ccbar\ events used to compare with our measurement.}
@@ -1022,7 +1119,7 @@ listed in Table~\ref{tab:PromptDpars}.
     \hline
     Parameter & Central Value & Variations \\ \hline
     $m_{\rm b}$ & $1.5$~\GeVcsq & $1.3$, $1.7$~\GeVcsq \\ 
-    PDF & CTEQ6 (10042) & CT10nlo (11000) \\ 
+    PDF & CT10nlo (11000) & -- \\ 
     nPDF & EPS09nlo & -- \\
     ($\mu_{\rm F}$, $\mu_{\rm R}$) & (1,1) & (0.5,0.5), (0.5, 1), (1, 0.5), (2,2), (2,1), (1,2)
     \end{tabular}
@@ -1094,7 +1191,16 @@ the ratio of the cross section for $\ptd>3$~\GeVc\ over inclusive is about $80$\
 
 \section{Preliminary Figures}
 
-Preliminary figure: Prompt \Dstar-jet cross section in \pPb\ at $\snn=5.02$~TeV as a function of \ptchjet, compared to POWHEG+PYTHIA6 simulations.
+Preliminary figure: Prompt $D^{*+}$-jet cross section in \pPb\ at $\snn=5.02$~TeV as a function of \ptchjet, compared to POWHEG+PYTHIA6 simulations.
+
+
+\begin{figure}[bth]
+\centering
+\includegraphics[width=.53\textwidth]{pPbplots/jetSpectra/JetPtSpectra_final_wpp}
+\caption{Prompt $D^{*+}$-jet cross section in \pPb\ collisions at $\snn=5.02$~TeV compared to PYTHIA+POWHEG simulations for \pPb\ collisions at $\snn=5.02$~TeV.}
+\label{fig:pPbJetPt_final_wpp}
+\end{figure}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

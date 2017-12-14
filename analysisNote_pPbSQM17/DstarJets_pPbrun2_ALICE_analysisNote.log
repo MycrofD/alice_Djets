@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.4.24)  12 JUN 2017 04:04
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2016.4.24)  6 SEP 2017 15:05
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -428,6 +428,15 @@ Package: placeins 2005/04/18  v 2.2
 
 LaTeX Warning: Label `fig:eq_pPb_InvMass_corrDrec' multiply defined.
 
+
+LaTeX Warning: Label `fig:JetPtSys' multiply defined.
+
+
+LaTeX Warning: Label `fig:JESsys' multiply defined.
+
+
+LaTeX Warning: Label `fig:pPbJetPt_final_wpp' multiply defined.
+
 )
 \openout1 = `DstarJets_pPbrun2_ALICE_analysisNote.aux'.
 
@@ -501,13 +510,13 @@ LaTeX Info: Redefining \nameref on input line 15.
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
 
-<alicelogo.pdf, id=148, 116.1138pt x 142.61281pt>
+<alicelogo.pdf, id=152, 116.1138pt x 142.61281pt>
 File: alicelogo.pdf Graphic file (type pdf)
  <use alicelogo.pdf>
 Package pdftex.def Info: alicelogo.pdf used on input line 26.
 (pdftex.def)             Requested size: 46.3313pt x 56.9055pt.
 
-<cernlogo.pdf, id=149, 426.59375pt x 427.5975pt>
+<cernlogo.pdf, id=153, 426.59375pt x 427.5975pt>
 File: cernlogo.pdf Graphic file (type pdf)
  <use cernlogo.pdf>
 Package pdftex.def Info: cernlogo.pdf used on input line 26.
@@ -567,7 +576,7 @@ with the same identifier (name{page.1}) has been already used, duplicate ignore
 d
 <to be read again> 
                    \relax 
-l.29 ...Meson Selection Cuts}{21}{subsection.11.4}
+l.29 ...line {11.4}Unfolding}{24}{subsection.11.4}
                                                    [1])
 \tf@toc=\write5
 \openout5 = `DstarJets_pPbrun2_ALICE_analysisNote.toc'.
@@ -591,304 +600,322 @@ Package hyperref Warning: Difference (2) between bookmark levels is greater
 
 [3]
 
-LaTeX Warning: Citation `PDG:2016' on page 4 undefined on input line 77.
+LaTeX Warning: Citation `PDG:2016' on page 4 undefined on input line 78.
 
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 95.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 96.
 
-Overfull \hbox (39.62811pt too wide) in paragraph at lines 95--111
+Overfull \hbox (39.62811pt too wide) in paragraph at lines 96--112
  [] 
  []
 
 
-LaTeX Warning: Citation `Cacciari:2012' on page 4 undefined on input line 130.
+LaTeX Warning: Citation `Cacciari:2012' on page 4 undefined on input line 131.
 
 
-LaTeX Warning: Citation `Cacciari:2008c' on page 4 undefined on input line 131.
+LaTeX Warning: Citation `Cacciari:2008c' on page 4 undefined on input line 132.
 
 
 
-LaTeX Warning: Citation `Cacciari:2006' on page 4 undefined on input line 134.
+LaTeX Warning: Citation `Cacciari:2006' on page 4 undefined on input line 135.
 
 [4]
-<pPbplots/plotsEffScale_noEff_pt3_noDetails/invMass_FASTwoSDD.pdf, id=235, 569.
+<pPbplots/plotsEffScale_noEff_pt3_noDetails/invMass_FASTwoSDD.pdf, id=240, 569.
 12625pt x 485.815pt>
 File: pPbplots/plotsEffScale_noEff_pt3_noDetails/invMass_FASTwoSDD.pdf Graphic 
 file (type pdf)
 
 <use pPbplots/plotsEffScale_noEff_pt3_noDetails/invMass_FASTwoSDD.pdf>
 Package pdftex.def Info: pPbplots/plotsEffScale_noEff_pt3_noDetails/invMass_FAS
-TwoSDD.pdf used on input line 179.
+TwoSDD.pdf used on input line 180.
 (pdftex.def)             Requested size: 409.71689pt x 349.75688pt.
 
-<pPbplots/plotsEffScale_noEff_pt3_noDetails/signalParams_FASTwoSDD.pdf, id=237,
+<pPbplots/plotsEffScale_noEff_pt3_noDetails/signalParams_FASTwoSDD.pdf, id=242,
  569.12625pt x 485.815pt>
 File: pPbplots/plotsEffScale_noEff_pt3_noDetails/signalParams_FASTwoSDD.pdf Gra
 phic file (type pdf)
 
 <use pPbplots/plotsEffScale_noEff_pt3_noDetails/signalParams_FASTwoSDD.pdf>
 Package pdftex.def Info: pPbplots/plotsEffScale_noEff_pt3_noDetails/signalParam
-s_FASTwoSDD.pdf used on input line 188.
+s_FASTwoSDD.pdf used on input line 189.
 (pdftex.def)             Requested size: 318.66946pt x 272.0323pt.
 
 [5]
-<pPbplots/plotsSB_noEff_pt3_noDetails/invMass_FASTwoSDD.pdf, id=250, 569.12625p
-t x 485.815pt>
-File: pPbplots/plotsSB_noEff_pt3_noDetails/invMass_FASTwoSDD.pdf Graphic file (
-type pdf)
-
-<use pPbplots/plotsSB_noEff_pt3_noDetails/invMass_FASTwoSDD.pdf>
-Package pdftex.def Info: pPbplots/plotsSB_noEff_pt3_noDetails/invMass_FASTwoSDD
-.pdf used on input line 211.
-(pdftex.def)             Requested size: 409.71689pt x 349.75688pt.
-
-<pPbplots/plotsSB_noEff_pt3_noDetails/jetRawSpectrumFASTwoSDD.pdf, id=256, 569.
-12625pt x 485.815pt>
-File: pPbplots/plotsSB_noEff_pt3_noDetails/jetRawSpectrumFASTwoSDD.pdf Graphic 
-file (type pdf)
-
-<use pPbplots/plotsSB_noEff_pt3_noDetails/jetRawSpectrumFASTwoSDD.pdf>
-Package pdftex.def Info: pPbplots/plotsSB_noEff_pt3_noDetails/jetRawSpectrumFAS
-TwoSDD.pdf used on input line 225.
-(pdftex.def)             Requested size: 409.71689pt x 349.75688pt.
-
-<pPbplots/plotsSB_noEff_pt3_noDetails/jetPtSpectrum_SB_FASTwoSDD.pdf, id=257, 5
-69.12625pt x 408.52625pt>
-File: pPbplots/plotsSB_noEff_pt3_noDetails/jetPtSpectrum_SB_FASTwoSDD.pdf Graph
-ic file (type pdf)
-
-<use pPbplots/plotsSB_noEff_pt3_noDetails/jetPtSpectrum_SB_FASTwoSDD.pdf>
-Package pdftex.def Info: pPbplots/plotsSB_noEff_pt3_noDetails/jetPtSpectrum_SB_
-FASTwoSDD.pdf used on input line 232.
-(pdftex.def)             Requested size: 227.62204pt x 163.3889pt.
-
-<pPbplots/plotsSB_noEff_pt3_noDetails/signalParams_FASTwoSDD.pdf, id=259, 569.1
-2625pt x 485.815pt>
-File: pPbplots/plotsSB_noEff_pt3_noDetails/signalParams_FASTwoSDD.pdf Graphic f
+<pPbplots/plotsSB_noEff_pt3_noDetails/invMass_FASTwoSDD_pTD3.pdf, id=255, 569.1
+2625pt x 558.085pt>
+File: pPbplots/plotsSB_noEff_pt3_noDetails/invMass_FASTwoSDD_pTD3.pdf Graphic f
 ile (type pdf)
 
-<use pPbplots/plotsSB_noEff_pt3_noDetails/signalParams_FASTwoSDD.pdf>
+<use pPbplots/plotsSB_noEff_pt3_noDetails/invMass_FASTwoSDD_pTD3.pdf>
+Package pdftex.def Info: pPbplots/plotsSB_noEff_pt3_noDetails/invMass_FASTwoSDD
+_pTD3.pdf used on input line 213.
+(pdftex.def)             Requested size: 409.71689pt x 401.78683pt.
+
+<pPbplots/plotsSB_noEff_pt3_noDetails/jetRawSpectrumFASTwoSDD_pTD3.pdf, id=261,
+ 569.12625pt x 558.085pt>
+File: pPbplots/plotsSB_noEff_pt3_noDetails/jetRawSpectrumFASTwoSDD_pTD3.pdf Gra
+phic file (type pdf)
+
+<use pPbplots/plotsSB_noEff_pt3_noDetails/jetRawSpectrumFASTwoSDD_pTD3.pdf>
+Package pdftex.def Info: pPbplots/plotsSB_noEff_pt3_noDetails/jetRawSpectrumFAS
+TwoSDD_pTD3.pdf used on input line 227.
+(pdftex.def)             Requested size: 409.71689pt x 401.78683pt.
+
+<pPbplots/plotsSB_noEff_pt3_noDetails/jetPtSpectrum_SB_FASTwoSDD_pTD3.pdf, id=2
+62, 569.12625pt x 408.52625pt>
+File: pPbplots/plotsSB_noEff_pt3_noDetails/jetPtSpectrum_SB_FASTwoSDD_pTD3.pdf 
+Graphic file (type pdf)
+
+<use pPbplots/plotsSB_noEff_pt3_noDetails/jetPtSpectrum_SB_FASTwoSDD_pTD3.pdf>
+Package pdftex.def Info: pPbplots/plotsSB_noEff_pt3_noDetails/jetPtSpectrum_SB_
+FASTwoSDD_pTD3.pdf used on input line 234.
+(pdftex.def)             Requested size: 227.62204pt x 163.3889pt.
+
+<pPbplots/plotsSB_noEff_pt3_noDetails/signalParams_FASTwoSDD_pTD3.pdf, id=264, 
+569.12625pt x 558.085pt>
+File: pPbplots/plotsSB_noEff_pt3_noDetails/signalParams_FASTwoSDD_pTD3.pdf Grap
+hic file (type pdf)
+
+<use pPbplots/plotsSB_noEff_pt3_noDetails/signalParams_FASTwoSDD_pTD3.pdf>
 Package pdftex.def Info: pPbplots/plotsSB_noEff_pt3_noDetails/signalParams_FAST
-woSDD.pdf used on input line 242.
-(pdftex.def)             Requested size: 318.66946pt x 272.0323pt.
- [6 <./pPbplots/plotsEffScale_noEff_pt3_noDetails/invMass_FASTwoSDD.pdf, page i
-s rotated 90 degrees>]
+woSDD_pTD3.pdf used on input line 244.
+(pdftex.def)             Requested size: 318.66946pt x 312.49992pt.
+
+[6 <./pPbplots/plotsEffScale_noEff_pt3_noDetails/invMass_FASTwoSDD.pdf, page is
+ rotated 90 degrees>]
 <pPbplots/methodsComparison/DjetSpectra_methodComparison_FASTwoSDD_noEff_ptD2.p
-df, id=314, 569.12625pt x 408.52625pt>
+df, id=319, 569.12625pt x 408.52625pt>
 File: pPbplots/methodsComparison/DjetSpectra_methodComparison_FASTwoSDD_noEff_p
 tD2.pdf Graphic file (type pdf)
 
 <use pPbplots/methodsComparison/DjetSpectra_methodComparison_FASTwoSDD_noEff_pt
 D2.pdf>
 Package pdftex.def Info: pPbplots/methodsComparison/DjetSpectra_methodCompariso
-n_FASTwoSDD_noEff_ptD2.pdf used on input line 257.
+n_FASTwoSDD_noEff_ptD2.pdf used on input line 259.
 (pdftex.def)             Requested size: 204.85844pt x 147.05063pt.
 
 <pPbplots/methodsComparison/DjetSpectra_methodComparison_FASTwoSDD_noEff_ptD3.p
-df, id=315, 569.12625pt x 408.52625pt>
+df, id=320, 569.12625pt x 408.52625pt>
 File: pPbplots/methodsComparison/DjetSpectra_methodComparison_FASTwoSDD_noEff_p
 tD3.pdf Graphic file (type pdf)
 
 <use pPbplots/methodsComparison/DjetSpectra_methodComparison_FASTwoSDD_noEff_pt
 D3.pdf>
 Package pdftex.def Info: pPbplots/methodsComparison/DjetSpectra_methodCompariso
-n_FASTwoSDD_noEff_ptD3.pdf used on input line 261.
+n_FASTwoSDD_noEff_ptD3.pdf used on input line 263.
 (pdftex.def)             Requested size: 204.85844pt x 147.05063pt.
 
-<pPbplots/methodsComparison/DjetSpectraRatio_FASTwoSDD_noEff_ptD2.pdf, id=316, 
+<pPbplots/methodsComparison/DjetSpectraRatio_FASTwoSDD_noEff_ptD2.pdf, id=321, 
 569.12625pt x 194.7275pt>
 File: pPbplots/methodsComparison/DjetSpectraRatio_FASTwoSDD_noEff_ptD2.pdf Grap
 hic file (type pdf)
 
 <use pPbplots/methodsComparison/DjetSpectraRatio_FASTwoSDD_noEff_ptD2.pdf>
 Package pdftex.def Info: pPbplots/methodsComparison/DjetSpectraRatio_FASTwoSDD_
-noEff_ptD2.pdf used on input line 265.
+noEff_ptD2.pdf used on input line 267.
 (pdftex.def)             Requested size: 204.85844pt x 70.09293pt.
 
-<pPbplots/methodsComparison/DjetSpectraRatio_FASTwoSDD_noEff_ptD3.pdf, id=317, 
+<pPbplots/methodsComparison/DjetSpectraRatio_FASTwoSDD_noEff_ptD3.pdf, id=322, 
 569.12625pt x 194.7275pt>
 File: pPbplots/methodsComparison/DjetSpectraRatio_FASTwoSDD_noEff_ptD3.pdf Grap
 hic file (type pdf)
 
 <use pPbplots/methodsComparison/DjetSpectraRatio_FASTwoSDD_noEff_ptD3.pdf>
 Package pdftex.def Info: pPbplots/methodsComparison/DjetSpectraRatio_FASTwoSDD_
-noEff_ptD3.pdf used on input line 269.
+noEff_ptD3.pdf used on input line 271.
 (pdftex.def)             Requested size: 204.85844pt x 70.09293pt.
 
 [7 <./pPbplots/plotsEffScale_noEff_pt3_noDetails/signalParams_FASTwoSDD.pdf, pa
 ge is rotated 90 degrees>] [8 <./pPbplots/plotsSB_noEff_pt3_noDetails/invMass_F
-ASTwoSDD.pdf, page is rotated 90 degrees>] [9 <./pPbplots/plotsSB_noEff_pt3_noD
-etails/jetRawSpectrumFASTwoSDD.pdf, page is rotated 90 degrees> <./pPbplots/plo
-tsSB_noEff_pt3_noDetails/jetPtSpectrum_SB_FASTwoSDD.pdf, page is rotated 90 deg
-rees>] [10 <./pPbplots/plotsSB_noEff_pt3_noDetails/signalParams_FASTwoSDD.pdf, 
-page is rotated 90 degrees> <./pPbplots/methodsComparison/DjetSpectra_methodCom
-parison_FASTwoSDD_noEff_ptD2.pdf, page is rotated 90 degrees> <./pPbplots/metho
-dsComparison/DjetSpectra_methodComparison_FASTwoSDD_noEff_ptD3.pdf, page is rot
-ated 90 degrees> <./pPbplots/methodsComparison/DjetSpectraRatio_FASTwoSDD_noEff
-_ptD2.pdf, page is rotated 90 degrees> <./pPbplots/methodsComparison/DjetSpectr
-aRatio_FASTwoSDD_noEff_ptD3.pdf, page is rotated 90 degrees>]
-<pPbplots/DjetEff_Sim_log.pdf, id=724, 569.12625pt x 408.52625pt>
+ASTwoSDD_pTD3.pdf, page is rotated 90 degrees>] [9 <./pPbplots/plotsSB_noEff_pt
+3_noDetails/jetRawSpectrumFASTwoSDD_pTD3.pdf, page is rotated 90 degrees> <./pP
+bplots/plotsSB_noEff_pt3_noDetails/jetPtSpectrum_SB_FASTwoSDD_pTD3.pdf, page is
+ rotated 90 degrees>] [10 <./pPbplots/plotsSB_noEff_pt3_noDetails/signalParams_
+FASTwoSDD_pTD3.pdf, page is rotated 90 degrees> <./pPbplots/methodsComparison/D
+jetSpectra_methodComparison_FASTwoSDD_noEff_ptD2.pdf, page is rotated 90 degree
+s> <./pPbplots/methodsComparison/DjetSpectra_methodComparison_FASTwoSDD_noEff_p
+tD3.pdf, page is rotated 90 degrees> <./pPbplots/methodsComparison/DjetSpectraR
+atio_FASTwoSDD_noEff_ptD2.pdf, page is rotated 90 degrees> <./pPbplots/methodsC
+omparison/DjetSpectraRatio_FASTwoSDD_noEff_ptD3.pdf, page is rotated 90 degrees
+>] <pPbplots/DjetEff_Sim_log.pdf, id=729, 569.12625pt x 408.52625pt>
 File: pPbplots/DjetEff_Sim_log.pdf Graphic file (type pdf)
 
 <use pPbplots/DjetEff_Sim_log.pdf>
-Package pdftex.def Info: pPbplots/DjetEff_Sim_log.pdf used on input line 296.
+Package pdftex.def Info: pPbplots/DjetEff_Sim_log.pdf used on input line 298.
 (pdftex.def)             Requested size: 273.14922pt x 196.0779pt.
 
-<pPbplots/plotsEffScale_pt3_noDetails/invMass_FASTwoSDD.pdf, id=727, 569.12625p
+<pPbplots/plotsEffScale_pt3_noDetails/invMass_FASTwoSDD.pdf, id=732, 569.12625p
 t x 485.815pt>
 File: pPbplots/plotsEffScale_pt3_noDetails/invMass_FASTwoSDD.pdf Graphic file (
 type pdf)
 
 <use pPbplots/plotsEffScale_pt3_noDetails/invMass_FASTwoSDD.pdf>
 Package pdftex.def Info: pPbplots/plotsEffScale_pt3_noDetails/invMass_FASTwoSDD
-.pdf used on input line 322.
+.pdf used on input line 324.
 (pdftex.def)             Requested size: 409.71689pt x 349.75688pt.
 
 
-LaTeX Warning: Reference `' on page 11 undefined on input line 332.
+LaTeX Warning: Reference `' on page 11 undefined on input line 334.
 
 
-<pPbplots/plotsSB_pt3_noDetails/jetPtSpectrum_SB_FASTwoSDD.pdf, id=729, 569.126
-25pt x 408.52625pt>
-File: pPbplots/plotsSB_pt3_noDetails/jetPtSpectrum_SB_FASTwoSDD.pdf Graphic fil
-e (type pdf)
+<pPbplots/plotsSB_pt3_noDetails/jetPtSpectrum_SB_FASTwoSDD_pTD3.pdf, id=734, 56
+9.12625pt x 408.52625pt>
+File: pPbplots/plotsSB_pt3_noDetails/jetPtSpectrum_SB_FASTwoSDD_pTD3.pdf Graphi
+c file (type pdf)
 
-<use pPbplots/plotsSB_pt3_noDetails/jetPtSpectrum_SB_FASTwoSDD.pdf>
+<use pPbplots/plotsSB_pt3_noDetails/jetPtSpectrum_SB_FASTwoSDD_pTD3.pdf>
 Package pdftex.def Info: pPbplots/plotsSB_pt3_noDetails/jetPtSpectrum_SB_FASTwo
-SDD.pdf used on input line 336.
+SDD_pTD3.pdf used on input line 338.
 (pdftex.def)             Requested size: 273.14922pt x 196.0779pt.
- [11
+
+[11
 
  <./pPbplots/DjetEff_Sim_log.pdf, page is rotated 90 degrees>]
 <pPbplots/methodsComparison/DjetSpectra_methodComparison_FASTwoSDD_eff_ptD2.pdf
-, id=783, 569.12625pt x 408.52625pt>
+, id=789, 569.12625pt x 408.52625pt>
 File: pPbplots/methodsComparison/DjetSpectra_methodComparison_FASTwoSDD_eff_ptD
 2.pdf Graphic file (type pdf)
 
 <use pPbplots/methodsComparison/DjetSpectra_methodComparison_FASTwoSDD_eff_ptD2
 .pdf>
 Package pdftex.def Info: pPbplots/methodsComparison/DjetSpectra_methodCompariso
-n_FASTwoSDD_eff_ptD2.pdf used on input line 354.
+n_FASTwoSDD_eff_ptD2.pdf used on input line 357.
 (pdftex.def)             Requested size: 204.85844pt x 147.05063pt.
 
 <pPbplots/methodsComparison/DjetSpectra_methodComparison_FASTwoSDD_eff_ptD3.pdf
-, id=784, 569.12625pt x 408.52625pt>
+, id=790, 569.12625pt x 408.52625pt>
 File: pPbplots/methodsComparison/DjetSpectra_methodComparison_FASTwoSDD_eff_ptD
 3.pdf Graphic file (type pdf)
 
 <use pPbplots/methodsComparison/DjetSpectra_methodComparison_FASTwoSDD_eff_ptD3
 .pdf>
 Package pdftex.def Info: pPbplots/methodsComparison/DjetSpectra_methodCompariso
-n_FASTwoSDD_eff_ptD3.pdf used on input line 358.
+n_FASTwoSDD_eff_ptD3.pdf used on input line 361.
 (pdftex.def)             Requested size: 204.85844pt x 147.05063pt.
 
-<pPbplots/methodsComparison/DjetSpectraRatio_FASTwoSDD_eff_ptD2.pdf, id=785, 56
+<pPbplots/methodsComparison/DjetSpectraRatio_FASTwoSDD_eff_ptD2.pdf, id=791, 56
 9.12625pt x 194.7275pt>
 File: pPbplots/methodsComparison/DjetSpectraRatio_FASTwoSDD_eff_ptD2.pdf Graphi
 c file (type pdf)
 
 <use pPbplots/methodsComparison/DjetSpectraRatio_FASTwoSDD_eff_ptD2.pdf>
 Package pdftex.def Info: pPbplots/methodsComparison/DjetSpectraRatio_FASTwoSDD_
-eff_ptD2.pdf used on input line 362.
+eff_ptD2.pdf used on input line 365.
 (pdftex.def)             Requested size: 204.85844pt x 70.09293pt.
 
-<pPbplots/methodsComparison/DjetSpectraRatio_FASTwoSDD_eff_ptD3.pdf, id=786, 56
+<pPbplots/methodsComparison/DjetSpectraRatio_FASTwoSDD_eff_ptD3.pdf, id=792, 56
 9.12625pt x 194.7275pt>
 File: pPbplots/methodsComparison/DjetSpectraRatio_FASTwoSDD_eff_ptD3.pdf Graphi
 c file (type pdf)
 
 <use pPbplots/methodsComparison/DjetSpectraRatio_FASTwoSDD_eff_ptD3.pdf>
 Package pdftex.def Info: pPbplots/methodsComparison/DjetSpectraRatio_FASTwoSDD_
-eff_ptD3.pdf used on input line 366.
+eff_ptD3.pdf used on input line 369.
 (pdftex.def)             Requested size: 204.85844pt x 70.09293pt.
 
-<pPbplots/plotsSB_pt2_noDetails/jetPtSpectrumUnc_SB_Rebin_FASTwoSDD.pdf, id=787
-, 569.12625pt x 408.52625pt>
-File: pPbplots/plotsSB_pt2_noDetails/jetPtSpectrumUnc_SB_Rebin_FASTwoSDD.pdf Gr
-aphic file (type pdf)
+<pPbplots/plotsSB_pt3_noDetails/jetPtSpectrumUnc_SB_Rebin_FASTwoSDD_pTD3.pdf, i
+d=793, 569.12625pt x 408.52625pt>
+File: pPbplots/plotsSB_pt3_noDetails/jetPtSpectrumUnc_SB_Rebin_FASTwoSDD_pTD3.p
+df Graphic file (type pdf)
 
-<use pPbplots/plotsSB_pt2_noDetails/jetPtSpectrumUnc_SB_Rebin_FASTwoSDD.pdf>
-Package pdftex.def Info: pPbplots/plotsSB_pt2_noDetails/jetPtSpectrumUnc_SB_Reb
-in_FASTwoSDD.pdf used on input line 377.
-(pdftex.def)             Requested size: 204.85844pt x 147.05063pt.
-
-<pPbplots/plotsSB_pt3_noDetails/jetPtSpectrumUnc_SB_Rebin_FASTwoSDD.pdf, id=788
-, 569.12625pt x 408.52625pt>
-File: pPbplots/plotsSB_pt3_noDetails/jetPtSpectrumUnc_SB_Rebin_FASTwoSDD.pdf Gr
-aphic file (type pdf)
-
-<use pPbplots/plotsSB_pt3_noDetails/jetPtSpectrumUnc_SB_Rebin_FASTwoSDD.pdf>
+<use pPbplots/plotsSB_pt3_noDetails/jetPtSpectrumUnc_SB_Rebin_FASTwoSDD_pTD3.pd
+f>
 Package pdftex.def Info: pPbplots/plotsSB_pt3_noDetails/jetPtSpectrumUnc_SB_Reb
-in_FASTwoSDD.pdf used on input line 381.
+in_FASTwoSDD_pTD3.pdf used on input line 383.
 (pdftex.def)             Requested size: 204.85844pt x 147.05063pt.
+ [12 <./pPbplots/plotsEffScale_pt3_noDetails/invMass_FASTwoSDD.pdf, page is rot
+ated 90 degrees>] [13 <./pPbplots/plotsSB_pt3_noDetails/jetPtSpectrum_SB_FASTwo
+SDD_pTD3.pdf, page is rotated 90 degrees> <./pPbplots/methodsComparison/DjetSpe
+ctra_methodComparison_FASTwoSDD_eff_ptD2.pdf, page is rotated 90 degrees> <./pP
+bplots/methodsComparison/DjetSpectra_methodComparison_FASTwoSDD_eff_ptD3.pdf, p
+age is rotated 90 degrees> <./pPbplots/methodsComparison/DjetSpectraRatio_FASTw
+oSDD_eff_ptD2.pdf, page is rotated 90 degrees> <./pPbplots/methodsComparison/Dj
+etSpectraRatio_FASTwoSDD_eff_ptD3.pdf, page is rotated 90 degrees>] [14 <./pPbp
+lots/plotsSB_pt3_noDetails/jetPtSpectrumUnc_SB_Rebin_FASTwoSDD_pTD3.pdf, page i
+s rotated 90 degrees>]
 
-[12 <./pPbplots/plotsEffScale_pt3_noDetails/invMass_FASTwoSDD.pdf, page is rota
-ted 90 degrees>] [13 <./pPbplots/plotsSB_pt3_noDetails/jetPtSpectrum_SB_FASTwoS
-DD.pdf, page is rotated 90 degrees> <./pPbplots/methodsComparison/DjetSpectra_m
-ethodComparison_FASTwoSDD_eff_ptD2.pdf, page is rotated 90 degrees> <./pPbplots
-/methodsComparison/DjetSpectra_methodComparison_FASTwoSDD_eff_ptD3.pdf, page is
- rotated 90 degrees> <./pPbplots/methodsComparison/DjetSpectraRatio_FASTwoSDD_e
-ff_ptD2.pdf, page is rotated 90 degrees> <./pPbplots/methodsComparison/DjetSpec
-traRatio_FASTwoSDD_eff_ptD3.pdf, page is rotated 90 degrees>] [14 <./pPbplots/p
-lotsSB_pt2_noDetails/jetPtSpectrumUnc_SB_Rebin_FASTwoSDD.pdf, page is rotated 9
-0 degrees> <./pPbplots/plotsSB_pt3_noDetails/jetPtSpectrumUnc_SB_Rebin_FASTwoSD
-D.pdf, page is rotated 90 degrees>]
-<pPbplots/ResponseMatrix/DetMatrix_Dpt0_100.png, id=1152, 798.985pt x 574.145pt
+LaTeX Warning: Citation `ALICE:2014a' on page 15 undefined on input line 413.
+
+
+LaTeX Warning: Citation `ALICE:2015a' on page 15 undefined on input line 413.
+
+
+<pPbplots/ResponseMatrix/hRho_ptleadbin5_cent0_10.png, id=1112, 798.985pt x 574
+.145pt>
+File: pPbplots/ResponseMatrix/hRho_ptleadbin5_cent0_10.png Graphic file (type p
+ng)
+ <use pPbplots/ResponseMatrix/hRho_ptleadbin5_cent0_10.png>
+Package pdftex.def Info: pPbplots/ResponseMatrix/hRho_ptleadbin5_cent0_10.png u
+sed on input line 430.
+(pdftex.def)             Requested size: 204.85844pt x 147.20663pt.
+
+<pPbplots/ResponseMatrix/hRho_ptleadbin5_cent20_40.png, id=1113, 798.985pt x 57
+4.145pt>
+File: pPbplots/ResponseMatrix/hRho_ptleadbin5_cent20_40.png Graphic file (type 
+png)
+ <use pPbplots/ResponseMatrix/hRho_ptleadbin5_cent20_40.png>
+Package pdftex.def Info: pPbplots/ResponseMatrix/hRho_ptleadbin5_cent20_40.png 
+used on input line 431.
+(pdftex.def)             Requested size: 204.85844pt x 147.20663pt.
+ [15
+
+ <./pPbplots/ResponseMatrix/hRho_ptleadbin5_cent0_10.png> <./pPbplots/ResponseM
+atrix/hRho_ptleadbin5_cent20_40.png>]
+<pPbplots/ResponseMatrix/DeltaPt_Djet5Excl.png, id=1126, 798.985pt x 574.145pt>
+File: pPbplots/ResponseMatrix/DeltaPt_Djet5Excl.png Graphic file (type png)
+<use pPbplots/ResponseMatrix/DeltaPt_Djet5Excl.png>
+Package pdftex.def Info: pPbplots/ResponseMatrix/DeltaPt_Djet5Excl.png used on 
+input line 451.
+(pdftex.def)             Requested size: 204.85844pt x 147.20663pt.
+
+<pPbplots/ResponseMatrix/BkgMatrix_Djet5Excl.png, id=1127, 798.985pt x 574.145p
+t>
+File: pPbplots/ResponseMatrix/BkgMatrix_Djet5Excl.png Graphic file (type png)
+ <use pPbplots/ResponseMatrix/BkgMatrix_Djet5Excl.png>
+Package pdftex.def Info: pPbplots/ResponseMatrix/BkgMatrix_Djet5Excl.png used o
+n input line 452.
+(pdftex.def)             Requested size: 204.85844pt x 147.20663pt.
+
+<pPbplots/ResponseMatrix/DetMatrix_Dpt0_100.png, id=1130, 798.985pt x 574.145pt
 >
 File: pPbplots/ResponseMatrix/DetMatrix_Dpt0_100.png Graphic file (type png)
  <use pPbplots/ResponseMatrix/DetMatrix_Dpt0_100.png>
 Package pdftex.def Info: pPbplots/ResponseMatrix/DetMatrix_Dpt0_100.png used on
- input line 454.
-(pdftex.def)             Requested size: 273.14922pt x 196.28429pt.
+ input line 480.
+(pdftex.def)             Requested size: 223.0721pt x 160.29518pt.
 
+<pPbplots/ResponseMatrix/DetMatrix_Dpt0_100_FD.png, id=1131, 798.985pt x 574.14
+5pt>
+File: pPbplots/ResponseMatrix/DetMatrix_Dpt0_100_FD.png Graphic file (type png)
 
-LaTeX Warning: Citation `ALICE:2014a' on page 15 undefined on input line 480.
+ <use pPbplots/ResponseMatrix/DetMatrix_Dpt0_100_FD.png>
+Package pdftex.def Info: pPbplots/ResponseMatrix/DetMatrix_Dpt0_100_FD.png used
+ on input line 481.
+(pdftex.def)             Requested size: 223.0721pt x 160.29518pt.
+ [16 <./pPbplots/ResponseMatrix/DeltaPt_Djet5Excl.png> <./pPbplots/ResponseMatr
+ix/BkgMatrix_Djet5Excl.png>]
 
-
-LaTeX Warning: Citation `ALICE:2015a' on page 15 undefined on input line 480.
-
-[15
-
- <./pPbplots/ResponseMatrix/DetMatrix_Dpt0_100.png>]
-<pPbplots/ResponseMatrix/DeltaPt.png, id=1163, 798.985pt x 574.145pt>
-File: pPbplots/ResponseMatrix/DeltaPt.png Graphic file (type png)
-
-<use pPbplots/ResponseMatrix/DeltaPt.png>
-Package pdftex.def Info: pPbplots/ResponseMatrix/DeltaPt.png used on input line
- 509.
-(pdftex.def)             Requested size: 204.85844pt x 147.20663pt.
-
-<pPbplots/ResponseMatrix/BkgMatrix.png, id=1164, 798.985pt x 574.145pt>
-File: pPbplots/ResponseMatrix/BkgMatrix.png Graphic file (type png)
-
-<use pPbplots/ResponseMatrix/BkgMatrix.png>
-Package pdftex.def Info: pPbplots/ResponseMatrix/BkgMatrix.png used on input li
-ne 510.
-(pdftex.def)             Requested size: 204.85844pt x 147.20663pt.
-
-
-LaTeX Warning: Citation `Cacciari:1998' on page 16 undefined on input line 534.
+LaTeX Warning: Citation `Cacciari:1998' on page 17 undefined on input line 537.
 
 
 
-LaTeX Warning: Citation `ALICE:2012d' on page 16 undefined on input line 534.
+LaTeX Warning: Citation `ALICE:2012d' on page 17 undefined on input line 537.
 
 
-LaTeX Warning: Citation `ALICE:2014d' on page 16 undefined on input line 534.
+LaTeX Warning: Citation `ALICE:2014d' on page 17 undefined on input line 537.
 
 
-LaTeX Warning: Citation `ALICE:2016a' on page 16 undefined on input line 534.
+LaTeX Warning: Citation `ALICE:2016a' on page 17 undefined on input line 537.
 
 
-LaTeX Warning: Citation `Alioli:2010' on page 16 undefined on input line 536.
+LaTeX Warning: Citation `Alioli:2010' on page 17 undefined on input line 539.
 
 
-LaTeX Warning: Citation `Cacciari:2012b' on page 16 undefined on input line 536
+LaTeX Warning: Citation `Cacciari:2012b' on page 17 undefined on input line 539
 .
 
-[16 <./pPbplots/ResponseMatrix/DeltaPt.png> <./pPbplots/ResponseMatrix/BkgMatri
-x.png>]
-Overfull \hbox (21.89365pt too wide) detected at line 554
+
+Overfull \hbox (21.89365pt too wide) detected at line 557
 []\OML/ztmcm/m/it/10.95 N[]\OT1/ztmcm/m/n/10.95 (\OML/ztmcm/m/it/10.95 p[]\OT1/
 ztmcm/m/n/10.95 ) = \OML/ztmcm/m/it/10.95 N[]\OT1/ztmcm/m/n/10.95 (\OML/ztmcm/m
 /it/10.95 p[]\OT1/ztmcm/m/n/10.95 ) \OMS/ztmcm/m/n/10.95 ^^@ \OML/ztmcm/m/it/10
@@ -898,240 +925,532 @@ ztmcm/m/n/10.95 ) = \OML/ztmcm/m/it/10.95 N[]\OT1/ztmcm/m/n/10.95 (\OML/ztmcm/m
  p[]\OT1/ztmcm/m/n/10.95 )\OML/ztmcm/m/it/10.95 ;
  []
 
+[17 <./pPbplots/ResponseMatrix/DetMatrix_Dpt0_100.png> <./pPbplots/ResponseMatr
+ix/DetMatrix_Dpt0_100_FD.png>]
+<pPbplots/ResponseMatrix/combMatrixFD_DjetExcl5.pdf, id=1149, 569.12625pt x 352
+.31625pt>
+File: pPbplots/ResponseMatrix/combMatrixFD_DjetExcl5.pdf Graphic file (type pdf
+)
+ <use pPbplots/ResponseMatrix/combMatrixFD_DjetExcl5.pdf>
+Package pdftex.def Info: pPbplots/ResponseMatrix/combMatrixFD_DjetExcl5.pdf use
+d on input line 584.
+(pdftex.def)             Requested size: 273.14922pt x 169.09912pt.
 
-<pPbplots/jetSpectra/JetPtSpectra_FDsub.pdf, id=1176, 569.12625pt x 440.64626pt
+<pPbplots/jetSpectra/JetPtSpectra_FDsub.pdf, id=1150, 569.12625pt x 440.64626pt
 >
 File: pPbplots/jetSpectra/JetPtSpectra_FDsub.pdf Graphic file (type pdf)
  <use pPbplots/jetSpectra/JetPtSpectra_FDsub.pdf>
 Package pdftex.def Info: pPbplots/jetSpectra/JetPtSpectra_FDsub.pdf used on inp
-ut line 589.
+ut line 591.
 (pdftex.def)             Requested size: 241.2788pt x 186.8116pt.
 
-<pPbplots/jetSpectra/FDratio.pdf, id=1177, 569.12625pt x 270.00874pt>
+<pPbplots/jetSpectra/FDratio.pdf, id=1151, 569.12625pt x 270.00874pt>
 File: pPbplots/jetSpectra/FDratio.pdf Graphic file (type pdf)
 
 <use pPbplots/jetSpectra/FDratio.pdf>
-Package pdftex.def Info: pPbplots/jetSpectra/FDratio.pdf used on input line 590
+Package pdftex.def Info: pPbplots/jetSpectra/FDratio.pdf used on input line 592
 .
 (pdftex.def)             Requested size: 204.85844pt x 97.1907pt.
- [17]
+ [18 <./pPbplots/ResponseMatrix/combMatrixFD_DjetExcl5.pdf, page is rotated 90 
+degrees>]
 
-LaTeX Warning: Reference `fUnfSpec_pPb' on page 18 undefined on input line 629.
+LaTeX Warning: Reference `pPb_ResponseMatrix' on page 19 undefined on input lin
+e 615.
 
 
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 640.
+<pPbplots/ResponseMatrix/PythiaRM__Djet5Excl_2_bayes5_weight_MatrixProd.png, id
+=1203, 698.61pt x 473.77pt>
+File: pPbplots/ResponseMatrix/PythiaRM__Djet5Excl_2_bayes5_weight_MatrixProd.pn
+g Graphic file (type png)
+
+<use pPbplots/ResponseMatrix/PythiaRM__Djet5Excl_2_bayes5_weight_MatrixProd.png
+>
+Package pdftex.def Info: pPbplots/ResponseMatrix/PythiaRM__Djet5Excl_2_bayes5_w
+eight_MatrixProd.png used on input line 620.
+(pdftex.def)             Requested size: 223.0721pt x 151.27695pt.
+
+<pPbplots/ResponseMatrix/PythiaRM__Djet5Excl_2_bayes5_weight_Matrix.png, id=120
+4, 698.61pt x 473.77pt>
+File: pPbplots/ResponseMatrix/PythiaRM__Djet5Excl_2_bayes5_weight_Matrix.png Gr
+aphic file (type png)
+
+<use pPbplots/ResponseMatrix/PythiaRM__Djet5Excl_2_bayes5_weight_Matrix.png>
+Package pdftex.def Info: pPbplots/ResponseMatrix/PythiaRM__Djet5Excl_2_bayes5_w
+eight_Matrix.png used on input line 621.
+(pdftex.def)             Requested size: 223.0721pt x 151.27695pt.
+
+<pPbplots/ResponseMatrix/PythiaRM__Djet5Excl_2_bayes5_weight_UnfSpectrum.png, i
+d=1205, 698.61pt x 473.77pt>
+File: pPbplots/ResponseMatrix/PythiaRM__Djet5Excl_2_bayes5_weight_UnfSpectrum.p
+ng Graphic file (type png)
+
+<use pPbplots/ResponseMatrix/PythiaRM__Djet5Excl_2_bayes5_weight_UnfSpectrum.pn
+g>
+Package pdftex.def Info: pPbplots/ResponseMatrix/PythiaRM__Djet5Excl_2_bayes5_w
+eight_UnfSpectrum.png used on input line 628.
+(pdftex.def)             Requested size: 250.38562pt x 169.80524pt.
+
+<pPbplots/ResponseMatrix/PythiaRM__Djet5Excl_2_bayes5_weight_foldedRatio.png, i
+d=1206, 798.985pt x 574.145pt>
+File: pPbplots/ResponseMatrix/PythiaRM__Djet5Excl_2_bayes5_weight_foldedRatio.p
+ng Graphic file (type png)
+
+<use pPbplots/ResponseMatrix/PythiaRM__Djet5Excl_2_bayes5_weight_foldedRatio.pn
+g>
+Package pdftex.def Info: pPbplots/ResponseMatrix/PythiaRM__Djet5Excl_2_bayes5_w
+eight_foldedRatio.png used on input line 629.
+(pdftex.def)             Requested size: 200.3085pt x 143.93889pt.
+ [19 <./pPbplots/jetSpectra/JetPtSpectra_FDsub.pdf, page is rotated 90 degrees>
+ <./pPbplots/jetSpectra/FDratio.pdf, page is rotated 90 degrees> <./pPbplots/Re
+sponseMatrix/PythiaRM__Djet5Excl_2_bayes5_weight_MatrixProd.png> <./pPbplots/Re
+sponseMatrix/PythiaRM__Djet5Excl_2_bayes5_weight_Matrix.png>]
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 644.
+
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 640.
-
-Underfull \vbox (badness 1715) has occurred while \output is active []
-
- [18 <./pPbplots/jetSpectra/JetPtSpectra_FDsub.pdf, page is rotated 90 degrees>
- <./pPbplots/jetSpectra/FDratio.pdf, page is rotated 90 degrees>]
-<pPbplots/yieldExtraction/jetPtComparison_DataMVariation_SB.pdf, id=1280, 569.1
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 644.
+ [20 <./pPbplots/ResponseMatrix/PythiaRM__Djet5Excl_2_bayes5_weight_UnfSpectrum
+.png> <./pPbplots/ResponseMatrix/PythiaRM__Djet5Excl_2_bayes5_weight_foldedRati
+o.png>]
+<pPbplots/yieldExtraction/jetPtComparison_DataMVariation_SB.pdf, id=1309, 569.1
 2625pt x 408.52625pt>
 File: pPbplots/yieldExtraction/jetPtComparison_DataMVariation_SB.pdf Graphic fi
 le (type pdf)
 
 <use pPbplots/yieldExtraction/jetPtComparison_DataMVariation_SB.pdf>
 Package pdftex.def Info: pPbplots/yieldExtraction/jetPtComparison_DataMVariatio
-n_SB.pdf used on input line 672.
+n_SB.pdf used on input line 676.
 (pdftex.def)             Requested size: 204.85844pt x 147.05063pt.
 
-<pPbplots/yieldExtraction/SBRatio.pdf, id=1281, 569.12625pt x 194.7275pt>
+<pPbplots/yieldExtraction/SBRatio.pdf, id=1310, 569.12625pt x 194.7275pt>
 File: pPbplots/yieldExtraction/SBRatio.pdf Graphic file (type pdf)
 
 <use pPbplots/yieldExtraction/SBRatio.pdf>
 Package pdftex.def Info: pPbplots/yieldExtraction/SBRatio.pdf used on input lin
-e 677.
+e 681.
 (pdftex.def)             Requested size: 204.85844pt x 70.09293pt.
 
-<pPbplots/yieldExtraction/YieldExtSysUnc_SB.pdf, id=1284, 569.12625pt x 408.526
+<pPbplots/yieldExtraction/YieldExtSysUnc_SB.pdf, id=1313, 569.12625pt x 408.526
 25pt>
 File: pPbplots/yieldExtraction/YieldExtSysUnc_SB.pdf Graphic file (type pdf)
  <use pPbplots/yieldExtraction/YieldExtSysUnc_SB.pdf>
 Package pdftex.def Info: pPbplots/yieldExtraction/YieldExtSysUnc_SB.pdf used on
- input line 690.
+ input line 694.
 (pdftex.def)             Requested size: 227.62204pt x 163.3889pt.
 
-<pPbplots/yieldExtraction/yieldInDbins.png, id=1286, 899.36pt x 574.145pt>
+<pPbplots/yieldExtraction/yieldInDbins.png, id=1315, 899.36pt x 574.145pt>
 File: pPbplots/yieldExtraction/yieldInDbins.png Graphic file (type png)
 
 <use pPbplots/yieldExtraction/yieldInDbins.png>
 Package pdftex.def Info: pPbplots/yieldExtraction/yieldInDbins.png used on inpu
-t line 703.
+t line 707.
 (pdftex.def)             Requested size: 204.85844pt x 130.78026pt.
 
-<pPbplots/yieldExtraction/yieldInDbins_log.png, id=1287, 899.36pt x 574.145pt>
+<pPbplots/yieldExtraction/yieldInDbins_log.png, id=1316, 899.36pt x 574.145pt>
 File: pPbplots/yieldExtraction/yieldInDbins_log.png Graphic file (type png)
 
 <use pPbplots/yieldExtraction/yieldInDbins_log.png>
 Package pdftex.def Info: pPbplots/yieldExtraction/yieldInDbins_log.png used on 
-input line 706.
+input line 710.
 (pdftex.def)             Requested size: 204.85844pt x 130.78026pt.
- [19]
-<pPbplots/simulations/NonPromptspectra_DPt.pdf, id=1301, 569.12625pt x 367.3725
+ [21 <./pPbplots/yieldExtraction/jetPtComparison_DataMVariation_SB.pdf, page is
+ rotated 90 degrees> <./pPbplots/yieldExtraction/SBRatio.pdf, page is rotated 9
+0 degrees> <./pPbplots/yieldExtraction/YieldExtSysUnc_SB.pdf, page is rotated 9
+0 degrees>]
+<pPbplots/jetSpectra/jetRawSpectra_pTD_pTD3.pdf, id=1457, 569.12625pt x 408.526
+25pt>
+File: pPbplots/jetSpectra/jetRawSpectra_pTD_pTD3.pdf Graphic file (type pdf)
+ <use pPbplots/jetSpectra/jetRawSpectra_pTD_pTD3.pdf>
+Package pdftex.def Info: pPbplots/jetSpectra/jetRawSpectra_pTD_pTD3.pdf used on
+ input line 722.
+(pdftex.def)             Requested size: 223.0721pt x 160.1225pt.
+
+<pPbplots/jetSpectra/efficiencies.pdf, id=1458, 569.12625pt x 408.52625pt>
+File: pPbplots/jetSpectra/efficiencies.pdf Graphic file (type pdf)
+
+<use pPbplots/jetSpectra/efficiencies.pdf>
+Package pdftex.def Info: pPbplots/jetSpectra/efficiencies.pdf used on input lin
+e 723.
+(pdftex.def)             Requested size: 223.0721pt x 160.1225pt.
+
+<pPbplots/jetSpectra/jetRawSpectraRatio_pTD_pTD3.pdf, id=1459, 569.12625pt x 26
+5.99374pt>
+File: pPbplots/jetSpectra/jetRawSpectraRatio_pTD_pTD3.pdf Graphic file (type pd
+f)
+ <use pPbplots/jetSpectra/jetRawSpectraRatio_pTD_pTD3.pdf>
+Package pdftex.def Info: pPbplots/jetSpectra/jetRawSpectraRatio_pTD_pTD3.pdf us
+ed on input line 731.
+(pdftex.def)             Requested size: 223.0721pt x 104.25665pt.
+
+<pPbplots/jetSpectra/efficienciesRatio.pdf, id=1460, 569.12625pt x 265.99374pt>
+File: pPbplots/jetSpectra/efficienciesRatio.pdf Graphic file (type pdf)
+<use pPbplots/jetSpectra/efficienciesRatio.pdf>
+Package pdftex.def Info: pPbplots/jetSpectra/efficienciesRatio.pdf used on inpu
+t line 732.
+(pdftex.def)             Requested size: 223.0721pt x 104.25665pt.
+ [22 <./pPbplots/yieldExtraction/yieldInDbins.png> <./pPbplots/yieldExtraction/
+yieldInDbins_log.png> <./pPbplots/jetSpectra/jetRawSpectra_pTD_pTD3.pdf, page i
+s rotated 90 degrees> <./pPbplots/jetSpectra/efficiencies.pdf, page is rotated 
+90 degrees> <./pPbplots/jetSpectra/jetRawSpectraRatio_pTD_pTD3.pdf, page is rot
+ated 90 degrees> <./pPbplots/jetSpectra/efficienciesRatio.pdf, page is rotated 
+90 degrees>]
+<pPbplots/jetSpectra/jetSpectra_pTD_pTD3.pdf, id=1641, 569.12625pt x 408.52625p
+t>
+File: pPbplots/jetSpectra/jetSpectra_pTD_pTD3.pdf Graphic file (type pdf)
+ <use pPbplots/jetSpectra/jetSpectra_pTD_pTD3.pdf>
+Package pdftex.def Info: pPbplots/jetSpectra/jetSpectra_pTD_pTD3.pdf used on in
+put line 742.
+(pdftex.def)             Requested size: 223.0721pt x 160.1225pt.
+
+<pPbplots/jetSpectra/jetSpectraRatio_pTD_pTD3.pdf, id=1642, 569.12625pt x 265.9
+9374pt>
+File: pPbplots/jetSpectra/jetSpectraRatio_pTD_pTD3.pdf Graphic file (type pdf)
+ <use pPbplots/jetSpectra/jetSpectraRatio_pTD_pTD3.pdf>
+Package pdftex.def Info: pPbplots/jetSpectra/jetSpectraRatio_pTD_pTD3.pdf used 
+on input line 750.
+(pdftex.def)             Requested size: 223.0721pt x 104.25665pt.
+
+<pPbplots/jetSpectra/jetSpectraSys_pTD_pTD3.pdf, id=1643, 569.12625pt x 337.26p
+t>
+File: pPbplots/jetSpectra/jetSpectraSys_pTD_pTD3.pdf Graphic file (type pdf)
+ <use pPbplots/jetSpectra/jetSpectraSys_pTD_pTD3.pdf>
+Package pdftex.def Info: pPbplots/jetSpectra/jetSpectraSys_pTD_pTD3.pdf used on
+ input line 751.
+(pdftex.def)             Requested size: 223.0721pt x 132.18958pt.
+
+<pPbplots/simulations/NonPromptspectra_DPt.pdf, id=1649, 569.12625pt x 367.3725
 pt>
 File: pPbplots/simulations/NonPromptspectra_DPt.pdf Graphic file (type pdf)
  <use pPbplots/simulations/NonPromptspectra_DPt.pdf>
 Package pdftex.def Info: pPbplots/simulations/NonPromptspectra_DPt.pdf used on 
-input line 743.
+input line 785.
 (pdftex.def)             Requested size: 204.85844pt x 132.23717pt.
 
-<pPbplots/simulations/NonPromptspectra_DPt_ratio.pdf, id=1302, 569.12625pt x 36
+<pPbplots/simulations/NonPromptspectra_DPt_ratio.pdf, id=1650, 569.12625pt x 36
 7.3725pt>
 File: pPbplots/simulations/NonPromptspectra_DPt_ratio.pdf Graphic file (type pd
 f)
  <use pPbplots/simulations/NonPromptspectra_DPt_ratio.pdf>
 Package pdftex.def Info: pPbplots/simulations/NonPromptspectra_DPt_ratio.pdf us
-ed on input line 744.
+ed on input line 786.
 (pdftex.def)             Requested size: 204.85844pt x 132.23717pt.
-
-<pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_effScaled.pdf, id=1303, 56
+ [23 <./pPbplots/jetSpectra/jetSpectra_pTD_pTD3.pdf, page is rotated 90 degrees
+> <./pPbplots/jetSpectra/jetSpectraRatio_pTD_pTD3.pdf, page is rotated 90 degre
+es> <./pPbplots/jetSpectra/jetSpectraSys_pTD_pTD3.pdf, page is rotated 90 degre
+es>]
+<pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_effScaled.pdf, id=1788, 56
 9.12625pt x 367.3725pt>
 File: pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_effScaled.pdf Graphic
  file (type pdf)
 
 <use pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_effScaled.pdf>
 Package pdftex.def Info: pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_ef
-fScaled.pdf used on input line 752.
+fScaled.pdf used on input line 794.
 (pdftex.def)             Requested size: 204.85844pt x 132.23717pt.
 
-<pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_effScaled_ratio.pdf, id=13
-04, 569.12625pt x 367.3725pt>
+<pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_effScaled_ratio.pdf, id=17
+89, 569.12625pt x 367.3725pt>
 File: pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_effScaled_ratio.pdf G
 raphic file (type pdf)
 
 <use pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_effScaled_ratio.pdf>
 Package pdftex.def Info: pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_ef
-fScaled_ratio.pdf used on input line 753.
+fScaled_ratio.pdf used on input line 795.
 (pdftex.def)             Requested size: 204.85844pt x 132.23717pt.
 
-<pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_effScaled_un.pdf, id=1306,
+<pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_effScaled_un.pdf, id=1791,
  569.12625pt x 440.64626pt>
 File: pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_effScaled_un.pdf Grap
 hic file (type pdf)
 
 <use pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_effScaled_un.pdf>
 Package pdftex.def Info: pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_ef
-fScaled_un.pdf used on input line 764.
+fScaled_un.pdf used on input line 806.
 (pdftex.def)             Requested size: 204.85844pt x 158.61235pt.
 
-<pPbplots/jetSpectra/FDUnc_beforeUnf.pdf, id=1307, 569.12625pt x 270.00874pt>
+<pPbplots/jetSpectra/FDUnc_beforeUnf.pdf, id=1792, 569.12625pt x 270.00874pt>
 File: pPbplots/jetSpectra/FDUnc_beforeUnf.pdf Graphic file (type pdf)
 
 <use pPbplots/jetSpectra/FDUnc_beforeUnf.pdf>
 Package pdftex.def Info: pPbplots/jetSpectra/FDUnc_beforeUnf.pdf used on input 
-line 765.
+line 807.
 (pdftex.def)             Requested size: 204.85844pt x 97.1907pt.
 
 
-LaTeX Warning: Reference `fig:unfBayesReg_pPb' on page 20 undefined on input li
-ne 776.
+LaTeX Warning: Citation `Hocker:1995' on page 24 undefined on input line 819.
 
+[24 <./pPbplots/simulations/NonPromptspectra_DPt.pdf, page is rotated 90 degree
+s> <./pPbplots/simulations/NonPromptspectra_DPt_ratio.pdf, page is rotated 90 d
+egrees> <./pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_effScaled.pdf, p
+age is rotated 90 degrees> <./pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_
+36_effScaled_ratio.pdf, page is rotated 90 degrees>]
+<pPbplots/unfolding/PythiaRM__Djet5Excl_2_bayes5_weight_unfSpectra.png, id=1980
+, 698.61pt x 473.77pt>
+File: pPbplots/unfolding/PythiaRM__Djet5Excl_2_bayes5_weight_unfSpectra.png Gra
+phic file (type png)
 
-LaTeX Warning: Reference `fig:unfSVDReg_pPb' on page 20 undefined on input line
- 776.
+<use pPbplots/unfolding/PythiaRM__Djet5Excl_2_bayes5_weight_unfSpectra.png>
+Package pdftex.def Info: pPbplots/unfolding/PythiaRM__Djet5Excl_2_bayes5_weight
+_unfSpectra.png used on input line 832.
+(pdftex.def)             Requested size: 204.85844pt x 138.92958pt.
 
+<pPbplots/unfolding/PythiaRM__Djet5Excl_2_bayes5_weight_unfRatio.png, id=1981, 
+798.985pt x 574.145pt>
+File: pPbplots/unfolding/PythiaRM__Djet5Excl_2_bayes5_weight_unfRatio.png Graph
+ic file (type png)
 
-LaTeX Warning: Citation `Hocker:1995' on page 20 undefined on input line 776.
+<use pPbplots/unfolding/PythiaRM__Djet5Excl_2_bayes5_weight_unfRatio.png>
+Package pdftex.def Info: pPbplots/unfolding/PythiaRM__Djet5Excl_2_bayes5_weight
+_unfRatio.png used on input line 833.
+(pdftex.def)             Requested size: 204.85844pt x 147.20663pt.
 
+<pPbplots/unfolding/PythiaRM__Djet5Excl_SVD5_weight_UnfSpectrum.png, id=1982, 6
+98.61pt x 473.77pt>
+File: pPbplots/unfolding/PythiaRM__Djet5Excl_SVD5_weight_UnfSpectrum.png Graphi
+c file (type png)
 
-LaTeX Warning: Reference `fig:unfMethComp_pPb' on page 20 undefined on input li
-ne 777.
+<use pPbplots/unfolding/PythiaRM__Djet5Excl_SVD5_weight_UnfSpectrum.png>
+Package pdftex.def Info: pPbplots/unfolding/PythiaRM__Djet5Excl_SVD5_weight_Unf
+Spectrum.png used on input line 841.
+(pdftex.def)             Requested size: 204.85844pt x 138.92958pt.
 
-[20 <./pPbplots/yieldExtraction/jetPtComparison_DataMVariation_SB.pdf, page is 
-rotated 90 degrees> <./pPbplots/yieldExtraction/SBRatio.pdf, page is rotated 90
- degrees> <./pPbplots/yieldExtraction/YieldExtSysUnc_SB.pdf, page is rotated 90
- degrees>] [21 <./pPbplots/yieldExtraction/yieldInDbins.png> <./pPbplots/yieldE
-xtraction/yieldInDbins_log.png> <./pPbplots/simulations/NonPromptspectra_DPt.pd
-f, page is rotated 90 degrees> <./pPbplots/simulations/NonPromptspectra_DPt_rat
-io.pdf, page is rotated 90 degrees>]
+<pPbplots/unfolding/PythiaRM__Djet5Excl_SVD5_weight_foldedRatio.png, id=1983, 7
+98.985pt x 574.145pt>
+File: pPbplots/unfolding/PythiaRM__Djet5Excl_SVD5_weight_foldedRatio.png Graphi
+c file (type png)
+
+<use pPbplots/unfolding/PythiaRM__Djet5Excl_SVD5_weight_foldedRatio.png>
+Package pdftex.def Info: pPbplots/unfolding/PythiaRM__Djet5Excl_SVD5_weight_fol
+dedRatio.png used on input line 842.
+(pdftex.def)             Requested size: 204.85844pt x 147.20663pt.
+
+<pPbplots/unfolding/jetSpectra_unfSys.pdf, id=1984, 569.12625pt x 408.52625pt>
+File: pPbplots/unfolding/jetSpectra_unfSys.pdf Graphic file (type pdf)
+
+<use pPbplots/unfolding/jetSpectra_unfSys.pdf>
+Package pdftex.def Info: pPbplots/unfolding/jetSpectra_unfSys.pdf used on input
+ line 851.
+(pdftex.def)             Requested size: 204.85844pt x 147.05063pt.
+
+<pPbplots/unfolding/jetSpectraRatio_unfSys.pdf, id=1985, 569.12625pt x 265.9937
+4pt>
+File: pPbplots/unfolding/jetSpectraRatio_unfSys.pdf Graphic file (type pdf)
+ <use pPbplots/unfolding/jetSpectraRatio_unfSys.pdf>
+Package pdftex.def Info: pPbplots/unfolding/jetSpectraRatio_unfSys.pdf used on 
+input line 858.
+(pdftex.def)             Requested size: 204.85844pt x 95.74548pt.
+
+<pPbplots/unfolding/jetSpectraSys_unfSys.png, id=1986, 798.985pt x 373.395pt>
+File: pPbplots/unfolding/jetSpectraSys_unfSys.png Graphic file (type png)
+
+<use pPbplots/unfolding/jetSpectraSys_unfSys.png>
+Package pdftex.def Info: pPbplots/unfolding/jetSpectraSys_unfSys.png used on in
+put line 859.
+(pdftex.def)             Requested size: 204.85844pt x 95.73578pt.
+
+<pPbplots/unfolding/hDeltaPt_ptleadbin5_exlcuding_exlD.png, id=1989, 798.985pt 
+x 574.145pt>
+File: pPbplots/unfolding/hDeltaPt_ptleadbin5_exlcuding_exlD.png Graphic file (t
+ype png)
+ <use pPbplots/unfolding/hDeltaPt_ptleadbin5_exlcuding_exlD.png>
+Package pdftex.def Info: pPbplots/unfolding/hDeltaPt_ptleadbin5_exlcuding_exlD.
+png used on input line 873.
+(pdftex.def)             Requested size: 223.0721pt x 160.29518pt.
+
+<pPbplots/unfolding/hDeltaPt_ptleadbin10_exlcuding_exlD.png, id=1990, 798.985pt
+ x 574.145pt>
+File: pPbplots/unfolding/hDeltaPt_ptleadbin10_exlcuding_exlD.png Graphic file (
+type png)
+ <use pPbplots/unfolding/hDeltaPt_ptleadbin10_exlcuding_exlD.png>
+Package pdftex.def Info: pPbplots/unfolding/hDeltaPt_ptleadbin10_exlcuding_exlD
+.png used on input line 874.
+(pdftex.def)             Requested size: 223.0721pt x 160.29518pt.
+
+<pPbplots/unfolding/jetSpectra_afterUnfolding_bkgFlucSys.pdf, id=1991, 569.1262
+5pt x 408.52625pt>
+File: pPbplots/unfolding/jetSpectra_afterUnfolding_bkgFlucSys.pdf Graphic file 
+(type pdf)
+
+<use pPbplots/unfolding/jetSpectra_afterUnfolding_bkgFlucSys.pdf>
+Package pdftex.def Info: pPbplots/unfolding/jetSpectra_afterUnfolding_bkgFlucSy
+s.pdf used on input line 881.
+(pdftex.def)             Requested size: 223.0721pt x 160.1225pt.
+
+<pPbplots/unfolding/jetSpectraRatio_afterUnfolding_bkgFlucSys.pdf, id=1992, 569
+.12625pt x 337.26pt>
+File: pPbplots/unfolding/jetSpectraRatio_afterUnfolding_bkgFlucSys.pdf Graphic 
+file (type pdf)
+
+<use pPbplots/unfolding/jetSpectraRatio_afterUnfolding_bkgFlucSys.pdf>
+Package pdftex.def Info: pPbplots/unfolding/jetSpectraRatio_afterUnfolding_bkgF
+lucSys.pdf used on input line 889.
+(pdftex.def)             Requested size: 223.0721pt x 132.18958pt.
+
+<pPbplots/unfolding/jetSpectraSys_afterUnfolding_bkgFlucSys.pdf, id=1993, 569.1
+2625pt x 337.26pt>
+File: pPbplots/unfolding/jetSpectraSys_afterUnfolding_bkgFlucSys.pdf Graphic fi
+le (type pdf)
+
+<use pPbplots/unfolding/jetSpectraSys_afterUnfolding_bkgFlucSys.pdf>
+Package pdftex.def Info: pPbplots/unfolding/jetSpectraSys_afterUnfolding_bkgFlu
+cSys.pdf used on input line 890.
+(pdftex.def)             Requested size: 223.0721pt x 132.18958pt.
+ [25 <./pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_effScaled_un.pdf, p
+age is rotated 90 degrees> <./pPbplots/jetSpectra/FDUnc_beforeUnf.pdf, page is 
+rotated 90 degrees> <./pPbplots/unfolding/PythiaRM__Djet5Excl_2_bayes5_weight_u
+nfSpectra.png> <./pPbplots/unfolding/PythiaRM__Djet5Excl_2_bayes5_weight_unfRat
+io.png>]
+[26 <./pPbplots/unfolding/PythiaRM__Djet5Excl_SVD5_weight_UnfSpectrum.png> <./p
+Pbplots/unfolding/PythiaRM__Djet5Excl_SVD5_weight_foldedRatio.png> <./pPbplots/
+unfolding/jetSpectra_unfSys.pdf, page is rotated 90 degrees> <./pPbplots/unfold
+ing/jetSpectraRatio_unfSys.pdf, page is rotated 90 degrees> <./pPbplots/unfoldi
+ng/jetSpectraSys_unfSys.png>]
+<pPbplots/unfolding/jetSpectra_JESsys.pdf, id=2180, 569.12625pt x 408.52625pt>
+File: pPbplots/unfolding/jetSpectra_JESsys.pdf Graphic file (type pdf)
+
+<use pPbplots/unfolding/jetSpectra_JESsys.pdf>
+Package pdftex.def Info: pPbplots/unfolding/jetSpectra_JESsys.pdf used on input
+ line 908.
+(pdftex.def)             Requested size: 223.0721pt x 160.1225pt.
+
+<pPbplots/unfolding/jetSpectraRatio_JESsys.pdf, id=2181, 569.12625pt x 265.9937
+4pt>
+File: pPbplots/unfolding/jetSpectraRatio_JESsys.pdf Graphic file (type pdf)
+ <use pPbplots/unfolding/jetSpectraRatio_JESsys.pdf>
+Package pdftex.def Info: pPbplots/unfolding/jetSpectraRatio_JESsys.pdf used on 
+input line 909.
+(pdftex.def)             Requested size: 223.0721pt x 104.25665pt.
+
+<pPbplots/unfolding/jetSpectraUncFit_JESsys.pdf, id=2182, 569.12625pt x 265.993
+74pt>
+File: pPbplots/unfolding/jetSpectraUncFit_JESsys.pdf Graphic file (type pdf)
+ <use pPbplots/unfolding/jetSpectraUncFit_JESsys.pdf>
+Package pdftex.def Info: pPbplots/unfolding/jetSpectraUncFit_JESsys.pdf used on
+ input line 918.
+(pdftex.def)             Requested size: 250.38562pt x 117.02542pt.
+
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `subscript' on input line 828.
+(hyperref)                removing `subscript' on input line 923.
 
-[22 <./pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_effScaled.pdf, page 
-is rotated 90 degrees> <./pPbplots/simulations/NonPromptspectra_JetPt_Dpt3_36_e
-ffScaled_ratio.pdf, page is rotated 90 degrees> <./pPbplots/simulations/NonProm
-ptspectra_JetPt_Dpt3_36_effScaled_un.pdf, page is rotated 90 degrees> <./pPbplo
-ts/jetSpectra/FDUnc_beforeUnf.pdf, page is rotated 90 degrees>]
-<pPbplots/jetSpectra/JetPtSpectra_final.pdf, id=1715, 569.12625pt x 440.64626pt
+[27 <./pPbplots/unfolding/hDeltaPt_ptleadbin5_exlcuding_exlD.png> <./pPbplots/u
+nfolding/hDeltaPt_ptleadbin10_exlcuding_exlD.png> <./pPbplots/unfolding/jetSpec
+tra_afterUnfolding_bkgFlucSys.pdf, page is rotated 90 degrees> <./pPbplots/unfo
+lding/jetSpectraRatio_afterUnfolding_bkgFlucSys.pdf, page is rotated 90 degrees
+> <./pPbplots/unfolding/jetSpectraSys_afterUnfolding_bkgFlucSys.pdf, page is ro
+tated 90 degrees>] [28 <./pPbplots/unfolding/jetSpectra_JESsys.pdf, page is rot
+ated 90 degrees> <./pPbplots/unfolding/jetSpectraRatio_JESsys.pdf, page is rota
+ted 90 degrees> <./pPbplots/unfolding/jetSpectraUncFit_JESsys.pdf, page is rota
+ted 90 degrees>]
+<pPbplots/jetSpectra/JetPtSpectra_final.pdf, id=2458, 569.12625pt x 440.64626pt
 >
 File: pPbplots/jetSpectra/JetPtSpectra_final.pdf Graphic file (type pdf)
  <use pPbplots/jetSpectra/JetPtSpectra_final.pdf>
 Package pdftex.def Info: pPbplots/jetSpectra/JetPtSpectra_final.pdf used on inp
-ut line 1003.
+ut line 1095.
 (pdftex.def)             Requested size: 241.2788pt x 186.8116pt.
- [23]
-<pPbplots/simulations/Promptspectra_DPt.pdf, id=1729, 569.12625pt x 367.3725pt>
+
+Underfull \hbox (badness 2318) in paragraph at lines 1096--1096
+[]\OT1/ptm/m/n/10.95 Fig. 39: |Un-folded $[]$-jet spec-trum in p--Pb col-li-sio
+ns at $[] \OT1/ztmcm/m/n/10.95 = 5\OML/ztmcm/m/it/10.95 :\OT1/ztmcm/m/n/10.95 0
+2$ \OT1/ptm/m/n/10.95 TeV com-pared to
+ []
+
+
+<pPbplots/jetSpectra/JetPtSpectra_final_wpp.pdf, id=2459, 569.12625pt x 440.646
+26pt>
+File: pPbplots/jetSpectra/JetPtSpectra_final_wpp.pdf Graphic file (type pdf)
+ <use pPbplots/jetSpectra/JetPtSpectra_final_wpp.pdf>
+Package pdftex.def Info: pPbplots/jetSpectra/JetPtSpectra_final_wpp.pdf used on
+ input line 1102.
+(pdftex.def)             Requested size: 241.2788pt x 186.8116pt.
+
+Underfull \vbox (badness 1789) has occurred while \output is active []
+
+ [29 <./pPbplots/jetSpectra/JetPtSpectra_final.pdf, page is rotated 90 degrees>
+]
+<pPbplots/simulations/Promptspectra_DPt.pdf, id=2514, 569.12625pt x 367.3725pt>
 File: pPbplots/simulations/Promptspectra_DPt.pdf Graphic file (type pdf)
 <use pPbplots/simulations/Promptspectra_DPt.pdf>
 Package pdftex.def Info: pPbplots/simulations/Promptspectra_DPt.pdf used on inp
-ut line 1039.
+ut line 1136.
 (pdftex.def)             Requested size: 204.85844pt x 132.23717pt.
 
-<pPbplots/simulations/Promptspectra_DPt_ratio.pdf, id=1730, 569.12625pt x 367.3
+<pPbplots/simulations/Promptspectra_DPt_ratio.pdf, id=2515, 569.12625pt x 367.3
 725pt>
 File: pPbplots/simulations/Promptspectra_DPt_ratio.pdf Graphic file (type pdf)
  <use pPbplots/simulations/Promptspectra_DPt_ratio.pdf>
 Package pdftex.def Info: pPbplots/simulations/Promptspectra_DPt_ratio.pdf used 
-on input line 1040.
+on input line 1137.
 (pdftex.def)             Requested size: 204.85844pt x 132.23717pt.
 
-<pPbplots/simulations/Promptspectra_JetPt_Dpt3_36.pdf, id=1731, 569.12625pt x 3
+<pPbplots/simulations/Promptspectra_JetPt_Dpt3_36.pdf, id=2516, 569.12625pt x 3
 67.3725pt>
 File: pPbplots/simulations/Promptspectra_JetPt_Dpt3_36.pdf Graphic file (type p
 df)
  <use pPbplots/simulations/Promptspectra_JetPt_Dpt3_36.pdf>
 Package pdftex.def Info: pPbplots/simulations/Promptspectra_JetPt_Dpt3_36.pdf u
-sed on input line 1048.
+sed on input line 1145.
 (pdftex.def)             Requested size: 204.85844pt x 132.23717pt.
 
-<pPbplots/simulations/Promptspectra_JetPt_Dpt3_36_ratio.pdf, id=1732, 569.12625
+<pPbplots/simulations/Promptspectra_JetPt_Dpt3_36_ratio.pdf, id=2517, 569.12625
 pt x 367.3725pt>
 File: pPbplots/simulations/Promptspectra_JetPt_Dpt3_36_ratio.pdf Graphic file (
 type pdf)
 
 <use pPbplots/simulations/Promptspectra_JetPt_Dpt3_36_ratio.pdf>
 Package pdftex.def Info: pPbplots/simulations/Promptspectra_JetPt_Dpt3_36_ratio
-.pdf used on input line 1049.
+.pdf used on input line 1146.
 (pdftex.def)             Requested size: 204.85844pt x 132.23717pt.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `subscript' on input line 1081.
+(hyperref)                removing `subscript' on input line 1178.
 
 
-Overfull \hbox (8.69725pt too wide) in paragraph at lines 1082--1085
+Overfull \hbox (8.69725pt too wide) in paragraph at lines 1179--1182
 \OT1/ptm/m/n/10.95 The ef-fect of the $\OML/ztmcm/m/it/10.95 p[]$ \OT1/ptm/m/n/
 10.95 cut in the $[]$-jet dif-fer-en-tial cross sec-tion has been stud-ied in P
 OWHEG+PYTHIA6.
  []
 
-
-<pPbplots/simulations/JetSpectra_DptCut.pdf, id=1734, 510.40688pt x 286.06876pt
+[30 <./pPbplots/jetSpectra/JetPtSpectra_final_wpp.pdf, page is rotated 90 degre
+es> <./pPbplots/simulations/Promptspectra_DPt.pdf, page is rotated 90 degrees> 
+<./pPbplots/simulations/Promptspectra_DPt_ratio.pdf, page is rotated 90 degrees
+>]
+<pPbplots/simulations/JetSpectra_DptCut.pdf, id=2657, 510.40688pt x 286.06876pt
 >
 File: pPbplots/simulations/JetSpectra_DptCut.pdf Graphic file (type pdf)
  <use pPbplots/simulations/JetSpectra_DptCut.pdf>
 Package pdftex.def Info: pPbplots/simulations/JetSpectra_DptCut.pdf used on inp
-ut line 1088.
+ut line 1185.
 (pdftex.def)             Requested size: 250.38562pt x 140.33641pt.
- [24 <./pPbplots/jetSpectra/JetPtSpectra_final.pdf, page is rotated 90 degrees>
-] [25 <./pPbplots/simulations/Promptspectra_DPt.pdf, page is rotated 90 degrees
-> <./pPbplots/simulations/Promptspectra_DPt_ratio.pdf, page is rotated 90 degre
-es> <./pPbplots/simulations/Promptspectra_JetPt_Dpt3_36.pdf, page is rotated 90
- degrees> <./pPbplots/simulations/Promptspectra_JetPt_Dpt3_36_ratio.pdf, page i
-s rotated 90 degrees> <./pPbplots/simulations/JetSpectra_DptCut.pdf (PNG copy)>
-]
+
+<pPbplots/jetSpectra/DstarJet_pPbxsection.pdf, id=2658, 569.12625pt x 549.05125
+pt>
+File: pPbplots/jetSpectra/DstarJet_pPbxsection.pdf Graphic file (type pdf)
+ <use pPbplots/jetSpectra/DstarJet_pPbxsection.pdf>
+Package pdftex.def Info: pPbplots/jetSpectra/DstarJet_pPbxsection.pdf used on i
+nput line 1199.
+(pdftex.def)             Requested size: 241.2788pt x 232.7698pt.
+
+Underfull \hbox (badness 1348) in paragraph at lines 1200--1200
+[]\OT1/ptm/m/n/10.95 Fig. 44: |Prompt $\OML/ztmcm/m/it/10.95 D[]$\OT1/ptm/m/n/1
+0.95 -jet cross sec-tion in p--Pb col-li-sions at $[] \OT1/ztmcm/m/n/10.95 = 5\
+OML/ztmcm/m/it/10.95 :\OT1/ztmcm/m/n/10.95 02$ \OT1/ptm/m/n/10.95 TeV com-pared
+ to
+ []
+
 (./DstarJets_pPbrun2_ALICE_analysisNote.bbl))
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 71.
- [26
-
-]
+ [31 <./pPbplots/simulations/Promptspectra_JetPt_Dpt3_36.pdf, page is rotated 9
+0 degrees> <./pPbplots/simulations/Promptspectra_JetPt_Dpt3_36_ratio.pdf, page 
+is rotated 90 degrees> <./pPbplots/simulations/JetSpectra_DptCut.pdf (PNG copy)
+>] [32 <./pPbplots/jetSpectra/DstarJet_pPbxsection.pdf, page is rotated 90 degr
+ees>]
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 71.
 
 (./DstarJets_pPbrun2_ALICE_analysisNote.aux)
@@ -1139,7 +1458,7 @@ Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 71.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 71.
 Package rerunfilecheck Info: File `DstarJets_pPbrun2_ALICE_analysisNote.out' ha
 s not changed.
-(rerunfilecheck)             Checksum: 2CE55C41BFE6461A6959E699BBECE7AD;2471.
+(rerunfilecheck)             Checksum: D4750316B4E7C80A104456CBEC35E374;2561.
 
 
 LaTeX Warning: There were undefined references.
@@ -1150,10 +1469,10 @@ LaTeX Warning: There were multiply-defined labels.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 71.
  ) 
 Here is how much of TeX's memory you used:
- 9815 strings out of 494910
- 151593 string characters out of 6179836
- 244631 words of memory out of 5000000
- 12768 multiletter control sequences out of 15000+600000
+ 10016 strings out of 494910
+ 160828 string characters out of 6179836
+ 247972 words of memory out of 5000000
+ 12908 multiletter control sequences out of 15000+600000
  59516 words of font info for 130 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  42i,18n,45p,740b,467s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1168,11 +1487,11 @@ usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texli
 ve/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/
 fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw
 /times/utmri8a.pfb>
-Output written on DstarJets_pPbrun2_ALICE_analysisNote.pdf (28 pages, 954728 by
-tes).
+Output written on DstarJets_pPbrun2_ALICE_analysisNote.pdf (34 pages, 1323506 b
+ytes).
 PDF statistics:
- 2028 PDF objects out of 2073 (max. 8388607)
- 1054 compressed objects within 11 object streams
- 102 named destinations out of 1000 (max. 500000)
- 504 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 2866 PDF objects out of 2984 (max. 8388607)
+ 1426 compressed objects within 15 object streams
+ 129 named destinations out of 1000 (max. 500000)
+ 667 words of extra memory for PDF output out of 10000 (max. 10000000)
 

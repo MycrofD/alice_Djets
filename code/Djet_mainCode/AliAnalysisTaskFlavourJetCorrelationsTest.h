@@ -24,7 +24,9 @@
 //-----------------------------------------------------------------------
 
 
+#include <TH1F.h>
 #include <TH2F.h>
+#include <TH3F.h>
 #include "AliAODEvent.h"
 #include "AliAnalysisTaskEmcalJet.h"
 
@@ -92,13 +94,14 @@ public:
    void CreateResponseMatrix(AliEmcalJet* jet);
    void CreateMCResponseMatrix(AliEmcalJet* MCjet, AliAODEvent* aodEvent);
    void FillDJetHistograms(AliEmcalJet* jet, Double_t rho, Bool_t IsBkg, AliAODEvent* aodEvent);
-   void GetHFJet(AliEmcalJet*& jet, Bool_t IsBkg);
+   Bool_t GetHFJet(AliEmcalJet*& jet, Bool_t IsBkg);
    void FillHistogramsD0JetCorr(AliAODRecoDecayHF* candidate, Double_t z, Double_t ptD, Double_t ptj, Double_t jetTracks, Bool_t IsBkg, Bool_t bDInEMCalAcc, Bool_t bJetInEMCalAcc, AliAODEvent* aodEvent);
    void FillHistogramsDstarJetCorr(AliAODRecoCascadeHF* dstar, Double_t z, Double_t ptD, Double_t ptj, Double_t jetTracks, Bool_t IsBkg, Bool_t bDInEMCalAcc, Bool_t bJetInEMCalAcc);
    void FillHistogramsMCGenDJetCorr(Double_t z,Double_t ptD,Double_t ptjet, Double_t jetTracks, Double_t yD, Bool_t bDInEMCalAcc, Bool_t bJetInEMCalAcc);
    void FindMCJet(AliEmcalJet*& mcjet);
    Int_t IsDzeroSideBand(AliAODRecoCascadeHF *candDstar);
    Bool_t InEMCalAcceptance(AliVParticle *vpart);
+   AliEmcalJet* GetJetCone(Double_t radius, Double_t eta, Double_t phi);
 
    void SetAnalyseDBackground(Bool_t b){ fAnalyseDBkg=b; }
    Bool_t GetAnalyseDBackground() const {return fAnalyseDBkg;}
@@ -173,8 +176,8 @@ private:
    TH1F* fhPtPion;                  //!
                                     //!
    TH1I *fhDleadStat;			//!
-   TH2F *fhRhoMult;			//!
-   TH2F *fhRhoLeadPt;			//!
+   TH2F *fhDleadStatJetPt;		//!
+   
    TH1F *fhLeadPt;				//!
    TH1F *fhLeadPt2;				//!
    TH1F *fhLeadEta;				//!
@@ -185,6 +188,54 @@ private:
    TH1F *fhLeadArea2;				//!
    TH2F *fhLeadDeltaEtaDeltaPhi;				//!
 
+   TH2F *fhRhoMult;			//!
+   TH2F *fhRhoLeadPt;			//!
+   TH2F *fhRhoLeadArea; 		//!
+   TH2F *fhRhoLeadPtRaw;		//!
+   TH3F *fhRhoLeadPtMult;		//!
+   TH3F *fhRhoLeadPtMultRaw;		//!
+
+
+   TH1F *fDeltaPT;			//!
+   TH1F *fDeltaPT_excl_lead;		//!
+   TH2F *fDeltaPTCent;			//!
+   TH2F *fDeltaPTCentNoBkg;		//!
+   TH2F *fDeltaPTCent_excl_lead;	//!
+   TH2F *fDeltaPTCentNoBkg_excl_lead;	//!
+   TH2F *fDeltaPTRho;			//!
+   TH2F *fDeltaPTRhoNoBkg;		//!
+   TH2F *fDeltaPTRho_excl_lead;		//!
+   TH2F *fDeltaPTRhoNoBkg_excl_lead;	//!
+   TH2F *fDeltaPTLeadPt;		//!
+   TH2F *fDeltaPTLeadPtRaw;		//!
+   TH2F *fDeltaPTLeadPtNoBkg;		//!
+   TH2F *fDeltaPTLeadPtRawNoBkg;	//!
+   TH2F *fDeltaPTLeadPt_excl_lead;	//!
+   TH2F *fDeltaPTLeadPtRaw_excl_lead;	//!
+   TH2F *fDeltaPTLeadPtNoBkg_excl_lead;	//!
+   TH2F *fDeltaPTLeadPtRawNoBkg_excl_lead;	//!
+   TH2F *fRandConeEtaPhi;		//!
+   TH2F *fRandConeEtaPhi_excl_lead;	//!
+   TH2F *fhRandomConeDeltaEtaDeltaPhi;	//!
+   TH2F *fEtaRandConeOverlap;		//!
+   TH2F *fPhiRandConeOverlap;		//!
+
+   TH2F *fDeltaPTLeadPt_excl_Dlead;		//!
+   TH2F *fDeltaPTLeadPtNoBkg_excl_Dlead; 	//!
+   TH2F *fDeltaPTLeadPtRaw_excl_Dlead;		//!
+   TH2F *fDeltaPTLeadPtRawNoBkg_excl_Dlead;	//!
+
+   TH3F *fDeltaPTLeadPtCent_excl_lead;		//!
+   TH3F *fDeltaPTLeadPtCentRaw_excl_lead; 	//!
+   TH3F *fDeltaPTLeadPtCentNoBkg_excl_lead;	//!
+   TH3F *fDeltaPTLeadPtCentRawNoBkg_excl_lead; 	//!
+   TH3F *fNtracksTLeadPtCent_excl_lead; 	//!
+
+   TH3F *fDeltaPTLeadPtCent_excl_Dlead;		//!
+   TH3F *fDeltaPTLeadPtCentRaw_excl_Dlead; 	//!
+   TH3F *fDeltaPTLeadPtCentNoBkg_excl_Dlead;	//!
+   TH3F *fDeltaPTLeadPtCentRawNoBkg_excl_Dlead; 	//!
+   TH3F *fNtracksTLeadPtCent_excl_Dlead;	//!
 
    //main histograms
    THnSparse* fhsDphiz;             //!

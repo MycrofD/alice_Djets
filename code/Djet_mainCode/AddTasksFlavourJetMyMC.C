@@ -117,7 +117,7 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
 
     
     //In Pb-Pb there are no events with more than 5 candidates. For pp or p-Pb this number is probably smaller
-    for(Int_t i=0; i<2  ; i++)
+    for(Int_t i=0; i<1  ; i++)
     {
         
         TString TaskText = sText;

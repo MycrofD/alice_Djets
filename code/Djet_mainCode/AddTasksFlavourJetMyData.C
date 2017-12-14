@@ -94,11 +94,7 @@ void AddTasksFlavourJetMyData(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
    }
    // --
    
- //   gROOT->LoadMacro("$ALICE_PHYSICS/PWGHF/vertexingHF/macros/AddTaskImproveITS.C");
-  // AliAnalysisTaskSEImproveITS *taskImprover = AddTaskImproveITS(kFALSE,"alien:///alice/cern.ch/user/a/afestant/filesForImprover/pPb2016/ITSgraphs_Current.root","alien:///alice/cern.ch/user/a/afestant/filesForImprover/pPb2016/ITSgraphs_NewAll-X0.3-Res4um.root",0 );
-   
-   
-   
+
     //D meson filtering task
     //gROOT->LoadMacro("$ALICE_PHYSICS/PWGJE/FlavourJetTasks/macros/AddTaskSEDmesonsFilterCJ.C");
     //D-jet correlation task
@@ -117,7 +113,7 @@ void AddTasksFlavourJetMyData(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
 
     
     //In Pb-Pb there are no events with more than 5 candidates. For pp or p-Pb this number is probably smaller
-    for(Int_t i=0; i<3  ; i++)
+    for(Int_t i=0; i<2  ; i++)
     {
         
         TString TaskText = sText;
@@ -192,6 +188,7 @@ void AddTasksFlavourJetMyData(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
  
         // for pPb use rhoSparse
         rhotask = (AliAnalysisTaskRhoSparse*) AddTaskRhoSparse(taskFJ2->GetName(), taskFJDandTracks->GetName(), DcandAndTracks,"", rhoName, aRadius[0], "TPCFID", 0.01, 0., 0, 0, 2, kTRUE);
+        //rhotask = (AliAnalysisTaskRhoSparse*) AddTaskRhoSparse(taskFJ2->GetName(), taskFJDandTracks->GetName(), DcandAndTracks,"", rhoName, aRadius[0], "TPCFID", 0.01, 0., 0, 0, 1, kTRUE);
         rhotask->SelectCollisionCandidates(uTriggerMask);
         rhotask->SetVzRange(-10,10);
         

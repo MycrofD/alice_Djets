@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<alien>
+  <collection name="collection">
+    <event name="1">
+      <file name="AliAOD.root" aclId="" broken="0" ctime="2016-12-19 10:20:09" dir="563209046" entryId="563213923" expiretime="" gowner="alidaq" guid="364D70C8-C5CC-11E6-95C8-9BFDF0F8A15F" guidtime="11E6C5CC" jobid="793044218" lfn="/alice/data/2016/LHC16q/000265525/pass1_CENT_woSDD/AOD/001/AliAOD.root" md5="c06038ffc7e691910a8db22964fcdc2a" owner="alidaq" perm="755" replicated="0" size="53117882" turl="alien:///alice/data/2016/LHC16q/000265525/pass1_CENT_woSDD/AOD/001/AliAOD.root" type="f" />
+    </event>
+    <info command="[/alice/cern.ch/user/b/btrzecia/]: find -z -x collection -l 1 -o 0 /alice/data/2016/LHC16q//000265525 /pass1_CENT_woSDD/AOD/*AliAOD.root" creator="admin" date="Wed Aug  2 00:11:12 CEST 2017" timestamp="1501625472" />
+  </collection>
+</alien>
+

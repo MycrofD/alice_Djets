@@ -87,12 +87,70 @@ fhEtaJetTrks(),
 fhPtJet(),
 fhPhiJet(),
 fhEtaJet(),
+fhNjets(),
+fhNaccjets(),
+fhPtJetArea(),
+fhJetAreaCent(),
+fhRMRes(),
+fhDleadStat(),
+fhDleadStatJetPt(),
+fhLeadPt(),
+fhLeadPt2(),
+fhLeadEta(),
+fhLeadEta2(),
+fhLeadPhi(),
+fhLeadPhi2(),
+fhLeadArea(),
+fhLeadArea2(),
+fhLeadDeltaEtaDeltaPhi(),
 fhInvMassptD(),
 fhDiffSideBand(),
 fhInvMassptDbg(),
 fhPtPion(),
 fhsDphiz(),
-fResponseMatrix()
+fResponseMatrix(),
+fhRhoMult(),
+fhRhoLeadPt(),
+fhRhoLeadArea(),
+fhRhoLeadPtRaw(),
+fhRhoLeadPtMult(),
+fhRhoLeadPtMultRaw(),
+fDeltaPT(),
+fDeltaPT_excl_lead(),
+fDeltaPTCent(),
+fDeltaPTCentNoBkg(),
+fDeltaPTCent_excl_lead(),
+fDeltaPTCentNoBkg_excl_lead(),
+fDeltaPTRho(),
+fDeltaPTRhoNoBkg(),
+fDeltaPTRho_excl_lead(),
+fDeltaPTRhoNoBkg_excl_lead(),
+fDeltaPTLeadPt(),
+fDeltaPTLeadPtRaw(),
+fDeltaPTLeadPtNoBkg(),
+fDeltaPTLeadPtRawNoBkg(),
+fDeltaPTLeadPt_excl_lead(),
+fDeltaPTLeadPtRaw_excl_lead(),
+fDeltaPTLeadPtNoBkg_excl_lead(),
+fDeltaPTLeadPtRawNoBkg_excl_lead(),
+fDeltaPTLeadPt_excl_Dlead(),
+fDeltaPTLeadPtNoBkg_excl_Dlead(),
+fDeltaPTLeadPtRaw_excl_Dlead(),
+fDeltaPTLeadPtRawNoBkg_excl_Dlead(),
+fDeltaPTLeadPtCent_excl_lead(),
+fDeltaPTLeadPtCentRaw_excl_lead(),
+fDeltaPTLeadPtCentNoBkg_excl_lead(),
+fDeltaPTLeadPtCentRawNoBkg_excl_lead(),
+fNtracksTLeadPtCent_excl_lead(),
+fDeltaPTLeadPtCent_excl_Dlead(),
+fDeltaPTLeadPtCentRaw_excl_Dlead(),
+fDeltaPTLeadPtCentNoBkg_excl_Dlead(),
+fDeltaPTLeadPtCentRawNoBkg_excl_Dlead(),
+fRandConeEtaPhi(),
+fRandConeEtaPhi_excl_lead(),
+fhRandomConeDeltaEtaDeltaPhi(),
+fEtaRandConeOverlap(),
+fPhiRandConeOverlap()
 
 {
    //
@@ -103,8 +161,8 @@ fResponseMatrix()
 
 AliAnalysisTaskFlavourJetCorrelationsTest::AliAnalysisTaskFlavourJetCorrelationsTest(const Char_t* name, AliRDHFCuts* cuts,ECandidateType candtype) :
 AliAnalysisTaskEmcalJet(name,kTRUE),
-fUseMCInfo(kTRUE),
-fUseReco(kTRUE),  
+fUseMCInfo(kTRUE), 
+fUseReco(kTRUE),
 fUsePythia(kFALSE),
 fCandidateType(),
 fCorrelationMethod(),
@@ -132,12 +190,70 @@ fhEtaJetTrks(),
 fhPtJet(),
 fhPhiJet(),
 fhEtaJet(),
+fhNjets(),
+fhNaccjets(),
+fhPtJetArea(),
+fhJetAreaCent(),
+fhRMRes(),
+fhDleadStat(),
+fhDleadStatJetPt(),
+fhLeadPt(),
+fhLeadPt2(),
+fhLeadEta(),
+fhLeadEta2(),
+fhLeadPhi(),
+fhLeadPhi2(),
+fhLeadArea(),
+fhLeadArea2(),
+fhLeadDeltaEtaDeltaPhi(),
 fhInvMassptD(),
 fhDiffSideBand(),
 fhInvMassptDbg(),
 fhPtPion(),
 fhsDphiz(),
-fResponseMatrix()
+fResponseMatrix(),
+fhRhoMult(),
+fhRhoLeadPt(),
+fhRhoLeadArea(),
+fhRhoLeadPtRaw(),
+fhRhoLeadPtMult(),
+fhRhoLeadPtMultRaw(),
+fDeltaPT(),
+fDeltaPT_excl_lead(),
+fDeltaPTCent(),
+fDeltaPTCentNoBkg(),
+fDeltaPTCent_excl_lead(),
+fDeltaPTCentNoBkg_excl_lead(),
+fDeltaPTRho(),
+fDeltaPTRhoNoBkg(),
+fDeltaPTRho_excl_lead(),
+fDeltaPTRhoNoBkg_excl_lead(),
+fDeltaPTLeadPt(),
+fDeltaPTLeadPtRaw(),
+fDeltaPTLeadPtNoBkg(),
+fDeltaPTLeadPtRawNoBkg(),
+fDeltaPTLeadPt_excl_lead(),
+fDeltaPTLeadPtRaw_excl_lead(),
+fDeltaPTLeadPtNoBkg_excl_lead(),
+fDeltaPTLeadPtRawNoBkg_excl_lead(),
+fDeltaPTLeadPt_excl_Dlead(),
+fDeltaPTLeadPtNoBkg_excl_Dlead(),
+fDeltaPTLeadPtRaw_excl_Dlead(),
+fDeltaPTLeadPtRawNoBkg_excl_Dlead(),
+fDeltaPTLeadPtCent_excl_lead(),
+fDeltaPTLeadPtCentRaw_excl_lead(),
+fDeltaPTLeadPtCentNoBkg_excl_lead(),
+fDeltaPTLeadPtCentRawNoBkg_excl_lead(),
+fNtracksTLeadPtCent_excl_lead(),
+fDeltaPTLeadPtCent_excl_Dlead(),
+fDeltaPTLeadPtCentRaw_excl_Dlead(),
+fDeltaPTLeadPtCentNoBkg_excl_Dlead(),
+fDeltaPTLeadPtCentRawNoBkg_excl_Dlead(),
+fRandConeEtaPhi(),
+fRandConeEtaPhi_excl_lead(),
+fhRandomConeDeltaEtaDeltaPhi(),
+fEtaRandConeOverlap(),
+fPhiRandConeOverlap()
 {
    //
    // Constructor. Initialization of Inputs and Outputs
@@ -438,10 +554,9 @@ else {
     JetCont->ResetCurrentID();
     AliEmcalJet* jet=0;
 
-
-    
     Int_t maxJetIds[]   = {-1, -1};
     Float_t maxJetPts[] = {0,  0};
+    Float_t maxJetPtsCorr[] = {0,  0};
     Float_t maxJetAreas[] = {0, 0};
     Float_t maxJetEta[] = {0, 0};
     Float_t maxJetPhi[] = {0, 0};
@@ -449,6 +564,7 @@ else {
     //if(!Njets) return kFALSE;
     Int_t counter = 0;
     Int_t accjet = 0;
+    AliEmcalJet *leadingJet = 0;
     while ((jet = JetCont->GetNextJet()))
     //for (Int_t ij = 0; ij < Njets; ++ij) 
     {
@@ -469,18 +585,22 @@ else {
 
          if (jet->Pt() > maxJetPts[0]) {
             maxJetPts[1] = maxJetPts[0];
+            maxJetPtsCorr[1] = maxJetPtsCorr[0];
             maxJetIds[1] = maxJetIds[0];
             maxJetAreas[1] = maxJetAreas[0];
             maxJetEta[1] = maxJetEta[0];
             maxJetPhi[1] = maxJetPhi[0];
             maxJetPts[0] = jet->Pt();
+            maxJetPtsCorr[0] = jet->Pt() - jet->Area()*JetCont->GetRhoVal();
             maxJetAreas[0] = jet->Area();
             maxJetEta[0] = jet->Eta();
             maxJetPhi[0] = jet->Phi();
             //maxJetIds[0] = ij;
             maxJetIds[0] = counter-1;
+            leadingJet = static_cast<AliEmcalJet*>(jet);
         } else if (jet->Pt() > maxJetPts[1]) {
             maxJetPts[1] = jet->Pt();
+            maxJetPtsCorr[1] = jet->Pt() - jet->Area()*JetCont->GetRhoVal();
             maxJetAreas[1] = jet->Area();
             maxJetEta[1] = jet->Eta();
             maxJetPhi[1] = jet->Phi();
@@ -503,28 +623,39 @@ else {
         fhPhiJet->Fill(jet->Phi());
         fhEtaJet->Fill(jet->Eta());
         fhPtJet->Fill(JetPtCorr);
-        fhPtJetArea->Fill(jet->Pt(),jet->Area());
+        fhPtJetArea->Fill(JetPtCorr,jet->Area());
         fhJetAreaCent->Fill(lPercentile,jet->Area());
     }
     
     fhNjets->Fill(counter);
     fhNaccjets->Fill(accjet);
     
+    if(!accjet) return kTRUE;
+   
     fLeadingJetIds[0]=maxJetIds[0];
     fLeadingJetIds[1]=maxJetIds[1];
     Double_t rho = JetCont->GetRhoVal();
     if(accjet){
         fhRhoMult->Fill(lPercentile,rho);
-        if(maxJetIds[0] != -1) fhRhoLeadPt->Fill(maxJetPts[0],rho);
         
-        if(maxJetIds[0] != -1) fhLeadPt->Fill(maxJetPts[0]);
-        if(maxJetIds[1] != -1) fhLeadPt2->Fill(maxJetPts[1]);
-        if(maxJetIds[0] != -1) fhLeadEta->Fill(maxJetEta[0]);
-        if(maxJetIds[1] != -1) fhLeadEta2->Fill(maxJetEta[1]);
-        if(maxJetIds[0] != -1) fhLeadPhi->Fill(maxJetPhi[0]);
-        if(maxJetIds[1] != -1) fhLeadPhi2->Fill(maxJetPhi[1]);
-        if(maxJetIds[0] != -1) fhLeadArea->Fill(maxJetAreas[0]);
-        if(maxJetIds[1] != -1) fhLeadArea2->Fill(maxJetAreas[1]);
+        if(maxJetIds[0] != -1)  {
+            fhRhoLeadPt->Fill(maxJetPtsCorr[0],rho);
+            fhRhoLeadPtMult->Fill(maxJetPtsCorr[0],lPercentile,rho);
+            fhRhoLeadPtRaw->Fill(maxJetPts[0],rho);
+            fhRhoLeadPtMultRaw->Fill(maxJetPts[0],lPercentile,rho);
+            fhRhoLeadArea->Fill(maxJetAreas[0],rho);
+            fhLeadPt->Fill(maxJetPts[0]);
+            fhLeadEta->Fill(maxJetEta[0]);
+            fhLeadPhi->Fill(maxJetPhi[0]);
+            fhLeadArea->Fill(maxJetAreas[0]);
+            
+        }
+        if(maxJetIds[1] != -1){ 
+            fhLeadPt2->Fill(maxJetPtsCorr[1]);
+            fhLeadEta2->Fill(maxJetEta[1]);
+            fhLeadPhi2->Fill(maxJetPhi[1]);
+            fhLeadArea2->Fill(maxJetAreas[1]);
+        }
         
         if(maxJetIds[0] != -1 && maxJetIds[1] != -1) {
             Double_t deltaEta = maxJetEta[0]-maxJetEta[1];
@@ -535,8 +666,226 @@ else {
         } 
     }
 
-    if(ParticlesCont->GetNParticles()>0) fhstat->Fill(2);
 
+
+//*************************************
+// RANDOM CONES ====================
+//*************************************
+
+    TRandom3 rphi(0);
+    TRandom3 reta(0);
+    
+    Double_t conephi = rphi.Uniform(0,TMath::TwoPi());
+    Double_t coneeta = rphi.Uniform(-(0.9-JetCont->GetJetRadius()),0.9-JetCont->GetJetRadius());
+    
+   /* AliEmcalJet *ran_cone = GetJetCone(JetCont->GetJetRadius(), coneeta, conephi);
+    Float_t ptcone = ran_cone->Pt();
+    Float_t Bkgpt = JetCont->GetRhoVal()*TMath::Pi()*JetCont->GetJetRadius()*JetCont->GetJetRadius();
+    Float_t deltaPt = ptcone - Bkgpt;
+    */
+   
+    Double_t ptcone = 0.;
+    JetCont->ResetCurrentID();
+    ParticlesCont->ResetCurrentID();
+    AliVTrack* track = 0;
+    while ((track = static_cast<AliVTrack*>(ParticlesCont->GetNextAcceptParticle()))) {
+        
+        Double_t DeltaPhi = TMath::Abs(track->Phi()-conephi);
+        if(DeltaPhi>TMath::Pi()) DeltaPhi = TMath::Abs(TMath::TwoPi() - DeltaPhi);
+        Double_t DeltaEta = TMath::Abs(track->Eta()-coneeta);
+        Double_t DeltaRCone = TMath::Sqrt((DeltaPhi*DeltaPhi)+(DeltaEta*DeltaEta));
+        
+        if(DeltaRCone<JetCont->GetJetRadius())
+        {
+            ptcone = ptcone + track->Pt();
+        
+        }
+            
+    }
+    
+    
+    Float_t Bkgpt = JetCont->GetRhoVal()*TMath::Pi()*JetCont->GetJetRadius()*JetCont->GetJetRadius();
+    Float_t deltaPt = ptcone - Bkgpt;
+    
+    
+    fDeltaPT->Fill(deltaPt);
+    
+    fDeltaPTCent->Fill(lPercentile,deltaPt);
+    fDeltaPTCentNoBkg->Fill(lPercentile,ptcone);
+    fDeltaPTRho->Fill(rho,deltaPt);
+    fDeltaPTRhoNoBkg->Fill(rho,ptcone);
+    fRandConeEtaPhi->Fill(coneeta, conephi);
+    
+    if (leadingJet) { 
+        Float_t leadJetPt = leadingJet->Pt();
+        Float_t leadJetPtCorr = leadingJet->Pt() - leadingJet->Area()*rho;
+        fDeltaPTLeadPt->Fill(leadJetPtCorr,deltaPt);
+        fDeltaPTLeadPtNoBkg->Fill(leadJetPtCorr,ptcone);
+        fDeltaPTLeadPtRaw->Fill(leadJetPt,deltaPt);
+        fDeltaPTLeadPtRawNoBkg->Fill(leadJetPt,ptcone);
+        
+       
+    }
+    
+  
+//*************************************
+// RANDOM CONES, EXCL LEADING =========
+//*************************************
+
+    
+    JetCont->ResetCurrentID();
+    ParticlesCont->ResetCurrentID();
+    
+    //AliVParticle* track = 0;
+   
+    Int_t ntrjet=  leadingJet->GetNumberOfTracks();
+    int isRanCone = 0;
+   
+    const int MAXCONE = 20;
+    Int_t ntracks = 0;
+    for(int icone=0; icone<MAXCONE; icone++){
+        conephi = rphi.Uniform(0,TMath::TwoPi());
+        coneeta = rphi.Uniform(-(0.9-JetCont->GetJetRadius()),0.9-JetCont->GetJetRadius());
+        ptcone = 0;
+        int itracks = 0;
+        //std::vector< AliVTrack* > coneParticles;
+        std::vector< AliVParticle* > coneParticles;
+        std::vector< Int_t > coneParticlesId;
+    
+        track = 0;
+        //while ((track = static_cast<AliVTrack*>(ParticlesCont->GetNextAcceptParticle()))) 
+       // {
+        
+        ntracks = 0;
+        for(Int_t counter=0;counter<ntrarr;counter++)
+        {
+            AliVParticle* track= ParticlesCont->GetParticle(counter);
+            if (!track) continue;
+            AliEmcalParticle* emcpart = dynamic_cast<AliEmcalParticle*>(track);
+            if (emcpart) track = emcpart->GetTrack();
+       
+       
+            Double_t DeltaPhi = TMath::Abs(track->Phi()-conephi);
+            if(DeltaPhi>TMath::Pi()) DeltaPhi = TMath::Abs(TMath::TwoPi() - DeltaPhi);
+            Double_t DeltaEta = TMath::Abs(track->Eta()-coneeta);
+            Double_t DeltaRCone = TMath::Sqrt((DeltaPhi*DeltaPhi)+(DeltaEta*DeltaEta));
+        
+            if(DeltaRCone<JetCont->GetJetRadius())
+            {
+                coneParticles.push_back(track);
+                coneParticlesId.push_back(counter);
+                ptcone = ptcone + track->Pt();
+                ntracks++;
+        
+            }
+            
+        }
+        
+        int isOverlap = 0;
+        for (int icone=0; icone<coneParticles.size(); icone++){
+                //AliVTrack* part = coneParticles.at(icone);
+                AliVParticle* part = coneParticles.at(icone);
+                if (!part) continue;
+                AliEmcalParticle* emcpart = dynamic_cast<AliEmcalParticle*>(part);
+                if (emcpart) part = emcpart->GetTrack();
+                Int_t trackId = coneParticlesId.at(icone);
+                
+               // cout << "\n ======= cone track id: " << trackId << endl;
+                Float_t parteta = part->Eta();
+                Float_t partphi = part->Phi();
+                   
+                    if ( CheckDeltaR(leadingJet,part)<JetCont->GetJetRadius()) {    
+                       
+                        fEtaRandConeOverlap->Fill(parteta, coneeta);
+                        fPhiRandConeOverlap->Fill(partphi, conephi);
+                        
+                        isOverlap = 1; 
+                        break; 
+                    }
+    
+            
+               /*
+                for (Int_t iLead = 0; iLead < leadingJet->GetNumberOfTracks(); ++iLead) {
+                    Int_t jet1Track = leadingJet->TrackAt(iLead);
+                    if (jet1Track == trackId) {    
+                        AliVParticle* jetTrk=jet->TrackAt(iLead,ParticlesCont->GetArray());
+                        //if(!jetTrk) continue;
+                        AliEmcalParticle* emcpart = dynamic_cast<AliEmcalParticle*>(jetTrk);
+                        if(emcpart) jetTrk = emcpart->GetTrack();
+                        fEtaRandConeOverlap->Fill(part->Eta(),jetTrk->Eta());
+                        fPhiRandConeOverlap->Fill(part->Phi(),jetTrk->Phi());
+                        
+                        isOverlap = 1; 
+                        break; 
+                    }
+    
+                }
+                */
+                if(isOverlap) {   break;  }
+        }
+        
+                
+        if(!isOverlap) isRanCone = 1;
+        if(isRanCone) break;
+    
+    }
+    
+if(isRanCone){
+    Float_t Bkgpt = JetCont->GetRhoVal()*TMath::Pi()*JetCont->GetJetRadius()*JetCont->GetJetRadius();
+    Float_t deltaPt = ptcone - Bkgpt;
+    
+    fDeltaPT_excl_lead->Fill(deltaPt);
+    
+    fDeltaPTCent_excl_lead->Fill(lPercentile,deltaPt);
+    fDeltaPTCentNoBkg_excl_lead->Fill(lPercentile,ptcone);
+    fDeltaPTRho_excl_lead->Fill(rho,deltaPt);
+    fDeltaPTRhoNoBkg_excl_lead->Fill(rho,ptcone);
+    fRandConeEtaPhi_excl_lead->Fill(coneeta, conephi);
+    
+    if (leadingJet) { 
+        Float_t leadJetPt = leadingJet->Pt();
+        Float_t leadJetPtCorr = leadingJet->Pt() - leadingJet->Area()*rho;
+        Double_t deltaEta = leadingJet->Eta() - coneeta;
+        Double_t deltaPhi = TMath::Abs(leadingJet->Phi() - conephi);
+        if(deltaPhi>TMath::Pi()) deltaPhi = (2*TMath::Pi())-deltaPhi;
+        
+        fDeltaPTLeadPt_excl_lead->Fill(leadJetPtCorr,deltaPt);
+        fDeltaPTLeadPtNoBkg_excl_lead->Fill(leadJetPtCorr,ptcone);
+        fDeltaPTLeadPtRaw_excl_lead->Fill(leadJetPt,deltaPt);
+        fDeltaPTLeadPtRawNoBkg_excl_lead->Fill(leadJetPt,ptcone);
+        fhRandomConeDeltaEtaDeltaPhi->Fill(deltaPhi,deltaEta);
+        
+        fDeltaPTLeadPtCent_excl_lead->Fill(lPercentile,leadJetPtCorr,deltaPt);
+        fNtracksTLeadPtCent_excl_lead->Fill(ptcone,leadJetPtCorr,ntracks);
+        //fDeltaPTLeadPtCentRaw_excl_lead->Fill(lPercentile,leadJetPt,deltaPt);
+        //fDeltaPTLeadPtCentNoBkg_excl_lead->Fill(lPercentile,leadJetPtCorr,ptcone);
+        fDeltaPTLeadPtCentRawNoBkg_excl_lead->Fill(lPercentile,leadJetPt,ptcone);
+        
+        AliEmcalJet *jet = NULL;
+        Bool_t isDlead = GetHFJet(jet,kFALSE);
+        if(isDlead){
+            
+            fDeltaPTLeadPt_excl_Dlead->Fill(leadJetPtCorr,deltaPt);
+            fDeltaPTLeadPtNoBkg_excl_Dlead->Fill(leadJetPtCorr,ptcone);
+            fDeltaPTLeadPtRaw_excl_Dlead->Fill(leadJetPt,deltaPt);
+            fDeltaPTLeadPtRawNoBkg_excl_Dlead->Fill(leadJetPt,ptcone);
+        
+            fDeltaPTLeadPtCent_excl_Dlead->Fill(lPercentile,leadJetPtCorr,deltaPt);
+            fNtracksTLeadPtCent_excl_Dlead->Fill(ptcone,leadJetPtCorr,ntracks);
+            //fDeltaPTLeadPtCentRaw_excl_Dlead->Fill(lPercentile,leadJetPt,deltaPt);
+            //fDeltaPTLeadPtCentNoBkg_excl_Dlead->Fill(lPercentile,leadJetPtCorr,ptcone);
+            fDeltaPTLeadPtCentRawNoBkg_excl_Dlead->Fill(lPercentile,leadJetPt,ptcone);
+        
+        }
+        
+    }
+}
+    
+//*************************************
+//*************************************    
+      
+    if(ParticlesCont->GetNParticles()>0) fhstat->Fill(2);
+/*
     if(fCorrelationMethod==kConstituent)
     {
         if(ParticlesCont->GetNParticles()>0) ConstituentCorrelationMethod(kFALSE,aodEvent);
@@ -548,6 +897,8 @@ else {
         if(fCandidateArray->GetEntriesFast()>0) AngularCorrelationMethod(kFALSE,aodEvent);
         if(fAnalyseDBkg==kTRUE && fSideBandArray->GetEntriesFast()>0) AngularCorrelationMethod(kTRUE,aodEvent);
     }
+
+*/
 }
 
 
@@ -652,6 +1003,9 @@ void AliAnalysisTaskFlavourJetCorrelationsTest::CreateResponseMatrix(AliEmcalJet
         
         Double_t fillRM[10] = {zRec,JetPtRec,Drec->Pt(),etaRec,nTracksRec,zGen,JetPtGen,Dgen->Pt(),etaGen,nTracksGen};
         fResponseMatrix->Fill(fillRM,1.);
+        
+        
+        
     }
 }
 
@@ -762,7 +1116,59 @@ void AliAnalysisTaskFlavourJetCorrelationsTest::FillDJetHistograms(AliEmcalJet* 
 
 }
 
-void AliAnalysisTaskFlavourJetCorrelationsTest::GetHFJet(AliEmcalJet*& jet, Bool_t IsBkg)
+AliEmcalJet* AliAnalysisTaskFlavourJetCorrelationsTest::GetJetCone(Double_t radius, Double_t eta, Double_t phi)
+{
+  Double_t pt = 0;
+  Double_t maxD2 = radius * radius;
+
+  const Int_t MAX_CONSTITUENTS = 100;
+
+  static std::array<Int_t, MAX_CONSTITUENTS> tracks;
+  static std::array<Int_t, MAX_CONSTITUENTS> clusters;
+
+  Int_t nParticles = 0; // placeholder
+  //Int_t nParticles = SumParticles<AliParticleContainer, MAX_CONSTITUENTS>(pt, eta, phi, maxD2, fParticleCollArray, tracks);
+ // Int_t nClusters = SumParticles<AliClusterContainer, MAX_CONSTITUENTS>(pt, eta, phi, maxD2, fClusterCollArray, clusters);
+
+  AliEmcalJet* jet = new AliEmcalJet(pt, eta, phi, 0);
+  jet->SetArea(maxD2*TMath::Pi());
+
+  jet->SetNumberOfTracks(nParticles);
+  //jet->SetNumberOfClusters(nClusters);
+
+  for (Int_t i = 0; i < nParticles; i++) jet->AddTrackAt(tracks[i], i);
+  //for (Int_t i = 0; i < nClusters; i++) jet->AddClusterAt(clusters[i], i);
+
+  return jet;
+}
+
+/*
+template <class T, Int_t MAX_CONSTITUENTS>
+Int_t AliAnalysisTaskJetUEStudies::SumParticles(Double_t& pt, Double_t eta, Double_t phi, Double_t maxD2, std::map<std::string, T*>& CollArray, std::array<Int_t, MAX_CONSTITUENTS>& ConstList)
+{
+  auto IndexMap = T::GetEmcalContainerIndexMap();
+  Int_t N = 0;
+  for (auto coll : CollArray) {
+    auto itcont = coll.second->accepted_momentum();
+    for (auto itmom = itcont.begin(); itmom != itcont.end(); itmom++) {
+      Double_t etaDiff = eta - itmom->first.Eta();
+      Double_t phiDiff = AliEmcalContainer::RelativePhi(phi, itmom->first.Phi());
+      Double_t d2 = etaDiff*etaDiff + phiDiff*phiDiff;
+      if (d2 > maxD2) continue;
+      ConstList[N] = IndexMap.GlobalIndexFromLocalIndex(coll.second->GetArray(), itmom.current_index());
+      pt += itmom->first.Pt();
+      N++;
+      if (N >= MAX_CONSTITUENTS) {
+        AliError(Form("Reached the maximum number of constituents = %d", MAX_CONSTITUENTS));
+        return N;
+      }
+    }
+  }
+  return N;
+}
+*/
+
+Bool_t AliAnalysisTaskFlavourJetCorrelationsTest::GetHFJet(AliEmcalJet*& jet, Bool_t IsBkg)
 {
     AliJetContainer* JetCont = 0;
 
@@ -810,11 +1216,15 @@ void AliAnalysisTaskFlavourJetCorrelationsTest::GetHFJet(AliEmcalJet*& jet, Bool
 
     if(!JetIsHF) jet = 0;
 
+    Bool_t isDLeading = kFALSE;
     if(JetIsHF){
-        if( (counter-1) == fLeadingJetIds[0] ) fhDleadStat->Fill(1);
-        else if( (counter-1) == fLeadingJetIds[1] ) fhDleadStat->Fill(2);
-        else fhDleadStat->Fill(0);
+        Float_t jetPtCorr = jet->Pt() - jet->Area()*JetCont->GetRhoVal();
+        if( (counter-1) == fLeadingJetIds[0] ) { fhDleadStat->Fill(1); fhDleadStatJetPt->Fill(1,jetPtCorr); isDLeading = kTRUE; }  
+        else if( (counter-1) == fLeadingJetIds[1] )  { fhDleadStat->Fill(2); fhDleadStatJetPt->Fill(2,jetPtCorr); } 
+        else  { fhDleadStat->Fill(0.); fhDleadStatJetPt->Fill(0.,jetPtCorr); } 
     }
+    
+    return isDLeading;
 
 }
 //_______________________________________________________________________________
@@ -1011,6 +1421,15 @@ Bool_t  AliAnalysisTaskFlavourJetCorrelationsTest::DefineHistoForAnalysis(){
    fhDleadStat->SetNdivisions(1);
    fOutput->Add(fhDleadStat);
    
+   fhDleadStatJetPt = new TH2F("fhDleadStatJetPt","leading D-jet vs jet p_{T}",3,-0.5,2.5,400,0,200);
+   fhDleadStatJetPt->GetXaxis()->SetBinLabel(1,"Not lead. jet");
+   fhDleadStatJetPt->GetXaxis()->SetBinLabel(2,"Lead. jet");
+   fhDleadStatJetPt->GetXaxis()->SetBinLabel(3,"2nd Lead. jet");
+   fhDleadStatJetPt->GetYaxis()->SetTitle("p_{T,jet}^{lead}");
+   //fhDleadStat->SetNdivisions(1);
+   fOutput->Add(fhDleadStatJetPt);
+   
+   
    fhCentDjet=new TH1F("hCentDjet","Centrality",100,0,100);
    fOutput->Add(fhCentDjet);
     
@@ -1065,6 +1484,8 @@ Bool_t  AliAnalysisTaskFlavourJetCorrelationsTest::DefineHistoForAnalysis(){
    fhJetAreaCent->GetYaxis()->SetTitle("Area");
    fhJetAreaCent->Sumw2();
    
+   fOutput->Add(fhNjets);
+   fOutput->Add(fhNaccjets);
    fOutput->Add(fhPhiJetTrks);
    fOutput->Add(fhEtaJetTrks);
    fOutput->Add(fhPtJetTrks);
@@ -1073,18 +1494,7 @@ Bool_t  AliAnalysisTaskFlavourJetCorrelationsTest::DefineHistoForAnalysis(){
    fOutput->Add(fhPtJet);
    fOutput->Add(fhPtJetArea);
    
-   fhRhoMult = new TH2F("fhRhoMult","#rho vs mult",100,0,100,200,0,20);
-   fhRhoMult->GetXaxis()->SetTitle("centrality");
-   fhRhoMult->GetYaxis()->SetTitle("#rho (GeV/c*rad^{-1})");
-   fhPtJetArea->Sumw2();
-   
-   fhRhoLeadPt = new TH2F("fhRhoLeadPt","#rho vs lead jet p_{T}",400,0,200,200,0,20);
-   fhRhoLeadPt->GetXaxis()->SetTitle("p_{t,lead}^{jet} (GeV/c)");
-   fhRhoLeadPt->GetYaxis()->SetTitle("#rho (GeV/c*rad^{-1})");
-   fhPtJetArea->Sumw2();
-   
-   fOutput->Add(fhRhoMult);
-   fOutput->Add(fhRhoLeadPt);
+
    
    fhLeadPt = new TH1F("fhLeadPt","leading jet p_{T}; p_{T} (GeV/c)",400,0,200);
    fhLeadPt->Sumw2();
@@ -1116,7 +1526,284 @@ Bool_t  AliAnalysisTaskFlavourJetCorrelationsTest::DefineHistoForAnalysis(){
    fOutput->Add(fhLeadArea);
    fOutput->Add(fhLeadArea2);
    fOutput->Add(fhLeadDeltaEtaDeltaPhi);
-
+   
+   
+   //============== UE ===================
+   fhRhoMult = new TH2F("fhRhoMult","#rho vs mult",100,0,100,200,0,20);
+   fhRhoMult->GetXaxis()->SetTitle("centrality");
+   fhRhoMult->GetYaxis()->SetTitle("#rho (GeV/c*rad^{-1})");
+   fhRhoMult->Sumw2();
+   
+   fhRhoLeadArea = new TH2F("fhRhoLeadArea","#rho vs lead area",120,0,1.2,200,0,20);
+   fhRhoLeadArea->GetXaxis()->SetTitle("Area");
+   fhRhoLeadArea->GetYaxis()->SetTitle("#rho (GeV/c*rad^{-1})");
+   fhRhoLeadArea->Sumw2();
+   
+   fhRhoLeadPt = new TH2F("fhRhoLeadPt","#rho vs lead jet p_{T}",400,-20,180,200,0,20);
+   fhRhoLeadPt->GetXaxis()->SetTitle("p_{t,lead}^{jet}-A*#rho (GeV/c)");
+   fhRhoLeadPt->GetYaxis()->SetTitle("#rho (GeV/c*rad^{-1})");
+   fhRhoLeadPt->Sumw2();
+   
+   fhRhoLeadPtRaw = new TH2F("fhRhoLeadPtRaw","#rho vs lead jet p_{T}",400,-20,180,200,0,20);
+   fhRhoLeadPtRaw->GetXaxis()->SetTitle("p_{t,lead}^{jet} (GeV/c)");
+   fhRhoLeadPtRaw->GetYaxis()->SetTitle("#rho (GeV/c*rad^{-1})");
+   fhRhoLeadPtRaw->Sumw2();
+   
+   fhRhoLeadPtMult = new TH3F("fhRhoLeadPtMult","#rho vs mult vs lead jet p_{T}",400,-20,180,100,0,100,200,0,20);
+   fhRhoLeadPtMult->GetXaxis()->SetTitle("p_{t,lead}^{jet}-A*#rho (GeV/c)");
+   fhRhoLeadPtMult->GetYaxis()->SetTitle("centrality");
+   fhRhoLeadPtMult->GetZaxis()->SetTitle("#rho (GeV/c*rad^{-1})");
+   fhRhoLeadPtMult->Sumw2();
+   
+   fhRhoLeadPtMultRaw = new TH3F("fhRhoLeadPtMultRaw","#rho vs mult vs lead jet p_{T}",400,-20,180,100,0,100,200,0,20);
+   fhRhoLeadPtMultRaw->GetXaxis()->SetTitle("p_{t,lead}^{jet} (GeV/c)");
+   fhRhoLeadPtMultRaw->GetYaxis()->SetTitle("centrality");
+   fhRhoLeadPtMultRaw->GetZaxis()->SetTitle("#rho (GeV/c*rad^{-1})");
+   fhRhoLeadPtMultRaw->Sumw2();
+   
+   fOutput->Add(fhRhoMult);
+   fOutput->Add(fhRhoLeadArea);
+   fOutput->Add(fhRhoLeadPt);
+   fOutput->Add(fhRhoLeadPtRaw);
+   fOutput->Add(fhRhoLeadPtMult);
+   fOutput->Add(fhRhoLeadPtMultRaw);
+   
+  
+   //============= RANDOM CONES =====================================
+   fDeltaPT = new TH1F("fDeltaPT", "#Delta p_{T};#Delta p_{T} (GeV/c);Entries", 600, -50., 100.);
+   fDeltaPT->Sumw2();
+   fOutput->Add(fDeltaPT);
+   fDeltaPT_excl_lead = new TH1F("fDeltaPT_excl_lead", "#Delta p_{T}, excl. lead;#Delta p_{T} (GeV/c);Entries", 600, -50., 100.);
+   fDeltaPT_excl_lead->Sumw2();
+   fOutput->Add(fDeltaPT_excl_lead);
+   
+   fDeltaPTCent = new TH2F("fDeltaPTCent","#Delta p_{T} vs cent",100,0,100,600,-50,100);
+   fDeltaPTCent->Sumw2();
+   fDeltaPTCent->GetXaxis()->SetTitle("centrality");
+   fDeltaPTCent->GetYaxis()->SetTitle("#Delta p_{T} (GeV/c)");
+   fOutput->Add(fDeltaPTCent);
+   
+   fDeltaPTCentNoBkg = new TH2F("fDeltaPTCentNoBkg","#Delta p_{T} vs cent",100,0,100,600,-50,100);
+   fDeltaPTCentNoBkg->Sumw2();
+   fDeltaPTCentNoBkg->GetXaxis()->SetTitle("centrality");
+   fDeltaPTCentNoBkg->GetYaxis()->SetTitle("#Delta p_{T} (GeV/c)");
+   fOutput->Add(fDeltaPTCentNoBkg);
+   
+   fDeltaPTCent_excl_lead = new TH2F("fDeltaPTCent_excl_lead","#Delta p_{T} vs cent, excl. lead",100,0,100,600,-50,100);
+   fDeltaPTCent_excl_lead->Sumw2();
+   fDeltaPTCent_excl_lead->GetXaxis()->SetTitle("centrality");
+   fDeltaPTCent_excl_lead->GetYaxis()->SetTitle("#Delta p_{T} (GeV/c)");
+   fOutput->Add(fDeltaPTCent_excl_lead);
+   
+   fDeltaPTCentNoBkg_excl_lead = new TH2F("fDeltaPTCentNoBkg_excl_lead","#Delta p_{T} vs cent, excl. lead",100,0,100,600,-50,100);
+   fDeltaPTCentNoBkg_excl_lead->Sumw2();
+   fDeltaPTCentNoBkg_excl_lead->GetXaxis()->SetTitle("centrality");
+   fDeltaPTCentNoBkg_excl_lead->GetYaxis()->SetTitle("#Delta p_{T} (GeV/c)");
+   fOutput->Add(fDeltaPTCentNoBkg_excl_lead);
+   
+   fDeltaPTRho = new TH2F("fDeltaPTRho","#Delta p_{T} vs #rho",100,0,10,600,-50,100);
+   fDeltaPTRho->Sumw2();
+   fDeltaPTRho->GetXaxis()->SetTitle("#rho (GeV/c*rad^{-1})");
+   fDeltaPTRho->GetYaxis()->SetTitle("#Delta p_{T} (GeV/c)");
+   fOutput->Add(fDeltaPTRho);
+   
+   fDeltaPTRhoNoBkg = new TH2F("fDeltaPTRhoNoBkg","#Delta p_{T} vs #rho",100,0,10,600,-50,100);
+   fDeltaPTRhoNoBkg->Sumw2();
+   fDeltaPTRhoNoBkg->GetXaxis()->SetTitle("#rho (GeV/c*rad^{-1})");
+   fDeltaPTRhoNoBkg->GetYaxis()->SetTitle("#Delta p_{T} (GeV/c)");
+   fOutput->Add(fDeltaPTRhoNoBkg);
+   
+   fDeltaPTRho_excl_lead = new TH2F("fDeltaPTRho_excl_lead","#Delta p_{T} vs #rho, excl. lead",100,0,10,600,-50,100);
+   fDeltaPTRho_excl_lead->Sumw2();
+   fDeltaPTRho_excl_lead->GetXaxis()->SetTitle("#rho (GeV/c*rad^{-1})");
+   fDeltaPTRho_excl_lead->GetYaxis()->SetTitle("#Delta p_{T} (GeV/c)");
+   fOutput->Add(fDeltaPTRho_excl_lead);
+   
+   fDeltaPTRhoNoBkg_excl_lead = new TH2F("fDeltaPTRhoNoBkg_excl_lead","#Delta p_{T} vs #rho, excl. lead",100,0,10,600,-50,100);
+   fDeltaPTRhoNoBkg_excl_lead->Sumw2();
+   fDeltaPTRhoNoBkg_excl_lead->GetXaxis()->SetTitle("#rho (GeV/c*rad^{-1})");
+   fDeltaPTRhoNoBkg_excl_lead->GetYaxis()->SetTitle("#Delta p_{T} (GeV/c)");
+   fOutput->Add(fDeltaPTRhoNoBkg_excl_lead);
+   
+   
+   fDeltaPTLeadPt = new TH2F("fDeltaPTLeadPt","#Delta p_{T} lead jet",800,-20,180,600,-50,100);
+   fDeltaPTLeadPt->Sumw2();
+   fDeltaPTLeadPt->GetXaxis()->SetTitle("p_{T}^{lead}-A*#rho (GeV/c)");
+   fDeltaPTLeadPt->GetYaxis()->SetTitle("#Delta p_{T} (GeV/c)");
+   fOutput->Add(fDeltaPTLeadPt);
+   
+   fDeltaPTLeadPtRaw = new TH2F("fDeltaPTLeadPtRaw","#Delta p_{T} lead jet",800,-20,180,600,-50,100);
+   fDeltaPTLeadPtRaw->Sumw2();
+   fDeltaPTLeadPtRaw->GetXaxis()->SetTitle("p_{T}^{lead}(GeV/c)");
+   fDeltaPTLeadPtRaw->GetYaxis()->SetTitle("#Delta p_{T} (GeV/c)");
+   fOutput->Add(fDeltaPTLeadPtRaw);
+   
+   fDeltaPTLeadPtNoBkg = new TH2F("fDeltaPTLeadPtNoBkg","#Delta p_{T} lead jet",800,-20,180,600,-50,100);
+   fDeltaPTLeadPtNoBkg->Sumw2();
+   fDeltaPTLeadPtNoBkg->GetXaxis()->SetTitle("p_{T}^{lead}-A*#rho (GeV/c)");
+   fDeltaPTLeadPtNoBkg->GetYaxis()->SetTitle("#Delta p_{T} (GeV/c)");
+   fOutput->Add(fDeltaPTLeadPtNoBkg);
+   
+   fDeltaPTLeadPtRawNoBkg = new TH2F("fDeltaPTLeadPtRawNoBkg","#Delta p_{T} lead jet",800,-20,180,600,-50,100);
+   fDeltaPTLeadPtRawNoBkg->Sumw2();
+   fDeltaPTLeadPtRawNoBkg->GetXaxis()->SetTitle("p_{T}^{lead} (GeV/c)");
+   fDeltaPTLeadPtRawNoBkg->GetYaxis()->SetTitle("#Delta p_{T} (GeV/c)");
+   fOutput->Add(fDeltaPTLeadPtRawNoBkg);
+   
+   fDeltaPTLeadPt_excl_lead = new TH2F("fDeltaPTLeadPt_excl_lead","#Delta p_{T} lead jet, excl. lead",800,-20,180,600,-50,100);
+   fDeltaPTLeadPt_excl_lead->Sumw2();
+   fDeltaPTLeadPt_excl_lead->GetXaxis()->SetTitle("p_{T}^{lead}-A*#rho (GeV/c)");
+   fDeltaPTLeadPt_excl_lead->GetYaxis()->SetTitle("#Delta p_{T} (GeV/c)");
+   fOutput->Add(fDeltaPTLeadPt_excl_lead);
+   
+   fDeltaPTLeadPtRaw_excl_lead = new TH2F("fDeltaPTLeadPtRaw_excl_lead","#Delta p_{T} lead jet, excl. lead",800,-20,180,600,-50,100);
+   fDeltaPTLeadPtRaw_excl_lead->Sumw2();
+   fDeltaPTLeadPtRaw_excl_lead->GetXaxis()->SetTitle("p_{T}^{lead} (GeV/c)");
+   fDeltaPTLeadPtRaw_excl_lead->GetYaxis()->SetTitle("#Delta p_{T} (GeV/c)");
+   fOutput->Add(fDeltaPTLeadPtRaw_excl_lead);
+   
+   fDeltaPTLeadPtNoBkg_excl_lead = new TH2F("fDeltaPTLeadPtNoBkg_excl_lead","#Delta p_{T} lead jet, excl. lead",800,-20,180,600,-50,100);
+   fDeltaPTLeadPtNoBkg_excl_lead->Sumw2();
+   fDeltaPTLeadPtNoBkg_excl_lead->GetXaxis()->SetTitle("p_{T}^{lead}-A*#rho (GeV/c)");
+   fDeltaPTLeadPtNoBkg_excl_lead->GetYaxis()->SetTitle("#Delta p_{T} (GeV/c)");
+   fOutput->Add(fDeltaPTLeadPtNoBkg_excl_lead);
+   
+   fDeltaPTLeadPtRawNoBkg_excl_lead = new TH2F("fDeltaPTLeadPtRawNoBkg_excl_lead","#Delta p_{T} lead jet, excl. lead",800,-20,180,600,-50,100);
+   fDeltaPTLeadPtRawNoBkg_excl_lead->Sumw2();
+   fDeltaPTLeadPtRawNoBkg_excl_lead->GetXaxis()->SetTitle("p_{T}^{lead} (GeV/c)");
+   fDeltaPTLeadPtRawNoBkg_excl_lead->GetYaxis()->SetTitle("#Delta p_{T} (GeV/c)");
+   fOutput->Add(fDeltaPTLeadPtRawNoBkg_excl_lead);
+   
+   
+   fDeltaPTLeadPt_excl_Dlead = new TH2F("fDeltaPTLeadPt_excl_Dlead","#Delta p_{T} lead jet, excl. D lead",800,-20,180,600,-50,100);
+   fDeltaPTLeadPt_excl_Dlead->Sumw2();
+   fDeltaPTLeadPt_excl_Dlead->GetXaxis()->SetTitle("p_{T}^{lead}-A*#rho (GeV/c)");
+   fDeltaPTLeadPt_excl_Dlead->GetYaxis()->SetTitle("#Delta p_{T} (GeV/c)");
+   fOutput->Add(fDeltaPTLeadPt_excl_Dlead);
+   
+   fDeltaPTLeadPtRaw_excl_Dlead = new TH2F("fDeltaPTLeadPtRaw_excl_Dlead","#Delta p_{T} lead jet, excl. D lead",800,-20,180,600,-50,100);
+   fDeltaPTLeadPtRaw_excl_Dlead->Sumw2();
+   fDeltaPTLeadPtRaw_excl_Dlead->GetXaxis()->SetTitle("p_{T}^{lead} (GeV/c)");
+   fDeltaPTLeadPtRaw_excl_Dlead->GetYaxis()->SetTitle("#Delta p_{T} (GeV/c)");
+   fOutput->Add(fDeltaPTLeadPtRaw_excl_Dlead);
+   
+   fDeltaPTLeadPtNoBkg_excl_Dlead = new TH2F("fDeltaPTLeadPtNoBkg_excl_Dlead","#Delta p_{T} lead jet, excl. D lead",800,-20,180,600,-50,100);
+   fDeltaPTLeadPtNoBkg_excl_Dlead->Sumw2();
+   fDeltaPTLeadPtNoBkg_excl_Dlead->GetXaxis()->SetTitle("p_{T}^{lead}-A*#rho (GeV/c)");
+   fDeltaPTLeadPtNoBkg_excl_Dlead->GetYaxis()->SetTitle("#Delta p_{T} (GeV/c)");
+   fOutput->Add(fDeltaPTLeadPtNoBkg_excl_Dlead);
+   
+   fDeltaPTLeadPtRawNoBkg_excl_Dlead = new TH2F("fDeltaPTLeadPtRawNoBkg_excl_Dlead","#Delta p_{T} lead jet, excl. D lead",800,-20,180,600,-50,100);
+   fDeltaPTLeadPtRawNoBkg_excl_Dlead->Sumw2();
+   fDeltaPTLeadPtRawNoBkg_excl_Dlead->GetXaxis()->SetTitle("p_{T}^{lead} (GeV/c)");
+   fDeltaPTLeadPtRawNoBkg_excl_Dlead->GetYaxis()->SetTitle("#Delta p_{T} (GeV/c)");
+   fOutput->Add(fDeltaPTLeadPtRawNoBkg_excl_Dlead);
+   
+   fDeltaPTLeadPtCent_excl_lead = new TH3F("fDeltaPTLeadPtCent_excl_lead","#Delta p_{T} lead jet, cent., excl. lead",50,0,100,480,-10,110,320,-20,60);
+   fDeltaPTLeadPtCent_excl_lead->Sumw2();
+   fDeltaPTLeadPtCent_excl_lead->GetXaxis()->SetTitle("cent (%)");
+   fDeltaPTLeadPtCent_excl_lead->GetYaxis()->SetTitle("p_{T}^{lead}-A*#rho (GeV/c)");
+   fDeltaPTLeadPtCent_excl_lead->GetZaxis()->SetTitle("#Delta p_{T} (GeV/c)");
+   fOutput->Add(fDeltaPTLeadPtCent_excl_lead);
+   
+  /*fDeltaPTLeadPtCentRaw_excl_lead = new TH3F("fDeltaPTLeadPtCentRaw_excl_lead","#Delta p_{T} lead jet, cent., excl. lead",100,0,100,480,-10,110,320,-20,60);
+   fDeltaPTLeadPtCentRaw_excl_lead->Sumw2();
+   fDeltaPTLeadPtCentRaw_excl_lead->GetXaxis()->SetTitle("cent (%)");
+   fDeltaPTLeadPtCentRaw_excl_lead->GetYaxis()->SetTitle("p_{T}^{lead} (GeV/c)");
+   fDeltaPTLeadPtCentRaw_excl_lead->GetZaxis()->SetTitle("#Delta p_{T} (GeV/c)");
+   fOutput->Add(fDeltaPTLeadPtCentRaw_excl_lead);
+  */
+   
+ /* fDeltaPTLeadPtCentNoBkg_excl_lead = new TH3F("fDeltaPTLeadPtCentNoBkg_excl_lead","#Delta p_{T} lead jet, cent., excl. lead",100,0,100,480,-10,110,320,-20,60);
+   fDeltaPTLeadPtCentNoBkg_excl_lead->Sumw2();
+   fDeltaPTLeadPtCentNoBkg_excl_lead->GetXaxis()->SetTitle("cent (%)");
+   fDeltaPTLeadPtCentNoBkg_excl_lead->GetYaxis()->SetTitle("p_{T}^{lead}-A*#rho (GeV/c)");
+   fDeltaPTLeadPtCentNoBkg_excl_lead->GetZaxis()->SetTitle("#Delta p_{T} (GeV/c)");
+   fOutput->Add(fDeltaPTLeadPtCentNoBkg_excl_lead);
+ */
+   
+   fDeltaPTLeadPtCentRawNoBkg_excl_lead = new TH3F("fDeltaPTLeadPtCentRawNoBkg_excl_lead","#Delta p_{T}, cent., p_{T} lead jet; excl. lead",50,0,100,480,-10,110,320,-20,60);
+   fDeltaPTLeadPtCentRawNoBkg_excl_lead->Sumw2();
+   fDeltaPTLeadPtCentRawNoBkg_excl_lead->GetXaxis()->SetTitle("cent (%)");
+   fDeltaPTLeadPtCentRawNoBkg_excl_lead->GetYaxis()->SetTitle("p_{T}^{lead} (GeV/c)");
+   fDeltaPTLeadPtCentRawNoBkg_excl_lead->GetZaxis()->SetTitle("#Delta p_{T} (GeV/c)");
+   fOutput->Add(fDeltaPTLeadPtCentRawNoBkg_excl_lead);
+   
+   fNtracksTLeadPtCent_excl_lead = new TH3F("fNtracksTLeadPtCent_excl_lead","no. jet const, cent., p_{T} lead jet; excl. lead",200,0,100,200,0,100,50,0,50);
+   fNtracksTLeadPtCent_excl_lead->Sumw2();
+   fNtracksTLeadPtCent_excl_lead->GetXaxis()->SetTitle("cent (%)");
+   fNtracksTLeadPtCent_excl_lead->GetYaxis()->SetTitle("p_{T}^{lead} (GeV/c)");
+   fNtracksTLeadPtCent_excl_lead->GetZaxis()->SetTitle("no. of jet const");
+   fOutput->Add(fNtracksTLeadPtCent_excl_lead);
+   
+   
+   fDeltaPTLeadPtCent_excl_Dlead = new TH3F("fDeltaPTLeadPtCent_excl_Dlead","#Delta p_{T}, cent., p_{T} lead jet; excl. D lead",50,0,100,480,-10,110,320,-20,60);
+   fDeltaPTLeadPtCent_excl_Dlead->Sumw2();
+   fDeltaPTLeadPtCent_excl_Dlead->GetXaxis()->SetTitle("cent (%)");
+   fDeltaPTLeadPtCent_excl_Dlead->GetYaxis()->SetTitle("p_{T}^{lead}-A*#rho (GeV/c)");
+   fDeltaPTLeadPtCent_excl_Dlead->GetZaxis()->SetTitle("#Delta p_{T} (GeV/c)");
+   fOutput->Add(fDeltaPTLeadPtCent_excl_Dlead);
+   
+   fNtracksTLeadPtCent_excl_Dlead = new TH3F("fNtracksTLeadPtCent_excl_Dlead","no. jet const, cent., p_{T} lead jet; excl. D lead",200,0,100,200,0,100,50,0,50);
+   fNtracksTLeadPtCent_excl_Dlead->Sumw2();
+   fNtracksTLeadPtCent_excl_Dlead->GetXaxis()->SetTitle("cent (%)");
+   fNtracksTLeadPtCent_excl_Dlead->GetYaxis()->SetTitle("p_{T}^{lead} (GeV/c)");
+   fNtracksTLeadPtCent_excl_Dlead->GetZaxis()->SetTitle("no. of jet const");
+   fOutput->Add(fNtracksTLeadPtCent_excl_Dlead);
+   
+ /* fDeltaPTLeadPtCentRaw_excl_Dlead = new TH3F("fDeltaPTLeadPtCentRaw_excl_Dlead","#Delta p_{T} lead jet, cent., excl. D lead",50,0,100,480,-10,110,320,-20,60);
+   fDeltaPTLeadPtCentRaw_excl_Dlead->Sumw2();
+   fDeltaPTLeadPtCentRaw_excl_Dlead->GetXaxis()->SetTitle("cent (%)");
+   fDeltaPTLeadPtCentRaw_excl_Dlead->GetYaxis()->SetTitle("p_{T}^{lead} (GeV/c)");
+   fDeltaPTLeadPtCentRaw_excl_Dlead->GetZaxis()->SetTitle("#Delta p_{T} (GeV/c)");
+   fOutput->Add(fDeltaPTLeadPtCentRaw_excl_Dlead);
+  */
+  /* 
+   fDeltaPTLeadPtCentNoBkg_excl_Dlead = new TH3F("fDeltaPTLeadPtCentNoBkg_excl_Dlead","#Delta p_{T} lead jet, cent., excl. D lead",50,0,100,480,-10,110,320,-20,60);
+   fDeltaPTLeadPtCentNoBkg_excl_Dlead->Sumw2();
+   fDeltaPTLeadPtCentNoBkg_excl_Dlead->GetXaxis()->SetTitle("cent (%)");
+   fDeltaPTLeadPtCentNoBkg_excl_Dlead->GetYaxis()->SetTitle("p_{T}^{lead}-A*#rho (GeV/c)");
+   fDeltaPTLeadPtCentNoBkg_excl_Dlead->GetZaxis()->SetTitle("#Delta p_{T} (GeV/c)");
+   fOutput->Add(fDeltaPTLeadPtCentNoBkg_excl_Dlead);
+  */
+   
+   fDeltaPTLeadPtCentRawNoBkg_excl_Dlead = new TH3F("fDeltaPTLeadPtCentRawNoBkg_excl_Dlead","#Delta p_{T} lead jet, cent., excl. D lead",50,0,100,480,-10,110,320,-20,60);
+   fDeltaPTLeadPtCentRawNoBkg_excl_Dlead->Sumw2();
+   fDeltaPTLeadPtCentRawNoBkg_excl_Dlead->GetXaxis()->SetTitle("cent (%)");
+   fDeltaPTLeadPtCentRawNoBkg_excl_Dlead->GetYaxis()->SetTitle("p_{T}^{lead} (GeV/c)");
+   fDeltaPTLeadPtCentRawNoBkg_excl_Dlead->GetZaxis()->SetTitle("#Delta p_{T} (GeV/c)");
+   fOutput->Add(fDeltaPTLeadPtCentRawNoBkg_excl_Dlead);
+   
+   
+   fRandConeEtaPhi = new TH2F("fRandConeEtaPhi","rand cone jet #eta vs jet #phi",300,-1.5,1.5,130,0,6.5);
+   fRandConeEtaPhi->Sumw2();
+   fRandConeEtaPhi->GetXaxis()->SetTitle("jet #eta");
+   fRandConeEtaPhi->GetYaxis()->SetTitle("jet #phi");
+   fOutput->Add(fRandConeEtaPhi);
+   
+   fRandConeEtaPhi_excl_lead = new TH2F("fRandConeEtaPhi_excl_lead","rand cone jet #eta vs jet #phi, excl. lead",300,-1.5,1.5,130,0,6.5);
+   fRandConeEtaPhi_excl_lead->Sumw2();
+   fRandConeEtaPhi_excl_lead->GetXaxis()->SetTitle("jet #eta");
+   fRandConeEtaPhi_excl_lead->GetYaxis()->SetTitle("jet #phi");
+   fOutput->Add(fRandConeEtaPhi_excl_lead);
+   
+   fhRandomConeDeltaEtaDeltaPhi = new TH2F("fhRandomConeDeltaEtaDeltaPhi","leading jet vs random cone #Delta #eta #Delta #phi",320,0,3.2,240,-1.2,1.2);
+   fhRandomConeDeltaEtaDeltaPhi->GetXaxis()->SetTitle("#Delta #phi");
+   fhRandomConeDeltaEtaDeltaPhi->GetYaxis()->SetTitle("#Delta #eta");
+   fhRandomConeDeltaEtaDeltaPhi->Sumw2();
+   fOutput->Add(fhRandomConeDeltaEtaDeltaPhi);
+   
+   fEtaRandConeOverlap = new TH2F("fEtaRandConeOverlap","#eta of ran cone overlapign with leading jet",240,-1.2,1.2,240,-1.2,1.2);
+   fEtaRandConeOverlap->GetXaxis()->SetTitle("#eta_{cone}");
+   fEtaRandConeOverlap->GetYaxis()->SetTitle("#eta_{jet trk}");
+   fEtaRandConeOverlap->Sumw2();
+   fOutput->Add(fEtaRandConeOverlap);
+   
+   fPhiRandConeOverlap = new TH2F("fPhiRandConeOverlap","#phi of ran cone overlapign with leading jet",130,0,6.5,130,0,6.5);
+   fPhiRandConeOverlap->GetXaxis()->SetTitle("#phi_{cone}");
+   fPhiRandConeOverlap->GetYaxis()->SetTitle("#phi_{jet trk}");
+   fPhiRandConeOverlap->Sumw2();
+   fOutput->Add(fPhiRandConeOverlap);
    
       if(fCandidateType==kDstartoKpipi) 
       {

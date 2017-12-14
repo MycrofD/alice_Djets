@@ -13,24 +13,25 @@
 \BOOKMARK [2][-]{subsection.6.1}{Reconstruction Efficiency}{section.6}% 13
 \BOOKMARK [2][-]{subsection.6.2}{Efficiency-Corrected Yields}{section.6}% 14
 \BOOKMARK [2][-]{subsection.6.3}{Method Comparison \(Efficiency-Corrected Yields\)}{section.6}% 15
-\BOOKMARK [1][-]{section.7}{Jet Momentum Detector Response}{}% 16
-\BOOKMARK [2][-]{subsection.7.1}{Response Matrix}{section.7}% 17
-\BOOKMARK [1][-]{section.8}{Underlying Event \(p\205Pb analysis\)}{}% 18
-\BOOKMARK [2][-]{subsection.8.1}{Average Background Momentum Density}{section.8}% 19
-\BOOKMARK [2][-]{subsection.8.2}{Jet Background Fluctuations}{section.8}% 20
+\BOOKMARK [1][-]{section.7}{Underlying Event \(p\205Pb analysis\)}{}% 16
+\BOOKMARK [2][-]{subsection.7.1}{Average Background Momentum Density}{section.7}% 17
+\BOOKMARK [2][-]{subsection.7.2}{Jet Background Fluctuations}{section.7}% 18
+\BOOKMARK [1][-]{section.8}{Jet Momentum Detector Response}{}% 19
+\BOOKMARK [2][-]{subsection.8.1}{Detector Response Matrix}{section.8}% 20
 \BOOKMARK [1][-]{section.9}{Feed-Down Correction}{}% 21
 \BOOKMARK [2][-]{subsection.9.1}{Monte Carlo Simulation}{section.9}% 22
 \BOOKMARK [2][-]{subsection.9.2}{Feed-Down Subtraction}{section.9}% 23
 \BOOKMARK [1][-]{section.10}{Unfolding}{}% 24
 \BOOKMARK [1][-]{section.11}{Systematic Uncertainties}{}% 25
 \BOOKMARK [2][-]{subsection.11.1}{Raw Yield Extraction}{section.11}% 26
-\BOOKMARK [2][-]{subsection.11.2}{B Feed-Down Correction}{section.11}% 27
-\BOOKMARK [2][-]{subsection.11.3}{Unfolding}{section.11}% 28
-\BOOKMARK [2][-]{subsection.11.4}{D-Meson Selection Cuts}{section.11}% 29
-\BOOKMARK [2][-]{subsection.11.5}{Tracking Efficiency}{section.11}% 30
-\BOOKMARK [2][-]{subsection.11.6}{pT Shape of the Monte Carlo Spectrum}{section.11}% 31
-\BOOKMARK [2][-]{subsection.11.7}{Summary of Systematic Uncertainties}{section.11}% 32
-\BOOKMARK [1][-]{section.12}{Results}{}% 33
-\BOOKMARK [2][-]{subsection.12.1}{Monte Carlo Simulations}{section.12}% 34
-\BOOKMARK [3][-]{subsubsection.12.1.1}{Effect of the pT,D Cut}{subsection.12.1}% 35
-\BOOKMARK [1][-]{section.13}{Preliminary Figures}{}% 36
+\BOOKMARK [2][-]{subsection.11.2}{D-Meson Selection Cuts}{section.11}% 27
+\BOOKMARK [2][-]{subsection.11.3}{B Feed-Down Correction}{section.11}% 28
+\BOOKMARK [2][-]{subsection.11.4}{Unfolding}{section.11}% 29
+\BOOKMARK [2][-]{subsection.11.5}{Background fluctuation matrix}{section.11}% 30
+\BOOKMARK [2][-]{subsection.11.6}{Tracking Efficiency}{section.11}% 31
+\BOOKMARK [2][-]{subsection.11.7}{pT Shape of the Monte Carlo Spectrum}{section.11}% 32
+\BOOKMARK [2][-]{subsection.11.8}{Summary of Systematic Uncertainties}{section.11}% 33
+\BOOKMARK [1][-]{section.12}{Results}{}% 34
+\BOOKMARK [2][-]{subsection.12.1}{Monte Carlo Simulations}{section.12}% 35
+\BOOKMARK [3][-]{subsubsection.12.1.1}{Effect of the pT,D Cut}{subsection.12.1}% 36
+\BOOKMARK [1][-]{section.13}{Preliminary Figures}{}% 37

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<alien>
+  <collection name="collection">
+    <event name="1">
+      <file name="AliAOD.root" aclId="" broken="0" ctime="2016-12-19 10:20:09" dir="563209046" entryId="563213923" expiretime="" gowner="alidaq" guid="364D70C8-C5CC-11E6-95C8-9BFDF0F8A15F" guidtime="11E6C5CC" jobid="793044218" lfn="/alice/data/2016/LHC16q/000265525/pass1_CENT_woSDD/AOD/001/AliAOD.root" md5="c06038ffc7e691910a8db22964fcdc2a" owner="alidaq" perm="755" replicated="0" size="53117882" turl="alien:///alice/data/2016/LHC16q/000265525/pass1_CENT_woSDD/AOD/001/AliAOD.root" type="f" />
+    </event>
+    <event name="2">
+      <file name="AliAOD.root" aclId="" broken="0" ctime="2016-12-19 10:27:14" dir="563238818" entryId="563251742" expiretime="" gowner="alidaq" guid="FE707A0A-C5CC-11E6-8FE4-83D1E765F686" guidtime="11E6C5CC" jobid="793044220" lfn="/alice/data/2016/LHC16q/000265525/pass1_CENT_woSDD/AOD/002/AliAOD.root" md5="564fbc551b3acd93d53d0f9033751adb" owner="alidaq" perm="755" replicated="0" size="615028134" turl="alien:///alice/data/2016/LHC16q/000265525/pass1_CENT_woSDD/AOD/002/AliAOD.root" type="f" />
+    </event>
+    <info command="[/alice/cern.ch/user/b/btrzecia/]: find -z -x collection -l 2 -o 0 /alice/data/2016/LHC16q//000265525 /pass1_CENT_woSDD/AOD/*AliAOD.root" creator="admin" date="Mon Jul 24 02:14:27 CEST 2017" timestamp="1500855267" />
+  </collection>
+</alien>
+
+
