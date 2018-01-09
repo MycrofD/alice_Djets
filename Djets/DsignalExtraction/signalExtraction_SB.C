@@ -181,7 +181,10 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
     hSignal->Sumw2();
     hReflRS = new TH1F("hReflRS","hReflRS",fptbinsDN,fptbinsDA);
 
-    hInvMassptD->GetXaxis()->SetTitle(Form("m^{%s}",fDmesonS.Data()));
+    if(fDmesonSpecie) hInvMassptD->GetXaxis()->SetTitle(Form("m(%s)(GeV/c^{2})","K#pi#pi-K#pi"));
+    else hInvMassptD->GetXaxis()->SetTitle(Form("m(%s)(GeV/c^{2})","K#pi"));
+    hInvMassptD->GetXaxis()->SetTitleSize(0.06);
+    hInvMassptD->GetXaxis()->SetTitleOffset(0.8);
     hInvMassptD->GetYaxis()->SetTitle("p_{T}^{jet}");
     hInvMassptD->SetTitle();
 
@@ -253,9 +256,11 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         bkgfit[i] = fitterp->GetBackgroundRecalcFunc();
         bkgfit[i]->SetRange(hmin,hmax);
         bkgfit[i]->SetLineColor(2);
+        bkgfit[i]->SetName("bkgFit");
 
         if(fUseRefl && fDmesonSpecie == 0) {
           bkgRfit[i] = fitterp->GetBkgPlusReflFunc();
+          bkgRfit[i]->SetName("bkgFitWRef");
           bkgRfit[i]->SetRange(hmin,hmax);
           bkgRfit[i]->SetLineColor(15);
           hReflRS->SetBinContent(i+1,RS);
@@ -263,7 +268,7 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         }
 
         TVirtualPad *pad = (TVirtualPad*)c2->GetPad(i+1);
-        fitterp->DrawHere(pad,3,0);
+        fitterp->DrawHere(pad,3,1);
 
         float Dsigma = 0, Dmean = 0, DmeanUnc = 0, DsigmaUnc = 0;
         if(fullfit[i]) {
@@ -285,15 +290,24 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         double binwidth = hmass[i]->GetXaxis()->GetBinWidth(1)*0.5;
 
         Double_t s=0,serr=0,srelerr=0,b=0,berr=0,signf=0,signferr=0,sob=0,soberr=0;
+        Double_t br=0; //bacground with reflections
         if(fullfit[i]) {
+          Double_t min = hmass[i]->GetXaxis()->GetBinCenter(binmin)-binwidth;
+          Double_t max = hmass[i]->GetXaxis()->GetBinCenter(binmax-1)+binwidth;
           fitterp->Signal(fsigmaSignal,s,serr);
-          fitterp->Background(hmass[i]->GetXaxis()->GetBinCenter(binmin)-binwidth, hmass[i]->GetXaxis()->GetBinCenter(binmax-1)+binwidth ,b,berr);
+          fitterp->Background(min, max ,b,berr);
+          //fitterp->Background(fsigmaSignal,b,berr);
           fitterp->Significance(fsigmaSignal,signf,signferr);
           if(s) srelerr = serr/s;
           if(b) sob = s/b;
           else sob = s;
           if(b && berr) soberr = TMath::Sqrt((serr/b)*(serr/b) + (s/b/b*berr)*(s/b/b*berr));
           else soberr = serr;
+          if(fUseRefl && fDmesonSpecie == 0) {
+            br = bkgRfit[i]->Integral(min,max)/(Double_t)hmass[i]->GetBinWidth(1);
+            cout << "\n\n ==== background with ref: " << br << endl;
+          }
+          else br = b;
         }
 
         TPaveText *pv=new TPaveText(0.57,0.55,0.97,0.9,"brNDC");
@@ -312,8 +326,8 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         if(twodigits) pv->AddText(Form("B (3#sigma) = (%.2f #pm %.2f)", b,berr));
         else pv->AddText(Form("B (3#sigma) = (%.1f #pm %.1f)", b,berr));
         pv->Draw("same");
-        if(isdetails) pvProd->Draw("same");
-        if(isdetails) pvCuts->Draw("same");
+        //if(isdetails) pvProd->Draw("same");
+        //if(isdetails) pvCuts->Draw("same");
 
         // ---------------- fitting results
         if(fDmesonSpecie) {
@@ -380,7 +394,7 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         hjetpt_s[i]->Add(hjetpt_s2);
 
         // scale background from side bands to the background under the peak
-        double scaling = b / hjetpt_s[i]->Integral();
+        double scaling = br / hjetpt_s[i]->Integral();
         hjetpt_s[i]->Scale(scaling);
 
         c2jet->cd(i+1);
@@ -389,6 +403,8 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         hjetpt[i]->GetXaxis()->SetRangeUser(jetplotmin,jetplotmax);
         hjetpt_s[i]->GetXaxis()->SetRangeUser(jetplotmin,jetplotmax);
         hjetpt[i]->GetXaxis()->SetTitle("p_{T,ch jet} (GeV/c)");
+        hjetpt[i]->GetXaxis()->SetTitleSize(0.05);
+        hjetpt[i]->GetXaxis()->SetTitleOffset(0.8);
 
         hjetpt[i]->Draw("ep");
         hjetpt_s[i]->Draw("epsame");
@@ -402,7 +418,6 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         hjetptsub[i]->Add(hjetpt_s[i],-1);
         hjetptsub[i]->SetMarkerColor(kGreen+3);
         hjetptsub[i]->SetLineColor(kGreen+3);
-        //c2jetsub->cd(i+1);
         hjetptsub[i]->Draw("epsame");
         if(isdetails) pvProd->Draw("same");
         if(isdetails) pvCuts->Draw("same");
@@ -419,6 +434,8 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         if(bEff) hjetptcorr[i]->Scale(1./efficiency[i]); // D efficiency
         hjetptcorr[i]->SetMarkerColor(kBlue+3);
         hjetptcorr[i]->SetLineColor(kBlue+3);
+        hjetptcorr[i]->GetXaxis()->SetTitleSize(0.04);
+        hjetptcorr[i]->GetXaxis()->SetTitleOffset(0.9);
         //hjetptcorr->GetXaxis()->SetRangeUser(jetplotmin,jetplotmax);
 
         c2jetcorr->cd(i+1);
@@ -432,7 +449,6 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         //----- add corrected jet pt spectrum distributions in each D pt bin into a one distribution
         if(!hjetptspectrum) hjetptspectrum = (TH1F*)hjetptcorr[i]->Clone("hjetptspectrum");
         else hjetptspectrum->Add(hjetptcorr[i]);
-
 
     }
 
@@ -467,8 +483,6 @@ Bool_t SetReflection(AliHFInvMassFitter* &fitter, Int_t iBin, Float_t fLeftFitRa
   return kTRUE;
 
 }
-
-
 
 void  saveSpectraPlots(TString outdir,TString prod){
 
