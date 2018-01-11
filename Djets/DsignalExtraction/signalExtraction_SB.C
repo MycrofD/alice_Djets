@@ -538,11 +538,14 @@ void  saveSpectraPlots(TString outdir,TString prod){
 
       TH1F *hjetptspectrumReb_tmp = (TH1F*)hjetptspectrum->Clone("hjetptspectrumReb_tmp");
       hjetptspectrumReb = (TH1F*)hjetptspectrumReb_tmp->Rebin(fptbinsJetMeasN,"hjetptspectrumReb",fptbinsJetMeasA);
-      setHistoDetails(hjetptspectrumReb,1,kBlue,20,1.2); // with bin width scaling
+      TH1F* hjetptspectrumReb2 = (TH1F*)hjetptspectrumReb_tmp->Rebin(fptbinsJetMeasN,"hjetptspectrumReb",fptbinsJetMeasA);
+      setHistoDetails(hjetptspectrumReb,0,kBlue,20,1.2); // with bin width scaling
+      setHistoDetails(hjetptspectrumReb2,1,kBlue,20,1.2); // with bin width scaling
       hjetptspectrumReb->GetXaxis()->SetTitle("p_{T,ch jet} (GeV/c)");
+      hjetptspectrumReb2->GetXaxis()->SetTitle("p_{T,ch jet} (GeV/c)");
       TCanvas *cSpectrumRebin = new TCanvas("cSpectrumRebin","cSpectrumRebin",800,600);
       cSpectrumRebin->SetLogy();
-      hjetptspectrumReb->Draw();
+      hjetptspectrumReb2->Draw();
       if(isdetails) pvProd->Draw("same");
       if(isdetails) pvCuts->Draw("same");
       pv3->Draw("same");
