@@ -28,7 +28,7 @@
   DMesonSpecies fDmesonSpecie = 1;
 
     TString fDmesonDsc="Dstar";
-    TString fDmesonS="D^{*}";
+    TString fDmesonS="D*";
 
     Bool_t  fUseRefl = 0; // no reflections for Dstar
     Int_t   fbkgtype = 5; // kExpo=0, kLin=1, kPol2=2, kNoBk=3, kPow=4, kPowEx=5
@@ -36,6 +36,7 @@
     Float_t fsigmaBkg[] = {-8,-5,5,13};
     Float_t fDmass = 0.1455, fDsigma = 0.00065;
     Float_t minf = 0.140, maxf = 0.155;
+    Int_t   fRebinMass = 1;
 
     //------- D pT bins
     //const int fptbinsDN = 12;

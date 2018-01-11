@@ -78,7 +78,6 @@ cd $signalDir
 #pattern: $analysisFile_$lhcprod$production.root
 analysisfile=$outfiledir/AnalysisResults
 lhcprod=$lprod
-lhcprod=$lprod
 production=$prod #if more than one file to analyse
 reflfile=/home/basia/Work/alice/analysis/pPb_run2/D0jet/outMC/reflections/reflections_fitted_DoubleGaus.root
 ispostfix=0

@@ -37,6 +37,7 @@
     Float_t fsigmaBkg[] = {-9,-5,5,9};
     Float_t fDmass = 1.864, fDsigma = 0.010;
     Float_t minf = 1.71, maxf = 2.1;
+    Int_t   fRebinMass = 2;
 
     //------- D pT bins
     //const int fptbinsDN = 12;

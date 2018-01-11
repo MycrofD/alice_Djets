@@ -27,8 +27,8 @@
 
 void signalExtraction_SB(
   TString dataFile = "/home/basia/Work/alice/analysis/pp13tev/outData/losser_15Nov/AnalysisResults",
-  TString lhcprod = "LHC16k", // if one file: e.g. LHC16k, LHC16kl ... ; for more than one file: LHC16
-  bool isMoreFiles = 0, TString prod = "",    // for more than 1 file, for one file leave it empty
+  TString lhcprod = "LHC16kl", // if one file: e.g. LHC16k, LHC16kl ... ; for more than one file: LHC16
+  bool isMoreFiles = 0, TString prod = "kl",    // for more than 1 file, for one file leave it empty
   bool isEff = 0, TString efffile = "../efficiency/DjetEff_prompt.root",
   bool isRef = 0, TString refFile = "",
   bool save = 1,
@@ -221,12 +221,13 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
     for(int i=0; i<fptbinsDN; i++){
 
         TH1F *hh=(TH1F*)hInvMassptD->ProjectionX(Form("hh_%d",i),hInvMassptD->GetYaxis()->FindBin(jetmin), hInvMassptD->GetYaxis()->FindBin(jetmax)-1,hInvMassptD->GetZaxis()->FindBin(fptbinsDA[i]), hInvMassptD->GetZaxis()->FindBin(fptbinsDA[i+1])-1);
-        hh->Rebin(2);
+        hh->Rebin(fRebinMass);
 
         hh->GetXaxis()->SetRangeUser(minf,maxf);
         hh->SetTitle(Form("%.1lf < pt^{%s} < %.1lf",fptbinsDA[i],fDmesonS.Data(),fptbinsDA[i+1]));
 
         TH1F *hmassfit = (TH1F*)hh->Clone("hmassfit");
+        if(fDmesonSpecie) hmassfit->SetMaximum(hmassfit->GetMaximum()*1.3);
 
         float hmin = TMath::Max(minf,hmassfit->GetBinLowEdge(2));
         float hmax = TMath::Min(maxf,hmassfit->GetBinLowEdge(hmassfit->GetNbinsX()));
@@ -268,7 +269,7 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         }
 
         TVirtualPad *pad = (TVirtualPad*)c2->GetPad(i+1);
-        fitterp->DrawHere(pad,3,1);
+        fitterp->DrawHere(pad,3,0);
 
         float Dsigma = 0, Dmean = 0, DmeanUnc = 0, DsigmaUnc = 0;
         if(fullfit[i]) {
@@ -290,7 +291,7 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         double binwidth = hmass[i]->GetXaxis()->GetBinWidth(1)*0.5;
 
         Double_t s=0,serr=0,srelerr=0,b=0,berr=0,signf=0,signferr=0,sob=0,soberr=0;
-        Double_t br=0; //bacground with reflections
+        Double_t br=0; //background with reflections
         if(fullfit[i]) {
           Double_t min = hmass[i]->GetXaxis()->GetBinCenter(binmin)-binwidth;
           Double_t max = hmass[i]->GetXaxis()->GetBinCenter(binmax-1)+binwidth;
@@ -305,29 +306,39 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
           else soberr = serr;
           if(fUseRefl && fDmesonSpecie == 0) {
             br = bkgRfit[i]->Integral(min,max)/(Double_t)hmass[i]->GetBinWidth(1);
-            cout << "\n\n ==== background with ref: " << br << endl;
           }
           else br = b;
         }
 
-        TPaveText *pv=new TPaveText(0.57,0.55,0.97,0.9,"brNDC");
-        pv->SetFillStyle(0);
-        pv->SetBorderSize(0);
-        pv->AddText(Form("Signif.(3#sigma) = (%.1f #pm %.1f)", signf,signferr));
-        if(fDmesonSpecie) pv->AddText(Form("#mu = (%.2f #pm %.2f) MeV/#it{c}^{2}", Dmean*1000,DmeanUnc*1000));
-        else pv->AddText(Form("#mu = (%.2f #pm %.2f) GeV/#it{c}^{2}", Dmean,DmeanUnc));
-        pv->AddText(Form("#sigma = (%.2f #pm %.2f) MeV/#it{c}^{2}", Dsigma*1000,DsigmaUnc*1000));
+        TPaveText *pvSig;
+        if(fDmesonSpecie) pvSig = new TPaveText(0.55,0.47,0.95,0.75,"brNDC");
+        else pvSig = new TPaveText(0.15,0.55,0.47,0.9,"brNDC");
+        pvSig->SetFillStyle(0);
+        pvSig->SetBorderSize(0);
         Bool_t twodigits=kTRUE;
         if(soberr*100. > 35.) twodigits=kFALSE;
         //if(twodigits) pv->AddText(Form("S/B (3#sigma) = (%.2f #pm %.2f)", sob,soberr));
         //else pv->AddText(Form("S/B (3#sigma) = (%.1f #pm %.1f)", sob,soberr));
-        if(twodigits) pv->AddText(Form("S (3#sigma) = (%.2f #pm %.2f)", s,serr));
-        else pv->AddText(Form("S (3#sigma) = (%.1f #pm %.1f)", s,serr));
-        if(twodigits) pv->AddText(Form("B (3#sigma) = (%.2f #pm %.2f)", b,berr));
-        else pv->AddText(Form("B (3#sigma) = (%.1f #pm %.1f)", b,berr));
-        pv->Draw("same");
+        if(twodigits) pvSig->AddText(Form("S (3#sigma) = %.2f #pm %.2f", s,serr));
+        else pvSig->AddText(Form("S (3#sigma) = %.1f #pm %.1f", s,serr));
+        if(twodigits) pvSig->AddText(Form("B (3#sigma) = %.2f #pm %.2f", b,berr));
+        else pvSig->AddText(Form("B (3#sigma) = %.1f #pm %.1f", b,berr));
+        pvSig->AddText(Form("Signif.(3#sigma) = %.1f #pm %.1f", signf,signferr));
+        pvSig->AddText(Form("S/B(3#sigma) = %.2f #pm %.2f", sob,soberr));
+        if(fUseRefl && fDmesonSpecie == 0) pvSig->AddText(Form("R/S = %.2f", RS));
+        pvSig->Draw("same");
         //if(isdetails) pvProd->Draw("same");
         //if(isdetails) pvCuts->Draw("same");
+
+        TPaveText *pv;
+        if(fDmesonSpecie) pv = new TPaveText(0.55,0.77,0.95,0.9,"brNDC");
+        else pv = new TPaveText(0.57,0.77,0.95,0.9,"brNDC");
+        pv->SetFillStyle(0);
+        pv->SetBorderSize(0);
+        if(fDmesonSpecie) pv->AddText(Form("#mu = (%.2f #pm %.2f) MeV/#it{c}^{2}", Dmean*1000,DmeanUnc*1000));
+        else pv->AddText(Form("#mu = (%.2f #pm %.2f) GeV/#it{c}^{2}", Dmean,DmeanUnc));
+        pv->AddText(Form("#sigma = (%.2f #pm %.2f) MeV/#it{c}^{2}", Dsigma*1000,DsigmaUnc*1000));
+        pv->Draw("same");
 
         // ---------------- fitting results
         if(fDmesonSpecie) {
@@ -696,6 +707,7 @@ void setStyle(){
 
     gStyle->SetOptStat(000);
     gStyle->SetLegendFont(42);
+    gStyle->SetTextFont(22) ;
     //gStyle->SetLegendTextSize(0.05);
     gStyle->SetPadLeftMargin(0.1);
     gStyle->SetPadRightMargin(0.02);
