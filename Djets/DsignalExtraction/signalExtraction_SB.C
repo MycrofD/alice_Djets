@@ -122,7 +122,7 @@ void signalExtraction_SB(
     // --------------------------------------------------------
     // fit inv. mass in D pT bins and get raw jet pT spectra in the signal and side-bands regions
      Bool_t okSignalExt = rawJetSpectra(outdir,lhcprod+prod);
-     if(!okSignalExt) { cout << "!!!!!! Something wrong in the raw signal extraction !!!!" << endl; return; }
+     if(!okSignalExt) { std::cout << "!!!!!! Something wrong in the raw signal extraction !!!!" << endl; return; }
     // --------------------------------------------------------
 
     // --------------------------------------------------------
@@ -215,7 +215,7 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
     if(fptbinsDA[0] == 2) firstPtBin = 3;
     else if(fptbinsDA[0] == 3) firstPtBin = 4;
     else if(fptbinsDA[0] == 4) firstPtBin = 5;
-    if(!firstPtBin) { cout << "==== Wrong first value of the D pT (should be 2,3 or 4) === \n"; return kFALSE; }
+    if(!firstPtBin) { std::cout << "==== Wrong first value of the D pT (should be 2,3 or 4) === \n"; return kFALSE; }
     Float_t RS = 0;
 
     for(int i=0; i<fptbinsDN; i++){
@@ -272,12 +272,13 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         fitterp->DrawHere(pad,3,0);
 
         float Dsigma = 0, Dmean = 0, DmeanUnc = 0, DsigmaUnc = 0;
-        if(fullfit[i]) {
-          Dsigma = fitterp->GetSigma();
-          DsigmaUnc  = fitterp->GetSigmaUncertainty();
-          Dmean = fitterp->GetMean();
-          DmeanUnc = fitterp->GetMeanUncertainty();
-        }
+
+        if(!fullfit[i]) { std::cout << "======= Fit failed for bin: " << i << endl; continue; }
+
+        Dsigma = fitterp->GetSigma();
+        DsigmaUnc  = fitterp->GetSigmaUncertainty();
+        Dmean = fitterp->GetMean();
+        DmeanUnc = fitterp->GetMeanUncertainty();
 
         float signal_c_min = Dmean-fsigmaSignal*Dsigma;
         float signal_c_max = Dmean+fsigmaSignal*Dsigma;
@@ -292,23 +293,22 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
 
         Double_t s=0,serr=0,srelerr=0,b=0,berr=0,signf=0,signferr=0,sob=0,soberr=0;
         Double_t br=0; //background with reflections
-        if(fullfit[i]) {
-          Double_t min = hmass[i]->GetXaxis()->GetBinCenter(binmin)-binwidth;
-          Double_t max = hmass[i]->GetXaxis()->GetBinCenter(binmax-1)+binwidth;
-          fitterp->Signal(fsigmaSignal,s,serr);
-          fitterp->Background(min, max ,b,berr);
-          //fitterp->Background(fsigmaSignal,b,berr);
-          fitterp->Significance(fsigmaSignal,signf,signferr);
-          if(s) srelerr = serr/s;
-          if(b) sob = s/b;
-          else sob = s;
-          if(b && berr) soberr = TMath::Sqrt((serr/b)*(serr/b) + (s/b/b*berr)*(s/b/b*berr));
-          else soberr = serr;
-          if(fUseRefl && fDmesonSpecie == 0) {
-            br = bkgRfit[i]->Integral(min,max)/(Double_t)hmass[i]->GetBinWidth(1);
-          }
-          else br = b;
+
+        Double_t min = hmass[i]->GetXaxis()->GetBinCenter(binmin)-binwidth;
+        Double_t max = hmass[i]->GetXaxis()->GetBinCenter(binmax-1)+binwidth;
+        fitterp->Signal(fsigmaSignal,s,serr);
+        fitterp->Background(min, max ,b,berr);
+        //fitterp->Background(fsigmaSignal,b,berr);
+        fitterp->Significance(fsigmaSignal,signf,signferr);
+        if(s) srelerr = serr/s;
+        if(b) sob = s/b;
+        else sob = s;
+        if(b && berr) soberr = TMath::Sqrt((serr/b)*(serr/b) + (s/b/b*berr)*(s/b/b*berr));
+        else soberr = serr;
+        if(fUseRefl && fDmesonSpecie == 0) {
+          br = bkgRfit[i]->Integral(min,max)/(Double_t)hmass[i]->GetBinWidth(1);
         }
+        else br = b;
 
         TPaveText *pvSig;
         if(fDmesonSpecie) pvSig = new TPaveText(0.55,0.47,0.95,0.75,"brNDC");
@@ -359,8 +359,6 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         hsb->SetBinError(i+1,soberr);
         hSignal->SetBinContent(i+1,s);
         hSignal->SetBinError(i+1,serr);
-
-        if(!fullfit[i])   continue;
 
         // ---------------- side-band drawing
         hmass_l[i] = (TH1F*)hmass[i]->Clone("hmass_l");
@@ -482,7 +480,7 @@ Bool_t SetReflection(AliHFInvMassFitter* &fitter, Int_t iBin, Float_t fLeftFitRa
   TH1F *histRefl = (TH1F*)fileRefl->Get(Form("%s%d",fHistnameRefl.Data(),iBin));
   TH1F *histSign = (TH1F*)fileRefl->Get(Form("%s%d",fHistnameSign.Data(),iBin));
   if(!histRefl || !histSign){
-    std::cout << "Error in loading the template/signal histrograms! Exiting...\n"; return kFALSE;
+    std::cout << "Error in loading the template/signal histrograms! Exiting..." << endl; return kFALSE;
   }
 
   fitter->SetTemplateReflections(histRefl,"template",fLeftFitRange,fRightFitRange);
