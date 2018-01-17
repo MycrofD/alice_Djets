@@ -169,7 +169,6 @@ void signalExtraction_SB(
 
 }
 
-
 Bool_t rawJetSpectra(TString outdir, TString prod){
 
     hmean = new TH1F("hmean","hmean",fptbinsDN,fptbinsDA);

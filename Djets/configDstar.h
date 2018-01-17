@@ -38,6 +38,10 @@
     Float_t minf = 0.140, maxf = 0.155;
     Int_t   fRebinMass = 1;
 
+    Int_t   fzMeasAxis = 0;
+    Int_t   fJetPtMeasAxis = 1;
+    Int_t
+
     //------- D pT bins
     //const int fptbinsDN = 12;
     //double fptbinsDA[fptbinsDN+1] = { 1,2,3,4,5,6,7,8,10,12,16,24,36 };
