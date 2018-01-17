@@ -18,9 +18,7 @@
 //
 //
 
-//LHC16q (pPb@5.02 TeV) - pass 1
-//265525 265521 265501 265500 265499 265435 265427 265426 265425 265424 265422 265421 265420 265419 265388 265387 265385 265384 265383 265381 265378 265377 265344 265343 265342 265339 265338 265336 265335 265334 265332 265309 
-///alice/data/2016/LHC16q/000265525/pass1_CENT_woSDD 	
+//upgrade production
 
 #include <ctime>
 #include "TGrid.h"
@@ -64,11 +62,11 @@ void AnalysisTrainCorrJetsLocalMC (
                                  Int_t          nfiletestmode       = 1
                                  )
 {
-    
+
     // Some pre-settings and constants
     TStopwatch watch;
     watch.Start();
-    
+
     enum AlgoType {kKT, kANTIKT};
     enum JetType  {kFULLJETS, kCHARGEDJETS, kNEUTRALJETS};
     gSystem->SetFPEMask();
@@ -90,14 +88,14 @@ void AnalysisTrainCorrJetsLocalMC (
     }
     else
         cout << "-- using local analysis.\n";
-    
-    
+
+
     // Load necessary libraries
     LoadLibs();
-    
+
     // Create analysis manager
     AliAnalysisManager* mgr = new AliAnalysisManager(uniqueName);
-    
+
     // Check type of input and create handler for it
     TString localFiles("-1");
     if(usedData == "AOD")
@@ -112,7 +110,7 @@ void AnalysisTrainCorrJetsLocalMC (
             localFiles = "files_esd.txt";
         else
             localFiles = "files_sesd.txt";
-        
+
         gROOT->LoadMacro("$ALICE_ROOT/ANALYSIS/macros/train/AddESDHandler.C");
         AliESDInputHandler* esdH = AddESDHandler();
     }
@@ -120,25 +118,25 @@ void AnalysisTrainCorrJetsLocalMC (
     {
         cout << "Data type not recognized! You have to specify ESD, AOD, or sESD!\n";
     }
-    
+
     if(!useGrid)
         cout << "Using " << localFiles.Data() << " as input file list.\n";
-    
+
     TGrid::Connect("alien://"); //For Alien connection
     //gROOT->LoadMacro("AliAnalysisTaskSEDmesonsFilterCJTest.cxx++g");
     gROOT->LoadMacro("AliAnalysisTaskFlavourJetCorrelationsTest.cxx++g");
     gROOT->LoadMacro("AddTasksFlavourJetMyMC.C");
-   
+
      AddTasksFlavourJetMyMC(1,"alien:///alice/cern.ch/user/b/btrzecia/pPb2016/DstarCuts/5TeVPBp2016_cuts806Base.root",0.,0.557,"TPCFID",runPeriod,0,pSel,isMC,isReco,isMap,bRM,bRMEff,bPythia,isPrompt,"MB"); // Jet(1,..) for D*
      //AddTasksFlavourJetMyData(1,"alien:///alice/cern.ch/user/b/btrzecia/pPb2016/DstarCuts/5TeVPBp2016_cuts806Base.root",0.,0.,"TPCFID",runPeriod,0,pSel,isMC,isReco,isMap,bRM,bRMEff,bPythia,isPrompt,"MB"); // Jet(1,..) for D*
-     
-     
+
+
     //AddTasksFlavourJetMyMC(1,"alien:///alice/cern.ch/user/b/btrzecia/pPb2016/DstarCuts/5TeVPBp2016_cuts2804Base.root",0.,0.557,"TPCFID",runPeriod,0,pSel,isMC,isReco,isMap,"MB",kTRUE); // Jet(1,..) for D*
     //AddTasksFlavourJetMyMC(1,"alien:///alice/cern.ch/user/b/btrzecia/pPb2016/DstarCuts/5TeVPBp2016MC_cuts15Base.root",0.,0.557,"TPCFID",runPeriod,0,pSel,isMC,isReco,isMap,"MB",kTRUE); // Jet(1,..) for D*
     //AddTasksFlavourJetMyMC(1,"alien:///alice/cern.ch/user/b/btrzecia/pPb2016/DstarCuts/5TeVPBp2016MC_cuts905Base.root",0.,0.557,"TPCFID",runPeriod,0,pSel,isMC,isReco,isMap,"MB",kTRUE); // Jet(1,..) for D*
-    
-    
-    
+
+
+
     // Set the physics selection for all given tasks
   /*  TObjArray *toptasks = mgr->GetTasks();
     for (Int_t i=0; i<toptasks->GetEntries(); ++i)
@@ -152,22 +150,22 @@ void AnalysisTrainCorrJetsLocalMC (
         task->SelectCollisionCandidates(pSel);
     }
     */
-    
+
     if(gridMode=="full") mgr->SetUseProgressBar(1, 25);
-    
+
 
     if (!mgr->InitAnalysis())
         return;
     mgr->PrintStatus();
-    
+
     if (useGrid)
     {  // GRID CALCULATION
-        
+
         AliAnalysisGrid *plugin = CreateAlienHandler(uniqueName, gridDir, gridMode, runNumbers, nrunspermaster, pattern, additionalCXXs, additionalHs, maxFilesPerWorker, workerTTL, isMC);
         plugin->SetNtestFiles(nfiletestmode);
-        
+
         mgr->SetGridHandler(plugin);
-        
+
         // start analysis
         cout << "Starting GRID Analysis...";
         if(gridMode=="test") mgr->SetDebugLevel(10);
@@ -176,7 +174,7 @@ void AnalysisTrainCorrJetsLocalMC (
     }
     else
     {  // LOCAL CALCULATION
-        
+
         TChain* chain = 0;
         if (usedData == "AOD")
         {
@@ -190,7 +188,7 @@ void AnalysisTrainCorrJetsLocalMC (
             gROOT->LoadMacro("$ALICE_PHYSICS/PWG/EMCAL/macros/CreateESDChain.C");
             chain = CreateESDChain(localFiles.Data(), numLocalFiles);
         }
-        
+
         // start analysis
         cout << "Starting LOCAL Analysis...";
         mgr->SetDebugLevel(10);
@@ -204,12 +202,12 @@ void AnalysisTrainCorrJetsLocalMC (
 void LoadLibs()
 {
     // Load common libraries (better too many than too few)
- 
+
     //gSystem->Load("libPythia6");
     //gSystem->Load("libEGPythia6");
     //gSystem->Load("liblhapdf");
     //gSystem->Load("libAliPythia6");
-    
+
     gSystem->Load("libTree");
     gSystem->Load("libGeom");
     gSystem->Load("libVMC");
@@ -247,7 +245,7 @@ void LoadLibs()
     gSystem->Load("libPWGflowTasks");
     gSystem->Load("libPWGHFbase");
     gSystem->Load("libPWGHFvertexingHF");
-    
+
        // include paths
     gSystem->AddIncludePath("-Wno-deprecated");
     gSystem->AddIncludePath("-I$ALICE_ROOT -I$ALICE_PHYSICS -I$ALICE_PHYSICS/include -I$ALICE_ROOT/EMCAL -I$ALICE_PHYSICS/PWG/EMCAL -I$ALICE_PHYSICS/PWGJE -I$ALICE_PHYSICS/PWGJE/EMCALJetTasks -I$ALICE_PHYSICS/PWGJE/EMCALJetTasks/UserTasks -I$ALICE_ROOT/ANALYSIS/Tender -I$ALICE_ROOT/ANALYSIS/TenderSupplies");
@@ -261,22 +259,22 @@ AliAnalysisGrid* CreateAlienHandler(const char* uniqueName, const char* gridDir,
 {
     TDatime currentTime;
     TString tmpName(uniqueName);
-   
+
     TString tmpAdditionalLibs("");
     // tmpAdditionalLibs = Form("libTree.so libGeom.so libVMC.so libPhysics.so libMinuit.so libMinuit2.so libProof.so libSTEERBase.so libESD.so libAOD.so libOADB.so libANALYSIS.so libCDB.so libRAWDatabase.so libSTEER.so libEVGEN.so libANALYSISalice.so libCORRFW.so libESDfilter.so libSTAT.so libPWGTools.so libPWGHFbase.so libPWGflowBase.so libPWGflowTasks.so libPWGHFvertexingHF.so libEMCALUtils.so libPHOSUtils.so libPWGCaloTrackCorrBase.so libEMCALraw.so libEMCALbase.so libEMCALrec.so libTRDbase.so libVZERObase.so libVZEROrec.so libPWGEMCAL.so libPWGGAEMCALTasks.so libPWGTools.so libPWGCFCorrelationsBase.so libPWGCFCorrelationsDPhi.so libCGAL.so libfastjet.so libsiscone.so libsiscone_spherical.so libfastjetplugins.so libfastjettools.so libfastjetcontribfragile.so libPWGJE.so libPWGmuon.so libPWGJEEMCALJetTasks.so libPWGJEFlavourJetTasks.so %s %s",additionalCode.Data(),additionalHeaders.Data());
      tmpAdditionalLibs = Form("libTree.so libGeom.so libVMC.so libPhysics.so libMinuit.so libMinuit2.so libProof.so libSTEERBase.so libESD.so libAOD.so libOADB.so libANALYSIS.so libCDB.so libRAWDatabase.so libSTEER.so libEVGEN.so libANALYSISalice.so libCORRFW.so libESDfilter.so libSTAT.so libPWGTools.so libPWGHFbase.so libPWGflowBase.so libPWGflowTasks.so libPWGHFvertexingHF.so libEMCALUtils.so libPHOSUtils.so libPWGCaloTrackCorrBase.so libEMCALraw.so libEMCALbase.so libEMCALrec.so libTRDbase.so libVZERObase.so libVZEROrec.so libPWGGAEMCALTasks.so libPWGTools.so libPWGCFCorrelationsBase.so libPWGCFCorrelationsDPhi.so libCGAL.so libfastjet.so libsiscone.so libsiscone_spherical.so libfastjetplugins.so libfastjettools.so libfastjetcontribfragile.so libPWGJE.so libPWGmuon.so libPWGJEEMCALJetTasks.so libPWGJEFlavourJetTasks.so %s %s",additionalCode.Data(),additionalHeaders.Data());
-    
+
     TString macroName("");
     TString execName("");
     TString jdlName("");
     macroName = Form("%s.C", tmpName.Data());
     execName = Form("%s.sh", tmpName.Data());
     jdlName = Form("%s.jdl", tmpName.Data());
-    
+
     AliAnalysisAlien *plugin = new AliAnalysisAlien();
     plugin->SetOverwriteMode();
     plugin->SetRunMode(gridMode);
-    
+
     // Here you can set the (Ali)ROOT version you want to use
     plugin->SetAPIVersion("V1.1x");
     //plugin->SetROOTVersion("v5-34-30-alice-3");
@@ -289,29 +287,29 @@ AliAnalysisGrid* CreateAlienHandler(const char* uniqueName, const char* gridDir,
     plugin->SetFriendChainName("AliAOD.VertexingHF.root");
     if (!isMC)
         plugin->SetRunPrefix("000");
-    
+
     plugin->AddRunList(runNumbers);
     plugin->SetNrunsPerMaster(nrunspermaster);
-    
+
     plugin->SetGridWorkingDir(Form("%s",tmpName.Data()));
     plugin->SetGridOutputDir("output");
-    
+
     plugin->SetAnalysisSource(additionalCode.Data());
     plugin->SetAdditionalLibs(tmpAdditionalLibs.Data());
-    
+
     plugin->AddIncludePath("-I. -I$ROOTSYS/include -I$ALICE_ROOT -I$ALICE_ROOT/include -I$ALICE_PHYSICS/include -I$ALICE_PHYSICS/PWG/EMCAL -I$ALICE_ROOT/EMCAL -I$ALICE_ROOT/STEER/STEER -I$ALICE_ROOT/STEER/STEERBase -I$ALICE_ROOT/STEER/ESD -I$ALICE_ROOT/STEER/AOD -I$ALICE_ROOT/ANALYSIS/ -I$ALICE_ROOT/ANALYSIS/Tender -I$ALICE_ROOT/ANALYSIS/TenderSupplies -I$ALICE_ROOT/ANALYSIS/ESDfilter -I$ALICE_PHYSICS/OADB -I$ALICE_PHYSICS/PWGHF -I$ALICE_PHYSICS/PWGHF/base -I$ALICE_PHYSICS/PWGHF/vertexingHF -I$ALICE_PHYSICS/PWG/FLOW/Base -I$ALICE_PHYSICS/PWG/FLOW/Tasks  -I$ALICE_PHYSICS/PWGJE  -I$ALICE_PHYSICS/JETAN -I$ALICE_PHYSICS/PWGJE/EMCALJetTasks -I$ALICE_PHYSICS/PWGJE/FlavourJetTasks -I$ALICE_PHYSICS/PWGJE/EMCALJetTasks/UserTasks -g");
-    
+
     //plugin->AddExternalPackage("boost::v1.59.0-1");
     //plugin->AddExternalPackage("cgal::v4.6.3-3");
     //plugin->AddExternalPackage("fastjet::v3.1.3_1.020-3");
-    
+
     plugin->SetDefaultOutputs(kTRUE);
     // merging via jdl
     plugin->SetMergeViaJDL(kTRUE);
     //plugin->SetMergeViaJDL(kFALSE);
     plugin->SetOneStageMerging(kFALSE);
     plugin->SetMaxMergeStages(2);
-    
+
     //plugin->SetMergeExcludes("");
     plugin->SetAnalysisMacro(macroName.Data());
     plugin->SetSplitMaxInputFileNumber(maxFilesPerWorker);
@@ -319,8 +317,8 @@ AliAnalysisGrid* CreateAlienHandler(const char* uniqueName, const char* gridDir,
     plugin->SetTTL(workerTTL);
     plugin->SetInputFormat("xml-single");
     plugin->SetJDLName(jdlName.Data());
-    plugin->SetPrice(1);      
+    plugin->SetPrice(1);
     plugin->SetSplitMode("se");
-    
+
     return plugin;
 }

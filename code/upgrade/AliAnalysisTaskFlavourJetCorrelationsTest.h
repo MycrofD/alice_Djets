@@ -1,5 +1,5 @@
-#ifndef ALIANALYSISTASKFLAVOURJETCORRELATIONS_H
-#define ALIANALYSISTASKFLAVOURJETCORRELATIONS_H
+#ifndef ALIANALYSISTASKFLAVOURJETCORRELATIONSTEST_H
+#define ALIANALYSISTASKFLAVOURJETCORRELATIONSTEST_H
 /**************************************************************************
 * Copyright(c) 1998-2009, ALICE Experiment at CERN, All rights reserved. *
 *                                                                        *
@@ -42,27 +42,27 @@ class AliParticleContainer;
 class AliClusterContainer;
 class AliJetContainer;
 
-class AliAnalysisTaskFlavourJetCorrelations : public AliAnalysisTaskEmcalJet 
+class AliAnalysisTaskFlavourJetCorrelationsTest : public AliAnalysisTaskEmcalJet
 {
-   
+
 public:
-   
+
    enum ECandidateType{ kD0toKpi, kDstartoKpipi };
    enum ECorrelationMethod{ kConstituent, kAngular, kResponseMatrix };
-   
-   AliAnalysisTaskFlavourJetCorrelations();
-   AliAnalysisTaskFlavourJetCorrelations(const Char_t* name,AliRDHFCuts* cuts, ECandidateType candtype);
-   virtual ~AliAnalysisTaskFlavourJetCorrelations();
-   
+
+   AliAnalysisTaskFlavourJetCorrelationsTest();
+   AliAnalysisTaskFlavourJetCorrelationsTest(const Char_t* name,AliRDHFCuts* cuts, ECandidateType candtype);
+   virtual ~AliAnalysisTaskFlavourJetCorrelationsTest();
+
    virtual void     UserCreateOutputObjects();
    virtual Bool_t   Run();
    virtual void     Terminate(Option_t *);
    virtual void     Init();
    virtual void     LocalInit() {Init();}
-   
+
    // inizializations
-   Bool_t DefineHistoForAnalysis();  
-   
+   Bool_t DefineHistoForAnalysis();
+
    // set MC usage
    void   SetMC(Bool_t theMCon) {fUseMCInfo = theMCon;}
    Bool_t GetMC() const {return fUseMCInfo;}
@@ -72,10 +72,10 @@ public:
    // set usage of reconstructed tracks
    void   SetUseReco(Bool_t reco) {fUseReco=reco;}
    Bool_t GetUseReco() const {return fUseReco;}
-   
+
    void SetMassLimits(Double_t range, Int_t pdg);
    void SetMassLimits(Double_t lowlimit, Double_t uplimit);
-   
+
    void SetCorrelationMethod(Int_t c) {fCorrelationMethod=c;}
    Int_t GetCorrelationMethod() const {return fCorrelationMethod;}
 
@@ -106,13 +106,13 @@ public:
    Bool_t GetBuildResponseMatrix() const {return fBuildRM;}
    void SetBuildResponseMatrixEff(Bool_t b){ fBuildRMEff=b; }
    Bool_t GetBuildResponseMatrixEff() const {return fBuildRMEff;}
-   
-   
+
+
 private:
-   
-   AliAnalysisTaskFlavourJetCorrelations(const AliAnalysisTaskFlavourJetCorrelations &source);
-   AliAnalysisTaskFlavourJetCorrelations& operator=(const AliAnalysisTaskFlavourJetCorrelations& source); 
-   
+
+   AliAnalysisTaskFlavourJetCorrelationsTest(const AliAnalysisTaskFlavourJetCorrelationsTest &source);
+   AliAnalysisTaskFlavourJetCorrelationsTest& operator=(const AliAnalysisTaskFlavourJetCorrelationsTest& source);
+
    Double_t Z(AliVParticle* part, AliEmcalJet* jet, Double_t rho) const;
    Double_t Z(AliVParticle* part, AliEmcalJet* jet) const;
    Double_t Z(Double_t* p, Double_t *pj) const;
@@ -142,8 +142,8 @@ private:
    TClonesArray *fCandidateArray;   //! contains candidates selected by AliRDHFCuts
    TClonesArray *fSideBandArray;    //! contains candidates selected by AliRDHFCuts::IsSelected(kTracks), to be used for side bands (DStar case only!!)
    Bool_t fAnalyseDBkg;             // flag to switch off/on the SB analysis (default is off)
-   
-    
+
+
    Int_t fNAxesBigSparse;           // number of axis
    Bool_t fUseCandArray;            //! Use D meson candidates array
    Bool_t fUseSBArray;              //! Use D meson SB array
@@ -168,9 +168,9 @@ private:
    //main histograms
    THnSparse* fhsDphiz;             //!
    THnSparse* fResponseMatrix;      //!
-   
 
-   ClassDef(AliAnalysisTaskFlavourJetCorrelations,8); // class for charm-jet CorrelationsExch
+
+   ClassDef(AliAnalysisTaskFlavourJetCorrelationsTest,8); // class for charm-jet CorrelationsExch
 };
 
 #endif
