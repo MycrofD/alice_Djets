@@ -26,10 +26,10 @@
 #include "signalExtraction.h"
 
 void signalExtraction_SB(
-  TString dataFile = "/home/basia/Work/alice/analysis/pp13tev/outData/losser_15Nov/AnalysisResults",
-  TString lhcprod = "LHC16kl", // if one file: e.g. LHC16k, LHC16kl ... ; for more than one file: LHC16
-  bool isMoreFiles = 0, TString prod = "kl",    // for more than 1 file, for one file leave it empty
-  bool isEff = 0, TString efffile = "../efficiency/DjetEff_prompt.root",
+  TString dataFile = "$HOME/ALICE_HeavyFlavour/work/jets1/p3/Dzero/AnalysisResultsDz16qtFASTwoSDD.root",
+  TString lhcprod = "",//"LHC16kl", // if one file: e.g. LHC16k, LHC16kl ... ; for more than one file: LHC16
+  bool isMoreFiles = 0, TString prod = "",//"kl",    // for more than 1 file, for one file leave it empty
+  bool isEff = 0, TString efffile = "$HOME/ALICE_HeavyFlavour/work/jets1/p3/_Dzero_DjetEff_prompt_jetpt2_50.root",
   bool isRef = 0, TString refFile = "",
   bool save = 1,
   bool postfix = 0, TString listName = "Cut",
@@ -43,7 +43,7 @@ void signalExtraction_SB(
     bEff = isEff;
     if(bEff)plotsDir="/plots";
     else plotsDir = "/plotsNoEff";
-    TString outdir = OUTDIRECTORY + out;
+    TString outdir = out;// OUTDIRECTORY + out;
     gSystem->Exec(Form("mkdir %s",outdir.Data()));
     gSystem->Exec(Form("mkdir %s%s",outdir.Data(),plotsDir.Data()));
     setStyle();
@@ -64,9 +64,9 @@ void signalExtraction_SB(
 
     if(!nFiles) {
       datafile = dataFile;
-      datafile += "_";
+//      datafile += "_";
       datafile += lhcprod;
-      datafile += ".root";
+//      datafile += ".root";
       File = new TFile(datafile,"read");
       dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
 
@@ -234,7 +234,6 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         AliHFInvMassFitter* fitterp = new AliHFInvMassFitter((TH1F*)hmassfit,hmin,hmax,fbkgtype,0);
         fitterp->SetInitialGaussianMean(fDmass);
         fitterp->SetInitialGaussianSigma(fDsigma);
-
         if(fUseRefl && fDmesonSpecie == 0) {
           SetReflection(fitterp,i+firstPtBin,hmin,hmax,RS);
         }
