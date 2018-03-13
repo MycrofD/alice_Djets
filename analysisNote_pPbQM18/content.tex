@@ -7,16 +7,16 @@
 
 The main analysis tasks (\texttt{C++} classes) used in the analysis are in the \texttt{PWGJE} library of the \texttt{AliPhysics} software package:
 \begin{itemize}
-\item \texttt{AliAnalysisTaskSEDmesonsFilterCJ} (filters D mesons and create a set of particles with the D meson instead of the daughters);
-\item \texttt{AliAnalysisTaskFlavourJetCorrelations} (correlates each found D meson with a jet);
-\item \texttt{AliEmcalJetTask};
-\item \texttt{AliAnalysisTaskRhoSparse}.
+\item \texttt{AliAnalysisTaskSEDmesonsFilterCJ} (filters D mesons and creates a set of particles with the D meson instead of the daughters);
+\item \texttt{AliAnalysisTaskFlavourJetCorrelations} (correlates each D meson found with a jet);
+\item \texttt{AliEmcalJetTask} ;%(what does this do?)
+\item \texttt{AliAnalysisTaskRhoSparse}. %(what does this do?)
 \end{itemize}
-The \texttt{AliPhysics} version used for this analysis is the analysis tag: \texttt{vAN-20170826} (with \texttt{AliRoot v5-09-14-1}).
+The \texttt{AliPhysics} version used for this analysis is the analysis tag: \texttt{vAN-20170826} (with \texttt{AliRoot v5-09-14-1}).%versions have to be updated
 
-The task used for this analysis generates a multiple axis histogram (\texttt{THnSparse}) that keep informations about: \zpar, jet \pt, D-meson \pt\ and D-meson invariant mass.
+The task used for this analysis generates a multiple axis histogram (\texttt{THnSparse}) that keeps information about: \zpar, jet \pt, D-meson \pt\ and D-meson invariant mass.
 
-The post-processing includes: projection of the \texttt{THnSparse} into lower-dimensional histograms, raw signal extraction, response matrix generation, unfolding, B feed-down correction and the final plotting.
+The post-processing includes: projection of the \texttt{THnSparse} onto lower-dimensional histograms, raw signal extraction, response matrix generation, unfolding, B feed-down correction and the final plotting.
 The post-processing is relatively light-weight and is performed directly in a personal computer. This code is written using the \texttt{C++} with \texttt{ROOT}.
 
 %The code is fully available in a \texttt{GIT} repository hosted on the CERN \texttt{Gitlab} service: 
@@ -37,9 +37,9 @@ The post-processing is relatively light-weight and is performed directly in a pe
 
 \section{Dataset and Event Selection}
 
-For this analysis we use the data collected by ALICE in 2016 during the Minimum Bias period of the \pPb\ collisions at $\snn=5.02$~TeV. These data corresponds to the following data taking periods:
+For this analysis we use the data collected by ALICE in 2016 during the Minimum Bias period of the \pPb\ collisions at $\snn=5.02$~TeV. This data corresponds to the following data taking periods:
 LHC16q and LHC16t pass1, FAST and CENT\_woSDD productions were merged, the total number of events is 603.1 M (after all the selections outlined below) out of 834.5 M analysed.
-The complete list of runs used in this analysis is:
+The complete list of runs used in this analysis are:
 
 LHC16q: 265525, 265521, 265501, 265500, 265499, 265435, 265427, 265426, 265425, 265424, 265422, 265421, 265420, 265419, 265388, 265387, 265385, 265384, 265383, 265381, 265378, 265377, 265344, 265343, 265342, 265339, 265338, 265336, 265335, 265334, 265332, 265309  \\
 LHC16t: 267166, 267165, 267164, 267163 
@@ -48,9 +48,10 @@ Events were selected using the event selection \texttt{kINT7}. Note that the ana
 Events were further filtered using the Physics Selection, and selection provided by:
 \begin{itemize}
 \item \texttt{AliAnalysisTaskEmcal::IsEventSelected()}, which rejects events based on event vertex quality, in particular requiring a reconstructed vertex position not farther than 10 cm from the center of the detector along the beam axis; and a distance between the SPD vertex and the V0 vertex not larger than 0.5 cm %($2.75+8.66+34.41+29.74$~M~$=75.56$~M events rejected);
-\item \texttt{AliRDHFCutsDStartoKpipi::IsEventSelected(AliVEvent*)}, which rejects events based on event vertex quality 
+\item \texttt{AliRDHFCutsDStartoKpipi::IsEventSelected(AliVEvent*)}, which rejects events for D$^*$ candidates based on event vertex quality and pileup
+\item \texttt{AliRDHFCutsD0toKpi::IsEventSelected(AliVEvent*)}, which rejects events for D$^0$ candidates based on event vertex quality and pileup.
 %($0.68+1.90+3.71+3.03$~M~$= 9.32$~M events rejected) 
-and pileup 
+%and pileup 
 %($0.09+1.07+1.65+1.18$~M~$ =  3.99$~M events rejected).
 \end{itemize}
 
