@@ -7,16 +7,16 @@
 
 The main analysis tasks (\texttt{C++} classes) used in the analysis are in the \texttt{PWGJE} library of the \texttt{AliPhysics} software package:
 \begin{itemize}
-\item \texttt{AliAnalysisTaskSEDmesonsFilterCJ} (filters D mesons and creates a set of particles with the D meson instead of the daughters);
-\item \texttt{AliAnalysisTaskFlavourJetCorrelations} (correlates each D meson found with a jet);
-\item \texttt{AliEmcalJetTask} ;%(what does this do?)
-\item \texttt{AliAnalysisTaskRhoSparse}. %(what does this do?)
+\item \texttt{AliAnalysisTaskSEDmesonsFilterCJ} (filters D mesons and create a set of particles with the D meson instead of the daughters);
+\item \texttt{AliAnalysisTaskFlavourJetCorrelations} (correlates each found D meson with a jet);
+\item \texttt{AliEmcalJetTask};
+\item \texttt{AliAnalysisTaskRhoSparse}.
 \end{itemize}
-The \texttt{AliPhysics} version used for this analysis is the analysis tag: \texttt{vAN-20170826} (with \texttt{AliRoot v5-09-14-1}).%versions have to be updated
+The \texttt{AliPhysics} version used for this analysis is the analysis tag: \texttt{vAN-20170826} (with \texttt{AliRoot v5-09-14-1}).
 
-The task used for this analysis generates a multiple axis histogram (\texttt{THnSparse}) that keeps information about: \zpar, jet \pt, D-meson \pt\ and D-meson invariant mass.
+The task used for this analysis generates a multiple axis histogram (\texttt{THnSparse}) that keep informations about: \zpar, jet \pt, D-meson \pt\ and D-meson invariant mass.
 
-The post-processing includes: projection of the \texttt{THnSparse} onto lower-dimensional histograms, raw signal extraction, response matrix generation, unfolding, B feed-down correction and the final plotting.
+The post-processing includes: projection of the \texttt{THnSparse} into lower-dimensional histograms, raw signal extraction, response matrix generation, unfolding, B feed-down correction and the final plotting.
 The post-processing is relatively light-weight and is performed directly in a personal computer. This code is written using the \texttt{C++} with \texttt{ROOT}.
 
 %The code is fully available in a \texttt{GIT} repository hosted on the CERN \texttt{Gitlab} service: 
@@ -37,9 +37,9 @@ The post-processing is relatively light-weight and is performed directly in a pe
 
 \section{Dataset and Event Selection}
 
-For this analysis we use the data collected by ALICE in 2016 during the Minimum Bias period of the \pPb\ collisions at $\snn=5.02$~TeV. This data corresponds to the following data taking periods:
+For this analysis we use the data collected by ALICE in 2016 during the Minimum Bias period of the \pPb\ collisions at $\snn=5.02$~TeV. These data corresponds to the following data taking periods:
 LHC16q and LHC16t pass1, FAST and CENT\_woSDD productions were merged, the total number of events is 603.1 M (after all the selections outlined below) out of 834.5 M analysed.
-The complete list of runs used in this analysis are:
+The complete list of runs used in this analysis is:
 
 LHC16q: 265525, 265521, 265501, 265500, 265499, 265435, 265427, 265426, 265425, 265424, 265422, 265421, 265420, 265419, 265388, 265387, 265385, 265384, 265383, 265381, 265378, 265377, 265344, 265343, 265342, 265339, 265338, 265336, 265335, 265334, 265332, 265309  \\
 LHC16t: 267166, 267165, 267164, 267163 
@@ -48,24 +48,23 @@ Events were selected using the event selection \texttt{kINT7}. Note that the ana
 Events were further filtered using the Physics Selection, and selection provided by:
 \begin{itemize}
 \item \texttt{AliAnalysisTaskEmcal::IsEventSelected()}, which rejects events based on event vertex quality, in particular requiring a reconstructed vertex position not farther than 10 cm from the center of the detector along the beam axis; and a distance between the SPD vertex and the V0 vertex not larger than 0.5 cm %($2.75+8.66+34.41+29.74$~M~$=75.56$~M events rejected);
-\item \texttt{AliRDHFCutsDStartoKpipi::IsEventSelected(AliVEvent*)}, which rejects events for D$^*$ candidates based on event vertex quality and pileup
-\item \texttt{AliRDHFCutsD0toKpi::IsEventSelected(AliVEvent*)}, which rejects events for D$^0$ candidates based on event vertex quality and pileup.
+\item \texttt{AliRDHFCutsDStartoKpipi::IsEventSelected(AliVEvent*)}, which rejects events based on event vertex quality 
 %($0.68+1.90+3.71+3.03$~M~$= 9.32$~M events rejected) 
-%and pileup 
+and pileup 
 %($0.09+1.07+1.65+1.18$~M~$ =  3.99$~M events rejected).
 \end{itemize}
 
 Results shown below come from the LEGO trains HFCJ\_pPb: \\343 (LHC16q\_pass1\_FAST), 344 (LHC16q\_pass1\_CENT\_woSDD), 345 ( LHC16t\_pass1\_FAST) and 346 (LHC16t\_pass1\_CENT\_woSDD).
-%need to check the correct train numbers
+
 \subsubsection{Monte Carlo productions}
 
-For this analysis the Monte Carlo production LHC17d2a\_fast\_new has been used, anchored to the 2016 \pPb\ data taking periods LHC16q and LHC16t and the FAST production. The FAST production simulation is used to corrected the data sample, which is merged FAST+CENT\_woSDD, assuming that efficiencies are detector response are the same for both.
-The simulations uses PYTHIA6 with the Perugia2011 tune as particle generator at $\s=5.02$~TeV. If $N_{coll} > $ 1, the event generated by Hijing is also embedded.
+For this analysis the Monte Carlo production LHC17d2a\_fast\_new has been used, anchored to the 2016 \pPb\ data taking periods LHC16q and LHC16t and the FAST production. The FAST production simulation is used to corrected the datasample, which is merged FAST+CENT\_woSDD, assuming that efficiencies are detector response are the same for both.
+The simulations uses PYTHIA6 with the Perugia2011 tune as particle generator at $\s=5.02$~TeV. If $N_{coll} > $ 1, the even generated by Hijing is also embedded.
 The charm content has been enhanced by requesting a \ccbar\ in 50\% of the events and a \bbbar\ in the remaining half.
 Furthermore, all D mesons are forced to decay hadronically.
 This MC production is used to compute the D-meson efficiency with jets, acceptance corrections and a response matrix of D-tagged jets with prompt and non-prompt \Dstar: c,~b~$\rightarrow$~\Dstar.
 
-Results shown below come from the LEGO trains HFCJ\_pPb\_MC: {\color{red} XX}77 (full simulation), and 76 (only Pythia part of the simulation).
+Results shown below come from the LEGO trains HFCJ\_pPb\_MC: 77 (full simulation), and 76 (only Pythia part of the simulation).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -77,27 +76,27 @@ Results shown below come from the LEGO trains HFCJ\_pPb\_MC: {\color{red} XX}77 
 \section{D-Meson Selection}
 \label{sec:DmesonSel}
 The \Dstar mesons were reconstructed through their hadronic decay channels~\cite{PDG:2016}:
-\begin{eqnarray*}
-\Dzero (\bar{\Dzero}) &\to& {\rm K}^{\pm} + \pi^{\mp}  , {\text{ BR}} = 3.93\pm0.04\%\\
-\Dstar \to \Dzero + \pi^{\pm} &\to& {\rm K}^{\pm} + \pi^{\mp}  + \pi^{\pm} , {\text{ BR}} = 67.7\pm0.5\%, 3.93\pm0.04\%
-\end{eqnarray*}
+
+\begin{center}
+$\Dstar \to \Dzero + \pi^{\pm} \to {\rm K}^{\pm} + \pi^{\mp}  + \pi^{\pm}$ , BR = 67.7$\pm$0.5\%, 3.93$\pm$0.04\%
+\end{center}
 
 The selection strategy is based on the topological displacement of the secondary vertex from the primary vertex due to their relatively large lifetime.
 
-The candidate vertices are read from the \texttt{AOD} friend chain \texttt{AliAOD.VertexingHF.root}. A list of topological and kinematic cuts applied for \Dstar\ in \pPb\ collisions at $\snn=5.02$~TeV can be found in Table~\ref{DStarCutspPb} and in Table~\ref{DZeroCutspPb} for \Dzero in the same \pPb collisions at $\snn=5.02$~TeV.
+The candidate vertices are read from the \texttt{AOD} friend chain \texttt{AliAOD.VertexingHF.root}. A list of topological and kinematic cuts applied for \Dstar\ in \pPb\ collisions at $\snn=5.02$~TeV can be found in Table~\ref{DStarCutspPb}.
 The same quality track selection on the decay products used for the D-meson spectra analysis of the same datasets has been used in this analysis.
 For the final jet spectrum we will apply $\ptd> 3$~\GeVc\ on the D mesons. The accepted $|y_{\rm D}|$ range is \pt-dependent, with the upper limit growing from $0.5$ to $0.8$ at $\pt=5$~\GeVc.
 
     
-\begin{table}[bth]
+    \begin{table}[bth]
 \caption{\Dstar\ cuts for \pPb\ collisions at $\snn=5.02$~TeV.}
-\label{DStarCutspPb}
+     \label{DStarCutspPb}
 \begin{center}
 \begin{scriptsize}
     \begin{tabular}{lrrrrrrrrrrrrr}
     \hline
-    $p_{\mathrm T,\Dstar}$ (\GeVc) & $0.5-1$ & $1-2$ & $2-3$ & $3-4$ & $4-5$ & $5-6$ & $6-7$ & $7-8$ & $8-10$ & $10-12$ & $12-16$ & $16-24$ & $24-36$ \\ \hline
-    $\Delta M_{\Dstar} (\GeVcsq)$ & 0.03 & 0.032 & 0.032 & 0.032 & 0.032 & 0.036 & 0.036 & 0.036 & 0.05 & 0.05 & 0.094 & 0.094 & 0.7 \\ \hline
+    $p_{\mathrm T,\Dzero}$ (\GeVc) & $0.5-1$ & $1-2$ & $2-3$ & $3-4$ & $4-5$ & $5-6$ & $6-7$ & $7-8$ & $8-10$ & $10-12$ & $12-16$ & $16-24$ & $24-36$ \\ \hline
+    $\Delta M_{\Dzero} (\GeVcsq)$ & 0.03 & 0.032 & 0.032 & 0.032 & 0.032 & 0.036 & 0.036 & 0.036 & 0.05 & 0.05 & 0.094 & 0.094 & 0.7 \\ \hline
     DCA (cm) & 0.0315 & 0.025 & 0.03 & 0.03 & 0.035 & 0.04 & 0.08 & 0.12 & 0.12 & 0.12 & 0.2 & 0.2 & 0.5 \\ \hline
     $\cos(\theta^{*})$ & 0.9 & 0.8 & 0.8 & 0.8 & 0.9 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1\\ \hline
     $p_{\mathrm T,K}$ (\GeVc) & 0.5 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 0.3 & 0.3 & 0 \\ \hline
@@ -107,33 +106,7 @@ For the final jet spectrum we will apply $\ptd> 3$~\GeVc\ on the D mesons. The a
     $d_{0}^{K}\cdot d_{0}^{\pi}$ $(10^{-4}{\rm cm}^2)$ & -3 & -2 & -2.5 & -1.3 & -0.38 & 0.44 & 5 & 5 & 100 & 100 & 500 & 1000 & 1000 \\ \hline
     $\cos(\theta_{\rm point})$ & 0.8 & 0.9 & 0.9 & 0.87 & 0.86 & 0.83 & 0.76 & 0.76 & 0.68 & 0.68 & 0.60 & -1 & -1 \\ \hline
     $\cos(\theta_{{\rm point},xy})$ & - & 0.97 & - & - & - & - & - & - & - & - & - & - & - \\ \hline
-    $L_{xy}/\sigma_{L_{xy}} ({\rm cm})$ & 4 & 3.5 & 4 & 3.5 & 3 & 2.5 & 1.5 & 1 & 0 & 0 & 0 & 0 & 0 \\ \hline
-    \end{tabular}
-    \end{scriptsize}
-    \end{center}
-\end{table}
-
-
-\begin{table}[bth]
-\caption{\Dzero\ cuts for \pPb\ collisions at $\snn=5.02$~TeV.}
-\label{DZeroCutspPb}
-\begin{center}
-\begin{scriptsize}
-    \begin{tabular}{lrrrrrrrrrrrrr}
-    \hline
-    $p_{\mathrm T,\Dzero}$ (\GeVc) 	&$0.5-1$& $1-2$	& $2-3$	& $3-4$	& $4-5$	& $5-6$	& $6-7$	& $7-8$	& $8-10$& $10-12$	& $12-16$	& $16-24$	& $24-36$ \\ \hline
-    $\Delta M_{\Dzero} (\GeVcsq)$	& 0.4 	& 0.4	& 0.4	& 0.4	& 0.4	& 0.4	& 0.4	& 0.4	& 0.4	& 0.4		& 0.4		& 0.4		& 0.4 \\ \hline
-    DCA (cm)				& 0.03	& 0.03	& 0.03	& 0.03	& 0.03	& 0.03	& 0.03	& 0.03	& 0.03	& 0.03		& 0.03		& 0.03		& 0.03 \\ \hline
-    $\cos(\theta^{*})$			& 0.8	& 0.8	& 0.8	& 0.8	& 0.8	& 0.8	& 0.8	& 0.8	& 0.9	& 0.9		& 1		& 1		& 1\\ \hline
-    $p_{\mathrm T,K}$ (\GeVc)		& 0.5	& 0.5	& 0.7	& 0.7	& 0.7	& 0.7	& 0.7	& 0.7	& 0.7	& 0.7		& 0.7		& 0.7		& 0.7 \\ \hline
-    $p_{\mathrm T,\pi}$ (\GeVc) 	& 0.5	& 0.5	& 0.7	& 0.7	& 0.7	& 0.7	& 0.7	& 0.7	& 0.7	& 0.7		& 0.7		& 0.7		& 0.7 \\ \hline
-    $d_{0}^{K}$  (cm) 			& 0.1	& 0.1 	& 0.1 	& 0.1 	& 0.1 	& 0.1 	& 0.1 	& 0.1 	& 0.1 	& 0.1 		& 0.1 		& 0.1 		& 0.1 \\ \hline
-    $d_{0}^{\pi}$  (cm) 		& 0.1	& 0.1 	& 0.1 	& 0.1 	& 0.1 	& 0.1 	& 0.1 	& 0.1 	& 0.1 	& 0.1 		& 0.1 		& 0.1 		& 0.1 \\ \hline
-    $d_{0}^{K}\cdot d_{0}^{\pi}$ $(10^{-4}{\rm cm}^2)$
-					& -5 	& -3.5 	& -3 	& -3 	& -1.5 	& -1 	& -0.8 	& -0.8 	& -0.5 	& -0.5 		& 1 		& 1		& 1   \\ \hline
-    $\cos(\theta_{\rm point})$ 		& 0.95	& 0.95	& 0.95	& 0.95	& 0.95	& 0.95	& 0.95	& 0.95	& 0.95	& 0.95		& 0.95		& 0.90 		& 0.90 \\ \hline
-%    {\color{red}?}$\cos(\theta_{{\rm point},xy})$ 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 	& 0 		& 0 		& 0 		& 0    \\ \hline
-    $L_{xy}/\sigma_{L_{xy}} ({\rm cm})$	& 5 	& 5 	& 5 	& 5 	& 5 	& 4 	& 4 	& 4 	& 3 	& 3 		& 3 		& 3 		& 3 \\ \hline
+    $L_{xy ({\rm cm})}$ & 4 & 3.5 & 4 & 3.5 & 3 & 2.5 & 1.5 & 1 & 0 & 0 & 0 & 0 & 0 \\ \hline
     \end{tabular}
     \end{scriptsize}
     \end{center}
@@ -145,17 +118,7 @@ The Particle Identification (PID) of pions and kaons was performed using the inf
 in the TPC and the time of flight provided by the TOF detector. 
 In order to identify a track as a pion or a kaon its TPC \dedx\ and/or time-of-flight were required to be within 3$\sigma$ of the expected values. 
 Tracks with no TOF information were identified using only the TPC.
-When PID is inconclusive and neither the pion nor the kaon hypothesis can be excluded, tracks compatible with both the hypotheses 
-were retained for analysis.
-
-As a result, for the decay $\Dzero (\bar{\Dzero}) \to {\rm K}^{\pm} + \pi^{\mp}$, the ($K\pi$) pair is counted twice with the two possible mass assignments. If the pair does not correspond
-to a real D meson, it would add two background entries in the invariant mass histogram, else it 
-counts a signal plus a background entry. 
-The misidentification rate (i.e. cases in which the wrong mass
-hypothesis is accepted while the correct one is rejected) is very small. In this case the signal D meson
-is lost and the entry contributes to the background in the invariant mass histogram. In the following $\Dzero$ analysis, $\Dzero$
-reflections are defined as pion-kaon pairs that come from the decay of a real $\Dzero$, but with the reflected mass hypothesis.
-
+Tracks compatible with both the kaon and the pion hypotheses were retained for analysis and both mass hypotheses were considered.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -168,21 +131,21 @@ reflections are defined as pion-kaon pairs that come from the decay of a real $\
 The \texttt{FASTJET}\cite{Cacciari:2012} package was used to reconstruct the jets. 
 In particular, the \antikt\ algorithm~\cite{Cacciari:2008c} was employed to reconstruct signal jets. 
 This algorithm is infrared-safe (not sensitive to low energy radiations) and collinear-safe (not sensitive to collinear particle splitting).
-A resolution parameter of $R=0.4$ was used for \Dstar\ in \pPb\, and $R=0.3$ was used for \Dzero\ in \pPb.
+A resolution parameter of $R=0.4$ was used for both the \pPb\ analyses.
 In the \pPb\ analysis, the \kt\ algorithm~\cite{Cacciari:2006} was employed to estimate the background. 
 For this analysis, only charged tracks are used to reconstructed the jets (\emph{charged jets}).
 
 The set of tracks given as input to the jet finder has the D-meson daughters replaced 
 by the 4-momentum of the D-meson candidate (sum of the 4-momenta of the daughters).
 The procedure is repeated independently for each D-meson candidate in each event, 
-i.e. each candidate is treated as if it were the only one in the event, then (if there is more than one candidate) the procedure
+i.e. each candidate is treated as if it was the only one in the event, then (if there is more than one candidate) the procedure
 is repeated for each candidate one by one.
 This is done because two (or even more) candidates can share the same daughter. 
 
 \subsection{Jet Selection}
 Tracks with $\pt>0.15$~\GeVc\ and $|\eta|<0.9$ were included in the jet finding. 
 Reconstructed jets with the axis not satisfying $|\etajet|<0.9-R$ were rejected.
-{\color{red} i have to check}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%      YIELD EXTRACTION    %%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -193,57 +156,45 @@ Reconstructed jets with the axis not satisfying $|\etajet|<0.9-R$ were rejected.
 \label{sect:raw_yield}
 
 We have implemented two methods to extract the D-tagged jet \pt\ distribution. 
-In both the methods, the signal in the \Dstar\ invariant mass distribution is fit with a Gaussian distribution for the 
-signal and the following function for the background:
-% is performed using a Gaussian distribution for the signal and the following function for the background:
+The \Dstar\ the fit is performed using a Gaussian distribution for the signal and the following function for the background:
 \begin{equation}
 \label{e_bkgDStar}
 f_{\rm bkg} (m) = a (m-m_{\pi})^{0.5}\exp(b (m-m_{\pi})),
 \end{equation}
 where $m$ is the invariant mass, $a$ and $b$ are free parameters of the fit.
 \begin{description}
-\item[Direct jet \pt\ extraction] The invariant mass distribution of the D-meson candidates is built for each \ptchjet\ bin and the signal is extracted directly from the fit parameters.
-\item[Side-band subtraction in D-meson \pt\ bins] The invariant mass distribution of the D-meson candidates is built for each \ptd\ bin and 
-the D-meson candidates that belong to the bins in the signal region $3\sigma$ around the peak position) are used to build the peak-region jet \pt\ distribution;
+\item[Invariant mass fit in jet \pt\ bins] The invariant mass distribution of the D-meson candidates is built for each \ptchjet\ bin and the signal is extracted directly from the fit parameters.
+\item[Side-band subtraction in D-meson \pt\ bins] The invariant mass distribution of the D-meson candidates is built for each \ptd\ bin and the D-meson candidates that belongs to the bins in the signal region ($3\sigma$ around the peak position) are used to build the peak-region jet \pt\ distribution;
 in order to remove the contribution of D-meson background, the jet \pt\ distribution corresponding 
 to the side-band region (between $-8\sigma$ and $-5\sigma$ from the left-hand side of the \Dstar\ peak and between $5\sigma$ and $13\sigma$ on the right-hand side) is taken and normalized to the background integral in the signal region, estimated from the fit.
 \end{description}
 
-For \Dzero\ the fit is performed using a Gaussian distribution for the signal and a power funtion for the background:
-\begin{equation}
-\label{e_sigbkgDZero}
-f (m) = Ce^{-(\frac{m-m_0}{2\sigma})^2} + am^b,
-\end{equation}
-where $m$ is the invariant mass, $a$, $b$, C, $m_0$, $\sigma$ are free parameters.
+\subsection{Invariant Mass Fit Method}
+\label{sect:InvMassFit}
 
-In addition, the ``reflection" templates are extracted from the charm-enhanced MC production. The invariant mass distributions for the reflection templates 
-are shown in Fig.~\ref{fig:reflectionDZero_Dbin} and in Fig.~\ref{fig:reflectionDZero_jetbin}.
-\subsection{Direct Jet-$p_T$ Extraction Method}
-\label{sect:DirectJet}
+The D-meson invariant mass is analyzed for each bin of jet \pt. The D-tagged jet raw yield and its uncertainty are extracted from the integral of the Gaussian fit function in the signal region.
+The invariant mass distributions in bins of jet \pt\ are shown in Fig.~\ref{fig:eq_pPb_InvMass}.
 
-The D-meson invariant mass is analyzed for each bin of jet \pt. The D-tagged jet raw yields and the relative uncertainties are extracted from the integral of the Gaussian fit function in the signal regions.
-The invariant mass distributions in bins of jet \pt\ for \Dstar\ in \pPb\ are shown in Fig.~\ref{fig:eq_pPb_InvMass_Dstar}.
-
-\begin{figure}[H]%[bth]
+\begin{figure}[bth]
 \centering
-\includegraphics[width=0.8\textwidth]{pPbplots/plotsEffScale_noEff_pt3_noDetails/invMass_FASTwoSDD}
+\includegraphics[width=0.9\textwidth]{pPbplots/plotsEffScale_noEff_pt3_noDetails/invMass_FASTwoSDD}
 \caption{\Dstar-jet signal extraction in bins of jet transverse momentum in \pPb\ collisions at $\snn=5.02$~TeV (raw yields). D mesons are required to have $\pt>3$~\GeVc.}
-\label{fig:eq_pPb_InvMass_Dstar}
+\label{fig:eq_pPb_InvMass}
 \end{figure}
 
 Figure~\ref{fig:eq_pPb_RSU_raw} shows a summary of the raw signal extraction: yield, relative statistical uncertainty, signal / background ratio and significance.
 
-\begin{figure}[H]%[bth]
+\begin{figure}[bth]
 \centering
 \includegraphics[width=0.7\textwidth]{pPbplots/plotsEffScale_noEff_pt3_noDetails/signalParams_FASTwoSDD}
-\caption{\Dstar-jet raw signal extraction in \pPb\ collisions at $\s=5.02$~TeV for $\ptd>3$~\GeVc\ with the direct jet-\pt\ ectraction method in bins of \ptchjet.}
+\caption{\Dstar-jet raw signal extraction in \pPb\ collisions at $\s=5.02$~TeV for $\ptd>3$~\GeVc\ with the invariant mass fit method in bins of \ptchjet.}
 \label{fig:eq_pPb_RSU_raw}
 \end{figure}
 
-The invariant mass distributions shown here are not corrected for the reconstruction efficiencies. This step is discussed in Sec.~\ref{sect:sub_DmesonRecEff}.
+The invariant mass distributions shown here are not corrected for the reconstruction efficiency. This step is discussed in Sec.~\ref{sect:sub_DmesonRecEff}.
 
 The jet \pt\ bins are selected so that the significance of the D signal is above 5$\sigma$.
-The reason of the \Dstar\ signal visible in the Fig.~\ref{fig:eq_pPb_InvMass_Dstar} below \ptjet\ of 3 \GeVc\ despite the \ptd\ cut above 3 \GeVc\ is a subtraction of the jet background, as it is described in the Sec.~\ref{sBackSub}.
+The reason of the \Dstar\ signal visible in the Fig.~\ref{fig:eq_pPb_InvMass} below \ptjet\ of 3 \GeVc\ despite the \ptd\ cut above 3 \GeVc\ is a subtraction of the jet background, as it is described in the Sec.~\ref{sBackSub}.
 %The final jet \pt\ range for the \pPb\ analysis is 4 $< p_{T} < $ 40 \GeVc. 
 
 
@@ -251,123 +202,56 @@ The reason of the \Dstar\ signal visible in the Fig.~\ref{fig:eq_pPb_InvMass_Dst
 \label{sub_Bin_d_pT}
 
 The D-meson invariant mass is analyzed for each bin of D-meson \pt. 
-The D-meson candidates in the signal region ($3\sigma$ around the peak) are used to build a jet \pt\ distribution, which comprises both signal and background D-meson candidates.
-Another jet \pt\ distribution is built using candidates with invariant mass that is between $-8\sigma$ and $-5\sigma$ on the left-hand side of the \Dstar\ peak 
-and between $5\sigma$ and $13\sigma$ on the right-hand side.
-For \Dzero\ the background region is between $5\sigma$ and $9\sigma$ from the peak.
+The D-meson candidates in the signal region are used to build a jet \pt\ distribution, which comprises both signal and background D-meson candidates.
+Another jet \pt\ distribution is built using candidates with invariant mass that is between $-8\sigma$ and $-5\sigma$ from the left-hand side of the \Dstar\ peak and between $5\sigma$ and $13\sigma$ on the right-hand side.
 The normalization is done using the information of the fit integrating the background function inside the signal area. This is done separately and independently for each \ptd\ bin.
 
-\begin{figure}[H]%[bth]
+The invariant mass distributions in bins of D-meson \pt\ are shown in Fig.~\ref{fig:eq_pPb_InvMass_Dbins}.
+
+\begin{figure}[bth]
 \centering
-\includegraphics[width=0.8\textwidth]{pPbplots/plotsSB_noEff_pt3_noDetails/invMass_FASTwoSDD_pTD3}
+\includegraphics[width=0.9\textwidth]{pPbplots/plotsSB_noEff_pt3_noDetails/invMass_FASTwoSDD_pTD3}
 \caption{\Dstar\ signal extraction in bins of D-meson transverse momentum in \pPb\ collisions at $\snn=5.02$~TeV (raw yields).}
-\label{fig:eq_pPb_InvMass_Dstar_Dbins}
+\label{fig:eq_pPb_InvMass_Dbins}
 \end{figure}
 
-%\begin{figure}[H]
-\begin{figure}[bth]
-\centering
-\includegraphics[width=0.5\textwidth]{pPbplots/plotsSB_noEff_pt3_noDetails/signalParams_FASTwoSDD_pTD3}
-\caption{\Dstar-jet raw signal extraction in \pPb\ collisions at $\snn=5.02$~TeV for $\ptd>3$~\GeVc\ with the Side Band method.}
-\label{fig:eq_pPb_RSU_raw_Dbins_Dstar}
-\end{figure}
+The signal region is defined as $3\sigma$ around the peak and is shown as the red shadow area in Fig.~\ref{fig:eq_pPb_InvMass_Dbins};
+the background region, $5\sigma$ away from the peak mean position, is depicted as the blue area in Fig.~\ref{fig:eq_pPb_InvMass_Dbins}.
 
-The invariant mass distributions in bins of D-meson \pt\ are shown in Fig.~\ref{fig:eq_pPb_InvMass_Dstar_Dbins} for \Dstar\ and in Fig.~\ref{fig:eq_pPb_InvMass_Dzero_Dbins} for \Dzero\ where 
-the signal region is shown as the red shaded area, and
-the background region is depicted as the blue shaded area.
-Also shown in Fig.~\ref{fig:eq_pPb_InvMass_Dzero_Dbins} are reflections for \Dzero\ in green, and their ratio over signal is shown in Fig.~\ref{fig:eq_pPb_InvMass_Dzero_Refl_Dbins}
+The jet \pt\ distributions are shown in Fig.~\ref{fig:eq_pPb_signBkgJet_Dbins}, along with the jet distributions for the background region. 
+Then the background distributions are subtracted from the signal distributions and raw jet \pt\ distributions are obtained in each D \pt\ bin, as is it shown also in Fig.~\ref{fig:eq_pPb_signBkgJet_Dbins}.
+Figure~\ref{fig:eq_pPb_signBkgJet_tot} shows the sum of the jet \pt\ distributions for \Dstar-jets\ without a correction for the D meson efficiency and rebinning.
 
-\begin{figure}[bth]
-%\begin{figure}[H]
-\centering
-\includegraphics[width=0.9\textwidth]{pPbplotsD0/Default/signalExtraction/plots/invMass_LHC16R03_pTD3.pdf}
-\caption{\Dzero-jet signal extraction in bins of jet transverse momentum in \pPb\ collisions at $\snn=5.02$~TeV (raw yields). D mesons are required to have $\pt>3$~\GeVc. 
-Reflections shown by green curve add with the combinatorial backgorund (red curve) to give the overall background in grey.
-}
-\label{fig:eq_pPb_InvMass_Dzero_Dbins}
-\end{figure}
-
-%\begin{figure}[H]
-\begin{figure}[bth]
-\centering
-\includegraphics[width=0.75\textwidth]{pPbplotsD0/Default/signalExtraction/plots/signalParams_LHC16R03_pTD3.pdf}
-\caption{\Dzero-jet raw signal extraction in \pPb\ collisions at $\snn=5.02$~TeV for $\ptd>3$~\GeVc\ with the Side Band method.}
-\label{fig:eq_pPb_RSU_raw_Dbins_Dzero}
-\end{figure}
-
-%\begin{figure}[H]
-\begin{figure}[bth]
-\centering
-\includegraphics[width=0.45\textwidth]{pPbplotsD0/Default/signalExtraction/plots/RefOverS_LHC16R03_pTD3.pdf}
-\caption{\Dzero-jet raw signal extraction, reflections over signal ratio, in \pPb\ collisions at $\snn=5.02$~TeV for $\ptd>3$~\GeVc\ with the Side Band method.}
-\label{fig:eq_pPb_RSU_raw_Dbins_Refl_Dzero}
-\end{figure}
-
-The jet \pt\ distributions for \Dstar\ are shown in Fig.~\ref{fig:eq_pPb_signBkgJet_Dstar_Dbins} and for \Dzero\ in Fig.~\ref{fig:eq_pPb_signBkgJet_Dzero_Dbins}, 
-along with the jet \pt\ distributions for the background region. 
-Then the background distributions are subtracted from the signal distributions and raw jet \pt\ distributions are obtained in each D \pt\ bin, 
-as it is shown also in Fig.~\ref{fig:eq_pPb_signBkgJet_Dstar_Dbins} for \Dstar\ and in Fig.~\ref{fig:eq_pPb_signBkgJet_Dzero_Dbins} for \Dzero\ .
-Figure~\ref{fig:eq_pPb_signBkgJet_tot_Dstar} shows the sum of the jet \pt\ distributions for \Dstar-jets\ without a correction for the D meson efficiency and rebinning.
-Figure~\ref{fig:eq_pPb_signBkgJet_tot_Dzero} shows the same for \Dzero-jets\ .
-
-%Dstar
-%\begin{figure}[H]
 \begin{figure}[bth]
 \centering
 \includegraphics[width=0.9\textwidth]{pPbplots/plotsSB_noEff_pt3_noDetails/jetRawSpectrumFASTwoSDD_pTD3}
-\caption{Raw jet \pt\ distributions in bins of \Dstar\ transverse momentum in \pPb\ collisions at $\snn=5.02$~TeV.}
-\label{fig:eq_pPb_signBkgJet_Dstar_Dbins}
+\caption{Raw jet \pt\ distributions in bins of D-meson transverse momentum in \pPb\ collisions at $\snn=5.02$~TeV.}
+\label{fig:eq_pPb_signBkgJet_Dbins}
 \end{figure}
 
 \begin{figure}[bth]
 \centering
 \includegraphics[width=0.5\textwidth]{pPbplots/plotsSB_noEff_pt3_noDetails/jetPtSpectrum_SB_FASTwoSDD_pTD3}
-\caption{Total raw jet \pt\ distributions for \Dstar\ in \pPb\ collisions at $\snn=5.02$~TeV, obtained summing together all the \Dstar\ \pt\ bins.}
-\label{fig:eq_pPb_signBkgJet_tot_Dstar}
+\caption{Total raw jet \pt\ distributions in \pPb\ collisions at $\snn=5.02$~TeV, obtained summing together all the \Dstar\ \pt\ bins.}
+\label{fig:eq_pPb_signBkgJet_tot}
 \end{figure}
 
-%Dzero
+Figure~\ref{fig:eq_pPb_RSU_raw_Dbins} shows a summary of the raw signal extraction:
+yield, relative statistical uncertainty, signal / background ratio and significance.
+
 \begin{figure}[bth]
 \centering
-\includegraphics[width=0.9\textwidth]{pPbplotsD0/Default/signalExtraction/plots/jetRawSpectrum_LHC16R03_pTD3.pdf}
-\caption{Raw jet \pt\ distributions in bins of \Dzero\ transverse momentum in \pPb\ collisions at $\snn=5.02$~TeV.}
-\label{fig:eq_pPb_signBkgJet_Dzero_Dbins}
+\includegraphics[width=0.7\textwidth]{pPbplots/plotsSB_noEff_pt3_noDetails/signalParams_FASTwoSDD_pTD3}
+\caption{\Dstar-jet raw signal extraction in \pPb\ collisions at $\s=5.02$~TeV for $\ptd>3$~\GeVc\ with the Side Band method.}
+\label{fig:eq_pPb_RSU_raw_Dbins}
 \end{figure}
-
-%\begin{figure}[bth]
-%\centering
-%\includegraphics[width=0.5\textwidth]{pPbplotsD0/Default/signalExtraction/plots/jetPtSpectrum_SB_LHC16R03_pTD3.pdf}
-%\caption{Total raw jet \pt\ distributions for \Dzero\ in \pPb\ collisions at $\snn=5.02$~TeV, obtained summing together all the \Dzero\ \pt\ bins.}
-%\label{fig:eq_pPb_signBkgJet_tot_Dzero}
-%\end{figure}
-
-Figures~\ref{fig:eq_pPb_RSU_raw_Dbins_Dstar} and \ref{fig:eq_pPb_RSU_raw_Dbins_Dzero} show a summary of the raw signal extraction:
-yield, relative statistical uncertainty, signal / background ratio and significance, for \Dstar\ and \Dzero\ respectively.
-%
-%\begin{figure}[bth]
-%\centering
-%\includegraphics[width=0.7\textwidth]{pPbplots/plotsSB_noEff_pt3_noDetails/signalParams_FASTwoSDD_pTD3}
-%\caption{\Dstar-jet raw signal extraction in \pPb\ collisions at $\snn=5.02$~TeV for $\ptd>3$~\GeVc\ with the Side Band method.}
-%\label{fig:eq_pPb_RSU_raw_Dbins_Dstar}
-%\end{figure}
-%
-%\begin{figure}[bth]
-%\centering
-%\includegraphics[width=0.7\textwidth]{pPbplotsD0/Default/signalExtraction/plots/signalParams_LHC16R03_pTD3.pdf}
-%\caption{\Dzero-jet raw signal extraction in \pPb\ collisions at $\snn=5.02$~TeV for $\ptd>3$~\GeVc\ with the Side Band method.}
-%\label{fig:eq_pPb_RSU_raw_Dbins_Dzero}
-%\end{figure}
 
 In order to obtain the final jet \pt\ spectrum, the distributions in each D \pt\ bin need to be corrected for the D efficiency and finally summed up.
 The corrections will be discussed in Section~\ref{sect:sub_DmesonRecEff}. 
-%\newpage
-%\newpage
+
 \subsection{Method Comparison}
 
-Figure~\ref{fig:pPbCompDirectJetSB_beforeEff} shows a comparison of the raw yields (without the D-reconstruction efficiency applied). 
-Jet $p_T$ spectra are checked with two cuts on the D-meson $p_{T}$: $\ptd>2$~\GeVc and $\ptd>3$~\GeVc. Both agree with each other as it is seen in Fig.~\ref{fig:pPbCompDirectJetSB_beforeEff}. 
-However, it is more important to cross-check the two methods with different \ptd\ cuts after the efficiency correction is applied, 
-as the background at low \ptd\ influences the analysis more, as it is shown later.
+Figure~\ref{fig:pPbCompInvMassFitSB_beforeEff} shows a comparison of the raw yields (without the D-reconstruction efficiency applied). Jets spectra are checked with two cuts on the D-meson $p_{T}$: $\ptd>2$~\GeVc and $\ptd>3$~\GeVc. Both agree with each other as it is seen in Fig.~\ref{fig:pPbCompInvMassFitSB_beforeEff}. However, it is more important to cross-check the two methods with different \ptd\ cuts after the efficiency correction is applied, as the background at low \ptd\ influences the analysis more, as it is shown later.
 
 \begin{figure}[bth]
 \centering
@@ -388,7 +272,7 @@ as the background at low \ptd\ influences the analysis more, as it is shown late
 \caption{Ratio, $\ptd>3$~\GeVc}
 \end{subfigure}
 \caption{Comparison of the raw yields obtained using the invariant mass fit method and the side band method without the efficiency correction for \Dstar-jets in \pPb\ collisions at $\s=5.02$~TeV with $\ptd>2$~\GeVc (left) and $\ptd>3$~\GeVc (right).}
-\label{fig:pPbCompDirectJetSB_beforeEff}
+\label{fig:pPbCompInvMassFitSB_beforeEff}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -408,42 +292,21 @@ D-tagged detector-level jet was found over all the generated D-tagged jets.
 For the detector-level jets, the D meson is required to be within the standard fiducial rapidity cuts.
 Jets are further requested to have $|\eta_{\rm jet}| < 0.9 - R$, both at generator and detector levels.
 
-%\begin{figure}[bth]
-%\centering
-%\includegraphics[width=0.5\textwidth]{pPbplots/DjetEff_Sim_log}
-%\caption{\Dstar\  reconstruction efficiency in \pPb\ collisions at $\snn=5.02$~TeV, for prompt \Dstar\ in red and non-prompt in blue.}
-%\label{eq_pPb_DrecEff}
-%\end{figure}
-%
-%\begin{figure}[bth]
-%\centering
-%\includegraphics[width=0.5\textwidth]{pPbplotsD0/Default/efficiency/DjetEff_Sim_log.pdf}
-%\caption{\Dzero\  reconstruction efficiency in \pPb\ collisions at $\snn=5.02$~TeV, for prompt \Dzero\ in red and non-prompt in blue.}
-%\label{eq_pPb_DrecEff_Dzero}
-%\end{figure}
-%
+
 \begin{figure}[bth]
 \centering
-\begin{subfigure}[c]{0.45\textwidth}
-\includegraphics[width=\textwidth,height=0.8\textwidth]{pPbplots/DjetEff_Sim_log}
-\caption{\Dstar\  reconstruction efficiency.}
+\includegraphics[width=0.6\textwidth]{pPbplots/DjetEff_Sim_log}
+\caption{\Dstar\  reconstruction efficiency in \pPb\ collisions at $\snn=5.02$~TeV, for prompt D* in red and non-prompt in blue.}
 \label{eq_pPb_DrecEff}
-\end{subfigure}
-\begin{subfigure}[d]{0.45\textwidth}
-\includegraphics[width=\textwidth,height=0.85\textwidth]{pPbplotsD0/Default/efficiency/DjetEff_Sim_log.pdf}
-\caption{\Dzero\  reconstruction efficiency.}
-\label{eq_pPb_DrecEff_Dzero}
-\end{subfigure}
-\caption{D meson reconstruction efficiencies in \pPb\ collisions at $\snn=5.02$~TeV, for prompt D mesons in red and non-prompt in blue.}
 \end{figure}
-Figures~\ref{eq_pPb_DrecEff} and \ref{eq_pPb_DrecEff_Dzero} show the \Dstar\ and \Dzero\ reconstruction efficiencies as a function of \ptd\, 
-for prompt and non-prompt D-mesons. Efficiency depends strongly on \ptd\ because of the topological cuts that are relaxed at higher momenta where the combinatorial background is smaller. 
+
+Figure~\ref{eq_pPb_DrecEff} shows the \Dstar\ reconstruction efficiency as a function of \ptd\, for prompt and non-prompt \Dstar. The efficiency depends strongly on \ptd\ because of the topological cuts that are relaxed at higher momenta where the combinatorial background is smaller. 
 
 %However a very weak or no dependence on \ptchjet\ is observed for $5<\ptchjet<30$~\GeVc. From the ratios of the efficiencies in \ptchjet\ bins over the entire range, shown in Fig.~\ref{fig:eq_pp_DrecEff_ptd_ptjet} one can appreciate a hint of a small deviation, on the order of 10-20\%, for low momentum \Dzero\ (\ptd~$<5$~\GeVc) in high momentum jets. However this deviation is not statistically significant, and affects a very small fraction of the D-meson candidates.
 
 \subsection{Efficiency-Corrected Yields}
 
-As discussed in the previous section, the D-meson reconstruction efficiency shows a strong dependence on \ptd\ (but has very weak or no dependence on \ptjet).
+As discussed in the previous Section, the D-meson reconstruction efficiency shows a strong dependence on \ptd (but has very weak or no dependence on \ptjet).
 Therefore, in order to reduce the dependence on the Monte Carlo simulation for what concerns jet fragmentation and momentum spectral shape,
 the efficiency should be applied as a function of the D-meson momentum. In fact, each bin of \ptjet\ has contributions from D mesons with very different \ptd,
 which have different efficiencies.
@@ -453,66 +316,40 @@ The efficiency-rescaling procedure of the invariant mass distribution $M(\ptjet,
 M(\ptjet) = \displaystyle\sum_{\ptd}\frac{M(\ptjet,\ptd)}{({\rm Acc} \times \epsilon)_{\ptd}}.
 \end{equation}
 
-Figures~\ref{fig:eq_pPb_Directjet_corrInv_Dstar} and \ref{fig:eq_pPb_Directjet_corrInv_Dzero} show the \Dstar\ and \Dzero\ invariant mass distributions 
-for different ranges of \ptchjet, after the efficiency reweighing procedure.
+Figure~\ref{fig:eq_pPb_InvMass_corrDrec} shows the invariant mass distributions for different ranges of \ptchjet, after the efficiency reweighing procedure.
 %This process can increase the relative statistical uncertainty due to the large weight assigned to low-\pt\ D mesons (low reconstruction efficiency). 
 
-%Dstar
 \begin{figure}[bth]
 \centering
 \includegraphics[width=0.9\textwidth]{pPbplots/plotsEffScale_pt3_noDetails/invMass_FASTwoSDD}
 \caption{\Dstar\ signal extraction in bins of jet transverse momentum in \pPb\ collisions at $\snn=5.02$~TeV. D mesons are required to have $\ptd>3$~\GeVc.
 Each candidate is weighted by the inverse of the reconstruction efficiency, which depends on its \ptd.}
-\label{fig:eq_pPb_Directjet_corrInv_Dstar}
+\label{fig:eq_pPb_InvMass_corrDrec}
 \end{figure}
-
-%Dzero
-%\begin{figure}[bth]
-%\centering
-%\includegraphics[width=0.9\textwidth]{pPbplotsD0/}
-%\caption{\Dzero\ signal extraction in bins of jet transverse momentum in \pPb\ collisions at $\snn=5.02$~TeV. D mesons are required to have $\ptd>3$~\GeVc.
-%Each candidate is weighted by the inverse of the reconstruction efficiency, which depends on its \ptd.}
-%\label{fig:eq_pPb_Directjet_corrInv_Dzero}
-%\end{figure}
-%
 
 %Figure~\ref{fig:eq_pPb_RSU_raw_corrDrec} shows the yield and relative statistical uncertainties of the reconstructed D-tagged jets with the efficiency weighting with the invariant mass fit method. A comparison with ~\ref{fig:eq_pPb_RSU_raw} shows  that the relative statistical uncertainties are increased as a result of the efficiency weighting.
 
-In the side-band method the efficiency correction is applied by rescaling the \Dstar\ jet \pt\ spectra in Fig.~\ref{fig:eq_pPb_signBkgJet_Dstar_Dbins} 
-by 1/(${\rm Acc} \times \epsilon$) in each D-meson \pt\ bin shown in Fig.~\ref{eq_pPb_DrecEff}.
-Likewise, the \Dzero\ jet \pt\ spectra in Fig.~\ref{fig:eq_pPb_signBkgJet_Dzero_Dbins} are rescaled with \Dzero\ \pt\ bin specific efficiencies in Fig.~\ref{eq_pPb_DrecEff_Dzero}.
-The background subtracted distributions are summed up to obtain the corrected jet \pt\ spectra for D-jets. 
-The efficiency corrected jet $p_{T}$ spectra are shown in Fig.~\ref{fig:eq_pPb_Directjet_corrSum_Dstar} and Fig.~\ref{fig:eq_pPb_Directjet_corrSum_Dzero} for \Dstar-jets and \Dzero-jets respectively.
+In the side-band method the efficiency is applied by rescaling by 1/(${\rm Acc} \times \epsilon$) the jet \pt\ spectra in each D-meson \pt\ bin shown in 
+Fig.~\ref{fig:eq_pPb_signBkgJet_Dbins}. 
+The background subtracted distributions are summed up to obtain the corrected jet \pt\ spectrum. The efficiency corrected spectrum is shown in Fig.~\ref{}
 
-%Dstar
 \begin{figure}[bth]
 \centering
 \includegraphics[width=0.6\textwidth]{pPbplots/plotsSB_pt3_noDetails/jetPtSpectrum_SB_FASTwoSDD_pTD3}
 \caption{Efficiency corrected \Dstar-jets yield obtained for the Side-Band subtraction method in \pPb\ collisions at $\snn=5.02$~TeV. D mesons are required to have $\ptd>3$~\GeVc.}
-\label{fig:eq_pPb_Directjet_corrSum_Dstar}
+\label{fig:eq_pPb_InvMass_corrDrec}
 \end{figure}
 
-%Dzero
-\begin{figure}[bth]
-\centering
-\includegraphics[width=0.6\textwidth]{pPbplotsD0/Default/signalExtraction/plots/jetPtSpectrum_SB_LHC16R03_pTD3.pdf}
-\caption{Efficiency corrected \Dzero-jets yield obtained for the Side-Band subtraction method in \pPb\ collisions at $\snn=5.02$~TeV. D mesons are required to have $\ptd>3$~\GeVc.}
-\label{fig:eq_pPb_Directjet_corrSum_Dzero}
-\end{figure}
-%
 The efficiency corrected jet $p_{T}$ spectra for both methods with the same binning are shown below.
 
 \subsection{Method Comparison (Efficiency-Corrected Yields)}
 
-Figure~\ref{fig:JetPt_pPb_corrDrec_Dstar} and \ref{fig:JetPt_pPb_corrDrec_Dzero} show a comparison of the efficiency-corrected yields obtained using the direct jet-\pt\ extraction method 
-and the side band subtraction method for \Dstar-jets and \Dzero-jets respectively with $\ptd>2$~\GeVc\ and $\ptd>3$~\GeVc. 
-As mentioned before, the direct jet-\pt\ extraction method is sensitive to weighing with low efficiency for low $p_{T}$ D mesons. 
-Therefore, discrepancies for higher \ptjet\ ranges between two methods are visible with $\ptd>2$~\GeVc\ cut. 
-With $\ptd>3$~\GeVc\ cut the two methods agree very well with each other within the statistical uncertainties.
-$\ptd>3$~\GeVc\ cut reduces also uncertainties on the jet spectra for higher \ptjet. 
-Figures~\ref{fig:JetPt_pPb_SBUnc_Dstar} and \ref{fig:JetPt_pPb_SBUnc_Dzero} show relative statistical uncertainties for the Side-Band subtraction method with $\ptd>3$~\GeVc for \Dstar-jets and \Dzero-jets.
+Figure~\ref{fig:JetPt_pPb_corrDrec} shows a comparison of the efficiency-corrected yields obtained using the invariant mass method and the side band method
+for \Dstar-jets with $\ptd>2$~\GeVc\ and $\ptd>3$~\GeVc. 
+As mentioned before, the invariant mass method is sensitive to weighing with low efficiency, low $p_{T}$ D* mesons. Therefore, discrepancies for higher \ptjet\ ranges between two methods are visible with $\ptd>2$~\GeVc\ cut. With $\ptd>3$~\GeVc\ cut the two methods agree very well with each other within the statistical uncertainties.
+$\ptd>3$~\GeVc\ cut reduces also uncertainties on the jet spectra for higher \ptjet. Figure~\ref{fig:JetPt_pPb_SBUnc} shows relative statistical uncertainties for the Side-Band subtraction method with $\ptd>3$~\GeVc.
 
-%Figure~\ref{fig:JetPt_pPb_SBUnc} shows relative statistical uncertanties for the Side-Band subtraction method with $\ptd>2$~\GeVc\ and $\ptd>3$~\GeVc; $\ptd>3$~\GeVc\ cut reduces also uncertainties on the jet spectra for higher \ptjet. 
+F%igure~\ref{fig:JetPt_pPb_SBUnc} shows relative statistical uncertanties for the Side-Band subtraction method with $\ptd>2$~\GeVc\ and $\ptd>3$~\GeVc; $\ptd>3$~\GeVc\ cut reduces also uncertainties on the jet spectra for higher \ptjet. 
 
 \begin{figure}[bth]
 \centering
@@ -532,49 +369,22 @@ Figures~\ref{fig:JetPt_pPb_SBUnc_Dstar} and \ref{fig:JetPt_pPb_SBUnc_Dzero} show
 \includegraphics[width=\textwidth]{pPbplots/methodsComparison/DjetSpectraRatio_FASTwoSDD_eff_ptD3}
 \caption{Ratio}
 \end{subfigure}
-\caption{Comparison of the yields obtained using the direct jet-\pt\ extraction method and the side band subtraction method for \Dstar-jets in \pPb\ at $\snn=5.02$~TeV, with two cuts on \ptd: $\ptd>2$~\GeVc\ and $\ptd>3$~\GeVc.
+\caption{Comparison of the yields obtained using the invariant mass fit method and the side band method for \Dstar-jets in \pPb\ at $\snn=5.02$~TeV, with two cuts on \ptd: $\ptd>2$~\GeVc\ and $\ptd>3$~\GeVc.
 Reconstruction efficiency correction is applied in both cases.}
-\label{fig:JetPt_pPb_corrDrec_Dstar}
+\label{fig:JetPt_pPb_corrDrec}
 \end{figure}
-%%Dzero
-%\begin{figure}[bth]
-%\centering
-%\begin{subfigure}[b]{0.45\textwidth}
-%\includegraphics[width=\textwidth]{pPbplotsD0/methodsComparison/}
-%\caption{Yields}
-%\end{subfigure}
-%\begin{subfigure}[b]{0.45\textwidth}
-%\includegraphics[width=\textwidth]{pPbplotsD0/methodsComparison/}
-%\caption{Yields}
-%\end{subfigure}
-%\begin{subfigure}[b]{0.45\textwidth}
-%\includegraphics[width=\textwidth]{pPbplotsD0/methodsComparison/}
-%\caption{Ratio}
-%\end{subfigure}
-%\begin{subfigure}[b]{0.45\textwidth}
-%\includegraphics[width=\textwidth]{pPbplotsD0/methodsComparison/}
-%\caption{Ratio}
-%\end{subfigure}
-%\caption{Comparison of the yields obtained using the direct jet-\pt\ extraction method and the side band subtraction method for \Dzero-jets in \pPb\ at $\snn=5.02$~TeV, with two cuts on \ptd: $\ptd>2$~\GeVc\ and $\ptd>3$~\GeVc.
-%Reconstruction efficiency correction is applied in both cases.}
-%\label{fig:JetPt_pPb_corrDrec_Dzero}
-%\end{figure}
 
 \begin{figure}[bth]
 \centering
-\begin{subfigure}[b]{0.45\textwidth}
-\includegraphics[width=\textwidth]{pPbplots/plotsSB_pt3_noDetails/jetPtSpectrumUnc_SB_Rebin_FASTwoSDD_pTD3}
-\caption{Statistical uncertainties for \Dstar-jets.}
-\label{fig:JetPt_pPb_SBUnc_Dstar}
-\end{subfigure}
-%
-\begin{subfigure}[b]{0.45\textwidth}
-\includegraphics[width=\textwidth,height=0.8\textwidth]{pPbplotsD0/Default/signalExtraction/plots/jetPtSpectrumUnc_SB_Rebin_LHC16R03_pTD3.pdf}
-\caption{Statistical uncertainties for \Dzero-jets.}
-\label{fig:JetPt_pPb_SBUnc_Dzero}
-\end{subfigure}
-\caption{Statistical uncertainties obtained using the side band method for \Dstar-jets and \Dzero-jets in \pPb\ at $\snn=5.02$~TeV, with $\ptd>3$~\GeVc\ . Reconstruction efficiency correction is applied.}
-\label{fig:JetPt_pPb_SBUnc_D}
+%\begin{subfigure}[b]{0.45\textwidth}
+%\includegraphics[width=\textwidth]{pPbplots/plotsSB_pt2_noDetails/jetPtSpectrumUnc_SB_Rebin_FASTwoSDD}
+%\end{subfigure}
+%\begin{subfigure}[b]{0.45\textwidth}
+\includegraphics[width=0.45\textwidth]{pPbplots/plotsSB_pt3_noDetails/jetPtSpectrumUnc_SB_Rebin_FASTwoSDD_pTD3}
+
+%\end{subfigure}
+\caption{Statistical uncertainties obtained using the side band method for \Dstar-jets in \pPb\ at $\snn=5.02$~TeV, with $\ptd>3$~\GeVc\. Reconstruction efficiency correction is applied.}
+\label{fig:JetPt_pPb_SBUnc}
 \end{figure}
 
 The default method used for the further analysis is the Side Band method with $\ptd>3$~\GeVc\ cut. The method is more stable, Gaussian fits perform better when they are done in \ptd\ bins, and it is easier to perform the jet spectra analysis with more fine binning if needed.
@@ -1386,7 +1196,7 @@ Preliminary figure: Prompt $D^{*+}$-jet cross section in \pPb\ at $\snn=5.02$~Te
 
 \begin{figure}[bth]
 \centering
-\includegraphics[width=.53\textwidth]{pPbplots/jetSpectra/DstarJet_pPbxsection}
+\includegraphics[width=.53\textwidth]{pPbplots/jetSpectra/JetPtSpectra_final_wpp}
 \caption{Prompt $D^{*+}$-jet cross section in \pPb\ collisions at $\snn=5.02$~TeV compared to PYTHIA+POWHEG simulations for \pPb\ collisions at $\snn=5.02$~TeV.}
 \label{fig:pPbJetPt_final_wpp}
 \end{figure}
