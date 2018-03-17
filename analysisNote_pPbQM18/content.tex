@@ -589,14 +589,14 @@ The default method used for the further analysis is the Side Band method with $\
 \subsection{Average Background Momentum Density}
 \label{sBackSub}
 
-The Underlying Event (UE) affects the reconstructed jet momentum and need to be subtracted.
+The Underlying Event (UE) affects the reconstructed jet momentum and needs to be subtracted.
 The average background density $\rho$ is calculated on an event-by-event basis:
 
 \begin{equation}
 \label{eq_rho_pPB}
 \rho_{\rm p-Pb} = {\rm median}\left\{\frac{p_{\rm T,jet}^{\kt}}{A_{\rm jet}^{\kt}}\right\} C.
 \end{equation}
-where $p_{\rm T,jet}^{\kt}$ and $A_{\rm jet}^{\kt}$ are respectively the area and the transverse momentum of
+where $p_{\rm T,jet}^{\kt}$ and $A_{\rm jet}^{\kt}$ are respectively the transverse momentum and the area of
 the jets found using the \kt\ algorithm. 
 The jet area is estimated by \texttt{FASTJET} using the active ghost method, with a ghost area of $0.005$.
 The two leading jets in the event are excluded in order to remove the hard scattering jets from the background.
@@ -613,23 +613,27 @@ C = \frac{\sum_{j}A_{j}}{A_{\rm acc}}.
 \end{equation}
 $A_{j}$ is the area of each \kt\ jet with at least one real track (i.e. excluding ghosts), $A_{\rm acc}$ is the area of charged-particle acceptance.
 
-Figure~\ref{fig:rho} presents $\rho$ distributions calculated in events that include D-jet candidates (the analysed events), and requiring that an event is with the leading jet that has $p_{T}>$ 5 GeV/$c$, for 0-10\% (left) and 20-40\% (right) centrality. The distributions are compared to $\rho$ from events where a presence of D meson within a jet is not required (called inclusive-jet events).
+Figure~\ref{fig:rho_Dstar} presents $\rho$ distributions calculated in events that include D-jet candidates (the analysed events), and requiring that an event is with the leading jet that has $p_{T}>$ 5 GeV/$c$, for 0-10\% (left) and 20-40\% (right) centrality. The distributions are compared to $\rho$ from events where a presence of D meson within a jet is not required (called inclusive-jet events).
 
+%Dstar
 \begin{figure}[bth]
 \centering
 \includegraphics[width=0.45\textwidth]{pPbplots/ResponseMatrix/hRho_ptleadbin5_cent0_10}
 \includegraphics[width=0.45\textwidth]{pPbplots/ResponseMatrix/hRho_ptleadbin5_cent20_40}
 \caption{$\rho$ distributions from events with D-jet candidates, and with a leading jet that has $p_{T}>$ 5 GeV/$c$, for 0-10\% (left) and 20-40\% (right) centrality, compared to $\rho$ from events from inclusive-jet events. \pPb\ events with $R=0.4$.}
-\label{fig:rho}
+\label{fig:rho_Dstar}
 \end{figure}
 
 \subsection{Jet Background Fluctuations}
 \label{sBackFluc}
 The amount of the jet background fluctuation was evaluated using the Random Cone method.
 This method consists in generating a random direction in $\eta-\phi$ inside the jet detector acceptance and 
-take all tracks in the event that satisfy $\Delta R<R_{\rm cone}$ with $R_{\rm cone}$ equal to the resolution parameter used in the analysis. 
+taking all tracks in the event that satisfy $\Delta R<R_{\rm cone}$ with $R_{\rm cone}$ equal to the resolution parameter used in the analysis. 
 The raw cone \pt\ is the sum of the transverse momenta of all particles within the cone.
-The background fluctuation \deltapt\ is calculated as shown in Eq.~\ref{edeltapt}, using events that include D-jet candidates excluding the leading jet in an event, and with the leading jet $p_{T}>$ 5 GeV/$c$. The distribution is shown in Fig.~\ref{fig:DeltaPt} as the left panel. Based on this distribution, a background fluctuation matrix is build which is then used to unfold the measured \Dstar-jet\ \pt spectrum, together with the detector response matrix. The background fluctuation matrix is shown on the right panel of Fig.~\ref{fig:DeltaPt}.
+The background fluctuation \deltapt\ is calculated as shown in Eq.~\ref{edeltapt}, using events that include D-jet candidates excluding the leading jet in an event, 
+and with the leading jet $p_{T}>$ 5 GeV/$c$. The distribution is shown in Fig.~\ref{fig:DeltaPt} as the left panel for \Dstar-jets. 
+Based on this distribution, a background fluctuation matrix is built which is then used to unfold the measured \Dstar-jet\ \pt spectrum, together with the detector response matrix. 
+The background fluctuation matrix for \Dstar-jets is shown on the right panel of Fig.~\ref{fig:DeltaPt}.
 
 \begin{equation}
 \deltapt = p_{\rm T, cone} - \rho \pi R_{\rm cone}^{2}
@@ -640,10 +644,25 @@ The background fluctuation \deltapt\ is calculated as shown in Eq.~\ref{edeltapt
 \centering
 \includegraphics[width=0.45\textwidth]{pPbplots/ResponseMatrix/DeltaPt_Djet5Excl}
 \includegraphics[width=0.45\textwidth]{pPbplots/ResponseMatrix/BkgMatrix_Djet5Excl}
-\caption{Left: \deltapt\ distribution obtained with Random Cone method. Right: The background fluctuation matrix built based of the \deltapt\ distribution. \pPb\ events with $R=0.4$.}
+\caption{Left: \deltapt\ distribution obtained with Random Cone method. Right: The background fluctuation matrix built based on the \deltapt\ distribution. \pPb\ events with $R=0.4$.}
 \label{fig:DeltaPt}
 \end{figure}
 
+For \Dzero-jets, the background fluctuation \deltapt\ is similarly calculated as for \Dstar-jets using Eq.~\ref{edeltapt}, but for $R=0.3$, 
+and the events used include D-jet candidates excluding the leading jet in an event. The leading jet is tagged with a D-meson candidate.  
+Another case is considered where the random cone is especially placed in the perpendicular plane.
+In figure~\ref{fig:DeltaPt_Dzero}, on the left panel, a comparison is made between the \deltapt\ distributions for these two cases and each case has excluded the D-tagged leading jet either having $p_{T}>$ 5 GeV/$c$ or $p_{T}>$ 10 GeV/$c$.
+On the right panel shown is the background fluctuation matrix built using \deltapt\ distribution for the excluded D-tagged leading jet with $p_{T}>$ 5 GeV/$c$ 
+and random cone thrown all over the $\eta-\phi$ plane.
+%Dzero
+\begin{figure}[bth]
+\centering
+\includegraphics[width=0.45\textwidth]{pPbplotsD0/Default/ResponseMatrix/RandomCones/plotsComparison/DjetEvt_com2}
+\includegraphics[width=0.45\textwidth]{pPbplotsD0/Default/ResponseMatrix/BkgRM03/plots/DeltaPt_Djet5Excl.png}
+\includegraphics[width=0.45\textwidth]{pPbplotsD0/Default/ResponseMatrix/BkgRM03/plots/BkgMatrix_Djet5Excl.png}
+\caption{Left: \deltapt\ distributions from events with D-jet candidates, and with a D-tagged leading jet that has $p_{T}>$ 5 GeV/$c$, or $p_{T}>$ 10 GeV/$c$, random cone thrown randomly all over $\eta-\phi$ or only in the perpendicular plane. Right: \deltapt\ for excluded D-jet $p_{T}>$5 GeV/c, random cone not necessarily in the perpendicular plane. Bottom: The background fluctuation matrix built based on the \deltapt\ distribution.}
+\label{fig:DeltaPt_Dzero}%
+\end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%  DETECTOR RESPONSE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -662,18 +681,29 @@ The generated and reconstructed jets are matched by looking for the same D meson
 \subsection{Detector Response Matrix}
 \label{Det_Resp}
 
-The detector response matrix for prompt \Dstar-jets is shown in Fig.~\ref{fig:fRMdet_pPb}.
-The Monte Carlo production is with Hijing. However, in order to avoid Hijing imperfection of describing the underlying event, only the Pythia part of the production is used to extract the detector response matrix, and the background fluctuations matrix is obtained from data~\ref{sBackFluc}.
+The detector response matrices for prompt and non-prompt \Dstar-jets is shown in Fig.~\ref{fig:fRMdet_pPb} and for \Dzero-jets in Fig.~\ref{fig:fRMdet_pPb_Dzero}.
+The Monte Carlo production is with Hijing. However, in order to avoid Hijing imperfection of describing the underlying event, 
+only the Pythia part of the production is used to extract the detector response matrix, and the background fluctuations matrix is obtained from data~\ref{sBackFluc}.
 
 \begin{figure}[bth]
 \centering
 \includegraphics[width=0.49\textwidth]{pPbplots/ResponseMatrix/DetMatrix_Dpt0_100}
 \includegraphics[width=0.49\textwidth]{pPbplots/ResponseMatrix/DetMatrix_Dpt0_100_FD}
-\caption{Detector response matrix calculated with the PYTHIA part of the simulation of \pPb\ events at $\snn=5.02$~TeV, for prompt (left) and non-prompt (right) \Dstar-jet.}
+\caption{Detector response matrix calculated with the PYTHIA part of the simulation of \pPb\ events at $\snn=5.02$~TeV, for prompt (left) and non-prompt (right) \Dstar-jet, R=0.4.}
 \label{fig:fRMdet_pPb}
 \end{figure}
 
-The prompt detector response matrix is used to unfold the measured \Dstar-jet \pt spectrum after subtraction of the B feed-down component. The B feed-down is estimated based on simulations, as described later, that is folded with the presented non-prompt detector response matrix combined with the background fluctuation matrix.
+
+\begin{figure}[bth]
+\centering
+\includegraphics[width=0.49\textwidth]{pPbplotsD0/Default/ResponseMatrix/DetMatrix_prompt_Dpt3_36.pdf}
+\includegraphics[width=0.49\textwidth]{pPbplotsD0/Default/ResponseMatrix/DetMatrix_nonPrompt_Dpt3_36.pdf}
+\caption{Detector response matrix calculated with the PYTHIA part of the simulation of \pPb\ events at $\snn=5.02$~TeV, for prompt (left) and non-prompt (right) \Dzero-jet, R=0.3.}
+\label{fig:fRMdet_pPb_Dzero}
+\end{figure}
+
+For both the \Dstar-jets and \Dzero-jets, their respective prompt detector response matrices are used to unfold the measured D-jet \pt\ spectra after subtraction of the B feed-down component. 
+For each D-jet, the B feed-down is estimated based on simulations, as described later, that is folded with the presented non-prompt detector response matrix combined with the background fluctuation matrix.
 %
 %Figure~\ref{fig:pPb_ResponseMatrixProj} shows projections of the response on the detector level jet \pt\ in bins of a particle level jet \pt.
 %
@@ -717,9 +747,10 @@ The prompt detector response matrix is used to unfold the measured \Dstar-jet \p
 A fraction of the measured D mesons originates from the decays of B mesons. These D mesons are usually referred to as non-prompt,
 to distinguish them from the prompt fraction, i.e. the ones that come directly from the fragmentation of a charm quark or decays of higher excited charm states.
 The longer decay length of B mesons combined with the topological cuts applied in the D meson selection causes the reconstruction efficiency 
-to be higher for the non-prompt fraction compared to the prompt fraction. This is shown in Fig.~\ref{eq_pPb_DrecEff}.
+to be higher for the non-prompt fraction compared to the prompt fraction. This is shown in Fig.~\ref{eq_pPb_DrecEff} and \ref{eq_pPb_DrecEff_Dzero}.
 As a consequence, the admixture of the prompt and non-prompt $D-jets$ is biased in a detector-specific way towards the non-prompt.
-In order to make meaningful comparisons with theoretical and other experimental results one needs to either correct the bias or remove completely the non-prompt fraction and report only the prompt fraction. Both approaches require to use theoretical models or Monte Carlo simulations.
+In order to make meaningful comparisons with theoretical and other experimental results one needs to either correct the bias or remove completely the non-prompt fraction and report only the prompt fraction. 
+Both approaches require to use theoretical models or Monte Carlo simulations.
 In ALICE the second approach has been preferred so far, and for this analysis we decided to follow it.
 
 \subsection{Monte Carlo Simulation}
@@ -768,11 +799,14 @@ The POWHEG \Dstar-jet spectrum is weighted with the ratio of the prompt over non
 There are differences between the prompt and non-prompt response, for this reason the FD has to be subtracted before unfolding the measured spectrum; furthermore, as illustrated in Eq.~\ref{eq:bFDsub}, the spectrum obtained
 from the POWHEG simulation is smeared using the response of non-prompt \Dstar-jets. Combined response matrix used to fold the simulated non-prompt spectrum is shown in Fig~\ref{fig:pPb_ResponseMatrix_nonprompt}.
 Figure~\ref{fig:pPbFD_corr} compares the measured \Dstar-jet \pt\ spectrum with the FD spectrum and the subtracted spectrum.
+Similar procedure is also employed for \Dzero-jets. % and the combined response matrix used to fold the simulated non-prompt spectrum is shown in Fig~\ref{fig:pPb_ResponseMatrix_nonprompt_Dzero}
+Figure~\ref{fig:pPbFD_corr_Dzero} compares the measured \Dzero-jet \pt\ spectrum with the FD spectrum and the subtracted spectrum.
 
+%Dstar
 \begin{figure}[bth]
 \centering
 \includegraphics[width=0.6\textwidth]{pPbplots/ResponseMatrix/combMatrixFD_DjetExcl5}
-\caption{Combined response matrix calculated with a full simulation of \pPb\ events at $\snn=5.02$~TeV.}
+\caption{Combined response matrix calculated with a full simulation of \pPb\ events at $\snn=5.02$~TeV, for \Dstar-jet.}
 \label{fig:pPb_ResponseMatrix_nonprompt}
 \end{figure}
 
@@ -780,8 +814,24 @@ Figure~\ref{fig:pPbFD_corr} compares the measured \Dstar-jet \pt\ spectrum with 
 \centering
 \includegraphics[width=.53\textwidth]{pPbplots/jetSpectra/JetPtSpectra_FDsub}
 \includegraphics[width=.45\textwidth]{pPbplots/jetSpectra/FDratio}
-\caption{Left: Efficiency-corrected measured \Dstar-jet spectrum in \pPb\ collisions at $\snn=5.02$~TeV before FD correction (green) and after FD correction (red). The FD spectrum is also plotted (blue) with its uncertainties. Right plots show ratio of non-prompt to inclusive \Dstar-jet spectrum.}
+\caption{Left: Efficiency-corrected measured \Dstar-jet spectrum in \pPb\ collisions at $\snn=5.02$~TeV before FD correction (green) and after FD correction (red). The FD spectrum is also plotted (blue) with its uncertainties. Right plot shows ratio of non-prompt to inclusive \Dstar-jet spectrum.}
 \label{fig:pPbFD_corr}
+\end{figure}
+
+%%Dzero
+%\begin{figure}[bth]
+%\centering
+%\includegraphics[width=0.6\textwidth]{pPbplotsD0/Default/ResponseMatrix/combMatrixFD_DjetExcl5.pdf}
+%\caption{Combined response matrix calculated with a full simulation of \pPb\ events at $\snn=5.02$~TeV for non-prompt \Dzero-jet.}
+%\label{fig:pPb_ResponseMatrix_nonprompt_Dzero}
+%\end{figure}
+
+\begin{figure}[bth]
+\centering
+\includegraphics[width=.53\textwidth]{pPbplotsD0/Simulations/JetPtSpectra_FDsub.png}
+\includegraphics[width=.45\textwidth]{pPbplotsD0/Simulations/FDratio}
+\caption{Left: Efficiency-corrected measured \Dzero-jet spectrum in \pPb\ collisions at $\snn=5.02$~TeV before FD correction (green) and after FD correction (red). The FD spectrum is also plotted (blue) with its uncertainties. Right plot shows ratio of non-prompt to inclusive \Dzero-jet spectrum.}
+\label{fig:pPbFD_corr_Dzero}
 \end{figure}
 
 
