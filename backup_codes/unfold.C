@@ -113,7 +113,7 @@ bool debug = 0
 	TString outName;
 	outName = "PythiaRM_";    //outName += "_";
 	outName += bkgName; outName += "_";
-	if(bayesUnfolding) { outName += "bayes"; outName += regBayes; }//svdUnfolding
+	if(bayesUnfolding) { outName += "bayes"; outName += regBayes; }//bayesUnfolding
 	else if(svdUnfolding) { outName += "svd"; outName += regBayes; }//svdUnfolding
 	else {cout << "!!!!!!!!!! other options for the unfolding to be included !!!!" << endl; return;}
 	if(fDoWeighting) outName += "_weight";
@@ -127,7 +127,7 @@ bool debug = 0
 LoadRawSpectrum("$HOME/ALICE_HeavyFlavour/work/jets1/p3/simulation/Bfeed22_var.root","hDataCorr_unsc",rebin=0);//LoadRawSpectrum("PATH_TO_RAW_SPECTRUM/JetPtSpectrum_FDsub.root","YOUR_HIST_NAME",0);
 // background fluctuation matrix; the first argument is the output file name, and the second name of the histogram;
 LoadBackgroundMatrix(Form("$HOME/ALICE_HeavyFlavour/work/jets1/p3/unfolding/matrices/RandCones_BkgM_%s.root",bkgName.Data()),"hBkgM");//LoadBackgroundMatrix("PATH_TO_THE_FILE/RandCones_BkgM_Djet5Excl.root","hBkgM");
-// detector reponse matrix for prompt D, from Pythia; the first argument is the output file name, and the second name of the response matrix, third: D-jet spectrum at the generator level, fourth: D-jet spectrum at the reconstruction level;
+// detector reponse matrix for prompt D, from Pythia; the first argument is the output file name, and the second is the name of the response matrix, third: D-jet spectrum at the generator level, fourth: D-jet spectrum at the reconstruction level;
 //LoadDetectorMatrix("$HOME/ALICE_HeavyFlavour/work/jets1/p3/unfolding/matrices/DetMatrix_Dpt0_100.root","hPtJet2d","hPtJetGen","hPtJetRec",0);//LoadDetectorMatrix("PATH_TO_THE_FILE/DetMatrix_Dpt0_100.root","hPtJet2d","hPtJetGen","hPtJetRec",0);
 LoadDetectorMatrix("$HOME/ALICE_HeavyFlavour/work/jets1/p3/unfolding/matrices/DetMatrix_Dpt3_36.root","hPtJet2d","hPtJetGen","hPtJetRec",0);//Remember to change the output directory
 
@@ -241,6 +241,47 @@ fPriorFunction->Draw("same");
 	
 	}
 	leg->Draw("same");
+/**************************************
+###### SVD unfolding: D vector ########
+**************************************/
+
+TH1D* bdat = (TH1D*) fRawRebin->Clone();
+TH1D* bini = (TH1D*) Matrix->ProjectionX()->Clone();
+TH1D* xini = (TH1D*) Matrix->ProjectionY()->Clone();
+TH2D* Adet = (TH2D*) Matrix->Clone();
+int kreg = regBayes;
+//TSVDUnfold* tsvdunf = new TSVDUnfold(bdat, Bcov, bini, xini, Adet);
+TSVDUnfold* tsvdunf = new TSVDUnfold(bdat=bdat, bini=bini, xini=xini, Adet=Adet);
+TH1D* unfresult = tsvdunf->Unfold(kreg);
+
+    TCanvas* cUnfoldedD = new TCanvas("cUnfoldedD","cUnfoldedD",1000,1000);
+    cUnfoldedD->SetLogy();
+    TLegend* leg2 =  new TLegend(0.6,0.4,0.85,0.85);
+    leg2->SetBorderSize(0);
+    
+TH1D* fDvector = (TH1D*)(tsvdunf->GetD())->Clone();
+unfresult->Scale(1,"width");
+bdat->Scale(1,"width");
+unfresult->SetLineColor(kBlue);
+bdat->SetLineColor(kGreen+2);
+
+fUnfoldedBayes[regBayes-1]->Draw();
+unfresult->Draw("same");
+bdat->Draw("same");
+fDvector->Draw("same");
+
+    TH1D* fRegSVD = new TH1D("RegSVD","RegSVD",fDvector->GetNbinsX(),0,fDvector->GetNbinsX());
+    fRegSVD->SetBinContent(kreg,1);
+    fRegSVD->SetLineColor(2);
+TCanvas* cSVD_Dvector = new TCanvas("Dvector","Dvector",1000,1000);
+fRegSVD->Draw();
+
+
+//    TCanvas* cUnfoldedD = new TCanvas("cUnfoldedD","cUnfoldedD",1000,1000);
+//    cUnfoldedD->SetLogy();
+//    TLegend* leg2 =  new TLegend(0.6,0.4,0.85,0.85);
+//    leg2->SetBorderSize(0);
+//-------------------------------------
 
 int regCount = 0;
 double old = 1; double new = 0;
