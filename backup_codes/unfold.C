@@ -1,5 +1,6 @@
 //Charm-jet pT unfolding for p-Pb
 //Barbara Trzeciak
+//This macro unfolds jet-pt spectra of D-jets either by Bayes or SVD unfolding
 
 #if !defined( __CINT__) || defined(__MAKECINT__)
 
@@ -81,7 +82,7 @@ bool bayesUnfolding = 0, // bayes unfolding
 bool svdUnfolding = 1, //  svd unfolding
 const int NTrials = nbinsy+1,//10,  //number of total trials
 const int regBayes = 5,  // default reg. parameter for the bayes unfolding
-bool fPrior = 0,  // if to use prior different than the true spectrum from the sim
+bool fPrior = 0,  // if to use prior different than the true spectrum from the simulation
 int priorType = 1,   // if fPrior == 1, choose type of the prior
 TString priorName = "priorPowerLaw6", // and the prior name to be included in the output file name
 bool debug = 0
@@ -207,20 +208,21 @@ fPriorFunction->Draw("same");
 /***********************************
 ############# unfolding ##################
 ************************************/
-//	if (bayesUnfolding){
-//	RooUnfoldBayes unfoldB (&response, fRawRebin, ivar+1);
-//		fUnfoldedBayes[ivar] = (TH1D*)unfoldB.Hreco();
-//	}
-//	else if (svdUnfolding){
-	RooUnfoldSvd unfold (&response, fRawRebin, ivar+1);
-//		fUnfoldedBayes[ivar] = (TH1D*)unfoldS.Hreco();
-//	}
-//	if 
-		fUnfoldedBayes[ivar] = (TH1D*)unfold.Hreco();
+	if (bayesUnfolding){
+	RooUnfoldBayes unfoldB (&response, fRawRebin, ivar+1);
+		fUnfoldedBayes[ivar] = (TH1D*)unfoldB.Hreco();
+		fPearsonCoeffs[ivar] = getPearsonCoeffs( unfoldB.Ereco(RooUnfold::kCovariance) );
+	}
+	else if (svdUnfolding){
+	RooUnfoldSvd unfoldS (&response, fRawRebin, ivar+1);
+		fUnfoldedBayes[ivar] = (TH1D*)unfoldS.Hreco();
+		fPearsonCoeffs[ivar] = getPearsonCoeffs( unfoldS.Ereco(RooUnfold::kCovariance) );
+	}
+//		fUnfoldedBayes[ivar] = (TH1D*)unfold.Hreco();
 		folded[ivar] = (TH1D*)response.ApplyToTruth(fUnfoldedBayes[ivar]);
 
 		// ------------ Get Person coefficient ------------
-		fPearsonCoeffs[ivar] = getPearsonCoeffs( unfold.Ereco(RooUnfold::kCovariance) );
+//		fPearsonCoeffs[ivar] = getPearsonCoeffs( unfold.Ereco(RooUnfold::kCovariance) );
 		fPearsonCoeffs[ivar]->SetName(Form("PearsonCoeffs%d",ivar));
 
 		fUnfoldedBayes[ivar]->SetLineColor(colortable[ivar]);
