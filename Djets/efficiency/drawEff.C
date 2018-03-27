@@ -1,81 +1,64 @@
-#include "style.C"
+
 #include <string>
 #include <sstream>
 #include <iostream>
 
-setHistoDetails(TH1 *h, Color_t color, Style_t Mstyle, Width_t width);
-    
- double zmin = 0, zmax = 2.;
-    double jetmin = 2, jetmax = 40;
-    double plotmin = 2, plotmax = 36;
-    
-    
-    const int ptbinsJetN = 8;
-    float ptJetbins[ptbinsJetN+1] = { 2,4,6,8,10,12,16,24,50 };
-    
-    int promptColor = kRed+1;
-    int nonpromptColor = kBlue+1;
-   
-    
-void drawEff( int Rpar = 4 )
-{
-    
-    style();
-    gStyle->SetOptStat(000);
-        
-    gStyle->SetLegendFont(42);
-    //gStyle->SetLegendTextSize(0.05);
-  
-  
-stringstream sst;
-sst.clear(); sst.str("");
+#include "config.h"
 
-   TFile *inFilePrompt = new TFile("SQMCorrcuts/DjetEff_prompt_jetpt2_50.root","read");
-   TFile *inFileFD = new TFile("SQMCorrcuts/DjetEff_nonPrompt_jetpt2_50.root","read");
-   
+int promptColor = kRed+1;
+int nonpromptColor = kBlue+1;
+
+void drawEff(TString promptFile = "DjetEff_prompt_jetpt2_50", TString nonpromptFile = "DjetEff_nonPrompt_jetpt2_50",
+TString outDir = "plots",
+double jetptmin = 5, double jetptmax = 50,
+double plotmin = 2, double plotmax = 36)
+{
+
+    gStyle->SetOptStat(000);
+
+    TFile *inFilePrompt = new TFile(promptFile.Data(),"read");
+    TFile *inFileFD = new TFile(nonpromptFile.Data(),"read");
+
     TH1F *hEffPrompt = (TH1F*)inFilePrompt->Get("hEff_reb");
     TH1F *hEffNonPrompt = (TH1F*)inFileFD->Get("hEff_reb");
-    
+
     hEffPrompt->SetTitle();
-            hEffPrompt->SetMarkerColor(promptColor);
-            hEffPrompt->SetLineColor(promptColor);
-            hEffPrompt->SetMarkerStyle(20);
-            hEffPrompt->SetMarkerSize(1.2);
-            hEffPrompt->GetXaxis()->SetTitle("#it{p}_{T, D^{0}} (GeV/#it{c})");
-            //hmass[i]->GetYaxis()->SetTitle(Form("Entries/%.1f MeV/#it{c^{2}}",hmass[i]->GetBinWidth(1)*1000));
-            //hEffPrompt->GetYaxis()->SetTitle("D^{*+} Acceptance #times Efficiency");
-            hEffPrompt->GetYaxis()->SetTitle("Acceptance #times Efficiency");
-            hEffPrompt->GetXaxis()->SetLabelSize(0.04);
-            hEffPrompt->GetXaxis()->SetTitleSize(0.05);
-            hEffPrompt->GetXaxis()->SetTitleOffset(1.);
-            hEffPrompt->GetYaxis()->SetLabelSize(0.045);
-            hEffPrompt->GetYaxis()->SetTitleSize(0.05);
-            hEffPrompt->GetXaxis()->SetRangeUser(plotmin,plotmax);
-            hEffPrompt->SetMaximum(hEffPrompt->GetMaximum()*3.5);
-   
-   
-   hEffNonPrompt->SetTitle();
-            hEffNonPrompt->SetMarkerColor(nonpromptColor);
-            hEffNonPrompt->SetLineColor(nonpromptColor);
-            hEffNonPrompt->SetMarkerStyle(21);
-            hEffNonPrompt->SetMarkerSize(1.2);
-            hEffNonPrompt->GetXaxis()->SetTitle("#it{p}_{T}^{D} (GeV/#it{c})");
-            //hmass[i]->GetYaxis()->SetTitle(Form("Entries/%.1f MeV/#it{c^{2}}",hmass[i]->GetBinWidth(1)*1000));
-            hEffNonPrompt->GetYaxis()->SetTitle("Acceptance #times Efficiency");
-            hEffNonPrompt->GetXaxis()->SetLabelSize(0.04);
-            hEffNonPrompt->GetXaxis()->SetTitleSize(0.05);
-            hEffNonPrompt->GetXaxis()->SetTitleOffset(1.);
-            hEffNonPrompt->GetYaxis()->SetLabelSize(0.045);
-            hEffNonPrompt->GetYaxis()->SetTitleSize(0.05);
-            hEffNonPrompt->GetXaxis()->SetRangeUser(plotmin,plotmax);
-            hEffNonPrompt->SetMaximum(hEffNonPrompt->GetMaximum()*2);
+    hEffPrompt->SetMarkerColor(promptColor);
+    hEffPrompt->SetLineColor(promptColor);
+    hEffPrompt->SetMarkerStyle(20);
+    hEffPrompt->SetMarkerSize(1.2);
+    hEffPrompt->GetXaxis()->SetTitle(Form("#it{p}_{T,%s} (GeV/#it{c})",fDmesonS.Data()));
+    hEffPrompt->GetYaxis()->SetTitle("Acceptance #times Efficiency");
+    hEffPrompt->GetXaxis()->SetLabelSize(0.04);
+    hEffPrompt->GetXaxis()->SetTitleSize(0.05);
+    hEffPrompt->GetXaxis()->SetTitleOffset(1.);
+    hEffPrompt->GetYaxis()->SetLabelSize(0.045);
+    hEffPrompt->GetYaxis()->SetTitleSize(0.05);
+    hEffPrompt->GetXaxis()->SetRangeUser(plotmin,plotmax);
+    if(fSystem) hEffPrompt->SetMaximum(hEffPrompt->GetMaximum()*1.6);
+    else hEffPrompt->SetMaximum(hEffNonPrompt->GetMaximum()*1.6);
+
+    hEffNonPrompt->SetTitle();
+    hEffNonPrompt->SetMarkerColor(nonpromptColor);
+    hEffNonPrompt->SetLineColor(nonpromptColor);
+    hEffNonPrompt->SetMarkerStyle(21);
+    hEffNonPrompt->SetMarkerSize(1.2);
+    hEffNonPrompt->GetXaxis()->SetTitle(Form("#it{p}_{T,%s} (GeV/#it{c})",fDmesonS.Data()));
+    hEffNonPrompt->GetYaxis()->SetTitle("Acceptance #times Efficiency");
+    hEffNonPrompt->GetXaxis()->SetLabelSize(0.04);
+    hEffNonPrompt->GetXaxis()->SetTitleSize(0.05);
+    hEffNonPrompt->GetXaxis()->SetTitleOffset(1.);
+    hEffNonPrompt->GetYaxis()->SetLabelSize(0.045);
+    hEffNonPrompt->GetYaxis()->SetTitleSize(0.05);
+    hEffNonPrompt->GetXaxis()->SetRangeUser(plotmin,plotmax);
+    hEffNonPrompt->SetMaximum(hEffNonPrompt->GetMaximum()*3);
 
 
-    TLegend *leg = new TLegend(0.5,0.25,0.85,0.40);
+    TLegend *leg = new TLegend(0.5,0.22,0.85,0.35);
     leg->SetTextSize(0.045);
-    leg->AddEntry(hEffPrompt,"Prompt D^{0}","p");
-    leg->AddEntry(hEffNonPrompt,"Feed-down D^{0}","p");
-    
+    leg->AddEntry(hEffPrompt,Form("Prompt %s",fDmesonS.Data()),"p");
+    leg->AddEntry(hEffNonPrompt,Form("Feed-down %s",fDmesonS.Data()),"p");
+
     TPaveText *pvALICE = new TPaveText(0.15,0.85,0.8,0.9,"brNDC");
     pvALICE->SetFillStyle(0);
     pvALICE->SetBorderSize(0);
@@ -83,16 +66,16 @@ sst.clear(); sst.str("");
     pvALICE->SetTextSize(0.045);
     pvALICE->SetTextAlign(11);
     pvALICE->AddText("ALICE Preliminary");
-    
+
     TPaveText *pvEn= new TPaveText(0.15,0.80,0.8,0.85,"brNDC");
     pvEn->SetFillStyle(0);
     pvEn->SetBorderSize(0);
     pvEn->SetTextFont(42);
     pvEn->SetTextSize(0.045);
     pvEn->SetTextAlign(11);
+    pvEn->AddText(Form("%s",fSystemS.Data()));
    // pvEn->AddText("PYTHIA6+HIJING, p-Pb, #sqrt{#it{s}_{NN}} = 5.02 TeV");
-    pvEn->AddText("p-Pb, #sqrt{#it{s}_{NN}} = 5.02 TeV");
-   
+
     double shift = 0.1;
     TPaveText *pvD = new TPaveText(0.45,0.66-shift,0.9,0.7-shift,"brNDC");
     pvD->SetFillStyle(0);
@@ -100,66 +83,58 @@ sst.clear(); sst.str("");
     pvD->SetTextFont(42);
     pvD->SetTextSize(0.045);
     pvD->SetTextAlign(11);
-    pvD->AddText("D^{0} #rightarrow K^{-}#pi^{+} and charge conj.");
-    
+    if(fDmesonSpecie) pvD->AddText("D^{*+} #rightarrow D^{0}#pi^{+} and charge conj.");
+    else pvD->AddText("D^{0} #rightarrow K^{-}#pi^{+} and charge conj.");
+
     TPaveText *pvJet = new TPaveText(0.45,0.61-shift,0.9,0.65-shift,"brNDC");
     pvJet->SetFillStyle(0);
     pvJet->SetBorderSize(0);
     pvJet->SetTextFont(42);
     pvJet->SetTextSize(0.045);
     pvJet->SetTextAlign(11);
-    pvJet->AddText("in Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.4");
-    
-   
+    pvJet->AddText(Form("in Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.%d",Rpar));
+
     TPaveText *pvEta = new TPaveText(0.45,0.56-shift,0.8,0.6-shift,"brNDC");
     pvEta->SetFillStyle(0);
     pvEta->SetBorderSize(0);
     pvEta->SetTextFont(42);
     pvEta->SetTextSize(0.045);
     pvEta->SetTextAlign(11);
-    pvEta->AddText("|#it{#eta}_{jet}| < 0.5");
+    pvEta->AddText(Form("|#it{#eta}_{jet}| < 0.%d",9-Rpar));
+
+    TPaveText *pvJetPt = new TPaveText(0.45,0.48-shift,0.8,0.52-shift,"brNDC");
+    pvJetPt->SetFillStyle(0);
+    pvJetPt->SetBorderSize(0);
+    pvJetPt->SetTextFont(42);
+    pvJetPt->SetTextSize(0.045);
+    pvJetPt->SetTextAlign(11);
+    pvJetPt->AddText(Form("%.0f < p_{T.ch jet} < %.0f GeV/#it{c}",jetptmin,jetptmax));
 
     TCanvas *cEff = new TCanvas("cEff","cEff",800,600);
-    //cEff->SetBatch();
     cEff->SetLogy();
-    //cMass->Divide(3,1);
-    //cMass->cd(1);
     hEffPrompt->Draw();
     hEffNonPrompt->Draw("same");
-    
-    //pvALICE->Draw("same");
-    pvEn->Draw("same");
-    pvJet->Draw("same");
-    pvD->Draw("same");
-    pvEta->Draw("same");
-    leg->Draw("same");
 
-    cEff->SaveAs("plots/DjetEff_Sim_log.pdf");
-    cEff->SaveAs("plots/DjetEff_Sim_log.eps");
-    cEff->SaveAs("plots/DjetEff_Sim_log.png");
+        //pvALICE->Draw("same");
+        pvEn->Draw("same");
+        pvJet->Draw("same");
+        pvD->Draw("same");
+        pvEta->Draw("same");
+        pvJetPt->Draw("same");
+        leg->Draw("same");
 
-   
-   
-}
 
-void setHistoDetails(TH1 *h, Color_t color, Style_t Mstyle, Size_t size = 0.9, Width_t width=2, int scale = 0){
-    
-    if(scale)h->Scale(1,"width");
-    h->SetMarkerStyle(Mstyle);
-    h->SetMarkerColor(color);
-    h->SetMarkerSize(size);
-    h->SetLineColor(color);
-    h->SetLineWidth(width);
-    h->SetTitle(0);
-    h->GetXaxis()->SetTitle("p_{T}^{D^{*+}}(GeV/c)");
-    
-    return;
+        cEff->SaveAs(Form("%s/DjetEff_Sim_log.pdf",outDir.Data()));
+        cEff->SaveAs(Form("%s/DjetEff_Sim_log.png",outDir.Data()));
 
-}
 
-void SaveCanvas(TCanvas *c, string name = "tmp"){
-    
-    c->SaveAs(Form("%s.png",name.c_str()));
-    c->SaveAs(Form("%s.pdf",name.c_str()));
-   
+    TCanvas *cEff2 = new TCanvas("cEff2","cEff2",800,600);
+    //hEffPrompt->SetMaximum(0.4);
+    hEffPrompt->Draw();
+    hEffNonPrompt->Draw("same");
+
+
+    cEff2->SaveAs(Form("%s/DjetEff_Sim.pdf",outDir.Data()));
+    cEff2->SaveAs(Form("%s/DjetEff_Sim.png",outDir.Data()));
+
 }
