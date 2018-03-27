@@ -9,10 +9,10 @@ prod=$4
 effFile=$6
 refFile=$8
 postfix=${10}
-
+dirOut=${11}
 
 ################################################
 ############### D-jet signal
 ################################################
 
-root -l -b -q signalExtraction_SB.C'("'$dataFile'", "'$lhcprod'",'$3', "'$prod'",'$5',"'$effFile'",'$7',"'$refFile'",1,'$9',"'$postfix'")' #> outfile 2>&1
+root -l -b -q signalExtraction_SB.C'("'$dataFile'", "'$lhcprod'",'$3', "'$prod'",'$5',"'$effFile'",'$7',"'$refFile'",1,'$9',"'$postfix'","'$dirOut'")' #> outfile 2>&1
