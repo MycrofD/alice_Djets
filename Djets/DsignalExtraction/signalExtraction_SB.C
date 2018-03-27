@@ -26,11 +26,11 @@
 #include "signalExtraction.h"
 
 void signalExtraction_SB(
-  TString dataFile = "/home/basia/Work/alice/analysis/pp13tev/outData/losser_15Nov/AnalysisResults",
-  TString lhcprod = "LHC16kl", // if one file: e.g. LHC16k, LHC16kl ... ; for more than one file: LHC16
+  TString dataFile = "$HOME/Work/alice/analysis/pp13tev/outData/losser_15Nov/AnalysisResults",
+  TString lhcprod = "LHC16kl", // if one file: e.g. LHC16k, LHC16kl ... ; for more than one file: LHC16: -- pattern of the out file is: PATH_TO_OUTFILE/AnalysiResultsLHCPROD
   bool isMoreFiles = 0, TString prod = "kl",    // for more than 1 file, for one file leave it empty
   bool isEff = 0, TString efffile = "../efficiency/DjetEff_prompt.root",
-  bool isRef = 0, TString refFile = "",
+  bool isRef = 0, TString refFile = "test.root",
   bool save = 1,
   bool postfix = 0, TString listName = "Cut",
   TString out = "signalExtraction")
@@ -39,14 +39,14 @@ void signalExtraction_SB(
 
     fUseRefl = isRef;
     if(fUseRefl) fReflFilename = refFile;
+
     savePlots = save;
     bEff = isEff;
     if(bEff)plotsDir="/plots";
     else plotsDir = "/plotsNoEff";
-    TString outdir = OUTDIRECTORY + out;
+    TString outdir = out;
     gSystem->Exec(Form("mkdir %s",outdir.Data()));
     gSystem->Exec(Form("mkdir %s%s",outdir.Data(),plotsDir.Data()));
-    setStyle();
 
     if(!isMoreFiles) prod="";
     int nFiles = (int)prod.Length();
@@ -54,7 +54,6 @@ void signalExtraction_SB(
     TString histName;
     if(fDmesonSpecie) histName = "histosDStarMBN";
     else histName = "histosD0MBN";
-
     // get analysis output file
     TString datafile;
     TFile *File;
@@ -64,10 +63,10 @@ void signalExtraction_SB(
 
     if(!nFiles) {
       datafile = dataFile;
-      datafile += "_";
       datafile += lhcprod;
       datafile += ".root";
       File = new TFile(datafile,"read");
+      if(!File) { cout << "==== WRONG FILE WITH DATA =====\n\n"; return ;}
       dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
 
       for(int i=0;i<ND; i++){
@@ -84,11 +83,11 @@ void signalExtraction_SB(
     else {
       for (int j=0;j<nFiles;j++){
           datafile = dataFile;
-          datafile += "_";
           datafile += lhcprod;
           datafile += prod.Data()[j];
           datafile += ".root";
           File = new TFile(datafile,"read");
+          if(!File) { cout << "==== WRONG FILE WITH DATA =====\n\n"; return ;}
           dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
 
           for(int i=0;i<ND; i++){
@@ -127,13 +126,10 @@ void signalExtraction_SB(
 
     // --------------------------------------------------------
    //------------------- draw output histos -------------------
-
     if(savePlots){
       saveFitParams(outdir,lhcprod+prod);
       saveSpectraPlots(outdir,lhcprod+prod);
     }
-
-    // --------------------------------------------------------
 
     // --------------------------------------------------------
     // ----------- write to output file
@@ -151,7 +147,7 @@ void signalExtraction_SB(
 
     for(int i=0; i<fptbinsDN; i++){
         if(hjetpt[i]) hjetpt[i]->Write();
-        if(hjetpt_s[i]) hjetpt_s[i]->Write();
+        if(hjetpt_sb[i]) hjetpt_sb[i]->Write();
         if(hjetptsub[i]) hjetptsub[i]->Write();
         if(hmass[i]) hmass[i]->Write();
         if(hmass_l[i]) hmass_l[i]->Write();
@@ -183,7 +179,7 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
     if(fDmesonSpecie) hInvMassptD->GetXaxis()->SetTitle(Form("m(%s)(GeV/c^{2})","K#pi#pi-K#pi"));
     else hInvMassptD->GetXaxis()->SetTitle(Form("m(%s)(GeV/c^{2})","K#pi"));
     hInvMassptD->GetXaxis()->SetTitleSize(0.06);
-    hInvMassptD->GetXaxis()->SetTitleOffset(0.8);
+    hInvMassptD->GetXaxis()->SetTitleOffset(0.9);
     hInvMassptD->GetYaxis()->SetTitle("p_{T}^{jet}");
     hInvMassptD->SetTitle();
 
@@ -196,6 +192,40 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
     pvCuts->SetFillStyle(0);
     pvCuts->SetBorderSize(0);
     pvCuts->AddText(Form("%s",outdir.Data()));
+
+    TPaveText *pvEn= new TPaveText(0.2,0.80,0.8,0.85,"brNDC");
+    pvEn->SetFillStyle(0);
+    pvEn->SetBorderSize(0);
+    pvEn->SetTextFont(42);
+    pvEn->SetTextSize(0.075);
+    pvEn->SetTextAlign(11);
+    pvEn->AddText(Form("%s",fSystemS.Data()));
+
+    double shift = 0.;
+    TPaveText *pvD = new TPaveText(0.15,0.65-shift,0.9,0.7-shift,"brNDC");
+    pvD->SetFillStyle(0);
+    pvD->SetBorderSize(0);
+    pvD->SetTextFont(42);
+    pvD->SetTextSize(0.085);
+    pvD->SetTextAlign(11);
+    if(fDmesonSpecie) pvD->AddText("D^{*+} #rightarrow D^{0}#pi^{+} and charge conj.");
+    else pvD->AddText("D^{0} #rightarrow K^{-}#pi^{+} and charge conj.");
+
+    TPaveText *pvJet = new TPaveText(0.15,0.55-shift,0.9,0.6-shift,"brNDC");
+    pvJet->SetFillStyle(0);
+    pvJet->SetBorderSize(0);
+    pvJet->SetTextFont(42);
+    pvJet->SetTextSize(0.085);
+    pvJet->AddText(Form("in Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.%d",Rpar));
+    pvJet->SetTextAlign(11);
+
+    TPaveText *pvEta = new TPaveText(0.15,0.45-shift,0.8,0.5-shift,"brNDC");
+    pvEta->SetFillStyle(0);
+    pvEta->SetBorderSize(0);
+    pvEta->SetTextFont(42);
+    pvEta->SetTextSize(0.085);
+    pvEta->SetTextAlign(11);
+    pvEta->AddText(Form("|#it{#eta}_{jet}| < 0.%d",9-Rpar));
 
     int xnx = 3, xny=4;
     if(fptbinsDN>4 && fptbinsDN<7) { xnx = 2; xny=3; }
@@ -251,13 +281,13 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         hmass[i] = (TH1F*)h->Clone(Form("hmass_%d",i));
         hmass[i]->SetName(Form("hmass_%d",i));
         hmass[i]->GetYaxis()->SetTitle("Entries");
-        hmass[i]->GetYaxis()->SetTitleOffset(1.4);
         hmass[i]->GetXaxis()->SetTitle("Invariant Mass (GeV/c^{2})");
         bkgfit[i] = fitterp->GetBackgroundRecalcFunc();
         bkgfit[i]->SetRange(hmin,hmax);
         bkgfit[i]->SetLineColor(2);
         bkgfit[i]->SetName("bkgFit");
 
+        // bkg+reflection function
         if(fUseRefl && fDmesonSpecie == 0) {
           bkgRfit[i] = fitterp->GetBkgPlusReflFunc();
           bkgRfit[i]->SetName("bkgFitWRef");
@@ -279,35 +309,54 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         Dmean = fitterp->GetMean();
         DmeanUnc = fitterp->GetMeanUncertainty();
 
-        float signal_c_min = Dmean-fsigmaSignal*Dsigma;
-        float signal_c_max = Dmean+fsigmaSignal*Dsigma;
-        float signal_l_min = Dmean+fsigmaBkg[0]*Dsigma;
-        float signal_l_max = Dmean+fsigmaBkg[1]*Dsigma;
-        float signal_u_min = Dmean+fsigmaBkg[2]*Dsigma;
-        float signal_u_max = Dmean+fsigmaBkg[3]*Dsigma;
+        Double_t signal_c_min = Dmean-fsigmaSignal*Dsigma;
+        Double_t signal_c_max = Dmean+fsigmaSignal*Dsigma;
+        Double_t signal_l_min = Dmean+fsigmaBkg[0]*Dsigma;
+        Double_t signal_l_max = Dmean+fsigmaBkg[1]*Dsigma;
+        Double_t signal_u_min = Dmean+fsigmaBkg[2]*Dsigma;
+        Double_t signal_u_max = Dmean+fsigmaBkg[3]*Dsigma;
+        if(signal_l_min<hmin) signal_l_min = hmin;
+        if(signal_u_max>hmax) signal_u_max = hmax;
 
-        int binmin = hmass[i]->GetXaxis()->FindBin(signal_c_min);
-        int binmax = hmass[i]->GetXaxis()->FindBin(signal_c_max);
-        double binwidth = hmass[i]->GetXaxis()->GetBinWidth(1)*0.5;
-
-        Double_t s=0,serr=0,srelerr=0,b=0,berr=0,signf=0,signferr=0,sob=0,soberr=0;
-        Double_t br=0; //background with reflections
-
+        Double_t binwidth = hmass[i]->GetXaxis()->GetBinWidth(1)*0.5;
+        // signal
+        Int_t binmin = hmass[i]->GetXaxis()->FindBin(signal_c_min);
+        Int_t binmax = hmass[i]->GetXaxis()->FindBin(signal_c_max);
         Double_t min = hmass[i]->GetXaxis()->GetBinCenter(binmin)-binwidth;
         Double_t max = hmass[i]->GetXaxis()->GetBinCenter(binmax-1)+binwidth;
-        fitterp->Signal(fsigmaSignal,s,serr);
-        fitterp->Background(min, max ,b,berr);
+        // side-bands
+        Int_t binmin_sb1 = hmass[i]->GetXaxis()->FindBin(signal_l_min);
+        Int_t binmax_sb1 = hmass[i]->GetXaxis()->FindBin(signal_l_max);
+        Double_t min_sb1 = hmass[i]->GetXaxis()->GetBinCenter(binmin_sb1)-binwidth;
+        Double_t max_sb1 = hmass[i]->GetXaxis()->GetBinCenter(binmax_sb1-1)+binwidth;
+        // side-bands
+        Int_t binmin_sb2 = hmass[i]->GetXaxis()->FindBin(signal_u_min);
+        Int_t binmax_sb2 = hmass[i]->GetXaxis()->FindBin(signal_u_max);
+        Double_t min_sb2 = hmass[i]->GetXaxis()->GetBinCenter(binmin_sb2)-binwidth;
+        Double_t max_sb2 = hmass[i]->GetXaxis()->GetBinCenter(binmax_sb2-1)+binwidth;
+
+
+        Double_t s=0, serr=0, srelerr=0, bkg=0, bkgerr=0, bkgref=0, ref=0;
+        Double_t sb1=0, sb2=0, ref1=0, ref2=0;
+        fitterp->Signal(fsigmaSignal, s, serr);
+        fitterp->Background(min, max ,bkg, bkgerr);
         //fitterp->Background(fsigmaSignal,b,berr);
+        sb1 = bkgfit[i]->Integral(min_sb1,max_sb1)/(Double_t)hmass[i]->GetBinWidth(1);
+        sb2 = bkgfit[i]->Integral(min_sb2,max_sb2)/(Double_t)hmass[i]->GetBinWidth(1);
+        if(fUseRefl && fDmesonSpecie == 0) {
+          bkgref = bkgRfit[i]->Integral(min,max)/(Double_t)hmass[i]->GetBinWidth(1);
+          ref = bkgref - bkg;
+          ref1 = (bkgRfit[i]->Integral(min_sb1,max_sb1)/(Double_t)hmass[i]->GetBinWidth(1)) - sb1;
+          ref2 = (bkgRfit[i]->Integral(min_sb2,max_sb2)/(Double_t)hmass[i]->GetBinWidth(1)) - sb2;
+        }
+
+        Double_t signf=0,signferr=0,sob=0,soberr=0;
         fitterp->Significance(fsigmaSignal,signf,signferr);
         if(s) srelerr = serr/s;
-        if(b) sob = s/b;
+        if(bkg) sob = s/bkg;
         else sob = s;
-        if(b && berr) soberr = TMath::Sqrt((serr/b)*(serr/b) + (s/b/b*berr)*(s/b/b*berr));
+        if(bkg && bkgerr) soberr = TMath::Sqrt((serr/bkg)*(serr/bkg) + (s/bkg/bkg*bkgerr)*(s/bkg/bkg*bkgerr));
         else soberr = serr;
-        if(fUseRefl && fDmesonSpecie == 0) {
-          br = bkgRfit[i]->Integral(min,max)/(Double_t)hmass[i]->GetBinWidth(1);
-        }
-        else br = b;
 
         TPaveText *pvSig;
         if(fDmesonSpecie) pvSig = new TPaveText(0.55,0.47,0.95,0.75,"brNDC");
@@ -320,8 +369,8 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         //else pv->AddText(Form("S/B (3#sigma) = (%.1f #pm %.1f)", sob,soberr));
         if(twodigits) pvSig->AddText(Form("S (3#sigma) = %.2f #pm %.2f", s,serr));
         else pvSig->AddText(Form("S (3#sigma) = %.1f #pm %.1f", s,serr));
-        if(twodigits) pvSig->AddText(Form("B (3#sigma) = %.2f #pm %.2f", b,berr));
-        else pvSig->AddText(Form("B (3#sigma) = %.1f #pm %.1f", b,berr));
+        if(twodigits) pvSig->AddText(Form("B (3#sigma) = %.2f #pm %.2f", bkg,bkgerr));
+        else pvSig->AddText(Form("B (3#sigma) = %.1f #pm %.1f", bkg,bkgerr));
         pvSig->AddText(Form("Signif.(3#sigma) = %.1f #pm %.1f", signf,signferr));
         pvSig->AddText(Form("S/B(3#sigma) = %.2f #pm %.2f", sob,soberr));
         if(fUseRefl && fDmesonSpecie == 0) pvSig->AddText(Form("R/S = %.2f", RS));
@@ -360,7 +409,7 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         hSignal->SetBinError(i+1,serr);
 
         // ---------------- side-band drawing
-        hmass_l[i] = (TH1F*)hmass[i]->Clone("hmass_l");
+       hmass_l[i] = (TH1F*)hmass[i]->Clone("hmass_l");
         hmass_l[i]->GetXaxis()->SetRangeUser(signal_l_min,signal_l_max);
         hmass_l[i]->SetName(Form("hmass_l_%d",i));
         hmass_u[i] = (TH1F*)hmass[i]->Clone("hmass_u");
@@ -390,45 +439,56 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         hjetpt[i]->SetLineColor(kRed+2);
 
         //------ jet pt spectrum - side bands
-        TH1F* hjetpt_s1=(TH1F*)hInvMassptD->ProjectionY(Form("hjetpt_s1%d",i),hInvMassptD->GetXaxis()->FindBin(signal_l_min), hInvMassptD->GetXaxis()->FindBin(signal_l_max)-1,hInvMassptD->GetZaxis()->FindBin(fptbinsDA[i]), hInvMassptD->GetZaxis()->FindBin(fptbinsDA[i+1])-1);
-        hjetpt_s1->SetTitle(Form("%.1lf < pt^{%s} < %.1lf",fptbinsDA[i],fDmesonS.Data(),fptbinsDA[i+1]));
-        hjetpt_s1->SetMarkerColor(kBlue+2);
-        hjetpt_s1->SetLineColor(kBlue+2);
-        TH1F* hjetpt_s2=(TH1F*)hInvMassptD->ProjectionY(Form("hjetpt_s2%d",i),hInvMassptD->GetXaxis()->FindBin(signal_u_min), hInvMassptD->GetXaxis()->FindBin(signal_u_max)-1,hInvMassptD->GetZaxis()->FindBin(fptbinsDA[i]), hInvMassptD->GetZaxis()->FindBin(fptbinsDA[i+1])-1);
-        hjetpt_s2->SetTitle(Form("%.1lf < pt^{%s} < %.1lf",fptbinsDA[i],fDmesonS.Data(),fptbinsDA[i+1]));
-        hjetpt_s2->SetMarkerColor(kBlue+2);
-        hjetpt_s2->SetLineColor(kBlue+2);
-        hjetpt_s[i] = (TH1F*)hjetpt_s1->Clone(Form("hjetpt_s_%d",i));
-        hjetpt_s[i]->Add(hjetpt_s2);
-
-        // scale background from side bands to the background under the peak
-        double scaling = br / hjetpt_s[i]->Integral();
-        hjetpt_s[i]->Scale(scaling);
-
-        c2jet->cd(i+1);
-        gPad->SetLogy();
+        TH1F* hjetpt_sb1=(TH1F*)hInvMassptD->ProjectionY(Form("hjetpt_sb1%d",i),hInvMassptD->GetXaxis()->FindBin(signal_l_min), hInvMassptD->GetXaxis()->FindBin(signal_l_max)-1,hInvMassptD->GetZaxis()->FindBin(fptbinsDA[i]), hInvMassptD->GetZaxis()->FindBin(fptbinsDA[i+1])-1);
+        hjetpt_sb1->SetTitle(Form("%.1lf < pt^{%s} < %.1lf",fptbinsDA[i],fDmesonS.Data(),fptbinsDA[i+1]));
+        hjetpt_sb1->SetMarkerColor(kBlue+2);
+        hjetpt_sb1->SetLineColor(kBlue+2);
+        TH1F* hjetpt_sb2=(TH1F*)hInvMassptD->ProjectionY(Form("hjetpt_sb2%d",i),hInvMassptD->GetXaxis()->FindBin(signal_u_min), hInvMassptD->GetXaxis()->FindBin(signal_u_max)-1,hInvMassptD->GetZaxis()->FindBin(fptbinsDA[i]), hInvMassptD->GetZaxis()->FindBin(fptbinsDA[i+1])-1);
+        hjetpt_sb2->SetTitle(Form("%.1lf < pt^{%s} < %.1lf",fptbinsDA[i],fDmesonS.Data(),fptbinsDA[i+1]));
+        hjetpt_sb2->SetMarkerColor(kBlue+2);
+        hjetpt_sb2->SetLineColor(kBlue+2);
+        hjetpt_sb[i] = (TH1F*)hjetpt_sb1->Clone(Form("hjetpt_sb_%d",i));
+        hjetpt_sb[i]->Add(hjetpt_sb2);
 
         hjetpt[i]->GetXaxis()->SetRangeUser(jetplotmin,jetplotmax);
-        hjetpt_s[i]->GetXaxis()->SetRangeUser(jetplotmin,jetplotmax);
         hjetpt[i]->GetXaxis()->SetTitle("p_{T,ch jet} (GeV/c)");
-        hjetpt[i]->GetXaxis()->SetTitleSize(0.05);
-        hjetpt[i]->GetXaxis()->SetTitleOffset(0.8);
+        hjetpt[i]->GetXaxis()->SetTitleOffset(1.);
+        hjetpt_sb[i]->GetXaxis()->SetRangeUser(jetplotmin,jetplotmax);
 
-        hjetpt[i]->Draw("ep");
-        hjetpt_s[i]->Draw("epsame");
-        TLegend *l1 = new TLegend(0.75,0.6,0.9,0.8);
-        l1->AddEntry(hjetpt[i],"signal","l");
-        l1->AddEntry(hjetpt_s[i],"SB","l");
-        l1->Draw("same");
+        // scale background from side bands to the background under the peak
+        //double scalingB = bkg / hjetpt_sb[i]->Integral();
+
+      //  cout << "====================== scaling: " << sb2 << endl;
+        double scalingB = bkg/(sb1+sb2);
+        double scalingS;
+        if(fUseRefl && fDmesonSpecie == 0) {
+          scalingS = s / ( s+ref - ( (ref1+ref2)*bkg ) / (sb1+sb2) );
+        }
+
+        hjetpt_sb[i]->Scale(scalingB);
 
         //------- subtract background from signal jet
         hjetptsub[i] = (TH1F*)hjetpt[i]->Clone(Form("hjetptsub_%d",i));
-        hjetptsub[i]->Add(hjetpt_s[i],-1);
+        hjetptsub[i]->Add(hjetpt_sb[i],-1);
+        if(fUseRefl && fDmesonSpecie == 0) {
+          hjetptsub[i]->Scale(scalingS);
+        }
+
         hjetptsub[i]->SetMarkerColor(kGreen+3);
         hjetptsub[i]->SetLineColor(kGreen+3);
+
+
+        c2jet->cd(i+1);
+        gPad->SetLogy();
+        hjetpt[i]->Draw("ep");
+        hjetpt_sb[i]->Draw("epsame");
         hjetptsub[i]->Draw("epsame");
         if(isdetails) pvProd->Draw("same");
         if(isdetails) pvCuts->Draw("same");
+        TLegend *l1 = new TLegend(0.65,0.65,0.88,0.85);
+        l1->AddEntry(hjetpt[i],"signal","l");
+        l1->AddEntry(hjetpt_sb[i],"SB","l");
+        l1->Draw("same");
 
         TLegend *l2 = new TLegend(0.6,0.75,0.9,0.9);
         l2->AddEntry(hjetptsub[i],"bkg subtracted","l");
@@ -442,9 +502,6 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         if(bEff) hjetptcorr[i]->Scale(1./efficiency[i]); // D efficiency
         hjetptcorr[i]->SetMarkerColor(kBlue+3);
         hjetptcorr[i]->SetLineColor(kBlue+3);
-        hjetptcorr[i]->GetXaxis()->SetTitleSize(0.04);
-        hjetptcorr[i]->GetXaxis()->SetTitleOffset(0.9);
-        //hjetptcorr->GetXaxis()->SetRangeUser(jetplotmin,jetplotmax);
 
         c2jetcorr->cd(i+1);
         hjetptcorr[i]->Draw("ep");
@@ -460,7 +517,18 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
 
     }
 
-    if(savePlots) SaveCanvas(c2,outdir+plotsDir+"/invMass_"+prod);
+    c2->cd(i+1);
+    pvEn->Draw();
+    pvD->Draw("same");
+    pvJet->Draw("same");
+    pvEta->Draw("same");
+    c2jet->cd(i+1);
+    pvEn->Draw();
+    pvD->Draw("same");
+    pvJet->Draw("same");
+    pvEta->Draw("same");
+
+    if(savePlots) SaveCanvas(c2,outdir+plotsDir+"/invMass"+prod);
     if(savePlots) SaveCanvas(c2jet,outdir+plotsDir+"/jetRawSpectrum"+prod);
 
     return kTRUE;
@@ -504,6 +572,51 @@ void  saveSpectraPlots(TString outdir,TString prod){
       pvCuts->SetBorderSize(0);
       pvCuts->AddText(Form("%s",outdir.Data()));
 
+      TPaveText *pvEn= new TPaveText(0.2,0.80,0.8,0.85,"brNDC");
+      pvEn->SetFillStyle(0);
+      pvEn->SetBorderSize(0);
+      pvEn->SetTextFont(42);
+      pvEn->SetTextSize(0.045);
+      pvEn->SetTextAlign(11);
+      pvEn->AddText(Form("%s",fSystemS.Data()));
+
+      double shift = -0.05;
+      TPaveText *pvJet = new TPaveText(0.52,0.65-shift,0.9,0.7-shift,"brNDC");
+      pvJet->SetFillStyle(0);
+      pvJet->SetBorderSize(0);
+      pvJet->SetTextFont(42);
+      pvJet->SetTextSize(0.04);
+      pvJet->SetTextAlign(11);
+      pvJet->AddText(Form("Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.%d",Rpar));
+
+      shift+=0.07;
+      TPaveText *pvD = new TPaveText(0.52,0.65-shift,0.9,0.7-shift,"brNDC");
+      pvD->SetFillStyle(0);
+      pvD->SetBorderSize(0);
+      pvD->SetTextFont(42);
+      pvD->SetTextSize(0.04);
+      pvD->SetTextAlign(11);
+      if(fDmesonSpecie) pvD->AddText("with D^{*+} #rightarrow D^{0}#pi^{+} and charge conj.");
+      else pvD->AddText("with D^{0} #rightarrow K^{-}#pi^{+} and charge conj.");
+
+      shift+=0.07;
+      TPaveText *pvEta = new TPaveText(0.52,0.65-shift,0.9,0.7-shift,"brNDC");
+      pvEta->SetFillStyle(0);
+      pvEta->SetBorderSize(0);
+      pvEta->SetTextFont(42);
+      pvEta->SetTextSize(0.04);
+      pvEta->SetTextAlign(11);
+      pvEta->AddText(Form("|#it{#eta}_{jet}| < 0.%d",9-Rpar));
+
+      shift+=0.07;
+      TPaveText *pv3 = new TPaveText(0.52,0.65-shift,0.9,0.7-shift,"brNDC");
+      pv3->SetFillStyle(0);
+      pv3->SetBorderSize(0);
+      pv3->SetTextFont(42);
+      pv3->SetTextSize(0.04);
+      pv3->SetTextAlign(11);
+      pv3->AddText(Form("%d < p_{T,%s} < %d GeV/#it{c}",(Int_t)fptbinsDA[0],fDmesonS.Data(),(Int_t)fptbinsDA[fptbinsDN]));
+
        // before eff. correction
       TCanvas *cRawSpectrum = new TCanvas("cRawSpectrum","cRawSpectrum",800,600);
       setHistoDetails(hrawjetptspectrum,0,kBlue+1,20,1.2);
@@ -513,12 +626,7 @@ void  saveSpectraPlots(TString outdir,TString prod){
       hrawjetptspectrum->Draw();
       if(isdetails) pvProd->Draw("same");
       if(isdetails) pvCuts->Draw("same");
-
-      TPaveText *pv3 = new TPaveText(0.68,0.65,0.95,0.85,"brNDC");
-      pv3->SetFillStyle(0);
-      pv3->SetBorderSize(0);
-      if(!isptcut) pv3->AddText(Form("charged jets,  R=0.%d",Rpar));
-      else pv3->AddText(Form("#splitline{charged jets, R=0.%d}{p_{T,%s}>%dGeV/c}",Rpar,fDmesonS.Data(),(Int_t)fptbinsDA[0]));
+      pvEn->Draw("same");
 
       hjetptspectrum->GetYaxis()->SetTitle("dN/dp_{T}");
       hjetptspectrum->GetXaxis()->SetRangeUser(jetplotmin,jetplotmax);
@@ -526,12 +634,17 @@ void  saveSpectraPlots(TString outdir,TString prod){
       TCanvas *cSpectrum = new TCanvas("cSpectrum","cSpectrum",800,600);
       cSpectrum->SetLogy();
       setHistoDetails(hjetptspectrum,0,kRed,20,1.2);
+      hjetptspectrum->SetMinimum(1);
       hjetptspectrum->GetXaxis()->SetTitle("p_{T,ch jet} (GeV/c)");
       hjetptspectrum->Draw();
       pv3->Draw("same");
+      pvEn->Draw("same");
+      pvD->Draw("same");
+      pvJet->Draw("same");
+      pvEta->Draw("same");
       if(isdetails) pvProd->Draw("same");
       if(isdetails) pvCuts->Draw("same");
-      if(savePlots) SaveCanvas(cSpectrum,outdir+plotsDir+"/jetPtSpectrum_SB_"+prod);
+      if(savePlots) SaveCanvas(cSpectrum,outdir+plotsDir+"/jetPtSpectrum_SB"+prod);
 
       TH1F *hjetptspectrumReb_tmp = (TH1F*)hjetptspectrum->Clone("hjetptspectrumReb_tmp");
       hjetptspectrumReb = (TH1F*)hjetptspectrumReb_tmp->Rebin(fptbinsJetMeasN,"hjetptspectrumReb",fptbinsJetMeasA);
@@ -543,14 +656,19 @@ void  saveSpectraPlots(TString outdir,TString prod){
       TCanvas *cSpectrumRebin = new TCanvas("cSpectrumRebin","cSpectrumRebin",800,600);
       cSpectrumRebin->SetLogy();
       hjetptspectrumReb2->Draw();
+      pvEn->Draw("same");
+      pvD->Draw("same");
+      pvJet->Draw("same");
+      pvEta->Draw("same");
       if(isdetails) pvProd->Draw("same");
       if(isdetails) pvCuts->Draw("same");
       pv3->Draw("same");
 
-      SaveCanvas(cSpectrumRebin,outdir+plotsDir+"/jetPtSpectrum_SB_Rebin_"+prod);
+      SaveCanvas(cSpectrumRebin,outdir+plotsDir+"/jetPtSpectrum_SB_Rebin"+prod);
 
       hjetptspectrumRebUnc = (TH1F*)hjetptspectrumReb->Clone("hjetptspectrumRebUnc");
       hjetptspectrumRebUnc->GetYaxis()->SetTitle("Rel. unc.");
+
 
       for(int j=1; j<=hjetptspectrumReb->GetNbinsX();j++){
                   double err;
@@ -560,15 +678,57 @@ void  saveSpectraPlots(TString outdir,TString prod){
                   hjetptspectrumRebUnc->SetBinError(j,0);
       }
 
-      TCanvas *cSpectrumRebinUnc = new TCanvas("cSpectrumRebinUnc","cSpectrumRebinUnc",800,600);
+      hjetptspectrumRebUnc->SetMinimum(0);
+      hjetptspectrumRebUnc->SetMaximum(hjetptspectrumRebUnc->GetMaximum()*1.2);
 
-      hjetptspectrumRebUnc->GetXaxis()->SetRangeUser(jetplotmin,jetplotmax);
+      double shift = 0;
+      TPaveText *pvJet = new TPaveText(0.15,0.65-shift,0.9,0.7-shift,"brNDC");
+      pvJet->SetFillStyle(0);
+      pvJet->SetBorderSize(0);
+      pvJet->SetTextFont(42);
+      pvJet->SetTextSize(0.04);
+      pvJet->SetTextAlign(11);
+      if(fDmesonSpecie) pvJet->AddText("D^{*+} #rightarrow D^{0}#pi^{+} and charge conj.");
+      else pvJet->AddText(Form("Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.%d",Rpar));
+
+      TPaveText *pvD = new TPaveText(0.15,0.58-shift,0.9,0.63-shift,"brNDC");
+      pvD->SetFillStyle(0);
+      pvD->SetBorderSize(0);
+      pvD->SetTextFont(42);
+      pvD->SetTextSize(0.04);
+      pvD->SetTextAlign(11);
+      if(fDmesonSpecie) pvD->AddText("with D^{*+} #rightarrow D^{0}#pi^{+} and charge conj.");
+      else pvD->AddText("with D^{0} #rightarrow K^{-}#pi^{+} and charge conj.");
+
+      TPaveText *pvEta = new TPaveText(0.15,0.51-shift,0.8,0.56-shift,"brNDC");
+      pvEta->SetFillStyle(0);
+      pvEta->SetBorderSize(0);
+      pvEta->SetTextFont(42);
+      pvEta->SetTextSize(0.04);
+      pvEta->SetTextAlign(11);
+      pvEta->AddText(Form("|#it{#eta}_{jet}| < 0.%d",9-Rpar));
+
+      TPaveText *pv3 = new TPaveText(0.15,0.44,0.9,0.49,"brNDC");
+      pv3->SetFillStyle(0);
+      pv3->SetBorderSize(0);
+      pv3->SetTextFont(42);
+      pv3->SetTextSize(0.04);
+      pv3->SetTextAlign(11);
+      pv3->AddText(Form("%d < p_{T,%s} < %d GeV/#it{c}",(Int_t)fptbinsDA[0],fDmesonS.Data(),(Int_t)fptbinsDA[fptbinsDN]));
+
+      TCanvas *cSpectrumRebinUnc = new TCanvas("cSpectrumRebinUnc","cSpectrumRebinUnc",800,500);
+
+      //hjetptspectrumRebUnc->GetXaxis()->SetRangeUser(jetplotmin,jetplotmax);
       hjetptspectrumRebUnc->Draw();
       if(isdetails) pvProd->Draw("same");
       if(isdetails) pvCuts->Draw("same");
+      pvEn->Draw("same");
       pv3->Draw("same");
+      pvD->Draw("same");
+      pvJet->Draw("same");
+      pvEta->Draw("same");
 
-      SaveCanvas(cSpectrumRebinUnc,outdir+plotsDir+"/jetPtSpectrumUnc_SB_Rebin_"+prod);
+      SaveCanvas(cSpectrumRebinUnc,outdir+plotsDir+"/jetPtSpectrumUnc_SB_Rebin"+prod);
 
 }
 
@@ -585,6 +745,14 @@ void  saveFitParams(TString outdir,TString prod){
     pvCuts->SetBorderSize(0);
     pvCuts->AddText(Form("%s",outdir.Data()));
 
+    TPaveText *pvEn= new TPaveText(0.25,0.80,0.8,0.85,"brNDC");
+    pvEn->SetFillStyle(0);
+    pvEn->SetBorderSize(0);
+    pvEn->SetTextFont(42);
+    pvEn->SetTextSize(0.045);
+    pvEn->SetTextAlign(11);
+    pvEn->AddText(Form("%s",fSystemS.Data()));
+
     setHistoDetails(hmean,0,2,20);
     if(fDmesonSpecie) hmean->GetYaxis()->SetTitle("signal #mu (MeV/c^{2})");
     else hmean->GetYaxis()->SetTitle("signal #mu (GeV/c^{2})");
@@ -598,12 +766,7 @@ void  saveFitParams(TString outdir,TString prod){
     hrelErr->GetYaxis()->SetTitle("rel. unc.");
 
     hmean->GetYaxis()->SetTitleOffset(1.8);
-    hmean->GetYaxis()->SetTitleSize(0.04);
-    hmean->GetYaxis()->SetLabelSize(0.03);
 
-    hsigma->GetYaxis()->SetTitleOffset(1.4);
-    hsigma->GetYaxis()->SetTitleSize(0.04);
-    hsigma->GetYaxis()->SetLabelSize(0.03);
 
     if(fDmesonSpecie) {
       hmean->GetYaxis()->SetRangeUser(144.8,146);
@@ -617,15 +780,8 @@ void  saveFitParams(TString outdir,TString prod){
     hSignal->SetName("hSignal");
     setHistoDetails(hSignal,0,2,20);
     hSignal->GetYaxis()->SetTitle("yield");
-    hSignal->GetYaxis()->SetTitleOffset(1.2);
-    hSignal->GetYaxis()->SetTitleSize(0.04);
-    hSignal->GetYaxis()->SetLabelSize(0.03);
-    hsign->GetYaxis()->SetTitleOffset(1.2);
-    hsign->GetYaxis()->SetTitleSize(0.04);
-    hsign->GetYaxis()->SetLabelSize(0.03);
-    hrelErr->GetYaxis()->SetTitleOffset(1.2);
-    hrelErr->GetYaxis()->SetTitleSize(0.04);
-    hrelErr->GetYaxis()->SetLabelSize(0.03);
+    hSignal->GetYaxis()->SetTitleOffset(1.6);
+    hrelErr->GetYaxis()->SetTitleOffset(1.6);
 
 
     double mean = 145.421;
@@ -637,6 +793,7 @@ void  saveFitParams(TString outdir,TString prod){
     cMassFit->cd(1);
     gPad->SetLeftMargin(0.15);
     hmean->Draw();
+    pvEn->Draw("same");
     if(isdetails) pvProd->Draw("same");
     if(isdetails) pvCuts->Draw("same");
     lm->Draw("same");
@@ -645,7 +802,7 @@ void  saveFitParams(TString outdir,TString prod){
     if(isdetails) pvProd->Draw("same");
     if(isdetails) pvCuts->Draw("same");
 
-     if(savePlots)  SaveCanvas(cMassFit,outdir+plotsDir+"/gaussianParams_"+prod);
+     if(savePlots)  SaveCanvas(cMassFit,outdir+plotsDir+"/gaussianParams"+prod);
 
     TCanvas *cSignal = new TCanvas("cSignal","cSignal",1200,1200);
     cSignal->Divide(2,2);
@@ -656,6 +813,7 @@ void  saveFitParams(TString outdir,TString prod){
     if(isdetails) pvCuts->Draw("same");
     cSignal->cd(2);
     hsign->Draw();
+    pvEn->Draw("same");
     if(isdetails) pvProd->Draw("same");
     if(isdetails) pvCuts->Draw("same");
     cSignal->cd(3);
@@ -667,19 +825,17 @@ void  saveFitParams(TString outdir,TString prod){
     if(isdetails) pvProd->Draw("same");
     if(isdetails) pvCuts->Draw("same");
 
-    if(savePlots) SaveCanvas(cSignal,outdir+plotsDir+"/signalParams_"+prod);
+    if(savePlots) SaveCanvas(cSignal,outdir+plotsDir+"/signalParams"+prod);
 
     if(hReflRS && fUseRefl && fDmesonSpecie == 0) {
       setHistoDetails(hReflRS,0,kGreen+2,20);
       hReflRS->GetYaxis()->SetTitle("R/S");
-      hReflRS->GetYaxis()->SetTitleOffset(1.2);
-      hReflRS->GetYaxis()->SetTitleSize(0.04);
-      hReflRS->GetYaxis()->SetLabelSize(0.03);
-      //hReflRS->GetYaxis()->SetRangeUser(0,0.4);
+      hReflRS->SetMinimum(hReflRS->GetMinimum()*0.5);
+      hReflRS->SetMaximum(hReflRS->GetMaximum()*1.2);
       TCanvas *cRS = new TCanvas("cRS","cRS",800,600);
       cRS->cd();
       hReflRS->Draw();
-      if(savePlots) SaveCanvas(cRS,outdir+plotsDir+"/RefOverS_"+prod);
+      if(savePlots) SaveCanvas(cRS,outdir+plotsDir+"/RefOverS"+prod);
     }
 
 }
@@ -694,6 +850,7 @@ void setHistoDetails(TH1 *h, int scale, Color_t color, Style_t Mstyle, Size_t si
     h->SetTitle(0);
     h->GetXaxis()->SetTitle(Form("p_{T,%s}(GeV/c)",fDmesonS.Data()));
 
+
     return;
 }
 
@@ -705,19 +862,5 @@ void SaveCanvas(TCanvas *c, TString name = "tmp"){
 
 void setStyle(){
 
-    gStyle->SetOptStat(000);
-    gStyle->SetLegendFont(42);
-    gStyle->SetTextFont(22) ;
-    //gStyle->SetLegendTextSize(0.05);
-    gStyle->SetPadLeftMargin(0.1);
-    gStyle->SetPadRightMargin(0.02);
-    gStyle->SetPadTopMargin(0.08);
-    gStyle->SetPadBottomMargin(0.1);
-    gStyle->SetLegendBorderSize(0);
-    gStyle->SetTitleOffset(1.,"x");
-    gStyle->SetTitleOffset(0.9.,"y");
-    gStyle->SetTitleSize(0.04,"xyz");
-    gStyle->SetLabelSize(0.03,"xyz");
-    //style();
 
 }
