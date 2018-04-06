@@ -10,7 +10,7 @@ doCuts=$2
 outputdirectorySignal=${13}
 out=${14}
 
- doRawSpectra=${15}
+doRawSpectra=${15}
 
 base=CutVarBase
 outputdirectory=$out$base
@@ -52,7 +52,12 @@ priorType=${12}
 ################################################
 ############### Cut variation
 ################################################
+if [ $doRawSpectra -eq 0 ]; then
+  ./run.csh $outputdirectory $outputdirectorySignal $lhcprod $efficiencyfile $detRMpromptfile $detRMnonpromptfile $bkgRMtype $unfType $regPar $isPrior $priorType $ispostfix $postfix $ispostfixFD $postfixFD $ptbinning $jetpttruemin $jetptmeasmin 0 1 0 0 0 0
+fi
 
-./run.csh $outputdirectory $outputdirectorySignal $lhcprod $efficiencyfile $detRMpromptfile $detRMnonpromptfile $bkgRMtype $unfType $regPar $isPrior $priorType $ispostfix $postfix $ispostfixFD $postfixFD $ptbinning $jetpttruemin $jetptmeasmin 0 1 0 0 0 0 $doRawSpectra
+if [ $doRawSpectra -eq 1 ]; then
+  ./run.csh $outputdirectory $outputdirectorySignal $lhcprod $efficiencyfile $detRMpromptfile $detRMnonpromptfile $bkgRMtype $unfType $regPar $isPrior $priorType $ispostfix $postfix $ispostfixFD $postfixFD $ptbinning $jetpttruemin $jetptmeasmin 0 1 0 0 0 1
+fi
 
 exit 1

@@ -134,41 +134,13 @@ double ptbinsA[ptbinsN+1] = { 5,6,8,10,14,20,30,50 };
 int nJetBins2 = 7;
 double ptJetbins2[] = {5,6,8,10,14,20,30,50};
 
-void unfRangesComparison(int reg=3,  TString inDirBase = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts", TString inName = "systematics2_ppbinning", bool isChain = 0,  int measmin=3, int measmax=50, int truemin=5, int truemax=50)
+void unfRangesComparison(int reg=3,  TString inDirBase = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts", TString inName = "Default_jetMeas3_50_jetTrue3_50_ppbinning/systematics", bool isChain = 0,  int measmin=3, int measmax=50, int truemin=5, int truemax=50)
 {
-
-/*  if(!isChain) {
-    if (truemin == 3){
-      nJetBins2 = 9;
-      ptJetbins2 = new double[nJetBins2+1];
-      for(int i=0;i<nJetBins2+1;i++) ptJetbins2[i] = ptbins[i];
-    }
-    else if (truemin == 4){
-      nJetBins2 = 8;
-      ptJetbins2 = new double[nJetBins2+1];
-      for(int i=0;i<nJetBins2+1;i++) ptJetbins2[i] = ptbins[i+1];
-    }
-    else if (truemin == 5){
-      nJetBins2 = 7;
-      ptJetbins2 = new double[nJetBins2+1];
-      for(int i=0;i<nJetBins2+1;i++) ptJetbins2[i] = ptbins[i+2];
-    }
-    else {
-      cout << "WRONG true minimum pT !!!!" << endl;
-      return;
-    }
-  }
-  else {
-    nJetBins2 = fptbinsJetTrueN;
-    ptJetbins2 = new double[nJetBins2+1];
-    for(int i=0;i<nJetBins2+1;i++) ptJetbins2[i] = fptbinsJetTrueA[i];
-  }*/
 
   TString inputDir = inDirBase;
 //  inDir += "/";
 //  inDir += input;
   gSystem->Exec(Form("mkdir %s/%s",inputDir.Data(),inName.Data()));
-
 
  compareRanges(inName,inDirBase,measmin,measmax,truemin,truemax);
 
@@ -200,6 +172,8 @@ void compareRanges(TString inName, TString inDirBase, int measmin, int measmax, 
           //    desc[i] += regList[i];
 
           //  }
+
+            TFile *outFile = new TFile(Form("%s/UnfoldingRangesComparison.root",out.Data()),"RECREATE");
 
             TFile *fproj[nFiles];
             for(int i=0; i<nFiles; i++) {
@@ -273,8 +247,7 @@ void compareRanges(TString inName, TString inDirBase, int measmin, int measmax, 
             line->SetLineWidth(2);
             line->Draw("same");
 
-
-            cspec2->SaveAs(Form("%s/UnfoldingRangesComparison_ratio.pdf",out.Data(),));
+            cspec2->SaveAs(Form("%s/UnfoldingRangesComparison_ratio.pdf",out.Data()));
             cspec2->SaveAs(Form("%s/UnfoldingRangesComparison_ratio.png",out.Data()));
 
             TH1F *hsys = new TH1F("hsys","syst. rms; p_{T,ch jet};  RMS [%]",ptbinsN,ptbinsA);
@@ -286,8 +259,8 @@ void compareRanges(TString inName, TString inDirBase, int measmin, int measmax, 
             TCanvas *cspecRMS = new TCanvas("cspecRMS","cspecRMS",800,400);
             hsys->Draw("hist");
 
-            cspecRMS->SaveAs(Form("%s/UnfoldingRangesComparison_rms.pdf",out.Data(),));
-            cspecRMS->SaveAs(Form("%s/UnfoldingRangesComparison_rms.png",out.Data(),));
+            cspecRMS->SaveAs(Form("%s/UnfoldingRangesComparison_rms.pdf",out.Data()));
+            cspecRMS->SaveAs(Form("%s/UnfoldingRangesComparison_rms.png",out.Data()));
 
             hmean->GetYaxis()->SetRangeUser(0.93,1.08);
             hmean->SetLineColor(kMagenta+1);
@@ -295,8 +268,18 @@ void compareRanges(TString inName, TString inDirBase, int measmin, int measmax, 
             hmean->Draw("hist");
             line->Draw("same");
 
-            cspecMean->SaveAs(Form("%s/UnfoldingRangesComparison_mean.pdf",out.Data(),));
-            cspecMean->SaveAs(Form("%s/UnfoldingRangesComparison_mean.png",out.Data(),));
+            cspecMean->SaveAs(Form("%s/UnfoldingRangesComparison_mean.pdf",out.Data()));
+            cspecMean->SaveAs(Form("%s/UnfoldingRangesComparison_mean.png",out.Data()));
+
+            outFile->cd();
+            cspec->Write();
+            cspec2->Write();
+            cspecMean->Write();
+            cspecRMS->Write();
+            hmean->Write();
+            hsys->Write();
+
+            outFile->Close();
 
             return;
 

@@ -8,8 +8,7 @@
 
 double plotmin = 0, plotmax = 50;
 
-double BR = 0.0257;
-const int APb = 208;
+
 const double simScaling =  APb;
 //double pPbscaling = 2.1/208.;
 
@@ -134,7 +133,7 @@ bool isjetptcut = 0, double jetptmin = 5, double jetptmax = 30 )
            }
       }
 
-      compareSpectra(hSpectrum_binned,nFiles, jet, quark, outh);
+      if(nFiles > 1) compareSpectra(hSpectrum_binned,nFiles, jet, quark, outh);
 
      // compare data and central sim with unc
       TCanvas *cSpectra = new TCanvas("cSpectra","cSpectra",1000,800);

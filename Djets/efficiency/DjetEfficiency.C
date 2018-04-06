@@ -3,10 +3,16 @@
 
 using namespace std;
 
+
 const int ptbinsDN = 12;
 double ptDbins[ptbinsDN+1] = { 1,2,3,4,5,6,7,8,10,12,16,24,36 };
 float ptmin = 1, ptmax = 36;
 
+/* //for Pb-Pb analysis
+const int ptbinsDN = 11;
+double ptDbins[ptbinsDN+1] = { 1,2,3,4,5,6,7,8,10,12,16,20 };
+float ptmin = 1, ptmax = 20;
+*/
 
 void DjetEfficiency(bool isPrompt = 1, TString effFile = "../outMC/AnalysisResults_fast_D0MCHijing_SMQcorr2.root", TString outDir = "SQMCorrcuts",
 float jetptmin = 2, float jetptmax = 50, bool recoPt = 0, bool postfix = 0, TString listName = "FD")

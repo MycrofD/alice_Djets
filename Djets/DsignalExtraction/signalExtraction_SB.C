@@ -244,6 +244,8 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
     if(fptbinsDA[0] == 2) firstPtBin = 3;
     else if(fptbinsDA[0] == 3) firstPtBin = 4;
     else if(fptbinsDA[0] == 4) firstPtBin = 5;
+    else if(fptbinsDA[0] == 5) firstPtBin = 6;
+    else if(fptbinsDA[0] == 6) firstPtBin = 7;
     if(!firstPtBin) { std::cout << "==== Wrong first value of the D pT (should be 2,3 or 4) === \n"; return kFALSE; }
     Float_t RS = 0;
 
@@ -461,6 +463,7 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
       //  cout << "====================== scaling: " << sb2 << endl;
         double scalingB = bkg/(sb1+sb2);
         double scalingS;
+
         if(fUseRefl && fDmesonSpecie == 0) {
           scalingS = s / ( s+ref - ( (ref1+ref2)*bkg ) / (sb1+sb2) );
         }
@@ -473,7 +476,7 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         if(fUseRefl && fDmesonSpecie == 0) {
           hjetptsub[i]->Scale(scalingS);
         }
-
+        if(fsigmaSignal==2) hjetptsub[i] = hjetptsub[i]->Scale(1./0.9545);
         hjetptsub[i]->SetMarkerColor(kGreen+3);
         hjetptsub[i]->SetLineColor(kGreen+3);
 

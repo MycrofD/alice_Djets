@@ -83,7 +83,7 @@ if (!fMeasSpectrum) { Error("Unfold", "No reconstructed spectrum!"); return 0; }
   fMatrixProd->GetYaxis()->SetTitle("p_{T,ch jet}^{gen.} (GeV/#it{c})");
 	fMatrixProd->SetTitle("Combined Matrix");
 
-  MtxPlots(outDir,"probability");
+  if(fSystem) MtxPlots(outDir,"probability");
 
   hMtxPro = (TH2D*)fMatrixProd->Clone("hMtxPro");
   NormMatrixY(hMtxPro);
@@ -438,6 +438,7 @@ int MtxPlots(TString outDir, TString outName) {
 	cMtx->SaveAs(Form("%s/plots/%s_probMtx.pdf",outDir.Data(),outName.Data()));
 	cMtx->SaveAs(Form("%s/plots/%s_probMtx.png",outDir.Data(),outName.Data()));
 
+  if(fSystem){
 	TCanvas *cSlices=new TCanvas("ProbSlice", "Probability slices",1000,1000);
 	cSlices->Divide(3,2);
 	plotSlice(cSlices->cd(1), hMtxPP,hMtxDpt,hMtxRe,hMtxPro,5,10);
@@ -448,7 +449,7 @@ int MtxPlots(TString outDir, TString outName) {
 
 	cSlices->SaveAs(Form("%s/plots/%s_probSlices.pdf",outDir.Data(),outName.Data()));
 	cSlices->SaveAs(Form("%s/plots/%s_probSlices.png",outDir.Data(),outName.Data()));
-
+  }
 
 	return 0;
 }

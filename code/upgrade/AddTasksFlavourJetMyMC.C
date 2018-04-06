@@ -71,8 +71,8 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
    //AliMultSelectionTask *taskMult = AddTaskMultSelection();
 
    //D mesons -- PID
-   gROOT->LoadMacro("$ALICE_ROOT/ANALYSIS/macros/AddTaskPIDResponse.C");
-   AliAnalysisTaskSE *taskRespPID = AddTaskPIDResponse(bIsMC,kFALSE,kTRUE,"1");
+  // gROOT->LoadMacro("$ALICE_ROOT/ANALYSIS/macros/AddTaskPIDResponse.C");
+  // AliAnalysisTaskSE *taskRespPID = AddTaskPIDResponse(bIsMC,kFALSE,kTRUE,"1");
 
    gROOT->LoadMacro("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
    // -- Physics selection task
@@ -85,13 +85,13 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
                 return;
         }
     }
-    else {
+  /*  else {
         AliPhysicsSelectionTask *physSelTask = AddTaskPhysicsSelection(kTRUE,kFALSE);
         if (!physSelTask) {
                 cout << "no physSelTask";
                 return;
         }
-   }
+   }*/
 
     //D meson filtering task
     //gROOT->LoadMacro("$ALICE_PHYSICS/PWGJE/FlavourJetTasks/macros/AddTaskSEDmesonsFilterCJ.C");
@@ -111,7 +111,7 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
 
 
     //In Pb-Pb there are no events with more than 5 candidates. For pp or p-Pb this number is probably smaller
-    for(Int_t i=0; i<2  ; i++)
+    for(Int_t i=0; i<1; i++)
     {
 
         TString TaskText = sText;
@@ -122,6 +122,7 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
         filter->SetCombineDmesons(kTRUE);
         filter->SetMultipleCandidates(kTRUE); //Analyse one candidate per event
         filter->SetAnalysedCandidate(i); //Number of the candidate that will be analysed (0 = first candidate)
+
 
         if(isPrompt){
                 filter->SetRejectDfromB(kTRUE);
@@ -185,25 +186,24 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
         TString AKTJet = "AKTJet";
         AKTJet += TaskText;
 
-        AliEmcalJetTask *taskFJDandTracks = AddTaskEmcalJet(DcandAndTracks,"",1,aRadius[0],AliJetContainer::kChargedJet,0.15,0.30,0.005,1,AKTJet,0.,kFALSE,kFALSE);
-        taskFJDandTracks->SelectCollisionCandidates(uTriggerMask);
+    /*    AliEmcalJetTask *taskFJDandTracks = AddTaskEmcalJet(DcandAndTracks,"",1,aRadius[0],AliJetContainer::kFullJet,0.15,0.30,0.005,1,AKTJet,0.,kFALSE,kFALSE);
+      //  taskFJDandTracks->SelectCollisionCandidates(uTriggerMask);
 
         //Generated level jets. No pT>0.15 GeV/c cut should be applied here!
-        AliEmcalJetTask *taskFJMCDandTracks = AddTaskEmcalJet(MCDcandAndTracks,"",1,aRadius[0],AliJetContainer::kChargedJet,0.0,0.0,0.005,1,AKTJet,0.,kFALSE,kFALSE);
-        taskFJMCDandTracks->SelectCollisionCandidates(uTriggerMask);
+        AliEmcalJetTask *taskFJMCDandTracks = AddTaskEmcalJet(MCDcandAndTracks,"",1,aRadius[0],AliJetContainer::kFullJet,0.0,0.0,0.005,1,AKTJet,0.,kFALSE,kFALSE);
+      //  taskFJMCDandTracks->SelectCollisionCandidates(uTriggerMask);
 
         TString KTJet = "KTJet";
         KTJet += TaskText;
+        AliEmcalJetTask *taskFJ2 = AddTaskEmcalJet(DcandAndTracks,"",0,aRadius[0],AliJetContainer::kFullJet,0.15,0.30,0.005,1,KTJet,0.,kFALSE,kFALSE);
+      //  taskFJ2->SelectCollisionCandidates(uTriggerMask);
 
         rhoName = "Rho";
         rhoName += TaskText;
-        AliEmcalJetTask *taskFJ2 = AddTaskEmcalJet(DcandAndTracks,"",0,aRadius[0],AliJetContainer::kChargedJet,0.15,0.30,0.005,1,KTJet,0.,kFALSE,kFALSE);
-        taskFJ2->SelectCollisionCandidates(uTriggerMask);
-
         // for pPb use rhoSparse
-        rhotask = (AliAnalysisTaskRhoSparse*) AddTaskRhoSparse(taskFJ2->GetName(), taskFJDandTracks->GetName(), DcandAndTracks,"", rhoName, aRadius[0], "TPCFID", 0.01, 0., 0, 0, 2, kTRUE);
-        rhotask->SelectCollisionCandidates(uTriggerMask);
-        rhotask->SetVzRange(-10,10);
+        //rhotask = (AliAnalysisTaskRhoSparse*) AddTaskRhoSparse(taskFJ2->GetName(), taskFJDandTracks->GetName(), DcandAndTracks,"", rhoName, aRadius[0], "TPCFID", 0.01, 0., 0, 0, 2, kTRUE);
+      //  rhotask->SelectCollisionCandidates(uTriggerMask);
+      //  rhotask->SetVzRange(-10,10);
 
         //For Data. Comment this part if you run on Monte Carlo
         AliAnalysisTaskFlavourJetCorrelationsTest *CorrTask = AddTaskDFilterAndCorrelations(
@@ -215,7 +215,7 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
                                                                                          taskFJDandTracks->GetName(),
                                                                                          DcandAndTracks,
                                                                                          "",
-                                                                                         rhoName,
+                                                                                         "", //rhoName,
                                                                                          "",
                                                                                          "",
                                                                                          "",
@@ -240,7 +240,7 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
             jetContMC->SetPercAreaCut(dJetAreaCut);
         }
 
-
+*/
 
     }
 

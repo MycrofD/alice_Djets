@@ -49,11 +49,13 @@ public:
 
    enum ECandidateType{ kD0toKpi, kDstartoKpipi };
    enum ECorrelationMethod{ kConstituent, kAngular, kResponseMatrix };
+   enum EParticleOrigin { kQuarkNotFound, kFromCharm, kFromBottom };
 
    AliAnalysisTaskFlavourJetCorrelationsTest();
    AliAnalysisTaskFlavourJetCorrelationsTest(const Char_t* name,AliRDHFCuts* cuts, ECandidateType candtype);
    virtual ~AliAnalysisTaskFlavourJetCorrelationsTest();
 
+  // virtual void     ExecOnce();
    virtual void     UserCreateOutputObjects();
    virtual Bool_t   Run();
    virtual void     Terminate(Option_t *);
@@ -97,6 +99,9 @@ public:
    void FillHistogramsDstarJetCorr(AliAODRecoCascadeHF* dstar, Double_t z, Double_t ptD, Double_t ptj, Double_t jetEta, Bool_t IsBkg, Bool_t bDInEMCalAcc, Bool_t bJetInEMCalAcc);
    void FillHistogramsMCGenDJetCorr(Double_t z,Double_t ptD,Double_t ptjet, Double_t yD, Double_t jetEta, Bool_t bDInEMCalAcc, Bool_t bJetInEMCalAcc);
    void FindMCJet(AliEmcalJet*& mcjet);
+   Int_t CheckOrigin(AliAODRecoDecay* cand, TClonesArray* mcArray); // AOD
+   Int_t CheckOrigin(AliAODMCParticle* part, TClonesArray* mcArray, Int_t &mchadron); // AOD
+   Int_t CheckDaughters(AliAODMCParticle* part, TClonesArray* mcArray);
    Int_t IsDzeroSideBand(AliAODRecoCascadeHF *candDstar);
    Bool_t InEMCalAcceptance(AliVParticle *vpart);
 
@@ -110,6 +115,7 @@ public:
 
 private:
 
+  //void ExecOnce();
    AliAnalysisTaskFlavourJetCorrelationsTest(const AliAnalysisTaskFlavourJetCorrelationsTest &source);
    AliAnalysisTaskFlavourJetCorrelationsTest& operator=(const AliAnalysisTaskFlavourJetCorrelationsTest& source);
 
@@ -133,12 +139,16 @@ private:
    Int_t  fNProngs;                 // number of prong of the decay channel
    Int_t  fPDGdaughters[4];         // PDG codes of daughters
    Float_t fSigmaD0[30];            // Sigma of D0 for D*
+   Int_t fHFhadronPDG[7];           // PDGs for the embedded HF signals
+   Int_t  fnHadrons;                // number of embedded HF hadrons
    TString fBranchName;             // AOD branch name
    AliRDHFCuts *fCuts;              // Cuts
 
    Double_t fMinMass;               // mass lower limit histogram
    Double_t fMaxMass;               // mass upper limit histogram
 
+   AliAODEvent    *fAodEvent;               //!
+   TClonesArray   *fArrayDStartoD0pi;       //!
    TClonesArray *fCandidateArray;   //! contains candidates selected by AliRDHFCuts
    TClonesArray *fSideBandArray;    //! contains candidates selected by AliRDHFCuts::IsSelected(kTracks), to be used for side bands (DStar case only!!)
    Bool_t fAnalyseDBkg;             // flag to switch off/on the SB analysis (default is off)
@@ -158,19 +168,33 @@ private:
    TH1F* fhPtJet;                   //!
    TH1F* fhPhiJet;                  //!
    TH1F* fhEtaJet;                  //!
+   TH2F* fhAreaVsPt;                //!
+   TH2F* fhNtrkVsPt;                //!
+   TH1F* fhHFPtJet;                   //!
+   TH1F* fhHFPhiJet;                  //!
+   TH1F* fhHFEtaJet;                  //!
+   TH2F* fhHFAreaVsPt;                //!
+   TH2F* fhHFNtrkVsPt;                //!
+   TH2F* fhDVsJetPt;                  //!
 
    //D mesons
    TH2F* fhInvMassptD;              //!
    TH2F* fhDiffSideBand;            //!
    TH2F* fhInvMassptDbg;            //!
    TH1F* fhPtPion;                  //!
-                                    //!
+   TH2F* fHFJetWithHF;               //!
+   TH2F *fHFJetWithHFC;             //!
+   TH2F *fHFJetWithHFB;             //!
+   TH2F *fHFJetNtrkVsHFtrk;         //!
+   TH2F *fHFjetsDEtaDPhi;           //!
+   //TH3F *fHFjetsDEtaDPhi;           //!
+
    //main histograms
    THnSparse* fhsDphiz;             //!
    THnSparse* fResponseMatrix;      //!
 
 
-   ClassDef(AliAnalysisTaskFlavourJetCorrelationsTest,8); // class for charm-jet CorrelationsExch
+   ClassDef(AliAnalysisTaskFlavourJetCorrelationsTest,9); // class for charm-jet CorrelationsExch
 };
 
 #endif

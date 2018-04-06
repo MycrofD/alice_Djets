@@ -59,6 +59,8 @@ void compareJES(int reg = 3 , TString inDir = "/home/basia/Work/alice/analysis/p
         gStyle->SetOptStat(0000); //Mean and RMS shown
         gSystem->Exec(Form("mkdir %s/systematics",inDir.Data()));
 
+        TFile *outFile = new TFile(Form("%s/systematics/JES_reg%d.root",inDir.Data(),reg),"RECREATE");
+
         const int nFiles = 4;
         TString tab[nFiles-1] = { "96", "95","90"};
         TString dirName[nFiles];
@@ -157,6 +159,7 @@ void compareJES(int reg = 3 , TString inDir = "/home/basia/Work/alice/analysis/p
         cspec2->SaveAs(Form("%s/systematics/JES_reg%d_ratio.png",inDir.Data(),reg));
 
 
+        outFile->cd();
     TCanvas *cspecf2 = new TCanvas("cspecf2","cspecf2",800,400);
     for(int i=0; i<nFiles-1; i++){
         double value = 0;
@@ -170,7 +173,7 @@ void compareJES(int reg = 3 , TString inDir = "/home/basia/Work/alice/analysis/p
         hratiof[i]->GetYaxis()->SetTitle("unc.from fit [%]");
         if(!i) hratiof[i]->Draw();
         else hratiof[i]->Draw("same");
-
+        hratiof[i]->Write();
     }
     leg2->Draw("same");
 
@@ -181,124 +184,12 @@ void compareJES(int reg = 3 , TString inDir = "/home/basia/Work/alice/analysis/p
     cspecf2->SaveAs(Form("%s/systematics/JES_reg%d_unc.pdf",inDir.Data(),reg));
     cspecf2->SaveAs(Form("%s/systematics/JES_reg%d_unc.png",inDir.Data(),reg));
 
+    cspec->Write();
+    cspec2->Write();
+    cspecf2->Write();
+    outFile->Close();
+
         return;
-
-}
-
-void compareRanges(int reg, TString inDirBase, int measmin, int measmax, int truemin, int truemax)
-{
-
-            TString out = inDirBase;
-            out+= "/systematics";
-            gStyle->SetOptStat(0000); //Mean and RMS shown
-            gSystem->Exec(Form("mkdir %s",out.Data()));
-
-            const int nFiles = 4;
-            TString inDir[nFiles] = {
-              "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue5_50",
-              "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50",
-              "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas4_50_jetTrue5_50",
-              "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas5_50_jetTrue5_50"
-            }
-
-            TString dirName[nFiles];
-            //int regList[nFiles] = {3,4};
-
-            for (int i=0; i<nFiles; i++){
-                dirName[i] = inDir[i];
-                dirName[i] += "/unfolding_Bayes_";
-                dirName[i] += reg;
-            }
-
-            TString desc[nFiles] = {
-              "meas: 3-50, true: 5-50",
-              "meas: 3-50, true: 3-50",
-              "meas: 4-50, true: 5-50",
-              "meas: 5-50, true: 5-50"
-            };
-          //  for(int i=0; i<nFiles; i++){
-          //    desc[i] = "reg=";
-          //    desc[i] += regList[i];
-
-          //  }
-
-            double plotmin = 3, plotmax = 50;
-            const int ptbinsJetMeasN = 7;
-            double ptbinsJetMeasA[ptbinsJetMeasN+1] = { 5,6,8,10,14,20,30,50 };
-
-            TFile *fproj[nFiles];
-            for(int i=0; i<nFiles; i++) fproj[i] = new TFile(Form("%s/unfoldedSpectrum_unfoldedJetSpectrum.root",dirName[i].Data()),"READ");
-
-            TCanvas *cspec = new TCanvas("cspec","cspec",800,600);
-            cspec->SetLogy();
-
-            TLegend *leg = new TLegend(0.5,0.6,0.85,0.8);
-            leg->SetBorderSize(0);
-
-            TH1F *spec[nFiles];
-            TH1F *specReb[nFiles];
-            for(int i=0; i<nFiles; i++) {
-                spec[i] = (TH1F*)fproj[i]->Get("unfoldedSpectrum");
-                spec[i]->Sumw2();
-                spec[i] -> Scale(1,"width");
-                spec[i]->SetTitle();
-                spec[i]->SetLineColor(colors[i]);
-                spec[i]->SetMarkerColor(colors[i]);
-                spec[i]->SetMarkerStyle(markers[i]);
-
-                specReb[i] = new TH1F(Form("specReb%d",i),"specReb",ptbinsJetMeasN,ptbinsJetMeasA);
-                for(int j=1;j<specReb[i]->GetNbinsX()+1;j++){
-                    double pt = specReb[i]->GetBinCenter(j);
-                    int bin = spec[i]->GetXaxis()->FindBin(pt);
-                    double value = spec[i]->GetBinContent(bin);
-                    double error = spec[i]->GetBinError(bin);
-                    specReb[i]->SetBinContent(j,value);
-                    specReb[i]->SetBinError(j,error);
-                }
-
-                specReb[i]->SetTitle();
-                specReb[i]->SetLineColor(colors[i]);
-                specReb[i]->SetMarkerColor(colors[i]);
-                specReb[i]->SetMarkerStyle(markers[i]);
-
-                spec[i]->GetXaxis()->SetRangeUser(plotmin,plotmax);
-                if(!i) spec[i]->Draw();
-                else spec[i]->Draw("same");
-                leg->AddEntry(spec[i],desc[i].Data());
-            }
-            leg->Draw("same");
-
-          cspec->SaveAs(Form("%s/UnfoldingRangesComparison_ptMeas_%d_%d_ptTrue_%d_%d_reg%d.pdf",out.Data(),measmin,measmax,truemin,truemax,reg));
-          cspec->SaveAs(Form("%s/UnfoldingRangesComparison_ptMeas_%d_%d_ptTrue_%d_%d_reg%d.png",out.Data(),measmin,measmax,truemin,truemax,reg));
-          TLegend *leg2 = new TLegend(0.55,0.55,0.9,0.85);
-
-            leg2->SetBorderSize(0);
-            TCanvas *cspec2 = new TCanvas("cspec2","cspec2",800,400);
-            TH1F *hratio[nFiles-1];
-            for(int i=0; i<nFiles-1; i++){
-                hratio[i] = (TH1F*)specReb[i+1]->Clone( Form("hratio_%d",i));
-                hratio[i]->Divide(specReb[0]);
-                hratio[i]->SetLineStyle(linestyle[i]);
-                  hratio[i]->SetLineWidth(2);
-                hratio[i]->GetXaxis()->SetRangeUser(ptbinsJetMeasA[0],ptbinsJetMeasA[ptbinsJetMeasN]);
-                hratio[i]->GetYaxis()->SetRangeUser(0.95,1.4);
-                hratio[i]->GetYaxis()->SetTitle(Form("ratio to central (%s)",desc[0].Data()));
-                if(!i) hratio[i]->Draw("hist");
-                else hratio[i]->Draw("samehist");
-                leg2->AddEntry(hratio[i],desc[i+1].Data());
-            }
-            leg2->Draw("same");
-
-            TLine *line = new TLine(ptbinsJetMeasA[0],1,ptbinsJetMeasA[ptbinsJetMeasN],1);
-            line->SetLineStyle(2);
-            line->SetLineWidth(2);
-            line->Draw("same");
-
-
-            cspec2->SaveAs(Form("%s/UnfoldingRangesComparison_ptMeas_%d_%d_ptTrue_%d_%d_reg%d_ratio.pdf",out.Data(),measmin,measmax,truemin,truemax,reg));
-            cspec2->SaveAs(Form("%s/UnfoldingRangesComparison_ptMeas_%d_%d_ptTrue_%d_%d_reg%d_ratio.png",out.Data(),measmin,measmax,truemin,truemax,reg));
-
-            return;
 
 }
 
@@ -391,6 +282,8 @@ void comparePriors(int reg = 4 , TString inDir = "/home/basia/Work/alice/analysi
 
         gStyle->SetOptStat(0000); //Mean and RMS shown
         gSystem->Exec(Form("mkdir %s/systematics",inDir.Data()));
+
+          TFile *outFile = new TFile(Form("%s/systematics/PriorComparison_reg%d.root",inDir.Data(),reg),"RECREATE");
 
         const int nFiles = 10;
         TString dirName[nFiles];
@@ -494,6 +387,15 @@ void comparePriors(int reg = 4 , TString inDir = "/home/basia/Work/alice/analysi
         cspecMean->SaveAs(Form("%s/systematics/PriorComparison_reg%d_mean.pdf",inDir.Data(),reg));
         cspecMean->SaveAs(Form("%s/systematics/PriorComparison_reg%d_mean.png",inDir.Data(),reg));
 
+        outFile->cd();
+        cspec->Write();
+        cspec2->Write();
+        cspecRMS->Write();
+        cspecMean->Write();
+        hmean->Write();
+        hsys->Write();
+        outFile->Close();
+
         return;
 
 }
@@ -503,6 +405,8 @@ void FDsys(int reg = 3 , TString inDir = "/home/basia/Work/alice/analysis/pPb_ru
 
         gStyle->SetOptStat(0000); //Mean and RMS shown
         gSystem->Exec(Form("mkdir %s/systematics",inDir.Data()));
+
+        TFile *outFile = new TFile(Form("%s/systematics/FD_reg%d.root",inDir.Data(),reg),"RECREATE");
 
         const int nFiles = 3;
 
@@ -606,6 +510,13 @@ hFDUnc->Draw("hist");
 cspecf2->SaveAs(Form("%s/systematics/FD_reg%d_unc.pdf",inDir.Data(),reg));
 cspecf2->SaveAs(Form("%s/systematics/FD_reg%d_unc.png",inDir.Data(),reg));
 
+outFile->cd();
+cspec->Write();
+cspec2->Write();
+cspecf2->Write();
+hFDUnc->Write();
+outFile->Close();
+
         return;
 
 }
@@ -613,9 +524,10 @@ cspecf2->SaveAs(Form("%s/systematics/FD_reg%d_unc.png",inDir.Data(),reg));
 void compareBkgM(int reg = 4 , TString inDir = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50")
 {
 
-
     gStyle->SetOptStat(0000); //Mean and RMS shown
     gSystem->Exec(Form("mkdir %s/systematics",inDir.Data()));
+
+    TFile *outFile = new TFile(Form("%s/systematics/BkgComparison_reg%d.root",inDir.Data(),reg),"RECREATE");
 
     const int nFiles = 12;
     TString dirName[nFiles];
@@ -718,6 +630,15 @@ void compareBkgM(int reg = 4 , TString inDir = "/home/basia/Work/alice/analysis/
     cspecMean->SaveAs(Form("%s/systematics/BkgComparison_reg%d_mean.pdf",inDir.Data(),reg));
     cspecMean->SaveAs(Form("%s/systematics/BkgComparison_reg%d_mean.png",inDir.Data(),reg));
 
+    outFile->cd();
+    cspec->Write();
+    cspec2->Write();
+    cspecRMS->Write();
+    cspecMean->Write();
+    hmean->Write();
+    hsys->Write();
+    outFile->Close();
+    
     return;
 
 /*

@@ -8,11 +8,19 @@ jetpttruemax=$3
 jetptmeasmin=$4
 jetptmeasmax=$5
 
+lhcprod=_LHC16R03
+efficiencyfile=AnalysisResults_fast_R03_D0MCPythia_default.root
+detRMpromptfile=AnalysisResults_fast_R03_D0MCPythia_default.root
+detRMnonpromptfile=AnalysisResults_fast_R03_D0MCPythia_default.root
+
 outputdirectorybase=$HOME/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_
-outputdirectory=$HOME/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts
+#outputdirectorybase=$HOME/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_Dpt320_
+
+outputdirectory=${outputdirectorybase}BaseCuts
 outputdirectorySignal=Default
 if [ $ptbinning -eq 0 ]; then
-outputdirectorySignal=Default_jetMeas$jetptmeasmin\_$jetptmeasmax\_jetTrue$jetpttruemin\_$jetpttruemax\_ppbinning
+  outputdirectorySignal=Default_jetMeas$jetptmeasmin\_$jetptmeasmax\_jetTrue$jetpttruemin\_$jetpttruemax\_ppbinning
+#outputdirectorySignal=S2sigma_SB49_jetMeas$jetptmeasmin\_$jetptmeasmax\_jetTrue$jetpttruemin\_$jetpttruemax\_ppbinning
 fi
 if [ $ptbinning -eq 1 ]; then
 outputdirectorySignal=Default_jetMeas$jetptmeasmin\_$jetptmeasmax\_jetTrue$jetpttruemin\_$jetpttruemax\_finebinning
@@ -23,12 +31,20 @@ fi
 if [ $ptbinning -eq 3 ]; then
 outputdirectorySignal=Default_jetMeas$jetptmeasmin\_$jetptmeasmax\_jetTrue$jetpttruemin\_$jetpttruemax\_binning2
 fi
+if [ $ptbinning -eq 4 ]; then
+outputdirectorySignal=Default_jetMeas$jetptmeasmin\_$jetptmeasmax\_jetTrue$jetpttruemin\_$jetpttruemax\_binning3
+fi
+if [ $ptbinning -eq 6 ]; then
+outputdirectorySignal=Default_jetMeas$jetptmeasmin\_$jetptmeasmax\_jetTrue$jetpttruemin\_$jetpttruemax\_binning4
+fi
+if [ $ptbinning -eq 7 ]; then
+outputdirectorySignal=Default_jetMeas$jetptmeasmin\_$jetptmeasmax\_jetTrue$jetpttruemin\_$jetpttruemax\_binning5
+fi
+if [ $ptbinning -eq 5 ]; then
+outputdirectorySignal=Default_jetMeas$jetptmeasmin\_$jetptmeasmax\_jetTrue$jetpttruemin\_$jetpttruemax\_finebinning5
+fi
 
 
-lhcprod=_LHC16R03
-efficiencyfile=AnalysisResults_fast_R03_D0MCPythia_default.root
-detRMpromptfile=AnalysisResults_fast_R03_D0MCPythia_default.root
-detRMnonpromptfile=AnalysisResults_fast_R03_D0MCPythia_default.root
 
 ispostfix=0
 postfix=Cut
@@ -61,7 +77,16 @@ unfCutSys=0
 
 if [ $doRawSpectra -eq 1 ]; then
  ./run.csh $outputdirectory $outputdirectorySignal $lhcprod $efficiencyfile $detRMpromptfile $detRMnonpromptfile $bkgRMtype $unfType $regPar $isPrior $priorType $ispostfix $postfix $ispostfixFD $postfixFD $ptbinning $jetpttruemin $jetptmeasmin 1 0 0 0 0 1
- exit 1
+
+ ################################################
+ ############### Cut Variation
+ ################################################
+
+ if [ $doCutVar -eq 1 ]; then
+ 	./run_cut.csh $ptbinning $jetpttruemin $jetpttruemax $jetptmeasmin $jetptmeasmax $bkgRMtype $unfType $regPar $isPrior $priorType $outputdirectorySignal $outputdirectorybase $doRawSpectra
+fi
+
+exit 1
 fi
 
 
@@ -73,8 +98,25 @@ if [ $doFDSys -eq 1 ]; then
 	./run.csh $outputdirectory $outputdirectorySignal $lhcprod $efficiencyfile $detRMpromptfile $detRMnonpromptfile $bkgRMtype $unfType $regPar $isPrior $priorType $ispostfix $postfix $ispostfixFD $postfixFD $ptbinning $jetpttruemin $jetptmeasmin 1 0 1 1 0 0
 
 	./run.csh $outputdirectory $outputdirectorySignal $lhcprod $efficiencyfile $detRMpromptfile $detRMnonpromptfile $bkgRMtype $unfType $regPar $isPrior $priorType $ispostfix $postfix $ispostfixFD $postfixFD $ptbinning $jetpttruemin $jetptmeasmin 1 0 1 0 1 0
+
 fi
 
+################################################
+############### Cut Variation
+################################################
+
+if [ $doCutVar -eq 1 ]; then
+
+	./run_cut.csh $ptbinning $jetpttruemin $jetpttruemax $jetptmeasmin $jetptmeasmax $bkgRMtype $unfType $regPar $isPrior $priorType $outputdirectorySignal $outputdirectorybase $doRawSpectra
+
+  # cut variation systematics
+  cd systematics
+  #after unfolding
+  root -l -b -q cutsSystematics.C'('$regPar',"'$outputdirectorybase'","'$outputdirectorySignal'",0,1,1)'
+  #before unfolding
+  root -l -b -q cutsSystematics.C'('$regPar',"'$outputdirectorybase'","'$outputdirectorySignal'",'$doRawCutVar',0,1)'
+  cd $currDir
+fi
 
 ################################################
 ############### Background variations
@@ -83,7 +125,6 @@ fi
 if [ $doBkg -gt 0 ]; then
 
 for bkg in `seq 1 1 11`; do
-
 
 		bkgRMtype=$bkg
 	./run.csh $outputdirectory $outputdirectorySignal $lhcprod $efficiencyfile $detRMpromptfile $detRMnonpromptfile $bkgRMtype $unfType $regPar $isPrior $priorType $ispostfix $postfix $ispostfixFD $postfixFD $ptbinning $jetpttruemin $jetptmeasmin 1 0 0 0 0 0
@@ -148,15 +189,7 @@ if [ $doJESSys -eq 1 ]; then
 
 fi
 
-################################################
-############### Cut Variation
-################################################
 
-if [ $doCutVar -eq 1 ]; then
-
-	./run_cut.csh $ptbinning $jetpttruemin $jetpttruemax $jetptmeasmin $jetptmeasmax $bkgRMtype $unfType $regPar $isPrior $priorType $outputdirectorySignal $outputdirectorybase $doRawSpectra
-
-fi
 
 ################################################
 ############### Get systematic uncertanties
@@ -166,8 +199,6 @@ fi
 if [ $doSystematics -eq 1 ]; then
 	cd systematics
 		root -l -b -q JetSpectrumSys.C'('$regPar',"'$outputdirectory'","'$outputdirectorySignal'",1)'
-		root -l -b -q cutsSystematics.C'('$regPar',"'$outputdirectorybase'","'$outputdirectorySignal'",'$doRawCutVar',1,1)'
-		root -l -b -q cutsSystematics.C'('$regPar',"'$outputdirectorybase'","'$outputdirectorySignal'",'$doRawCutVar',0,1)'
 	cd $currDir
 fi
 

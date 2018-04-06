@@ -22,6 +22,7 @@
   //  TString dirSignal[nFiles] = { "CutVarBase","CutL0","CutL1","CutT0","CutT2" };
     TString inDir[nFiles];
     TString outDir;
+    TFile *outFile;
 
 TString outPlotName = "CutVariationSyst_";
 
@@ -32,6 +33,16 @@ void cutsSystematics(int reg = 3, TString indirbase = "/home/basia/Work/alice/an
 
   dirBase = indirbase;
   if(!unf) reg=0;
+
+  outDir = dirBase;
+  outDir += "BaseCuts/";
+  outDir += input;
+  outDir += "/systematics";
+
+  outPlotName += "reg";
+  outPlotName += reg;
+
+  gSystem->Exec(Form("mkdir %s",outDir.Data()));
 
   if(!isChain) {
     if (truemin == 3){
@@ -69,13 +80,6 @@ void cutsSystematics(int reg = 3, TString indirbase = "/home/basia/Work/alice/an
 
   }
 
-  outDir = dirBase;
-  outDir += "BaseCuts/";
-  outDir += input;
-  outDir += "/systematics";
-
-  outPlotName += "reg";
-  outPlotName += reg;
 
   pvEn = new TPaveText(0.25,0.80,0.8,0.85,"brNDC");
   pvEn->SetFillStyle(0);
@@ -166,11 +170,13 @@ void cutsSystematics(int reg = 3, TString indirbase = "/home/basia/Work/alice/an
   pvJetPt2->SetTextAlign(11);
   pvJetPt2->AddText(Form("%.0f < p_{T.ch jet} < %.0f GeV/#it{c}",5.,50.));
 
+  outFile = new TFile(Form("%s/cutSystematics.root",outDir.Data()),"RECREATE");
   compareEfficiencies(1);
   compareEfficiencies(0);
   if(isRaw) compareRawSpectra();
   compareCorrSpectra(reg,unf);
   compareFD();
+  outFile->Close();
 
 return;
 
@@ -210,6 +216,7 @@ void compareEfficiencies(int isprompt=1)
      pvD2->Draw("same");
      pvEta2->Draw("same");
      pvJetPt2->Draw("same");
+
 
      if (isprompt){
           cJetPt->SaveAs(Form("%s/%s_PromptEfficiencies.pdf",outDir.Data(),outPlotName.Data()));
@@ -262,12 +269,15 @@ void compareRawSpectra()
     TH1D *hSpectrum[nFiles];
     double events = 3.87988E8;
 
+
     TLegend  *leg = new TLegend(0.65,0.45,0.85,0.85,"raw yields");
     TCanvas *cJetPt = new TCanvas("cJetPt","cJetPt",800,600);
     cJetPt->SetLogy();
+
     for(int i=0;i<nFiles;i++){
         TFile *fileIn = new TFile(Form("%s/signalExtraction/%s", inDir[i].Data(),fileName.Data()) );
         hSpectrum[i] = (TH1D*)fileIn->Get("hjetptspectrumReb");
+        hSpectrum[i]->SetName(Form("rawSpectrum_%d",i));
         hSpectrum[i]->Scale(1./events);
         hSpectrum[i]->Scale(1,"width");
 
@@ -280,6 +290,9 @@ void compareRawSpectra()
         if(!i) hSpectrum[i]->Draw();
         else hSpectrum[i]->Draw("same");
         leg->AddEntry(hSpectrum[i],Form("%s",desc[i].Data()),"p");
+
+        outFile->cd();
+        hSpectrum[i]->Write();
     }
      leg->Draw("same");
      pv3->Draw("same");
@@ -291,7 +304,6 @@ void compareRawSpectra()
           cJetPt->SaveAs(Form("%s/%s_RawSpectra.pdf",outDir.Data(),outPlotName.Data()));
           cJetPt->SaveAs(Form("%s/%s_RawSpectra.png",outDir.Data(),outPlotName.Data()));
 
-
      TCanvas *cRatio = new TCanvas("cRatio","cRatio",800,400);
 
      TH1D *hcentral = (TH1D*) hSpectrum[0]->Clone("hcentral");
@@ -302,10 +314,12 @@ void compareRawSpectra()
      for(int i=0; i<nFiles-1; i++){
             hratios[i] = (TH1D*)hSpectrum[i+1]->Clone(Form("hratios_%d",i));
             hratios[i]->Divide(hcentral);
+            hratios[i]->SetName(Form("rawSpectrumRatio_%d",i));
             hratios[i]->GetYaxis()->SetTitle("ratio");
             hratios[i]->GetYaxis()->SetRangeUser(0.5,1.5);
             if(!i)hratios[i]->Draw();
             else hratios[i]->Draw("same");
+            hratios[i]->Write();
 
     }
     TLine *l=new TLine(3,1,36,1);
@@ -326,13 +340,13 @@ void compareCorrSpectra(int reg, int unfold)
     if(unfold) fileName = "unfoldedSpectrum_unfoldedJetSpectrum.root";
     else fileName = "JetPtSpectrum_FDsub.root";
 
-
     TH1D *hSpectrum[nFiles];
     double events = 3.87988E8;
 
     TLegend  *leg = new TLegend(0.65,0.45,0.85,0.85, "corrected yields");
     TCanvas *cJetPt = new TCanvas("cJetPt","cJetPt",800,600);
     cJetPt->SetLogy();
+
     for(int i=0;i<nFiles;i++){
         TFile *fileIn;
         if(unfold) {
@@ -343,6 +357,7 @@ void compareCorrSpectra(int reg, int unfold)
           fileIn = new TFile(Form("%s/FDsubtraction/%s", inDir[i].Data(),fileName.Data()) );
           hSpectrum[i] = (TH1D*)fileIn->Get("hData_binned_sub");
         }
+        hSpectrum[i]->SetName(Form("corrSpectrum_%d",i));
         hSpectrum[i]->Scale(1./events);
         hSpectrum[i]->Scale(1,"width");
         hSpectrum[i]->SetTitle();
@@ -356,6 +371,8 @@ void compareCorrSpectra(int reg, int unfold)
         if(!i) hSpectrum[i]->Draw();
         else hSpectrum[i]->Draw("same");
         leg->AddEntry(hSpectrum[i],Form("%s",desc[i].Data()),"p");
+        outFile->cd();
+        hSpectrum[i]->Write();
     }
      leg->Draw("same");
      pv3->Draw("same");
@@ -379,11 +396,12 @@ void compareCorrSpectra(int reg, int unfold)
      for(int i=0; i<nFiles-1; i++){
             hratios[i] = (TH1F*)hSpectrum[i+1]->Clone(Form("hratios_%d",i));
             hratios[i]->Divide(hcentral);
+            hratios[i]->SetName(Form("corrSpectrumRatio_%d",i));
             hratios[i]->GetYaxis()->SetTitle("ratio");
             hratios[i]->GetYaxis()->SetRangeUser(0.7,1.5);
             if(!i)hratios[i]->Draw();
             else hratios[i]->Draw("same");
-
+            hratios[i]->Write();
     }
     TLine *l=new TLine(3,1,50,1);
     l->SetLineStyle(2);
@@ -394,10 +412,13 @@ void compareCorrSpectra(int reg, int unfold)
         cRatio->SaveAs(Form("%s/%s_CorrectedSpectra_ratio.png",outDir.Data(),outPlotName.Data()));
 
         TH1F *hsys = new TH1F("hsys","syst. rms; p_{T,ch jet};  sys [%] (rms)",nJetBins,ptJetbins);
+
         TH1F *hmean = (TH1F*)hsys->Clone("hmean");
         getRMS(nFiles,hratios,hmean,hsys);
+        hsys->SetName("cutSysRMS");
+        hmean->SetName("cutSysMean");
 
-        hsys->GetYaxis()->SetRangeUser(0,20);
+        hsys->GetYaxis()->SetRangeUser(0,30);
         hsys->SetLineColor(kViolet+2);
         TCanvas *cspecRMS = new TCanvas("cspecRMS","cspecRMS",800,400);
         hsys->Draw("hist");
@@ -413,6 +434,9 @@ void compareCorrSpectra(int reg, int unfold)
 
         cspecMean->SaveAs(Form("%s/%s_CorrectedSpectra_mean.pdf",outDir.Data(),outPlotName.Data()));
         cspecMean->SaveAs(Form("%s/%s_CorrectedSpectra_mean.png",outDir.Data(),outPlotName.Data()));
+
+        hsys->Write();
+        hmean->Write();
 
 }
 
@@ -433,7 +457,7 @@ void compareFD()
         hSpectrum[i] = (TH1D*)fileIn->Get("hFD_ratio");
         //hSpectrum[i]->Scale(1./events);
         //hSpectrum[i]->Scale(1,"width");
-
+        hSpectrum[i]->SetName(Form("FDfraction_%d",i));
         hSpectrum[i]->SetLineColor(colors[i]);
         hSpectrum[i]->SetMarkerColor(colors[i]);
         hSpectrum[i]->SetMarkerSize(0.9);
@@ -444,6 +468,8 @@ void compareFD()
         if(!i) hSpectrum[i]->Draw();
         else hSpectrum[i]->Draw("same");
         leg->AddEntry(hSpectrum[i],Form("%s",desc[i].Data()),"p");
+        outFile->cd();
+        hSpectrum[i]->Write();
     }
      leg->Draw("same");
 
@@ -462,10 +488,12 @@ void compareFD()
      for(int i=0; i<nFiles-1; i++){
             hratios[i] = (TH1D*)hSpectrum[i+1]->Clone(Form("hratios_%d",i));
             hratios[i]->Divide(hcentral);
+            hratios[i]->SetName(Form("FDfractionRatio_%d",i));
             hratios[i]->GetYaxis()->SetTitle("ratio");
             hratios[i]->GetYaxis()->SetRangeUser(0.7,1.5);
             if(!i)hratios[i]->Draw();
             else hratios[i]->Draw("same");
+            hratios[i]->Write();
 
     }
     TLine *l=new TLine(3,1,36,1);

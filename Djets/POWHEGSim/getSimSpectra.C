@@ -9,6 +9,8 @@
 
 const Int_t nDbins = 10;
 double ptDbins[nDbins+1] = {3,4,5,6,7,8,10,12,16,24,36}; // for jet pt spectra, or for efficiency scaling
+//const Int_t nDbins = 9;
+//double ptDbins[nDbins+1] = {3,4,5,6,7,8,10,12,16,20};
 
 double jetptmin = 5, jetptmax = 30; // for D pT spectra
 double jetEta = 0.9-fRpar;

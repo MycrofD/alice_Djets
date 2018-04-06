@@ -20,7 +20,7 @@
 //          A. Grelli,  Utrecht University
 //          C. Bianchin, Utrecht University
 //          X. Zhang, LBNL
-//	    B. Trzeciak, Utrecht Univeristy
+//	        B. Trzeciak, Utrecht Univeristy
 //-----------------------------------------------------------------------
 
 
@@ -44,40 +44,46 @@ class AliParticleContainer;
 class AliClusterContainer;
 class AliJetContainer;
 
-class AliAnalysisTaskFlavourJetCorrelationsTest : public AliAnalysisTaskEmcalJet 
+class AliAnalysisTaskFlavourJetCorrelationsTest : public AliAnalysisTaskEmcalJet
 {
-   
+
 public:
-   
+
    enum ECandidateType{ kD0toKpi, kDstartoKpipi };
    enum ECorrelationMethod{ kConstituent, kAngular, kResponseMatrix };
-   
+
    AliAnalysisTaskFlavourJetCorrelationsTest();
    AliAnalysisTaskFlavourJetCorrelationsTest(const Char_t* name,AliRDHFCuts* cuts, ECandidateType candtype);
    virtual ~AliAnalysisTaskFlavourJetCorrelationsTest();
-   
+
    virtual void     UserCreateOutputObjects();
    virtual Bool_t   Run();
    virtual void     Terminate(Option_t *);
    virtual void     Init();
    virtual void     LocalInit() {Init();}
-   
+
    // inizializations
-   Bool_t DefineHistoForAnalysis();  
-   
+   Bool_t DefineHistoForAnalysis();
+
    // set MC usage
    void   SetMC(Bool_t theMCon) {fUseMCInfo = theMCon;}
    Bool_t GetMC() const {return fUseMCInfo;}
    // set use Pythia info only for MC
-   void   SetUsePythia(Bool_t theUsePythia) {fUsePythia = theUsePythia; }
-   Bool_t GetUsePythia() const { return fUsePythia; }
+   void   SetUsePythia(Bool_t theUsePythia) {fUsePythia = theUsePythia;}
+   Bool_t GetUsePythia() const {return fUsePythia;}
    // set usage of reconstructed tracks
    void   SetUseReco(Bool_t reco) {fUseReco=reco;}
    Bool_t GetUseReco() const {return fUseReco;}
-   
+
+   void SetUseHFJet(Bool_t useHFJet=kTRUE) { fUseHFJet = useHFJet;}
+   Bool_t GetUseHFJet() const {return fUseHFJet;}
+
+   void SetHFLeadJet(Bool_t HFLeadJet=kFALSE) { fHFLeadJet = HFLeadJet;}
+   Bool_t GetHFLeadJet() const  {return fHFLeadJet;}
+
    void SetMassLimits(Double_t range, Int_t pdg);
    void SetMassLimits(Double_t lowlimit, Double_t uplimit);
-   
+
    void SetCorrelationMethod(Int_t c) {fCorrelationMethod=c;}
    Int_t GetCorrelationMethod() const {return fCorrelationMethod;}
 
@@ -109,13 +115,13 @@ public:
    Bool_t GetBuildResponseMatrix() const {return fBuildRM;}
    void SetBuildResponseMatrixEff(Bool_t b){ fBuildRMEff=b; }
    Bool_t GetBuildResponseMatrixEff() const {return fBuildRMEff;}
-   
-   
+
+
 private:
-   
+
    AliAnalysisTaskFlavourJetCorrelationsTest(const AliAnalysisTaskFlavourJetCorrelationsTest &source);
-   AliAnalysisTaskFlavourJetCorrelationsTest& operator=(const AliAnalysisTaskFlavourJetCorrelationsTest& source); 
-   
+   AliAnalysisTaskFlavourJetCorrelationsTest& operator=(const AliAnalysisTaskFlavourJetCorrelationsTest& source);
+
    Double_t Z(AliVParticle* part, AliEmcalJet* jet, Double_t rho) const;
    Double_t Z(AliVParticle* part, AliEmcalJet* jet) const;
    Double_t Z(Double_t* p, Double_t *pj) const;
@@ -129,6 +135,8 @@ private:
    Bool_t fUsePythia;		    // Use Pythia info only for MC
    Bool_t fBuildRM;                 // flag to switch on/off the Response Matrix (Needs MC)
    Bool_t fBuildRMEff;              // flag to switch on/off the Response Matrix with efficiencies (Needs MC)
+   Bool_t fUseHFJet;                 // if find HF jet
+   Bool_t fHFLeadJet;                 // if HF jet should be the leading jet
 
    Int_t  fCandidateType;           // Dstar or D0
    Int_t  fCorrelationMethod;       // Method to correlate D mesons and jets
@@ -141,14 +149,14 @@ private:
 
    Double_t fMinMass;               // mass lower limit histogram
    Double_t fMaxMass;               // mass upper limit histogram
-  
+
    Int_t fLeadingJetIds[2];	// Ids of two leading jets
 
    TClonesArray *fCandidateArray;   //! contains candidates selected by AliRDHFCuts
    TClonesArray *fSideBandArray;    //! contains candidates selected by AliRDHFCuts::IsSelected(kTracks), to be used for side bands (DStar case only!!)
    Bool_t fAnalyseDBkg;             // flag to switch off/on the SB analysis (default is off)
-   
-    
+
+
    Int_t fNAxesBigSparse;           // number of axis
    Bool_t fUseCandArray;            //! Use D meson candidates array
    Bool_t fUseSBArray;              //! Use D meson SB array
@@ -163,6 +171,7 @@ private:
    TH1F* fhPhiJetTrks;              //!
    TH1F* fhEtaJetTrks;              //!
    TH1F* fhPtJet;                   //!
+   TH1F* fhPtJetRaw;                //!
    TH1F* fhPhiJet;                  //!
    TH1F* fhEtaJet;                  //!
    TH2F *fhPtJetArea;			//!
@@ -177,7 +186,7 @@ private:
                                     //!
    TH1I *fhDleadStat;			//!
    TH2F *fhDleadStatJetPt;		//!
-   
+
    TH1F *fhLeadPt;				//!
    TH1F *fhLeadPt2;				//!
    TH1F *fhLeadEta;				//!
@@ -198,32 +207,43 @@ private:
 
    TH1F *fDeltaPT;			//!
    TH1F *fDeltaPT_excl_lead;		//!
+   TH1F *fDeltaPT_trans;		//!
    TH2F *fDeltaPTCent;			//!
-   TH2F *fDeltaPTCentNoBkg;		//!
+   TH2F *fDeltaPTCentPtCone;		//!
    TH2F *fDeltaPTCent_excl_lead;	//!
-   TH2F *fDeltaPTCentNoBkg_excl_lead;	//!
+   TH2F *fDeltaPTCent_trans;	//!
+   TH2F *fDeltaPTCentPtCone_excl_lead;	//!
+   TH2F *fDeltaPTCentPtCone_trans;	//!
    TH2F *fDeltaPTRho;			//!
-   TH2F *fDeltaPTRhoNoBkg;		//!
+   TH2F *fDeltaPTRhoPtCone;		//!
    TH2F *fDeltaPTRho_excl_lead;		//!
-   TH2F *fDeltaPTRhoNoBkg_excl_lead;	//!
+   TH2F *fDeltaPTRho_trans;		//!
+   TH2F *fDeltaPTRhoPtCone_excl_lead;	//!
+   TH2F *fDeltaPTRhoPtCone_trans;	//!
    TH2F *fDeltaPTLeadPt;		//!
    TH2F *fDeltaPTLeadPtRaw;		//!
-   TH2F *fDeltaPTLeadPtNoBkg;		//!
-   TH2F *fDeltaPTLeadPtRawNoBkg;	//!
+   TH2F *fDeltaPTLeadPtPtCone;		//!
+   TH2F *fDeltaPTLeadPtRawPtCone;	//!
    TH2F *fDeltaPTLeadPt_excl_lead;	//!
+   TH2F *fDeltaPTLeadPt_trans;	//!
    TH2F *fDeltaPTLeadPtRaw_excl_lead;	//!
-   TH2F *fDeltaPTLeadPtNoBkg_excl_lead;	//!
-   TH2F *fDeltaPTLeadPtRawNoBkg_excl_lead;	//!
+   TH2F *fDeltaPTLeadPtRaw_trans;	//!
+   TH2F *fDeltaPTLeadPtPtCone_excl_lead;	//!
+   TH2F *fDeltaPTLeadPtPtCone_trans;	//!
+   TH2F *fDeltaPTLeadPtRawPtCone_excl_lead;	//!
+   TH2F *fDeltaPTLeadPtRawPtCone_trans;	//!
    TH2F *fRandConeEtaPhi;		//!
    TH2F *fRandConeEtaPhi_excl_lead;	//!
+   TH2F *fRandConeEtaPhi_trans;	//!
    TH2F *fhRandomConeDeltaEtaDeltaPhi;	//!
+   TH2F *fhRandomConeDeltaEtaDeltaPhi_trans;  //!
    TH2F *fEtaRandConeOverlap;		//!
    TH2F *fPhiRandConeOverlap;		//!
 
    //main histograms
    THnSparse* fhsDphiz;             //!
    THnSparse* fResponseMatrix;      //!
-   
+
 
    ClassDef(AliAnalysisTaskFlavourJetCorrelationsTest,8); // class for charm-jet CorrelationsExch
 };

@@ -8,11 +8,6 @@
 
 double plotmin = fptbinsJetMeasA[0], plotmax = fptbinsJetMeasA[fptbinsJetMeasN];
 
-double sigma_in = 2.09; // in bars
-double BRDstar = 0.0257;
-double BRDzero = 0.0393;
-const int APb = 208;
-
 
 TH1* GetInputHist(TString inFile = "JetPtSpectra_effScale.root", string histName = "hjetpt",TH1 *hh);
 TH1* GetInputSimHist(TString inFile, TH1 *hJetPt_B);
@@ -52,9 +47,14 @@ bool isSys = 1, bool rebinned = 1,  bool isEff = 1 )
 
     double dataLum = 1.0444*nEvSel/(sigma_in*1000) ;//Luminosity in mbar
     double simScaling;
-    if(fDmesonSpecie) simScaling = BRDstar*APb*dataLum;
-    else simScaling = BRDzero*APb*dataLum;
-
+    if(fSystem){
+      if(fDmesonSpecie) simScaling = BRDstar*APb*dataLum;
+      else simScaling = BRDzero*APb*dataLum;
+    }
+    else {
+      if(fDmesonSpecie) simScaling = BRDstar*dataLum;
+      else simScaling = BRDzero*dataLum;
+    }
 
     // ----------------- data eff corrected D-jet pT spectrum ---------------------
     TH1D *hData;

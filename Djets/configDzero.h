@@ -41,36 +41,17 @@
     TString fDmesonDsc="Dzero";
     TString fDmesonS="D^{0}";
 
-  //  const int ND = 4; // number of D mesons to analyse in data // 2 for cut variation
-  //  const int NDMC = 2; // number of D mesons to analyse in MC // 2 for cut variation
-
     //------- D pT bins
   //const int fptbinsDN = 11;
   //double fptbinsDA[fptbinsDN+1] = { 2,3,4,5,6,7,8,10,12,16,24,36 };
-    const int fptbinsDN = 10;
-    double fptbinsDA[fptbinsDN+1] = { 3,4,5,6,7,8,10,12,16,24,36 };
 
-    //------- jet pT bins
+  const int fptbinsDN = 10;
+  double fptbinsDA[fptbinsDN+1] = { 3,4,5,6,7,8,10,12,16,24,36 };
 
-    // more bins, more matching Pb-Pb
-  /*  const int fptbinsJetMeasN = 12;
-    double fptbinsJetMeasA[fptbinsJetMeasN+1] = { 3,4,5,6,8,10,12,14,16,20,25,35,50 };
-    const int fptbinsJetTrueN = 12;
-    double fptbinsJetTrueA[fptbinsJetMeasN+1] = { 3,4,5,6,8,10,12,14,16,20,25,35,50 };*/
-
-    // pp bins
-  //  const int fptbinsJetMeasN = 9;
-  //  double fptbinsJetMeasA[fptbinsJetMeasN+1] = { 3,4,5,6,8,10,14,20,30,50 };
-  //  const int fptbinsJetMeasN = 8;
-  //    double fptbinsJetMeasA[fptbinsJetMeasN+1] = { 4,5,6,8,10,14,20,30,50 };
-//    const int fptbinsJetMeasN = 7;
-  //  double fptbinsJetMeasA[fptbinsJetMeasN+1] = { 5,6,8,10,14,20,30,50 };
-
-  //    const int fptbinsJetTrueN = 9;
-  //   double fptbinsJetTrueA[fptbinsJetTrueN+1] = { 3,4,5,6,8,10,14,20,30,50 };
-  //  const int fptbinsJetTrueN = 7;
-  //  double fptbinsJetTrueA[fptbinsJetTrueN+1] = { 5,6,8,10,14,20,30,50 };
-
+  // for Pb-Pb baseline
+  //  const int fptbinsDN = 9;
+  //  double fptbinsDA[fptbinsDN+1] = { 3,4,5,6,7,8,10,12,16,20 };
+  
 
     double zmin = -2, zmax = 2.;
 
@@ -78,7 +59,7 @@
     Bool_t  fUseRefl = 1;
     Int_t   fbkgtype = 0; // kExpo=0, kLin=1, kPol2=2, kNoBk=3, kPow=4, kPowEx=5
     Float_t fsigmaSignal = 3;
-    Float_t fsigmaBkg[] = {-9,-5,5,9};
+    Float_t fsigmaBkg[] = {-9,-4,4,9};
     Float_t fDmass = 1.864, fDsigma = 0.010;
     Float_t minf = 1.71, maxf = 2.1;
     Int_t   fRebinMass = 2;
@@ -87,6 +68,10 @@
     Int_t fColors[] = {1,2,8,4,kOrange-1,6,kGray+1,kCyan+1,kMagenta+2,kGreen+3,kViolet+5,kYellow+2};
     Int_t fMarkers[] = {20,21,22,23,24,25,26,27,28,29,30,32,33,34};
 
+    const double sigma_in = 2.09; // in bars
+    const double BRDstar = 0.0257;
+    const double BRDzero = 0.0393;
+    const int APb = 208;
 
     //------- POWHEG simulations
 
@@ -102,7 +87,9 @@
     "AnalysisResults_FastSim_powheg+pythia6_beauty_1519049991",
     "AnalysisResults_FastSim_powheg+pythia6_beauty_1519079649",
     "AnalysisResults_FastSim_powheg+pythia6_beauty_1519124826",
-    "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1520259013"};
+    "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1520259013"
+  };
+
     TString fDescB[] = {
     "central",
     "m_{b}=4.5",

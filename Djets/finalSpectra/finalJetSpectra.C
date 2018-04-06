@@ -1,9 +1,4 @@
 //
-// Macro to extract jet pt spectra from simulation, prompt or non-prompt D
-//
-// Usage:
-// .L simSpectra.C
-// and then call the needed methods
 //
 // Author: B.Trzeciak (barbara.antonina.trzeciak@cern.ch)
 //
@@ -11,11 +6,13 @@
 #include "config.h"
 
 double jetEta = 0.9 - fRpar;
-//const int fptbinsJetTrueN = 7;
-//const double fptbinsJetTrueA[fptbinsJetTrueN+1] = { 5,6,8,10,14,20,30,50 };
+double dy = 2*jetEta;
+const int fptbinsJetTrueN = 7;
+const double fptbinsJetTrueA[fptbinsJetTrueN+1] = { 5,6,8,10,14,20,30,50 };
 
-
-double *systuncP;
+//double *systuncP;
+double systuncP[] = { 18,11,10,10,12,20,23 };
+const double sysG = 3.8;
 
 const int Naxis = fptbinsJetTrueN;
 Double_t *xAxis;
@@ -33,14 +30,6 @@ TH1D *hPrompt_central_binned;
 TH1D *hPrompt_up;
 TH1D *hPrompt_down;
 
-//const double sigma_b = 0.2262e-3; // mbar
-
-double sigma_in = 2.09; // in bars
-double BRDstar = 0.0257;
-double BRDzero = 0.0393;
-const int APb = 208;
-
-
 void ScaleHist(TH1 *hh, int full = 0);
 void setHistoDetails(TH1 *hh, Color_t color, Style_t Mstyle, int Msize = 1.1, Width_t Lwidth = 2, Style_t Lstyle = 1);
 void SaveCanvas(TCanvas *c, TString name = "tmp");
@@ -48,15 +37,17 @@ void SaveCanvas(TCanvas *c, TString name = "tmp");
 TH1D *CentralPointsStatisticalUncertainty__4;
 TH1D *TH1D *GeneratorLevel_JetPtSpectrum__3 ;
 
+bool isSimSys = 1;
 
 void finalJetSpectra(TString dataFile = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning/unfolding_Bayes_3/unfoldedSpectrum_unfoldedJetSpectrum.root",
 TString dataAnalysisFile = "/home/basia/Work/alice/analysis/pPb_run2/D0jet/outData/AnalysisResults_LHC16R03.root",
 TString simDir = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts/Simulations/Prompt",
 TString outSpectraDir = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning/finalSpectra",
 TString histBase = "unfoldedSpectrum",
-bool isSimSys = 1 )
+bool simsys = 1 )
 {
 
+  isSimSys = simsys;
   gStyle->SetOptStat(0000);
 
   TString outPlotDir = outSpectraDir;
@@ -66,8 +57,8 @@ bool isSimSys = 1 )
 
   xAxis = new double[Naxis+1];
   for(int k=0; k<Naxis+1; k++) xAxis[k] = fptbinsJetTrueA[k];
-  systuncP = new double[fptbinsJetTrueN+1];
-  for(int k=0; k<fptbinsJetTrueN+1; k++) systuncP[k] = 15;
+//  systuncP = new double[fptbinsJetTrueN+1];
+//  for(int k=0; k<fptbinsJetTrueN+1; k++) systuncP[k] = 15;
 
   TFile *File = new TFile(dataAnalysisFile,"read");
   TDirectoryFile* dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
@@ -86,8 +77,9 @@ bool isSimSys = 1 )
     bool dopp = 0;
 
     // ----------------- prompt simulation ---------------------
+
     int cent = 0;
-    bool jet = 1; // this code is for jet spectra subtraction
+    bool jet = 1;
 
     int simNr = 0; // 0 - central value
     int nFiles = fCsimN;
@@ -121,6 +113,7 @@ bool isSimSys = 1 )
     hPrompt_central->Scale(simScaling);
     hPrompt_central_binned->Scale(simScaling);
     hPrompt_central_binned->Scale(1,"width");
+    hPrompt_central_binned->Scale(1./dy);
 
 
     if(isSimSys){
@@ -131,12 +124,14 @@ bool isSimSys = 1 )
       setHistoDetails(hPrompt_up,4,24,0,2,2);
       hPrompt_up->Scale(simScaling);
       hPrompt_up->Scale(1,"width");
+      hPrompt_up->Scale(1./dy);
       // get down unc
       hPrompt_down = (TH1D*)hPrompt_central_binned->Clone("hPrompt_down");
       hPrompt_down = (TH1D*)GetDownSys(hPrompt_binned,nFiles,hPrompt_down);
       setHistoDetails(hPrompt_down,4,24,0,2,2);
       hPrompt_down->Scale(simScaling);
       hPrompt_down->Scale(1,"width");
+      hPrompt_down->Scale(1./dy);
     }
 
 
@@ -149,6 +144,7 @@ bool isSimSys = 1 )
     hData_binned = (TH1D*)hData_binned2->Clone("hData_binned");
     hData_binned->Scale(1,"width");
     hData_binned->Scale(dataScaling);
+    hData_binned->Scale(1./dy);
     hData_binned->SetTitle();
     //hData_binned->SetMinimum(1);
     hData_binned->SetMaximum(hData_binned->GetMaximum()*2);
@@ -223,12 +219,15 @@ bool isSimSys = 1 )
             ptvaltheory[j] = (fptbinsJetTrueA[j]+fptbinsJetTrueA[j+1]) / 2.;
             ptvalunctheory[j] = (fptbinsJetTrueA[j+1]-fptbinsJetTrueA[j]) / 2.;
             valuetheory[j] = hPrompt_central_binned->GetBinContent(hPrompt_central_binned->GetXaxis()->FindBin(ptvaltheory[j]));
-            valuetheoryerrup[j] = hPrompt_up->GetBinContent(hPrompt_up->GetXaxis()->FindBin(ptvaltheory[j])) - valuetheory[j];
-            valuetheoryerrdown[j] = valuetheory[j] - hPrompt_down->GetBinContent(hPrompt_up->GetXaxis()->FindBin(ptvaltheory[j]));
-
+            if(isSimSys){
+              valuetheoryerrup[j] = hPrompt_up->GetBinContent(hPrompt_up->GetXaxis()->FindBin(ptvaltheory[j])) - valuetheory[j];
+              valuetheoryerrdown[j] = valuetheory[j] - hPrompt_down->GetBinContent(hPrompt_up->GetXaxis()->FindBin(ptvaltheory[j]));
+            }
     }
 
+if(isSimSys){
   grsystheory = new TGraphAsymmErrors(fptbinsJetTrueN,ptvaltheory,valuetheory,ptvalunctheory,ptvalunctheory,valuetheoryerrdown,valuetheoryerrup);
+}
 
 //   grsystheory->SetMarkerColor(kBlue+2);
 //   grsystheory->SetLineColor(kBlue+2);
@@ -247,12 +246,16 @@ bool isSimSys = 1 )
 
    hData_binned_ratio = (TH1D*)hData_binned->Clone("hData_binned_ratio");
    TH1D *hPrompt_central_binned_ratio = (TH1D*)hPrompt_central_binned->Clone("hPrompt_central_binned_ratio");
-   TH1D *hPrompt_up_ratio = (TH1D*)hPrompt_up->Clone("hPrompt_up_ratio");
-   TH1D *hPrompt_down_ratio = (TH1D*)hPrompt_down->Clone("hPrompt_down_ratio");
+   hPrompt_central_binned_ratio->Divide(hPrompt_central_binned);
+   TH1D *hPrompt_down_ratio;
+   TH1D *hPrompt_up_ratio;
+   if(isSimSys){
+     hPrompt_up_ratio = (TH1D*)hPrompt_up->Clone("hPrompt_up_ratio");
+     hPrompt_down_ratio = (TH1D*)hPrompt_down->Clone("hPrompt_down_ratio");
+     hPrompt_up_ratio->Divide(hPrompt_central_binned);
+     hPrompt_down_ratio->Divide(hPrompt_central_binned);
 
-    hPrompt_central_binned_ratio->Divide(hPrompt_central_binned);
-    hPrompt_up_ratio->Divide(hPrompt_central_binned);
-    hPrompt_down_ratio->Divide(hPrompt_central_binned);
+   }
 
      Double_t sysuncRatio[fptbinsJetTrueN];
      Double_t valRatio[fptbinsJetTrueN];
@@ -281,6 +284,7 @@ bool isSimSys = 1 )
     Double_t valuetheoryratio[fptbinsJetTrueN];
     Double_t valuetheoryerrupratio[fptbinsJetTrueN];
     Double_t valuetheoryerrdownratio[fptbinsJetTrueN];
+    if(isSimSys){
       for(int j=0; j<fptbinsJetTrueN; j++){
             ptvaltheoryratio[j] = (fptbinsJetTrueA[j]+fptbinsJetTrueA[j+1]) / 2.;
             ptvalunctheoryratio[j] = (fptbinsJetTrueA[j+1]-fptbinsJetTrueA[j]) / 2.;
@@ -288,9 +292,9 @@ bool isSimSys = 1 )
             valuetheoryerrupratio[j] = hPrompt_up_ratio->GetBinContent(hPrompt_up_ratio->GetXaxis()->FindBin(ptvaltheory[j])) - valuetheoryratio[j];
             valuetheoryerrdownratio[j] = valuetheoryratio[j] - hPrompt_down_ratio->GetBinContent(hPrompt_down_ratio->GetXaxis()->FindBin(ptvaltheory[j]));
 
+          }
     }
-
-    grsystheoryratio = new TGraphAsymmErrors(fptbinsJetTrueN,ptvaltheoryratio,valuetheoryratio,ptvalunctheoryratio,ptvalunctheoryratio,valuetheoryerrdownratio,valuetheoryerrupratio);
+    if(isSimSys) grsystheoryratio = new TGraphAsymmErrors(fptbinsJetTrueN,ptvaltheoryratio,valuetheoryratio,ptvalunctheoryratio,ptvalunctheoryratio,valuetheoryerrdownratio,valuetheoryerrupratio);
 
 //   grsystheoryratio->SetMarkerColor(kBlue+2);
 //   grsystheoryratio->SetLineColor(kBlue+2);
@@ -313,10 +317,10 @@ hPrompt_up->Write();
 hPrompt_down->Write();
 
 }
-grsystheory->Write();
+if(isSimSys) grsystheory->Write();
 grsys->Write();
 grsysRatio->Write();
-grsystheoryratio->Write();
+if(isSimSys) grsystheoryratio->Write();
 
 ofile->Close();
 
@@ -385,59 +389,12 @@ return;
     TLegend *leg1 = new TLegend(0.6,0.7,0.9,0.9);
     leg1->SetBorderSize(0);
 
-    if(dopp) {
-
-         leg1->AddEntry(hData_binned,"p-Pb D*-jet, scaled","p");
-    //leg1->AddEntry(hData_binned_sub,"data-FD","p");
-
-
-   hPrompt_up->SetLineColor(kRed+1);
-   hPrompt_down->SetLineColor(kRed+1);
-   hPrompt_up->SetLineStyle(2);
-   hPrompt_down->SetLineStyle(2);
-
-   leg1->AddEntry(hPrompt_up,"pPb POWHEG+PYTHIA","l");
-
- // hPrompt_up->Draw("same");
- //  hPrompt_down->Draw("same");
-
-
-
-     TLegendEntry *entry = leg1->AddEntry(hdatapp,"pp prompt D0 data","p");
-   entry->SetLineColor(kBlue+1);
-   entry->SetMarkerColor(kBlue+1);
-   entry->SetMarkerStyle(20);
-   entry->SetMarkerSize(0.9);
-   entry->SetLineStyle(1);
-   entry->SetLineWidth(1);
-
-    TLegendEntry *entrym =  leg1->AddEntry(hPrompt_central_binned,"pp POWHEG+PYTHIA","l");
-     entrym->SetLineColor(kBlue+1);
-   entrym->SetMarkerColor(kBlue+1);
-   entrym->SetMarkerStyle(20);
-   entrym->SetMarkerSize(0.9);
-   entrym->SetLineStyle(1);
-   entrym->SetLineWidth(1);
-
-      leg1->Draw("same");
-
-
-      TLegend *lr = new TLegend(0.6,0.6,0.85,0.88,"pPb/pp");
-      lr->SetBorderSize(0);
-      lr->AddEntry(hratioData,"data","p");
-      lr->AddEntry(hratioSim,"cent. prediction","p");
-    TCanvas *cratio = new TCanvas("cratio","cratio",600,300);
-    hratioData->Draw();
-    hratioSim->Draw("samep");
-    lr->Draw("same");
-    }
-    else{
 
          leg1->AddEntry(hData_binned,"prompt D^{*+}-jet","p");
         //leg1->AddEntry(hData_binned_sub,"data-FD","p");
         if(isSimSys) leg1->AddEntry(hPrompt_up,"POWHEG+PYTHIA","l");
           leg1->Draw("same");
-    }
+
 
 
 
@@ -450,8 +407,10 @@ return;
     pad2->SetGridy();
     pad2->Draw();
     pad2->cd();
-    hPrompt_up_ratio->GetYaxis()->SetTitle("data/theory");
-    hPrompt_up_ratio->GetYaxis()->SetRangeUser(0,2.6);
+    if(isSimSys) {
+      hPrompt_up_ratio->GetYaxis()->SetTitle("data/theory");
+      hPrompt_up_ratio->GetYaxis()->SetRangeUser(0,2.6);
+    }
      hData_binned_ratio->GetYaxis()->SetTitle("data/theory");
     hData_binned_ratio->GetYaxis()->SetRangeUser(0,2.6);
     //hPrompt_central_binned_ratio->Draw();
@@ -459,27 +418,28 @@ return;
   //  hPrompt_down_ratio->Draw("hsame");
     hData_binned_ratio->Draw();
 
-    hPrompt_up_ratio->GetYaxis()->SetTitle("data/theory");
-   hPrompt_up_ratio->GetYaxis()->SetNdivisions(505);
-   hPrompt_up_ratio->GetYaxis()->SetTitleSize(20);
-   hPrompt_up_ratio->GetYaxis()->SetTitleFont(43);
-   hPrompt_up_ratio->GetYaxis()->SetTitleOffset(1.2);
-   hPrompt_up_ratio->GetYaxis()->SetLabelFont(43);
-    hPrompt_up_ratio->GetYaxis()->SetLabelSize(15);
+    if(isSimSys){
+      hPrompt_up_ratio->GetYaxis()->SetTitle("data/theory");
+     hPrompt_up_ratio->GetYaxis()->SetNdivisions(505);
+     hPrompt_up_ratio->GetYaxis()->SetTitleSize(20);
+     hPrompt_up_ratio->GetYaxis()->SetTitleFont(43);
+     hPrompt_up_ratio->GetYaxis()->SetTitleOffset(1.2);
+     hPrompt_up_ratio->GetYaxis()->SetLabelFont(43);
+      hPrompt_up_ratio->GetYaxis()->SetLabelSize(15);
 
-    hPrompt_up_ratio->GetXaxis()->SetTitleSize(20);
-   hPrompt_up_ratio->GetXaxis()->SetTitleFont(43);
-   hPrompt_up_ratio->GetXaxis()->SetTitleOffset(4);
-   hPrompt_up_ratio->GetXaxis()->SetLabelFont(43);
-    hPrompt_up_ratio->GetXaxis()->SetLabelSize(15);
-
+      hPrompt_up_ratio->GetXaxis()->SetTitleSize(20);
+     hPrompt_up_ratio->GetXaxis()->SetTitleFont(43);
+     hPrompt_up_ratio->GetXaxis()->SetTitleOffset(4);
+     hPrompt_up_ratio->GetXaxis()->SetLabelFont(43);
+      hPrompt_up_ratio->GetXaxis()->SetLabelSize(15);
+  }
     grsysRatio->SetMarkerColor(4);
    grsysRatio->SetMarkerStyle(21);
    grsysRatio->SetFillColor(kGray+3);
    grsysRatio->SetFillStyle(3003);
-  grsysRatio->Draw("2");
+   grsysRatio->Draw("2");
 
-   grsystheoryratio->Draw("same");
+  if(isSimSys)  grsystheoryratio->Draw("same");
 
     TLine *ll = new TLine(5,1,30,1);
     ll->SetLineStyle(3);
@@ -534,6 +494,7 @@ TH1* GetDownSys(TH1D **hh, const int nFiles = 11, TH1D *hh_down){
         double max = 0, maxerr = 0;
 
         for(int j=1; j<fptbinsJetTrueN+1; j++ ){
+      //for(int j=1; j<hh[0]->GetNbinsX()+1; j++ ){
             max = hh[0]->GetBinContent(j);
             for(int i=1;i<nFiles;i++){
                 if(hh[i]->GetBinContent(j) < max){
@@ -639,8 +600,14 @@ void drawFinal(TString outPlotDir){
 
 
    TH1D *CentralPointsStatisticalUncertainty__1 = new TH1D("CentralPointsStatisticalUncertainty__1","Central Values",Naxis, xAxis);
-   CentralPointsStatisticalUncertainty__1->SetMinimum(2.e-04);
-   CentralPointsStatisticalUncertainty__1->SetMaximum(500);
+   if(fSystem){
+     CentralPointsStatisticalUncertainty__1->SetMinimum(2.e-04);
+     CentralPointsStatisticalUncertainty__1->SetMaximum(500);
+   }
+   else{
+     CentralPointsStatisticalUncertainty__1->SetMinimum(2.e-05);
+     CentralPointsStatisticalUncertainty__1->SetMaximum(0.5);
+  }
    CentralPointsStatisticalUncertainty__1->SetEntries(8);
    CentralPointsStatisticalUncertainty__1->SetDirectory(0);
    CentralPointsStatisticalUncertainty__1->SetStats(0);
@@ -822,15 +789,17 @@ void drawFinal(TString outPlotDir){
 
 
    // theory syst unc
-   grae = (TGraphAsymmErrors*) grsystheory->Clone("grae"); //  new TGraphAsymmErrors(6);
-   grae->SetName("theorySyst_copy");
-   grae->SetTitle("Graph");
-   grae->SetFillColor(1);
-   grae->SetFillStyle(0);
+   if(isSimSys){
+     grae = (TGraphAsymmErrors*) grsystheory->Clone("grae"); //  new TGraphAsymmErrors(6);
+     grae->SetName("theorySyst_copy");
+     grae->SetTitle("Graph");
+     grae->SetFillColor(1);
+     grae->SetFillStyle(0);
 
-   ci = TColor::GetColor("#000099");
-   grae->SetLineColor(ci);
-   grae->SetLineWidth(2);
+     ci = TColor::GetColor("#000099");
+     grae->SetLineColor(ci);
+     grae->SetLineWidth(2);
+  }
   /* grae->SetPoint(0,5.5,0.5048265);
    grae->SetPointError(0,0.5,0.5,0.3307398,0.6140599);
    grae->SetPoint(1,7,0.2791936);
@@ -865,10 +834,10 @@ void drawFinal(TString outPlotDir){
    Graph_theorySyst_copy2->GetZaxis()->SetLabelSize(0.035);
    Graph_theorySyst_copy2->GetZaxis()->SetTitleSize(0.035);
    Graph_theorySyst_copy2->GetZaxis()->SetTitleFont(42);
-   grae->SetHistogram(Graph_theorySyst_copy2);
-
-   grae->Draw("2");
-
+   if(isSimSys){
+     grae->SetHistogram(Graph_theorySyst_copy2);
+     grae->Draw("2");
+  }
 
    TLegend *leg = new TLegend(0.5,0.35,0.8,0.61,NULL,"NB NDC");
    leg->SetBorderSize(0);
@@ -933,7 +902,8 @@ void drawFinal(TString outPlotDir){
    pt->SetTextFont(43);
    pt->SetTextSize(22);
    TText *text = pt->AddText("ALICE Preliminary");
-   text = pt->AddText("p-Pb, #sqrt{#it{s}_{NN}} = 5.02 TeV");
+   if(fSystem) text = pt->AddText("p-Pb, #sqrt{#it{s}_{NN}} = 5.02 TeV");
+   else text = pt->AddText("pp, #sqrt{#it{s}} = 5.02 TeV");
    text = pt->AddText("Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.3, |#eta_{jet}| < 0.6");
    text = pt->AddText("with D^{0}, #it{p}_{T,D} > 3 GeV/#it{c}");
    pt->Draw();
@@ -1125,15 +1095,17 @@ void drawFinal(TString outPlotDir){
    CentralPointsStatisticalUncertainty__6->Draw("same p e0 x0");
 
    // theory syst ratio
-   grae = (TGraphAsymmErrors*)  grsystheoryratio->Clone("grae"); // new TGraphAsymmErrors(6);
-   grae->SetName("ratioTheorySyst");
-   grae->SetTitle("Graph");
-   grae->SetFillColor(1);
-   grae->SetFillStyle(0);
+   if(isSimSys) {
+     grae = (TGraphAsymmErrors*)  grsystheoryratio->Clone("grae"); // new TGraphAsymmErrors(6);
+     grae->SetName("ratioTheorySyst");
+     grae->SetTitle("Graph");
+     grae->SetFillColor(1);
+     grae->SetFillStyle(0);
 
-   ci = TColor::GetColor("#000099");
-   grae->SetLineColor(ci);
-   grae->SetLineWidth(2);
+     ci = TColor::GetColor("#000099");
+     grae->SetLineColor(ci);
+     grae->SetLineWidth(2);
+  }
 /*     grae->SetPoint(0,5.5,1);
    grae->SetPointError(0,0.5,0.5,0.6551554,1.216378);
    grae->SetPoint(1,7,1);
@@ -1167,10 +1139,10 @@ void drawFinal(TString outPlotDir){
    Graph_ratioTheorySyst4->GetZaxis()->SetLabelSize(0.035);
    Graph_ratioTheorySyst4->GetZaxis()->SetTitleSize(0.035);
    Graph_ratioTheorySyst4->GetZaxis()->SetTitleFont(42);
-   grae->SetHistogram(Graph_ratioTheorySyst4);
-
-   grae->Draw("2");
-
+   if(isSimSys) {
+     grae->SetHistogram(Graph_ratioTheorySyst4);
+     grae->Draw("2");
+  }
    // just for graphics, data not really needed
    TH1D *CentralPointsStatisticalUncertainty__7 = new TH1D("CentralPointsStatisticalUncertainty__7","Central Values",Naxis, xAxis);
    CentralPointsStatisticalUncertainty__7->SetMinimum(0);

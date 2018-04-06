@@ -9,68 +9,104 @@
 //
 
 
+
+#include "TSystem.h"
+#include "TFile.h"
+#include "TH1F.h"
+#include "TH2F.h"
+#include "TH3F.h"
+#include "TVector2.h"
+#include "TVector3.h"
+#include "TCanvas.h"
+#include "TGraph.h"
+#include "TGraphErrors.h"
+#include "TGraphAsymmErrors.h"
+#include "TLegend.h"
+#include "TStyle.h"
+#include "TLine.h"
+#include "TF1.h"
+#include "TProfile.h"
+#include <iostream>
+#include "TPaveText.h"
+#include "TRandom.h"
+#include "TROOT.h"
+#include "TMath.h"
+#include "TClonesArray.h"
+#include "TDatabasePDG.h"
+#include "TParticle.h"
+#include "TRandom3.h"
+#include "THnSparse.h"
+#include "TProfile.h"
+#include "TH3F.h"
+#include "TH1.h"
+#include "TH2.h"
+
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+
 int Rpar = 4;
 double Dptcut = 3.;
-double jetptmin = 4, jetptmax = 40;
+double jetptmin = 5, jetptmax = 50;
 double Dptmin = 3, Dptmax = 36;
 double jetEta = 0.5;
 
+const int nJetBins = 9;
+double ptJetbins[nJetBins+1] = { 3,4,5,6,8,10,14,20,30,50 };
+
 //const int nJetBins = 8;
-const int nJetBins = 8;
-//double ptJetbins[nJetBins+1] = { 3,4,6,8,10,12,16,24,40 };
-double ptJetbins[nJetBins+1] = { 3,5,6,8,10,14,20,30,50 };
-//double ptJetbins[nJetBins+1] = { 6,8,10,12,16,18,20,24,26 };
+//double ptJetbins[nJetBins+1] = { 3,5,6,8,10,14,20,30,50 };
 
 const Int_t nDbins = 10;
 double ptDbins[nDbins+1] = {3,4,5,6,7,8,10,12,16,24,36};
 
-    
 double plotmin = 0, plotmax = 50;
 
-Int_t colors[] = {1,2,8,4,kOrange-1,6,kGray+1,kCyan+1,kMagenta+2,kViolet+5,,kYellow+2};
+Int_t colors[] = {1,2,8,4,kOrange-1,6,kGray+1,kCyan+1,kMagenta+2,kViolet+5,kYellow+2};
 Int_t markers[] = {20,21,22,23,24,25,26,27,28,29,30,32,33,34};
 
+
+double BR = 0.0393; // 0.0257;
+const int APb = 208;
+const double simScaling =  APb; 
+
+double pPbscaling = 2.1/208.; // not used now
  
-//TString runC[] = { "1484563818", "1494174281", "1484580108", "1484580512", "1484569104", "1484563604", "1484563787", "1484564759", "1484565376", "1484566956" };
-//const int eventsC[] = { 24.85E6, 24.44E6, 25E6, 25E6, 24.75E6, 24.9E6, 24.5E6, 25E6, 24.95E6, 15E6 };
-//const double sigma_c[] = { 7.453, 2.419, 9.891, 5.569, 7.77, 15.46, 13.47, 3.939, 3.956, 23.53 };
-
 TString runC[] = { "1496999831", "1497979153", "1497983041", "1497891573", "1497817179", "1497857391", "1497726041", "1497699194", "1497713588" };
-TString desc_C[] = { "central", "m_{c}=1.3", "m_{c}=1.7", "muR=2,muF=2", "muR=1,muF=2", "muR=2,muF=1", "muR=0.5,muF=0.5", "muR=1,muF=0.5" ,"muR=0.5,muF=1" };
-
-
-//TString runB[] = { "1484558618","1484558819","1484535253","1484539321","1484559392","1484562688","1484563079","1484564204","1484565107","1484566061" };
-//const int eventsB[] = { 25E6, 24.85E6, 25E6, 25E6, 20E6, 24.95E6,  24.5E6, 25E6, 20E6, 24.85E6};
-//const double sigma_B[] = { 0.2794, 0.1643, 0.3351, 0.2348, 0.2385, 0.3411, 0.3215, 0.2007, 0.2118, 0.4236 }; // mbar
-//TString desc_B[] = { "central","CT10NLO","m_{b}=4.5","m_{b}=5","#mu_{R}=2,#mu_{F}=2","#mu_{R}=0.5,#mu_{F}=0.5","#mu_{R}=1,#mu_{F}=2","#mu_{R}=2,#mu_{F}=1","#mu_{R}=1,#mu_{F}=0.5","#mu_{R}=0.5,#mu_{F}=1" };
+TString desc_C[] = { "central", "m_{c}=1.3", "m_{c}=1.7", "#mu_{R}=2,#mu_{F}=2", "#mu_{R}=1,#mu_{F}=2", "#mu_{R}=2,#mu_{F}=1", "#mu_{R}=0.5,#mu_{F}=0.5", "#mu_{R}=1,#mu_{F}=0.5" ,"#mu_{R}=0.5,#mu_{F}=1" };
 
 TString runB[] = { "1496995621", "1497227464", "1497228262", "1497207414", "1497173624", "1497172782", "1497132057", "1497130041", "1497121734" };
 TString desc_B[] = {"central", "m_{b}=4.5", "m_{b}=5", "#mu_{R}=2,#mu_{F}=2", "#mu_{R}=1,#mu_{F}=2", "#mu_{R}=2,#mu_{F}=1", "#mu_{R}=0.5,#mu_{F}=0.5", "#mu_{R}=1,#mu_{F}=0.5" ,"#mu_{R}=0.5,#mu_{F}=1" };
 
 
 TH1* GetInputHist(TString inFile, string histName,TH1 *hh);
-TH1* GetInputSimHist(TString inFile, TH1 *hJetPt_B);
 
 void ScaleHist(TH1 *hh, int full = 0);
 void setHistoDetails(TH1 *hh, Color_t color, Style_t Mstyle, int Msize = 1.3, Width_t Lwidth = 2, Style_t Lstyle = 1);
 void SaveCanvas(TCanvas *c, TString name = "tmp");
+void compareSpectra(TH1D **hFD, const int nFiles, bool isjet, bool quark, TString cName = "canvas");
+TH1* GetUpSys(TH1D **hFD, const int nFiles, TH1D *hFD_up);
+TH1* GetDownSys(TH1D **hFD, const int nFiles, TH1D *hFD_down);
+
 
 // quark: 0 --charm, 1 -- beauty
 // jet: 1- jet spectrum, 1 - D pT spectrum
 // isjetptcut: if D pT spectrum if we apply jet pT range
-// isDptcut: if jet pT spectrum if we apply D pt range 
+// isDptcut: if jet pT spectrum if we apply D pt range
 // isEff: is jet pT spectrum if the spectrum is scaled by the eff_nonprompt/eff_prompt in D pt bins
-//void plotSimSpectra(int quark = 1, bool jet = 1, bool isjetptcut = 0, bool isDptcut = 1, bool isEff = 0, TString outPlotDir = "plots_D0", TString outHistName = "outD0/ptSpectrumSim_" ){
-void plotSimSpectra(int quark = 1, bool jet = 1, bool isjetptcut = 0, bool isDptcut = 1, bool isEff = 0, TString outPlotDir = "plots", TString outHistName = "out/ptSpectrumSim_" ){
+
+void plotSimSpectra(int quark = 1, bool jet = 1, bool isjetptcut = 0, bool isDptcut = 1, bool isEff = 0, TString outPlotDir = "plotsD0", TString outHistName = "outD0/ptSpectrumSim_" ){
+    
+    
+    setStyle();
     
     gStyle->SetPadBottomMargin(0.1); //margins...
     gStyle->SetPadTopMargin(0.04);
     gStyle->SetPadLeftMargin(0.08);
     gStyle->SetPadRightMargin(0.04);
     gStyle->SetOptStat(0000);
-    
-    
-    // ----------------- prompt simulation ---------------------
     
 
     int simNr = 0; // 0 - central value
@@ -164,7 +200,7 @@ void plotSimSpectra(int quark = 1, bool jet = 1, bool isjetptcut = 0, bool isDpt
    
     compareSpectra(hSpectrum_binned,nFiles, jet, quark, outh);
     
-  
+   // compare data and central sim with unc
     TCanvas *cSpectra = new TCanvas("cSpectra","cSpectra",1000,800);
     cSpectra->SetLogy();
     hSpectrum_central_binned ->Draw();
@@ -177,7 +213,7 @@ void plotSimSpectra(int quark = 1, bool jet = 1, bool isjetptcut = 0, bool isDpt
     return;
 }
 
-TH1* GetUpSys(TH1D **hFD, const int nFiles = 11, TH1D *hFD_up){
+TH1* GetUpSys(TH1D **hFD, const int nFiles, TH1D *hFD_up){
     
 
         double bin = 0, binerr = 0;
@@ -189,7 +225,7 @@ TH1* GetUpSys(TH1D **hFD, const int nFiles = 11, TH1D *hFD_up){
             for(int i=1;i<nFiles;i++){
                 if(hFD[i]->GetBinContent(j) > max){
                         max = hFD[i]->GetBinContent(j);
-                        maxerr = hFD[j]->GetBinError(j); 
+                       // maxerr = hFD[j]->GetBinError(j); 
                 }
  
             }
@@ -202,7 +238,7 @@ TH1* GetUpSys(TH1D **hFD, const int nFiles = 11, TH1D *hFD_up){
     return hFD_up;
 }
 
-TH1* GetDownSys(TH1D **hFD, const int nFiles = 11, TH1D *hFD_down){
+TH1* GetDownSys(TH1D **hFD, const int nFiles, TH1D *hFD_down){
     
 
         double bin = 0, binerr = 0;
@@ -214,7 +250,7 @@ TH1* GetDownSys(TH1D **hFD, const int nFiles = 11, TH1D *hFD_down){
             for(int i=1;i<nFiles;i++){
                 if(hFD[i]->GetBinContent(j) < max){
                         max = hFD[i]->GetBinContent(j);
-                        maxerr = hFD[j]->GetBinError(j); 
+                      //  maxerr = hFD[j]->GetBinError(j); 
                 }
  
             }
@@ -227,7 +263,7 @@ TH1* GetDownSys(TH1D **hFD, const int nFiles = 11, TH1D *hFD_down){
     return hFD_down;
 }
 
-void compareSpectra(TH1D **hFD, const int nFiles = 11, bool isjet, bool quark, TString cName = "canvas"){
+void compareSpectra(TH1D **hFD, const int nFiles, bool isjet, bool quark, TString cName){
 
     TH1D *hPt[nFiles];
     
@@ -255,10 +291,7 @@ void compareSpectra(TH1D **hFD, const int nFiles = 11, bool isjet, bool quark, T
         else if(quark == 1) leg->AddEntry(hPt[i],desc_B[i].Data(),"p");
         leg->Draw("same");
     }
-    
-    
-   // return;
-    
+   
     SaveCanvas(cB,cName);
     
     TH1D *hCent = (TH1D*)hPt[0]->Clone("hCent");
@@ -324,15 +357,12 @@ TH1* GetInputHist(TString inFile, string histName,TH1 *hh){
   
 }
 
-
-
-
 void ScaleHist(TH1 *hh, int full){
    
     
     if(full){
-
-        hh->Scale(1,"width");
+        //hh->Scale(pPbscaling);
+         hh->Scale(1,"width");
         hh->GetYaxis()->SetTitle("d^{2}#sigma/d#etadp_{T} (mb #it{c}/GeV)");
     }
     else {
@@ -350,9 +380,9 @@ void setHistoDetails(TH1 *hh, Color_t color, Style_t Mstyle, int Msize, Width_t 
     hh->SetLineWidth(Lwidth);
     hh->SetMarkerSize(Msize);
     hh->SetLineStyle(Lstyle);
-   // hh->SetName(name.c_str());
-    
     hh->SetTitle();
+   
+    //hh->SetTitle();
     //hh->GetXaxis()->SetTitle("p_{T}^{ch,jet} (GeV/c)");
     
 }
@@ -361,7 +391,24 @@ void SaveCanvas(TCanvas *c, TString name){
     
     c->SaveAs(Form("%s.png",name.Data()));
     c->SaveAs(Form("%s.pdf",name.Data()));
-    //c->SaveAs(Form("%s.png",name.c_str()));
-    //c->SaveAs(Form("%s.pdf",name.c_str()));
-   
+    
+}
+
+void setStyle(){
+
+    gStyle->SetOptStat(000);
+    gStyle->SetLegendFont(42);
+    gStyle->SetTextFont(22) ;
+    //gStyle->SetLegendTextSize(0.05);
+    gStyle->SetPadLeftMargin(0.1);
+    gStyle->SetPadRightMargin(0.02);
+    gStyle->SetPadTopMargin(0.08);
+    gStyle->SetPadBottomMargin(0.1);
+    gStyle->SetLegendBorderSize(0);
+    gStyle->SetTitleOffset(1.,"x");
+    gStyle->SetTitleOffset(0.9.,"y");
+    gStyle->SetTitleSize(0.04,"xyz");
+    gStyle->SetLabelSize(0.03,"xyz");
+
+
 }

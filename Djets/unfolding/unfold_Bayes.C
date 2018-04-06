@@ -67,21 +67,25 @@ gSystem->Exec(Form("mkdir  %s/plots",outDir.Data()));
 if(isFDUpSpec) LoadRawSpectrum(datafile.Data(),"hData_binned_sub_up",0);
 else if(isFDDownSpec) LoadRawSpectrum(datafile.Data(),"hData_binned_sub_down",0);
 else LoadRawSpectrum(datafile.Data(),"hData_binned_sub",0);
-LoadBackgroundMatrix(bkgRMfile.Data(),"hBkgM");
+if(useDeltaPt) LoadBackgroundMatrix(bkgRMfile.Data(),"hBkgM");
 LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
 
 	if (!fRawSpectrum)  { Error("Unfold", "No raw spectrum!"); return 0;	}
 	if (!fTrueSpectrum) { Error("Unfold", "No true spectrum!");	return 0; }
 	if (!fMeasSpectrum) { Error("Unfold", "No reconstructed spectrum!"); return 0; }
 
-	TH1D* hDeltaPtFlat = (TH1D*)fMatrixDeltaPt->ProjectionY(); //fMatrixDeltaPt  is an (!un)initialized 2D histogram.
+
 	TH1D* truespec = (TH1D*)fTrueSpectrum->Clone("truespec"); //fTrueSpectrum is an (!un)initialized 1D histogram. 		//They are initialised by the LoadR/B/D....() functions above.
 	truespec->Scale(1./truespec->Integral());
+	TH2D* MatrixDeltaReb;
+	TH2D* MatrixComb;
+
+	if(useDeltaPt){
 	fMatrixDeltaPt->Sumw2();
 	//WeightMatrixY(fMatrixDeltaPt,fTrueSpectrum,0);
-
-	TH2D* MatrixDeltaReb = Rebin2D("MatrixDeltaReb", fMatrixDeltaPt, fptbinsJetMeasN, fptbinsJetMeasA, fptbinsJetTrueN, fptbinsJetTrueA,0);
-	TH2D* MatrixComb = ProductMatrix(fMatrixDeltaPt,fMatrixPP); //product of two matrices
+	MatrixDeltaReb = Rebin2D("MatrixDeltaReb", fMatrixDeltaPt, fptbinsJetMeasN, fptbinsJetMeasA, fptbinsJetTrueN, fptbinsJetTrueA,0);
+	MatrixComb = ProductMatrix(fMatrixDeltaPt,fMatrixPP); //product of two matrices
+	}
 
 	if(useDeltaPt) fMatrixProd = (TH2D*)MatrixComb->Clone("fMatrixProd");
 	else fMatrixProd = (TH2D*)fMatrixPP->Clone("fMatrixProd");
@@ -486,7 +490,7 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
     cProjMReb->SaveAs(Form("%s/plots/%s_MatrixProdProjReb.pdf",outDir.Data(),outName.Data()));
 		cProjMReb->SaveAs(Form("%s/plots/%s_MatrixProdProjReb.png",outDir.Data(),outName.Data()));
 
-		MtxPlots(outDir,outName);
+		if(fSystem) MtxPlots(outDir,outName);
 }
 
 
