@@ -42,8 +42,8 @@ isFDUpSys=${22}
 isFDDownSys=${23}
 isBkgRM=1
 bkgRMtype=$7         # which bkg RM, 0 is the default one: RandCones_BkgM_Djet5Excl.root
-isCsim=1              # switch one (provide below path (simFilesDir) to your raw simulation files, and file names in the config header file), swith this flag on if you haven't got output of the simulation yet, it takes time
-isBsim=1            # switch one (provide below path (simFilesDir) to your raw simulation files, and file names in the config header file), swith this flag on if you haven't got output of the simulation yet with a current efficiencies, it takes time
+isCsim=0              # switch one (provide below path (simFilesDir) to your raw simulation files, and file names in the config header file), swith this flag on if you haven't got output of the simulation yet, it takes time
+isBsim=0            # switch one (provide below path (simFilesDir) to your raw simulation files, and file names in the config header file), swith this flag on if you haven't got output of the simulation yet with a current efficiencies, it takes time
 isBsimNoEff=0       # switch one if you want non-prompt simulations without scaling for non-prompt/prompt efficiency
 
 ispostfix=${12}
@@ -623,7 +623,8 @@ cd $currDir
 ############### B feed-down simulations
 ################################################
 
-if [ $isBsim -eq 1 ]; then
+if [ ! -d "$BFDSimDirOut" ] || [ $isBsim -eq 1 ]; then
+
 cd $SimDir
 # 1: number of simulation files (as defined in the config file)
 # 2: simulation file directory;
@@ -644,15 +645,6 @@ fi
 
 if [ $isBsimNoEff -eq 1 ]; then
 cd $SimDir
-# 1: number of simulation files (as defined in the config file)
-# 2: simulation file directory;
-# 3: quark type: 0: charm, 1: beauty
-# 4: D-jet pT spectrum: 1, D-meson pT spectrum: 0
-# 5: if D meson pT cut applied (for D-jet pT spectrum case), if yes the lower and upper values from the D-meson pT bins from the config file are taken
-# 6: if efficiency applied (for B simulations, ratio of non-prompt/prompt efficiency)
-# 7: prompt efficiency file
-# 8: non-prompt efficiency file
-# 9: direcotry for the output files
 
   #no eff scaling
   if [ $isBsimNoEff -eq 1 ]; then
@@ -661,6 +653,7 @@ cd $SimDir
   fi
 cd $currDir
 fi
+
 
 ################################################
 ############### B feed-down subtraction
@@ -737,7 +730,8 @@ fi
 ############### prompt D-jet simulations
 ################################################
 
-if [ $isCsim -eq 1 ]; then
+if [ ! -d "$PromptSimDirOut" ] || [ $isCsim -eq 1 ]; then
+
 cd $SimDir
 # 1: number of simulation files (as defined in the config file)
 # 2: simulation file directory;
