@@ -28,8 +28,6 @@
 
 #include "config.h"
 
-    int ND = 4; // number of D mesons to analyse
-
     double jetmin = 0, jetmax = 50;
     double jetplotmin = 2, jetplotmax = 50;
     bool isEta = 0;
@@ -57,7 +55,7 @@
     TF1* bkgRfit[fptbinsDN];
 
     TH1F* hjetpt[fptbinsDN];
-    TH1F *hjetpt_s[fptbinsDN];
+    TH1F *hjetpt_sb[fptbinsDN];
     TH1F *hjetptsub[fptbinsDN];
     TH1F *hjetptcorr[fptbinsDN];
 

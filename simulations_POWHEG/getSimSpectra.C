@@ -48,7 +48,7 @@ TString runC[] = { "1496999831", "1497979153", "1497983041", "1497891573", "1497
  
 // quark: 1 = beauty, 0 = charm 
 
-void getSimSpectra(int simNr = 0, int quark = 1, bool jet = 1, bool isjetptcut = 0, bool isDptcut = 0, bool isEff = 0, TString effFilePrompt = "/home/basia/Work/alice/analysis/pPb_run2/Efficiencies/out_806Base/DjetEff_prompt_jetpt2_50.root", TString effFileNonPrompt = "/home/basia/Work/alice/analysis/pPb_run2/Efficiencies/out_806Base_FD/DjetEff_nonPrompt_jetpt2_50.root", TString outHistName = "out/ptSpectrumSim_" );
+void getSimSpectra(int simNr = 0, int quark = 1, bool jet = 1, bool isjetptcut = 0, bool isDptcut = 0, bool isEff = 0, TString effFilePrompt = "/home/basia/Work/alice/analysis/pPb_run2/Efficiencies/out_806Base/DjetEff_prompt_jetpt2_50.root", TString effFileNonPrompt = "/home/basia/Work/alice/analysis/pPb_run2/Efficiencies/out_806Base_FD/DjetEff_nonPrompt_jetpt2_50.root", TString outHistName = "outD0/ptSpectrumSim_" );
 
 
 double GetEfficiency(TH1 *hh, double Dpt);
@@ -144,8 +144,8 @@ TH1* GetInputSimHistJet(TString inFile, TH1 *hPt, bool isEff, TString effFilePro
   
  
   
-  TTree *tree = (TTree*)fileInput->Get("AliAnalysisTaskDmesonJets_DStar_MCTruth");
-  //TTree *tree = (TTree*)fileInput->Get("AliAnalysisTaskDmesonJets_D0_MCTruth");
+  //TTree *tree = (TTree*)fileInput->Get("AliAnalysisTaskDmesonJets_DStar_MCTruth");
+  TTree *tree = (TTree*)fileInput->Get("AliAnalysisTaskDmesonJets_D0_MCTruth");
   AliAnalysisTaskDmesonJets::AliDmesonInfoSummary *brD = 0;
   AliAnalysisTaskDmesonJets::AliJetInfoSummary *brJet = 0;
   tree->SetBranchAddress("DmesonJet",&brD);
@@ -236,8 +236,8 @@ TH1* GetInputSimHistD(TString inFile, TH1 *hPt, bool isjetptcut){
   double scaling = xsection/events;
   
   
-  TTree *tree = (TTree*)fileInput->Get("AliAnalysisTaskDmesonJets_DStar_MCTruth");
-  //TTree *tree = (TTree*)fileInput->Get("AliAnalysisTaskDmesonJets_D0_MCTruth");
+  //TTree *tree = (TTree*)fileInput->Get("AliAnalysisTaskDmesonJets_DStar_MCTruth");
+  TTree *tree = (TTree*)fileInput->Get("AliAnalysisTaskDmesonJets_D0_MCTruth");
   AliAnalysisTaskDmesonJets::AliDmesonInfoSummary *brD = 0;
   AliAnalysisTaskDmesonJets::AliJetInfoSummary *brJet = 0;
   tree->SetBranchAddress("DmesonJet",&brD);

@@ -19,6 +19,9 @@
 //
 
 //upgrade production
+// LHC14j5_extra_new
+//  /alice/sim/2014/LHC14j5_extra_new/
+// 137544, 137541, 137443, 137441, 137440, 137434
 
 #include <ctime>
 #include "TGrid.h"
@@ -32,16 +35,20 @@ void AnalysisTrainCorrJetsLocalMC (
                                  const char*    dataType            = "AOD",                       // set the analysis type, AOD, ESD or sESD
                                  Bool_t         useGrid             = kTRUE,                      // local or grid
                                  TString        localfilename       = "files_aod.txt",
-                                 const char*    gridMode            = "full",                      // set the grid run mode (can be "full", "test", "offline", "submit" or "terminate")
+                                 const char*    gridMode            = "terminate",                      // set the grid run mode (can be "full", "test", "offline", "submit" or "terminate")
                                  //const char*    pattern             = "/pass1_CENT_wSDD/*/AliAOD.root",   // file pattern (here one can specify subdirs like passX etc.) (used on grid)
-                                 const char*    pattern             = "/AOD/*/AliAOD.root",   // file pattern (here one can specify subdirs like passX etc.) (used on grid)
-                                 const char*    gridDir             = "/alice/sim/2017/LHC17d2a_fast_new/",
-                                 //const char*    runNumbers          = "265525 265521 265501 265500 265499 265435 265427 265426 265425 265424 265422 265421 265420 265419 265388 265387 265385 265384 265383 265381 265378 265377 265344 265343 265342 265339 265338 265336 265334 265332 265309",
-                                 const char*    runNumbers          = "265525 265334",
+                                 const char*    pattern             = "*/AliAOD.root",   // file pattern (here one can specify subdirs like passX etc.) (used on grid)
+                                 const char*    gridDir             = "/alice/sim/2014/LHC14j5_new/",
+                                 //const char*    runNumbers          = "",
+                                // const char*    runNumbers          = "138396	138275 	138225 	138201 138197 138192 138190 137848 137752 137751 137724 137722 137718 137704 137692 137691 137686",
+                                // const char*    runNumbers          = "138396	138275 	138225 	138201 138197 138192 138190 137848 137752", // run list 1
+                                 //const char*    runNumbers          = "137751 137724 137722 137718 137704 137692 137691 137686",
+                                  const char*    runNumbers          = "137751 137724 137722 137718 137704",
                                  const Int_t    nrunspermaster      = 50,
                                  UInt_t         numLocalFiles       = 2,                          // number of files analyzed locally
-                                 const char*    runPeriod           = "lhc16q",                    // set the run period (used on grid)
-                                const char*    uniqueName          = "DstartestMC2",           // sets base string for the name of the task on the grid
+                                 const char*    runPeriod           = "LHC14j5",                    // set the run period (used on grid)
+                                //const char*    uniqueName          = "upgradeHFjetTestPythiaOneHeaderFeb7_14j5new_2",           // sets base string for the name of the task on the grid
+                                const char*    uniqueName          = "Mult_upgradeMC_2",
                                  UInt_t         pSel                = AliVEvent::kINT7,             // used event selection for every task except for the analysis tasks
                                  Bool_t         useTender           = kFALSE,                      // trigger, if tender task should be used
                                  Bool_t         isMC                = kTRUE,                      // trigger, if MC handler should be used
@@ -52,12 +59,12 @@ void AnalysisTrainCorrJetsLocalMC (
                                  Bool_t         bPythia             = kTRUE,
                                  Bool_t         isPrompt            = kTRUE,
                                  // Here you have to specify additional code files you want to use but that are not in aliroot
-                                 const char*    addCXXs             = "AliAnalysisTaskFlavourJetCorrelationsTest.cxx", // to add local tasks
-                                 //const char*    addCXXs             = "AliAnalysisTaskFlavourJetCorrelationsMy.cxx AliAnalysisTaskSEDmesonsFilterCJMy.cxx", // to add local tasks
-                                 const char*    addHs               = "AliAnalysisTaskFlavourJetCorrelationsTest.h",
-                                 //const char*    addHs               = "AliAnalysisTaskFlavourJetCorrelationsMy.h AliAnalysisTaskSEDmesonsFilterCJMy.h",
+                                 //const char*    addCXXs             = "AliAnalysisTaskFlavourJetCorrelationsTest.cxx", // to add local tasks
+                                 const char*    addCXXs             = "AliAnalysisTaskFlavourJetCorrelationsTest.cxx AliAnalysisTaskSEDmesonsFilterCJTest.cxx", // to add local tasks
+                                 //const char*    addHs               = "AliAnalysisTaskFlavourJetCorrelationsTest.h",
+                                 const char*    addHs               = "AliAnalysisTaskFlavourJetCorrelationsTest.h AliAnalysisTaskSEDmesonsFilterCJTest.h",
                                  // These two settings depend on the dataset and your quotas on the AliEN services
-                                 Int_t          maxFilesPerWorker   = 5,
+                                 Int_t          maxFilesPerWorker   = 10,
                                  Int_t          workerTTL           = 25200, // 3600, // 14400,
                                  Int_t          nfiletestmode       = 1
                                  )
@@ -123,19 +130,12 @@ void AnalysisTrainCorrJetsLocalMC (
         cout << "Using " << localFiles.Data() << " as input file list.\n";
 
     TGrid::Connect("alien://"); //For Alien connection
-    //gROOT->LoadMacro("AliAnalysisTaskSEDmesonsFilterCJTest.cxx++g");
+    gROOT->LoadMacro("AliAnalysisTaskSEDmesonsFilterCJTest.cxx++g");
     gROOT->LoadMacro("AliAnalysisTaskFlavourJetCorrelationsTest.cxx++g");
     gROOT->LoadMacro("AddTasksFlavourJetMyMC.C");
 
-     AddTasksFlavourJetMyMC(1,"alien:///alice/cern.ch/user/b/btrzecia/pPb2016/DstarCuts/5TeVPBp2016_cuts806Base.root",0.,0.557,"TPCFID",runPeriod,0,pSel,isMC,isReco,isMap,bRM,bRMEff,bPythia,isPrompt,"MB"); // Jet(1,..) for D*
-     //AddTasksFlavourJetMyData(1,"alien:///alice/cern.ch/user/b/btrzecia/pPb2016/DstarCuts/5TeVPBp2016_cuts806Base.root",0.,0.,"TPCFID",runPeriod,0,pSel,isMC,isReco,isMap,bRM,bRMEff,bPythia,isPrompt,"MB"); // Jet(1,..) for D*
-
-
-    //AddTasksFlavourJetMyMC(1,"alien:///alice/cern.ch/user/b/btrzecia/pPb2016/DstarCuts/5TeVPBp2016_cuts2804Base.root",0.,0.557,"TPCFID",runPeriod,0,pSel,isMC,isReco,isMap,"MB",kTRUE); // Jet(1,..) for D*
-    //AddTasksFlavourJetMyMC(1,"alien:///alice/cern.ch/user/b/btrzecia/pPb2016/DstarCuts/5TeVPBp2016MC_cuts15Base.root",0.,0.557,"TPCFID",runPeriod,0,pSel,isMC,isReco,isMap,"MB",kTRUE); // Jet(1,..) for D*
-    //AddTasksFlavourJetMyMC(1,"alien:///alice/cern.ch/user/b/btrzecia/pPb2016/DstarCuts/5TeVPBp2016MC_cuts905Base.root",0.,0.557,"TPCFID",runPeriod,0,pSel,isMC,isReco,isMap,"MB",kTRUE); // Jet(1,..) for D*
-
-
+     AddTasksFlavourJetMyMC(0,"alien:///alice/cern.ch/user/b/btrzecia/pPb2016/D0Cuts/D0toKpiCuts_pPb2016_0_100_PreliminarySQM_MC.root",0.,0.557,"TPCFID",runPeriod,0,pSel,isMC,isReco,isMap,bRM,bRMEff,bPythia,isPrompt,"MB"); // Jet(1,..) for D*
+     //AddTasksFlavourJetMyMC(0,"alien:///alice/cern.ch/user/b/btrzecia/pPb2016/D0Cuts/D0toKpiCuts_pPb2016_0_100_PreliminarySQM_MC.root",0.,0.,"TPCFID",runPeriod,0,pSel,isMC,isReco,isMap,bRM,bRMEff,bPythia,isPrompt,"MB"); // Jet(1,..) for D*
 
     // Set the physics selection for all given tasks
   /*  TObjArray *toptasks = mgr->GetTasks();
@@ -280,7 +280,7 @@ AliAnalysisGrid* CreateAlienHandler(const char* uniqueName, const char* gridDir,
     //plugin->SetROOTVersion("v5-34-30-alice-3");
     //plugin->SetAliROOTVersion("v5-07-01-4");
     //plugin->SetAliPhysicsVersion("vAN-20160412-1");
-    plugin->SetAliPhysicsVersion("vAN-20170830-1");
+    plugin->SetAliPhysicsVersion("vAN-20180116-1");
     plugin->SetGridDataDir(gridDir); // e.g. "/alice/sim/LHC10a6"
     plugin->SetDataPattern(pattern); //dir structure in run directory
     //plugin->SetFriendChainName("./AliAOD.VertexingHF.root");

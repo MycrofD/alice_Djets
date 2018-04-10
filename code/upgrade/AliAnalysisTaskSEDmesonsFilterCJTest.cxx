@@ -52,6 +52,7 @@
 #include "AliStack.h"
 #include "AliAnalysisVertexingHF.h"
 #include "AliVertexingHFUtils.h"
+#include "AliGenEventHeader.h"
 
 #include "AliAnalysisTaskSEDmesonsFilterCJTest.h"
 
@@ -121,7 +122,11 @@ AliAnalysisTaskSEDmesonsFilterCJTest::AliAnalysisTaskSEDmesonsFilterCJTest() :
   fHistAlphaDpiR(0),
   fHistAlphaDKR(0),
   fHistDeltaRDpiR(0),
-  fHistDeltaRDKR(0)
+  fHistDeltaRDKR(0),
+  fHistEtaPt(0),
+  fHistNtrk(0),
+  fHistNtrkHijing(0),
+  fHistNtrkPythia(0)
 {
   //
   // Default constructor
@@ -197,7 +202,11 @@ AliAnalysisTaskSEDmesonsFilterCJTest::AliAnalysisTaskSEDmesonsFilterCJTest(const
   fHistAlphaDpiR(0),
   fHistAlphaDKR(0),
   fHistDeltaRDpiR(0),
-  fHistDeltaRDKR(0)
+  fHistDeltaRDKR(0),
+  fHistEtaPt(0),
+  fHistNtrk(0),
+  fHistNtrkHijing(0),
+  fHistNtrkPythia(0)
 {
   //
   // Constructor. Initialization of Inputs and Outputs
@@ -410,7 +419,9 @@ void AliAnalysisTaskSEDmesonsFilterCJTest::ExecOnce()
   if (fAodEvent) {
     fArrayDStartoD0pi = dynamic_cast<TClonesArray*>(fAodEvent->GetList()->FindObject(fBranchName.Data()));
   }
-  else {
+  else { return ; }
+
+/*  else {
     if (AODEvent() && IsStandardAOD()) {
 
       // In case there is an AOD handler writing a standard AOD, use the AOD
@@ -431,7 +442,7 @@ void AliAnalysisTaskSEDmesonsFilterCJTest::ExecOnce()
         return;
       }
     }
-  }
+  }*/
 
   if (fArrayDStartoD0pi) {
     TString objname(fArrayDStartoD0pi->GetClass()->GetName());
@@ -504,14 +515,64 @@ Bool_t AliAnalysisTaskSEDmesonsFilterCJTest::Run()
 
   // fix for temporary bug in ESDfilter
   // the AODs with null vertex pointer didn't pass the PhysSel
-  if (!fAodEvent->GetPrimaryVertex() || TMath::Abs(fAodEvent->GetMagneticField()) < 0.001) return kFALSE;
+ //! removed for now  if (!fAodEvent->GetPrimaryVertex() || TMath::Abs(fAodEvent->GetMagneticField()) < 0.001) return kFALSE;
 
   //Event selection
-  Bool_t iseventselected = fCuts->IsEventSelected(fAodEvent);
-  if (!iseventselected) return kFALSE;
+  //! remove for now     Bool_t iseventselected = fCuts->IsEventSelected(fAodEvent);
+  //! remove for now     if (!iseventselected) return kFALSE;
   fHistStat->Fill(1);
 
   AliDebug(2, "Event selected");
+
+Int_t iTracks = (fAodEvent -> GetNumberOfTracks () );
+
+fHistNtrk->Fill(iTracks);
+
+Int_t ntrkhijing=0;
+Int_t ntrkpythia=0;
+
+for(int j=0; j<iTracks; j++){
+
+  AliAODTrack * track = static_cast < AliAODTrack * >( fAodEvent ->GetTrack(j));
+  if(!track) continue;
+  if(TMath::Abs(track->Eta()) > 1) continue;
+  fHistEtaPt->Fill(track->Eta(),track->Pt());
+
+  TString nameGen;
+  GetTrackPrimaryGenerator(track,fMCHeader,fMCarray,nameGen);
+
+//  cout << "============== Gen name : " <<nameGen << "=====\n";
+
+  if(nameGen.Contains("ijing")) ntrkhijing++;
+
+  if(nameGen.Contains("ythia")) ntrkpythia++;
+  else if(nameGen.Contains("YTHIA")) ntrkpythia++;
+
+}
+//cout << endl;
+
+if(ntrkhijing) fHistNtrkHijing->Fill(ntrkhijing);
+if(ntrkpythia) fHistNtrkPythia->Fill(ntrkpythia);
+
+/*cout << "++++++++++++++++++ tracks: " << iTracks << endl;
+  Int_t nsumpart=0;
+  TList *lh=fMCHeader->GetCocktailHeaders();
+  Int_t nh=lh->GetEntries();
+  cout << "============= headers: " << nh << endl;
+  for(Int_t i=0;i<nh;i++){
+    AliGenEventHeader* gh=(AliGenEventHeader*)lh->At(i);
+    TString genname=gh->GetName();
+    Int_t npart=gh->NProduced();
+    nsumpart+=npart;
+
+    //if()
+    //if(nameGen.IsWhitespace() || nameGen.Contains("ijing"))
+
+    cout << "++++++++++++ gen name: " << genname << "\t part: " << npart << "\t ++++++++++++++\n" << endl;
+
+  }*/
+
+return kTRUE;
 
   const Int_t nD = fArrayDStartoD0pi->GetEntriesFast();
   AliDebug(2, Form("Found %d vertices", nD));
@@ -554,11 +615,13 @@ if(fUseMCInfo && fBuildRMEff){
       continue;
     }
 
+      fHistStat->Fill(3);
+
      Int_t decay = CheckDecayChannel(charmPart, fMCarray);
     if( TMath::Abs(charmPart->GetPdgCode()) == 413 && decay != kDecayDStartoKpipi) continue;
     if( TMath::Abs(charmPart->GetPdgCode()) == 421 && decay != kDecayD0toKpi) continue;
 
-    fHistStat->Fill(3);
+    fHistStat->Fill(4);
 
     if (fNCand==fAnalyseCand){
 
@@ -600,15 +663,15 @@ if(fUseMCInfo && fBuildRMEff){
          if (!charmCand) break;
          if (fCandidateType == kDstartoKpipi &&  !dstar) break;
 
-         fHistStat->Fill(4);
+        // fHistStat->Fill(4);
 
         // region of interest + cuts
         if (!fCuts->IsInFiducialAcceptance(charmCand->Pt(), charmCand->Y(pdgMeson))) break;
 
         //candidate selected by cuts and PID
-        Int_t isSelected = 0;
-        isSelected = fCuts->IsSelected(charmCand, AliRDHFCuts::kAll, fAodEvent); //selected
-        if (!isSelected) break;
+        Int_t isSelected = 1; //0;
+      //  isSelected = fCuts->IsSelected(charmCand, AliRDHFCuts::kAll, fAodEvent); //selected
+      //  if (!isSelected) break;
 
         fHistStat->Fill(5);
 
@@ -1223,6 +1286,18 @@ Bool_t AliAnalysisTaskSEDmesonsFilterCJTest::DefineHistoForAnalysis()
   fHistStat->SetNdivisions(1);
   fOutput->Add(fHistStat);
 
+  fHistEtaPt = new TH2F("fHistEtaPt","fHistEtaPt",200,-2,2,500,0,50);
+  fOutput->Add(fHistEtaPt);
+
+  fHistNtrk = new TH1I("fHistNtrk","fHistNtrk",100000,0,100000);
+  fOutput->Add(fHistNtrk);
+
+  fHistNtrkHijing = new TH1I("fHistNtrkHijing","fHistNtrkHijing",100000,0,100000);
+  fOutput->Add(fHistNtrkHijing);
+
+  fHistNtrkPythia = new TH1I("fHistNtrkPythia","fHistNtrkPythia",100000,0,100000);
+  fOutput->Add(fHistNtrkPythia);
+
   fHistNCandEv = new TH1F("fHistNCandEv", "Number of candidates per event (after cuts);# cand/ev", 100, 0., 100.);
   fOutput->Add(fHistNCandEv);
 
@@ -1470,6 +1545,11 @@ void AliAnalysisTaskSEDmesonsFilterCJTest::AddMCEventTracks(TClonesArray* coll, 
     allMCDaughters.SetOwner(kFALSE);
 
     AliAODMCParticle* mcD = (AliAODMCParticle*)coll->At(0);
+    if(!mcD) return;
+    TString nameGen;
+    AliGenEventHeader *gmcDh = GetMCTrackPrimaryGenerator(mcD,fMCHeader, fMCarray,nameGen);
+    if(!gmcDh) return;
+    AliGenEventHeader *gmch = NULL;
 
     AddMCDaughters(mcD,allMCDaughters,fMCarray);
 
@@ -1477,12 +1557,15 @@ void AliAnalysisTaskSEDmesonsFilterCJTest::AddMCEventTracks(TClonesArray* coll, 
     AliAODMCParticle* mcpart = 0;
     Int_t n = coll->GetEntriesFast();
     while ((mcpart = static_cast<AliAODMCParticle*>(mctracks->GetNextAcceptParticle()))) {
+
         if(TMath::Abs(mcpart->Charge())==0) continue;
         if(fUsePythia){
           bool isInj = IsMCTrackInjected(mcpart, fMCHeader, fMCarray);
           if(!isInj) continue;
+          gmch = GetMCTrackPrimaryGenerator(mcpart,fMCHeader, fMCarray,nameGen);
+          if(!gmch) continue;
+          if(gmch != gmcDh) continue;
         }
-
 
         if (allMCDaughters.Remove(mcpart) == 0) {
             if(fUseRejTracks){
@@ -1490,12 +1573,11 @@ void AliAnalysisTaskSEDmesonsFilterCJTest::AddMCEventTracks(TClonesArray* coll, 
             }
             new ((*coll)[n]) AliAODMCParticle(*mcpart);
             n++;
-            AliDebug(2, Form("Track %d (pT = %.3f, eta = %.3f, phi = %.3f) is included", mctracks->GetCurrentID(), mcpart->Pt(), mcpart->Eta(), mcpart->Phi()));
+          //  AliDebug(2, Form("Track %d (pT = %.3f, eta = %.3f, phi = %.3f) is included", mctracks->GetCurrentID(), mcpart->Pt(), mcpart->Eta(), mcpart->Phi()));
         }
-        else {
-            AliDebug(2, Form("Track %d (pT = %.3f, eta = %.3f, phi = %.3f) is excluded", mctracks->GetCurrentID(), mcpart->Pt(), mcpart->Eta(), mcpart->Phi()));
-        }
+
     }
+
 }
 
 //_______________________________________________________________________________
@@ -1802,20 +1884,20 @@ Bool_t AliAnalysisTaskSEDmesonsFilterCJTest::IsTrackInjected(AliAODTrack *track,
   TString nameGen;
   GetTrackPrimaryGenerator(track,header,arrayMC,nameGen);
 
-  if(nameGen.IsWhitespace() || nameGen.Contains("ijing")) return kFALSE;
+  if(nameGen.IsWhitespace() || nameGen.Contains("ijing") || nameGen.Contains("ythiaJets")) return kFALSE;
 
   return kTRUE;
 }
 
 
 //_____________________________________________________________________
-void AliAnalysisTaskSEDmesonsFilterCJTest::GetMCTrackPrimaryGenerator(AliAODMCParticle *track,AliAODMCHeader *header,TClonesArray *arrayMC,TString &nameGen){
+AliGenEventHeader* AliAnalysisTaskSEDmesonsFilterCJTest::GetMCTrackPrimaryGenerator(AliAODMCParticle *track,AliAODMCHeader *header,TClonesArray *arrayMC,TString &nameGen){
 
   /// method to check if a track comes from a given generator
 
   Int_t lab=TMath::Abs(track->GetLabel());
   nameGen=AliVertexingHFUtils::GetGenerator(lab,header);
-
+  AliGenEventHeader*  gh = GetHeader(lab,header);
   //  Int_t countControl=0;
 
   while(nameGen.IsWhitespace()){
@@ -1830,7 +1912,9 @@ void AliAnalysisTaskSEDmesonsFilterCJTest::GetMCTrackPrimaryGenerator(AliAODMCPa
       break;
     }
     lab=mother;
-    nameGen=AliVertexingHFUtils::GetGenerator(mother,header);
+    nameGen=AliVertexingHFUtils::GetGenerator(lab,header);
+    gh = GetHeader(lab,header);
+
     // countControl++;
     // if(countControl>=10){ // 10 = arbitrary number; protection from infinite loops
     //   printf("AliVertexingHFUtils::IsTrackInjected - BREAK: Protection from infinite loop active\n");
@@ -1838,15 +1922,37 @@ void AliAnalysisTaskSEDmesonsFilterCJTest::GetMCTrackPrimaryGenerator(AliAODMCPa
     // }
   }
 
-  return;
+  return gh;
 }
+
 //----------------------------------------------------------------------
 Bool_t AliAnalysisTaskSEDmesonsFilterCJTest::IsMCTrackInjected(AliAODMCParticle *track,AliAODMCHeader *header,TClonesArray *arrayMC){
   /// method to check if a track comes from the signal event or from the underlying Hijing event
   TString nameGen;
   GetMCTrackPrimaryGenerator(track,header,arrayMC,nameGen);
 
-  if(nameGen.IsWhitespace() || nameGen.Contains("ijing")) return kFALSE;
+  if(nameGen.IsWhitespace() || nameGen.Contains("ijing") || nameGen.Contains("ythiaJets")) return kFALSE;
 
   return kTRUE;
+}
+
+//______________________________________________________________________
+AliGenEventHeader* AliAnalysisTaskSEDmesonsFilterCJTest::GetHeader(Int_t label, AliAODMCHeader* header){
+  /// get the name of the generator that produced a given particle
+  Int_t nsumpart=0;
+  TList *lh=header->GetCocktailHeaders();
+  Int_t nh=lh->GetEntries();
+  for(Int_t i=0;i<nh;i++){
+    AliGenEventHeader* gh=(AliGenEventHeader*)lh->At(i);
+    TString genname=gh->GetName();
+    Int_t npart=gh->NProduced();
+    if(label>=nsumpart && label<(nsumpart+npart)) {
+
+      return gh;
+    }
+
+    nsumpart+=npart;
+  }
+
+  return NULL;
 }

@@ -36,6 +36,7 @@ class AliAODRecoCascadeHF;
 class AliAODRecoDecayHF2Prong;
 class AliAODRecoDecay;
 class AliStack;
+class AliGenEventHeader;
 
 class AliAnalysisTaskSEDmesonsFilterCJTest : public AliAnalysisTaskEmcal
 {
@@ -117,7 +118,8 @@ class AliAnalysisTaskSEDmesonsFilterCJTest : public AliAnalysisTaskEmcal
   static Int_t CheckDecayChannel(Int_t ipart, AliStack* stack); // ESD
 
   void GetTrackPrimaryGenerator(AliAODTrack *track,AliAODMCHeader *header,TClonesArray *arrayMC,TString &nameGen);
-  void GetMCTrackPrimaryGenerator(AliAODMCParticle *track,AliAODMCHeader *header,TClonesArray *arrayMC,TString &nameGen);
+  AliGenEventHeader* GetMCTrackPrimaryGenerator(AliAODMCParticle *track,AliAODMCHeader *header,TClonesArray *arrayMC,TString &nameGen);
+  AliGenEventHeader* GetHeader(Int_t label, AliAODMCHeader* header);
   Bool_t IsTrackInjected(AliAODTrack *track,AliAODMCHeader *header,TClonesArray *arrayMC);
   Bool_t IsMCTrackInjected(AliAODMCParticle *track,AliAODMCHeader *header,TClonesArray *arrayMC);
 
@@ -197,6 +199,11 @@ class AliAnalysisTaskSEDmesonsFilterCJTest : public AliAnalysisTaskEmcal
   TH2            *fHistAlphaDKR;           //!
   TH2            *fHistDeltaRDpiR;         //!
   TH2            *fHistDeltaRDKR;          //!
+
+  TH2 *fHistEtaPt;  //!
+  TH1 *fHistNtrk;   //!
+  TH1 *fHistNtrkHijing; //!
+  TH1 *fHistNtrkPythia; //!
 
 
  private:
