@@ -41,10 +41,19 @@ _./run_pPbMain.csh -> ./run_pPbDzeroAnalysis.csh ->  ./run.csh_
 What do the scripts do?  
 1. _./run_pPbMain.csh_:  
 runs _./run_pPbDzeroAnalysis.csh_  
+./run_pPbDzeroAnalysis.csh  $ptbinning $jetpttruemin $jetpttruemax $jetptmeasmin $jetptmeasmax $bkgRMtype $unfType $regPar $isPrior $priorType $doBkg $doPrior $doBkgPrior $doCutVar $doJESSys $doFDSys $doSys $doRawCutVarSys $doRawSignal $doSignal  
+
 
 2. _./run_pPbDzeroAnalysis.csh_:  
 creates _outputdirectorybase_ where ... are stored.   
 ... are then used in ...  
+a) *outputdirectorySignal=Default_jetMeas$jetptmeasmin\ _$jetptmeasmax\ _ jetTrue$jetpttruemin\ _ $jetpttruemax\ _ PbPbbinning*  
+b) *./run.csh $outputdirectory $outputdirectorySignal $lhcprod $efficiencyfile $detRMpromptfile $detRMnonpromptfile $bkgRMtype $unfType $regPar $isPrior $priorType $ispostfix $postfix $ispostfixFD $postfixFD $ptbinning $jetpttruemin $jetptmeasmin 1 0 0 0 0 1*  
+c) *./run_cut.csh $ptbinning $jetpttruemin $jetpttruemax $jetptmeasmin $jetptmeasmax $bkgRMtype $unfType $regPar $isPrior $priorType $outputdirectorySignal $outputdirectorybase $doRawSpectra*  
+d) *root -l -b -q cutsSystematics.C'('$regPar',"'$outputdirectorybase'","'$outputdirectorySignal'",0,1,1)'*  
+e)  *./run_JES.csh $ptbinning $jetpttruemin $jetpttruemax $jetptmeasmin $jetptmeasmax $bkgRMtype $unfType $regPar $isPrior $priorType $outputdirectorySignal $outputdirectory*    
+f) *root -l -b -q JetSpectrumSys.C'('$regPar',"'$outputdirectory'","'$outputdirectorySignal'",1)'*  
+
 
 3. _./run.csh_:   
 mkdir -p $outdirBase/$outdir  
