@@ -50,13 +50,20 @@ creates _outputdirectorybase_ where ... are stored.
 a) *outputdirectorySignal=Default_jetMeas$jetptmeasmin\ _$jetptmeasmax\ _ jetTrue$jetpttruemin\ _ $jetpttruemax\ _ PbPbbinning*  
 b) *./run.csh $outputdirectory $outputdirectorySignal $lhcprod $efficiencyfile $detRMpromptfile $detRMnonpromptfile $bkgRMtype $unfType $regPar $isPrior $priorType $ispostfix $postfix $ispostfixFD $postfixFD $ptbinning $jetpttruemin $jetptmeasmin 1 0 0 0 0 1*  
 c) *./run_cut.csh $ptbinning $jetpttruemin $jetpttruemax $jetptmeasmin $jetptmeasmax $bkgRMtype $unfType $regPar $isPrior $priorType $outputdirectorySignal $outputdirectorybase $doRawSpectra*  
-d) *root -l -b -q cutsSystematics.C'('$regPar',"'$outputdirectorybase'","'$outputdirectorySignal'",0,1,1)'*  
+d) *cd systematics*  
+*root -l -b -q cutsSystematics.C'('$regPar',"'$outputdirectorybase'","'$outputdirectorySignal'",0,1,1)'*  
+*cd $currDir*  
 e)  *./run_JES.csh $ptbinning $jetpttruemin $jetpttruemax $jetptmeasmin $jetptmeasmax $bkgRMtype $unfType $regPar $isPrior $priorType $outputdirectorySignal $outputdirectory*    
-f) *root -l -b -q JetSpectrumSys.C'('$regPar',"'$outputdirectory'","'$outputdirectorySignal'",1)'*  
 
+f) *cd systematics*  
+*root -l -b -q JetSpectrumSys.C'('$regPar',"'$outputdirectory'","'$outputdirectorySignal'",1)'*  
+*cd $currDir*  
 
 3. _./run.csh_:   
 mkdir -p $outdirBase/$outdir  
+
+4. _./run_JES.csh_:  
+
 
 
 ### step-3  
