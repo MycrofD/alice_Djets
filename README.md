@@ -6,7 +6,9 @@ The paths:
 2. _Efficiencies_ at $HOME/...(ALICE_HeavyFlavour/work/jets2).../alice_Djets/Djets/efficiency/  
 3. _Reflections_ (reflections_fitted_DoubleGaus.root) at $HOME/...(ALICE_HeavyFlavour).../out/...(QM2018).../  
 
-
+Problems faced:  
+signalExtraction_SB.C creates root files in signalExtraction/.  
+But the root files also need to be in the outputdirbase~ directory from 
 
 -----------------------------
 For step-2:  
@@ -17,7 +19,7 @@ all path variables:
 
 ------------------------------
 
-
+Need to change: SideBand-subtraction is done implicitly in the .csh scripts. No need to do it separately.
 ### step-1  
 ----------  
 The data file _AnalysisResults.root_ is analysed by [**SideBand subtraction**](Djets/DsignalExtraction/signalExtraction_SB.C) method.  
@@ -60,7 +62,11 @@ f) *cd systematics*
 *cd $currDir*  
 
 3. _./run.csh_:   
+writes *config.h* based on the D meson considered.  
+    cat configDzero.h > config.h  
+or  cat configDstar.h > config.h  
 mkdir -p $outdirBase/$outdir  
+
 
 4. _./run_JES.csh_:  
 
