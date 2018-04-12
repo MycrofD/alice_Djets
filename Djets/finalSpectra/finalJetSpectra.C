@@ -7,11 +7,11 @@
 
 double jetEta = 0.9 - fRpar;
 double dy = 2*jetEta;
-const int fptbinsJetTrueN = 7;
-const double fptbinsJetTrueA[fptbinsJetTrueN+1] = { 5,6,8,10,14,20,30,50 };
+//const int fptbinsJetTrueN = 7;
+//const double fptbinsJetTrueA[fptbinsJetTrueN+1] = { 5,6,8,10,14,20,30,50 };
 
-//double *systuncP;
-double systuncP[] = { 18,11,10,10,12,20,23 };
+double *systuncP;
+//double systuncP[] = { 18,11,10,10,12,20,23 };
 const double sysG = 3.8;
 
 const int Naxis = fptbinsJetTrueN;
@@ -57,8 +57,8 @@ bool simsys = 1 )
 
   xAxis = new double[Naxis+1];
   for(int k=0; k<Naxis+1; k++) xAxis[k] = fptbinsJetTrueA[k];
-//  systuncP = new double[fptbinsJetTrueN+1];
-//  for(int k=0; k<fptbinsJetTrueN+1; k++) systuncP[k] = 15;
+  systuncP = new double[fptbinsJetTrueN+1];
+  for(int k=0; k<fptbinsJetTrueN+1; k++) systuncP[k] = 15;
 
   TFile *File = new TFile(dataAnalysisFile,"read");
   TDirectoryFile* dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
@@ -94,6 +94,8 @@ bool simsys = 1 )
         if(fDmesonSpecie) file += "_Dstar";
         else file += "_Dzero";
         file += ".root";
+        if(!file) { cout << "sim file doesn't exist !!! " << file << endl; return; }
+      
         TH1D *htmp;
         htmp = (TH1D*) GetInputHist(file, "hPt", htmp);
         //htmp->Scale(sigma_c[nr]);
