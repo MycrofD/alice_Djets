@@ -304,7 +304,7 @@ for(int i=0; i<fptbinsJetMeasN;i++){
 	fullfit[i]=h->GetFunction("funcmass");
 	fullfit[i]->SetName(Form("fullfit_%d",i));
 	((TList*)h->GetListOfFunctions())->RemoveAt(2);
-	hmass[i]->(TH1F*)h->Clone(Form("hmass_%",i));
+	hmass[i]=(TH1F*)h->Clone(Form("hmass_%d",i));
 	hmass[i]->SetName(Form("hmass_%d",i));
 	
 	double ht2; double ht;
@@ -325,7 +325,7 @@ for(int i=0; i<fptbinsJetMeasN;i++){
 	DsigmaUnc = fitterp->GetSigmaUncertainty();
 	Dmean = fitterp->GetMean();
 	DmeanUnc = fitterp->GetMeanUncertainty();
-//	float nsig = 3;
+	float nsig = 3;
 	float signal_c_min = Dmean-fsigmaSignal*Dsigma;
 	float signal_c_max = Dmean+fsigmaSignal*Dsigma;
 	
@@ -472,16 +472,16 @@ void  saveSpectraPlots(TString outdir,TString prod){
       pv3->SetTextAlign(11);
       pv3->AddText(Form("%d < p_{T,%s} < %d GeV/#it{c}",(Int_t)fptbinsDA[0],fDmesonS.Data(),(Int_t)fptbinsDA[fptbinsDN]));
 
-       // before eff. correction
-      TCanvas *cRawSpectrum = new TCanvas("cRawSpectrum","cRawSpectrum",800,600);
-      setHistoDetails(hrawjetptspectrum,0,kBlue+1,20,1.2);
-      hrawjetptspectrum->GetXaxis()->SetTitle("p_{T}^{ch,jet} (GeV/c)");
-      hrawjetptspectrum->GetYaxis()->SetTitle("Raw dN/dp_{T}");
-      hrawjetptspectrum->GetXaxis()->SetRangeUser(jetplotmin,jetplotmax);
-      hrawjetptspectrum->Draw();
-      if(isdetails) pvProd->Draw("same");
-      if(isdetails) pvCuts->Draw("same");
-      pvEn->Draw("same");
+//       // before eff. correction
+//      TCanvas *cRawSpectrum = new TCanvas("cRawSpectrum","cRawSpectrum",800,600);
+//      setHistoDetails(hrawjetptspectrum,0,kBlue+1,20,1.2);
+//      hrawjetptspectrum->GetXaxis()->SetTitle("p_{T}^{ch,jet} (GeV/c)");
+//      hrawjetptspectrum->GetYaxis()->SetTitle("Raw dN/dp_{T}");
+//      hrawjetptspectrum->GetXaxis()->SetRangeUser(jetplotmin,jetplotmax);
+//      hrawjetptspectrum->Draw();
+//      if(isdetails) pvProd->Draw("same");
+//      if(isdetails) pvCuts->Draw("same");
+//      pvEn->Draw("same");
 
       hjetptspectrum->GetYaxis()->SetTitle("dN/dp_{T}");
       hjetptspectrum->GetXaxis()->SetRangeUser(jetplotmin,jetplotmax);
