@@ -1,4 +1,4 @@
-//combined detector and bkg fluctuations matrxi for p-Pb
+//combined detector and bkg fluctuations matrix for p-Pb
 //Barbara Trzeciak
 
 #include "config.h"

@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#run.csh
 # B. Trzeciak -- script to run D-jets analysis chain
 
 ###############
@@ -158,15 +158,15 @@ PromptSimDirOut=$outdirBase/Simulations/Prompt
 
 
 ############### D-jet signal config
-anaoutfiledir=$HOME/Work/alice/analysis/pPb_run2/D0jet/outData
+anaoutfiledir=$HOME/ALICE_HeavyFlavour/out/QM2018
 analysisfile=$anaoutfiledir/AnalysisResults
 isMoreFiles=0
 production=kl #if more than one file to analyse
 analysisDataFile=$anaoutfiledir/AnalysisResults$lhcprod.root
-reflfile=$HOME/Work/alice/analysis/pPb_run2/D0jet/outMC/reflections/reflections_fitted_DoubleGaus.root
+reflfile=$HOME/ALICE_HeavyFlavour/out/QM2018/reflections_fitted_DoubleGaus.root
 
 ############### efficiency config
-MCoutfiledir=$HOME/Work/alice/analysis/pPb_run2/D0jet/outMC
+MCoutfiledir=$HOME/ALICE_HeavyFlavour/out/QM2018
 #efffile=$MCoutfiledir/AnalysisResults_fast_D0MCHijing_SMQcorr2.root
 efffile=$MCoutfiledir/$efficiencyfile
 jetpteffmin=5
@@ -182,7 +182,7 @@ detRMPrompt=$MCoutfiledir/$detRMpromptfile
 detRMNonPrompt=$MCoutfiledir/$detRMnonpromptfile
 
 ############### POWHEG simulations
-simFilesDir=/media/basia/Disk2/Work/Djets/POWHEGSimulations/fastSim_pPb5TeV
+simFilesDir=$HOME/ALICE_HeavyFlavour/out/QM2018/charm-beauty
 #simFilesDir=/home/basia/Work/alice/analysis/fastSim_pPb5TeV/files #old simulations
 nSimFilesB=9           # have to correspond to what defined in the config file -1
 nSimFilesC=8            # have to correspond to what defined in the config file -1
@@ -192,6 +192,8 @@ if [ $isRawSpectra -eq 1 ]; then
   isEffPrompt=0
 fi
 
+# Action starts here .................................................................
+######################################################################################
 ############### configure pT bins, etc., in the corresponding Dstar/Dzero config files
 if [ $Dmeson -eq 0 ]; then
   cat configDzero.h > config.h
@@ -202,7 +204,7 @@ fi
 
 #outdirectory=$outdir
 mkdir -p $outdirBase/$outdir
-echo >> config.h
+echo >> config.h	#creates a blank line after confiDzero/star.h has been written into config.h
 echo "TString OUTDIRECTORY=\"$outdirBase\";"  >> config.h
 
 if [ $isDefaultAn -eq 1 ]; then
@@ -531,7 +533,7 @@ if [ $ptbinning -eq 7 ]; then
 fi
 
 
-
+# Action happens here too.....
 ################################################
 ############### D-jet efficiency
 ################################################
@@ -581,6 +583,7 @@ if [ $isEffPrompt -eq 1 ]; then
 fi
 
 ./getYields.csh  $analysisfile $lhcprod $isMoreFiles $production $isEffPrompt $effFilePrompt $isRefl $reflfile $ispostfix $postfix $signalDirOut
+#./getYieldsDE.csh  $analysisfile $lhcprod $isMoreFiles $production $isEffPrompt $effFilePrompt $isRefl $reflfile $ispostfix $postfix $signalDirOut
 
 if [ $isEffPrompt -eq 0 ]; then
   signalFile=$signalDirOut/JetPtSpectra_SB_noEff.root

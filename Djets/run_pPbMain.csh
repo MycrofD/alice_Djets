@@ -1,9 +1,9 @@
 #!/bin/bash
-
-
+#run_pPbMain.csh
+#pPbDir=`pwd`
 otherbinning=0
 if [ $otherbinning -eq 1 ]; then
-ptbinning=0 			# 0: pp bining 1: more fine binning 2: Pb-Pb binning
+ptbinning=0 			# 0: pp bining 1: finer binning 2: Pb-Pb binning
 
 ################################################
 ###############
@@ -43,7 +43,7 @@ fi
 ################################################
 quickSys=0
 if [ $quickSys -eq 1 ]; then
-ptbinning=0 			# 0: pp bining 1: more fine binning 2: Pb-Pb binning
+ptbinning=0 			# 0: pp bining 1: finer binning 2: Pb-Pb binning
 
 ################################################
 ############### ptmeas: 3-50, pttrue: 3-50, reg=3, pp binning
@@ -84,13 +84,13 @@ fi
 
 ptbinning=2 			# 0: pp bining 1: more fine binning 2: Pb-Pb binning 5: more fine pp binning
 
-dbkg=0
-dprior=0
-dcutvar=1
-dJESsys=0
-dsys=0
-dFDsys=0
-drawcutvar=1
+dbkg=1       #  systematics
+dprior=1     #  systematics
+dcutvar=1    # 	do separately from systematics
+dJESsys=1    #  systematics
+dsys=0       # will run JetSpectrumSys.C
+dFDsys=1     #  systematics
+drawcutvar=0 # raw, spectra w/o eff correction... draws the histograms.. depends on dcutvar, doRawSignal.
 ################################################
 ############### ptmeas: 3-50, pttrue: 3-50, reg=3
 ################################################
@@ -119,6 +119,7 @@ doRawSignal=1
 doSignal=0
 ./run_pPbDzeroAnalysis.csh  $ptbinning $jetpttruemin $jetpttruemax $jetptmeasmin $jetptmeasmax $bkgRMtype $unfType $regPar $isPrior $priorType $doBkg $doPrior $doBkgPrior $doCutVar $doJESSys $doFDSys $doSys $doRawCutVarSys $doRawSignal $doSignal
 
+
 ############### Default
 doRawSignal=0
 doSignal=1
@@ -126,9 +127,9 @@ doSignal=1
 
 exit 1
 
-################################################
-############### ptmeas: 3-50, pttrue: 5-50, reg=3
-################################################
+#####################################################
+############### ptmeas: 3-50, pttrue: 5-50, reg=3  ##
+#####################################################
 jetptmeasmin=3
 jetptmeasmax=50
 jetpttruemin=5
