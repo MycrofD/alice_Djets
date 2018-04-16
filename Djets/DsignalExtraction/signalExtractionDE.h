@@ -26,7 +26,7 @@
 //-----------------------------------------------------------------------
 
 
-#include "config.h"
+#include "configDE.h"
 
     double jetmin = 0, jetmax = 50;
     double jetplotmin = 2, jetplotmax = 50;
