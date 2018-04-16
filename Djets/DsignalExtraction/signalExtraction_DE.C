@@ -63,7 +63,7 @@ cout << "======= out: " << outdir << endl;
     TDirectoryFile* dir;
     TList *histList;
     THnSparseF *sparse;
-
+//--------------- reading the data file
     if(!nFiles) {
       datafile = dataFile;
       datafile += lhcprod;
@@ -79,10 +79,6 @@ cout << "======= out: " << outdir << endl;
           sparse->GetAxis(0)->SetRangeUser(zmin,zmax);
           sparse->GetAxis(1)->SetRangeUser(jetmin,jetmax);
           if(isEta) sparse->GetAxis(5)->SetRangeUser(-jetEta,jetEta);
-//		h3[i] = (TH3D*)sparse->Projection(3,1,2);		////
-//          if(i==0) hInvMassptD=h3[i];	////
-//          else hInvMassptD->Add(h3[i]);	////
-      		
           if(i==0) hInvMassptD=(TH3D*)sparse->Projection(3,1,2);
           else hInvMassptD->Add((TH3D*)sparse->Projection(3,1,2));
 	}
@@ -115,7 +111,7 @@ cout << "======= out: " << outdir << endl;
           }
       }
     }
-
+//----------------- reading the efficiencies
     efficiency = new double[fptbinsDN];
     if(bEff){
         TFile *FileEff = new TFile(efffile.Data(),"read");
@@ -132,7 +128,7 @@ cout << "======= out: " << outdir << endl;
     }
 
     // --------------------------------------------------------
-    // fit inv. mass in D pT bins and get raw jet pT spectra in the signal and side-bands regions
+    // fit inv. mass in jet pT bins and get raw jet pT spectra 
      Bool_t okSignalExt = rawJetSpectra(outdir,lhcprod+prod);
      if(!okSignalExt) { std::cout << "!!!!!! Something wrong in the raw signal extraction !!!!" << endl; return; }
     // --------------------------------------------------------
@@ -158,21 +154,6 @@ cout << "======= out: " << outdir << endl;
     hjetptspectrumReb->Write();
     hjetptspectrumRebUnc->Write();
 
- //   for(int i=0; i<fptbinsDN; i++){
- //       if(hjetpt[i]) hjetpt[i]->Write();
- //       if(hjetpt_sb[i]) hjetpt_sb[i]->Write();
- //       if(hjetptsub[i]) hjetptsub[i]->Write();
- //       if(hmass[i]) hmass[i]->Write();
- //       if(hmass_l[i]) hmass_l[i]->Write();
- //       if(hmass_u[i]) hmass_u[i]->Write();
- //       if(hmass_c[i]) hmass_c[i]->Write();
- //       if(fullfit[i]) fullfit[i]->Write();
- //       if(massfit[i]) massfit[i]->Write();
- //       if(bkgfit[i]) bkgfit[i]->Write();
- //       if(bkgRfit[i] && fUseRefl && fDmesonSpecie == 0) bkgRfit[i]->Write();
- //       if(hjetptcorr[i]) hjetptcorr[i]->Write();
- //   }
-
     ofile->Close();
     // --------------------------------------------------------
 
@@ -180,14 +161,14 @@ cout << "======= out: " << outdir << endl;
 
 Bool_t rawJetSpectra(TString outdir, TString prod){
 
-    hmean = new TH1F("hmean","hmean",fptbinsDN,fptbinsDA);
-    hsigma = new TH1F("hsigma","hsigma",fptbinsDN,fptbinsDA);
-    hrelErr = new TH1F("hrelErr","hrelErr",fptbinsDN,fptbinsDA);
-    hsign = new TH1F("hsign","hsign",fptbinsDN,fptbinsDA);
-    hsb = new TH1F("hsb","hsb",fptbinsDN,fptbinsDA);
-    hSignal = new TH1F("hSignal","hSignal",fptbinsDN,fptbinsDA);
+    hmean = new TH1F("hmean","hmean",fptbinsJetMeasN,fptbinsJetMeasA);
+    hsigma = new TH1F("hsigma","hsigma",fptbinsJetMeasN,fptbinsJetMeasA);
+    hrelErr = new TH1F("hrelErr","hrelErr",fptbinsJetMeasN,fptbinsJetMeasA);
+    hsign = new TH1F("hsign","hsign",fptbinsJetMeasN,fptbinsJetMeasA);
+    hsb = new TH1F("hsb","hsb",fptbinsJetMeasN,fptbinsJetMeasA);
+    hSignal = new TH1F("hSignal","hSignal",fptbinsJetMeasN,fptbinsJetMeasA);
     hSignal->Sumw2();
-    hReflRS = new TH1F("hReflRS","hReflRS",fptbinsDN,fptbinsDA);
+    hReflRS = new TH1F("hReflRS","hReflRS",fptbinsJetMeasN,fptbinsJetMeasA);
 
     if(fDmesonSpecie) hInvMassptD->GetXaxis()->SetTitle(Form("m(%s)(GeV/c^{2})","K#pi#pi-K#pi"));
     else hInvMassptD->GetXaxis()->SetTitle(Form("m(%s)(GeV/c^{2})","K#pi"));
@@ -246,21 +227,18 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
     else if(fptbinsDN>9 && fptbinsDN<13) { xnx = 3; xny=4; }
     else { xnx = 4; xny=4; }
 
+// --- canvas for inv mass plots in jet pt bins
     TCanvas *c2 = new TCanvas("c2","c2",1200,1200);
     c2->Divide(xnx,xny);
-    TCanvas *c2jet = new TCanvas("c2jet","c2jet",1200,1200);
-    c2jet->Divide(xnx,xny);
-    TCanvas *c2jetcorr = new TCanvas("c2jetcorr","c2jetcorr",1200,1200);
-    c2jetcorr->Divide(xnx,xny);
 
-    int firstPtBin = 0;
-    if(fptbinsDA[0] == 2) firstPtBin = 3;
-    else if(fptbinsDA[0] == 3) firstPtBin = 4;
-    else if(fptbinsDA[0] == 4) firstPtBin = 5;
-    else if(fptbinsDA[0] == 5) firstPtBin = 6;
-    else if(fptbinsDA[0] == 6) firstPtBin = 7;
-    if(!firstPtBin) { std::cout << "==== Wrong first value of the D pT (should be 2,3 or 4) === \n"; return kFALSE; }
-    Float_t RS = 0;
+//    int firstPtBin = 0;
+//    if(fptbinsDA[0] == 2) firstPtBin = 3;
+//    else if(fptbinsDA[0] == 3) firstPtBin = 4;
+//    else if(fptbinsDA[0] == 4) firstPtBin = 5;
+//    else if(fptbinsDA[0] == 5) firstPtBin = 6;
+//    else if(fptbinsDA[0] == 6) firstPtBin = 7;
+//    if(!firstPtBin) { std::cout << "==== Wrong first value of the D pT (should be 2,3 or 4) === \n"; return kFALSE; }
+//    Float_t RS = 0;
 
 for(int i=0; i<fptbinsJetMeasN;i++){
 	for(int j=0; j<fptbinsDN;j++){
@@ -325,7 +303,7 @@ for(int i=0; i<fptbinsJetMeasN;i++){
 	DsigmaUnc = fitterp->GetSigmaUncertainty();
 	Dmean = fitterp->GetMean();
 	DmeanUnc = fitterp->GetMeanUncertainty();
-	float nsig = 3;
+//	float nsig = 3; // this is now fsigmaSignal
 	float signal_c_min = Dmean-fsigmaSignal*Dsigma;
 	float signal_c_max = Dmean+fsigmaSignal*Dsigma;
 	
@@ -358,8 +336,8 @@ if(isdetails) pvCuts->Draw("same");
  // ---------------- fitting results  
 hmean->SetBinContent(i+1,fitterp->GetMean());  
 hmean->SetBinError(i+1, fitterp->GetMeanUncertainty()); 
-hsigma->SetBinContent(i+1,fitterp->GetSigma());  
-hsigma->SetBinError(i+1, fitterp->GetSigmaUncertainty()); 
+hsigma->SetBinContent(i+1,1000*(fitterp->GetSigma()));  
+hsigma->SetBinError(i+1, 1000*(fitterp->GetSigmaUncertainty())); 
 hrelErr->SetBinContent(i+1,serr/s); 
 hsign->SetBinContent(i+1,signf);    
 hsign->SetBinError(i+1,signferr); 
@@ -371,20 +349,6 @@ hSignal->SetBinError(i+1,serr);
 }
 
 if(savePlots) SaveCanvas(c2,outdir+"/DirectJetPtExtraction"+prod);
-//}
-//    c2->cd(i+1);
-//    pvEn->Draw();
-//    pvD->Draw("same");
-//    pvJet->Draw("same");
-//    pvEta->Draw("same");
-//    c2jet->cd(i+1);
-//    pvEn->Draw();
-//    pvD->Draw("same");
-//    pvJet->Draw("same");
-//    pvEta->Draw("same");
-//
-//    if(savePlots) SaveCanvas(c2,outdir+plotsDir+"/invMass"+prod);
-//    if(savePlots) SaveCanvas(c2jet,outdir+plotsDir+"/jetRawSpectrum"+prod);
 
     return kTRUE;
 
@@ -483,6 +447,7 @@ void  saveSpectraPlots(TString outdir,TString prod){
 //      if(isdetails) pvCuts->Draw("same");
 //      pvEn->Draw("same");
 
+      hjetptspectrum = (TH1F*)hSignal->Clone("hjetptspectrum");   
       hjetptspectrum->GetYaxis()->SetTitle("dN/dp_{T}");
       hjetptspectrum->GetXaxis()->SetRangeUser(jetplotmin,jetplotmax);
 
