@@ -13,7 +13,7 @@ Int_t linestyle2[] = {1,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
 
 const int nFiles = 2;
 TString inDirData[nFiles] = {
-  "DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue5_50_ppbinning/unfolding_Bayes_3/finalSpectra",
+  "DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning/unfolding_Bayes_3/finalSpectra",
   "Preliminaryplots"
 }
 
@@ -33,14 +33,15 @@ TString histNameSim[nFiles] = {
 }
 
 TString desc[nFiles] = {
-  "D^{0} p-Pb 5 TeV",
-  "D^{*} p-Pb 5 TeV"
+  "D^{0}-jet, R=0.3, p-Pb 5 TeV",
+  "D^{*}-jet, R=0.4, p-Pb 5 TeV"
 };
 
 double plotmin = 5, plotmax = 30;
 const int ptbinsN = 6;
 double ptbinsA[ptbinsN+1] = { 5,6,8,10,14,20,30 };
-
+double sysUncDstar[ptbinsN] = {15,12,13,11,14,15};
+double sysUncDzero[ptbinsN] = {18,11,10,10,12,20};
 
 void compareDmesons(TString inDirBase = "/home/basia/Work/alice/analysis/pPb_run2/", TString outName = "/home/basia/Work/alice/analysis/pPb_run2/compareDmesons/")
 {
@@ -78,7 +79,7 @@ void compareData(TString inName, TString inDirBase, TString outHistName)
             TCanvas *cspec = new TCanvas("cspec","cspec",900,800);
             cspec->SetLogy();
 
-            TLegend *leg = new TLegend(0.65,0.75,0.85,0.85);
+            TLegend *leg = new TLegend(0.45,0.75,0.85,0.85);
             leg->SetBorderSize(0);
 
             TH1F *spec[nFiles];
@@ -101,6 +102,17 @@ void compareData(TString inName, TString inDirBase, TString outHistName)
                 specSimReb[i] = (TH1F*)specSim[i]->Rebin(ptbinsN,Form("specSimReb_%d",i),ptbinsA);
 
                 specReb[i] = (TH1F*)spec[i]->Rebin(ptbinsN,Form("specReb_%d",i),ptbinsA);
+                  for(int j=1;j<specReb[i]->GetNbinsX();j++){
+                    double err = specReb[i]->GetBinError(j);
+                    if(i) {
+                      double sysU = sysUncDstar[j-1]*0.01*specReb[i]->GetBinContent(j);
+                      specReb[i] ->SetBinError(j, TMath::Sqrt(err*err + sysU*sysU) );
+                    }
+                    else {
+                      double sysU = sysUncDzero[j-1]*0.01*specReb[i]->GetBinContent(j);
+                      specReb[i] ->SetBinError(j, TMath::Sqrt(err*err + sysU*sysU) );
+                    }
+                  }
                 specReb[i]->SetTitle();
                 specReb[i]->SetLineColor(colors2[i]);
                 specReb[i]->SetMarkerColor(colors2[i]);
@@ -111,14 +123,14 @@ void compareData(TString inName, TString inDirBase, TString outHistName)
               //else spec[i]->Draw("same");
                 leg->AddEntry(spec[i],desc[i].Data());
             }
-            spec[1]->Draw();
-            spec[0]->Draw("same");
+            specReb[1]->Draw();
+            specReb[0]->Draw("same");
             leg->Draw("same");
 
           cspec->SaveAs(Form("%s/%s.pdf",out.Data(),outHistName.Data()));
           cspec->SaveAs(Form("%s/%s.png",out.Data(),outHistName.Data()));
 
-            TLegend *leg2 = new TLegend(0.6,0.7,0.85,0.85,"p-Pb @5TeV, D^{*+}/D^{0}");
+            TLegend *leg2 = new TLegend(0.5,0.7,0.85,0.85,"p-Pb @5TeV, D^{*+}/D^{0}-jet (R-0.4/R=0.3)");
             leg2->SetBorderSize(0);
             TCanvas *cspec2 = new TCanvas("cspec2","cspec2",1000,600);
             TH1F *hratio[nFiles-1];

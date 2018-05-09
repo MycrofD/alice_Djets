@@ -25,12 +25,11 @@
     TFile *outFile;
 
 TString outPlotName = "CutVariationSyst_";
+bool barlow = 0;
 
 
-void cutsSystematics(int reg = 3, TString indirbase = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_", TString input = "Default_jetMeas3_50_jetTrue3_50", bool isRaw = 0, bool unf = 1, bool isChain = 0, int measmin=3, int measmax=50, int truemin=5, int truemax=50 )
+void cutsSystematics(int reg = 3, TString indirbase = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_", TString input = "Default_jetMeas3_50_jetTrue3_50_ppbinning", bool isRaw = 0, bool unf = 0, bool isChain = 0, int measmin=3, int measmax=50, int truemin=3, int truemax=50 )
 {
-
-
   dirBase = indirbase;
   if(!unf) reg=0;
 
@@ -39,38 +38,15 @@ void cutsSystematics(int reg = 3, TString indirbase = "/home/basia/Work/alice/an
   outDir += input;
   outDir += "/systematics";
 
+  if(barlow) outPlotName = "CutVariationSystBarlow_";
   outPlotName += "reg";
   outPlotName += reg;
 
   gSystem->Exec(Form("mkdir %s",outDir.Data()));
 
-  if(!isChain) {
-    if (truemin == 3){
-      nJetBins = 9;
-      ptJetbins = new double[nJetBins+1];
-      for(int i=0;i<nJetBins+1;i++) ptJetbins[i] = ptbins[i];
-    }
-    else if (truemin == 4){
-      nJetBins = 8;
-      ptJetbins = new double[nJetBins+1];
-      for(int i=0;i<nJetBins+1;i++) ptJetbins[i] = ptbins[i+1];
-    }
-    else if (truemin == 5){
-      nJetBins = 7;
-      ptJetbins = new double[nJetBins+1];
-      for(int i=0;i<nJetBins+1;i++) ptJetbins[i] = ptbins[i+2];
-    }
-    else {
-      cout << "WRONG true minimum pT !!!!" << endl;
-      return;
-    }
-  }
-  else {
     nJetBins = fptbinsJetTrueN;
     ptJetbins = new double[nJetBins+1];
     for(int i=0;i<nJetBins+1;i++) ptJetbins[i] = fptbinsJetTrueA[i];
-  }
-
 
   for(int i=0; i<nFiles; i++) {
     inDir[i] = dirBase;
@@ -170,7 +146,11 @@ void cutsSystematics(int reg = 3, TString indirbase = "/home/basia/Work/alice/an
   pvJetPt2->SetTextAlign(11);
   pvJetPt2->AddText(Form("%.0f < p_{T.ch jet} < %.0f GeV/#it{c}",5.,50.));
 
-  outFile = new TFile(Form("%s/cutSystematics.root",outDir.Data()),"RECREATE");
+  TString outFileName = "CutVariationSyst_";
+  outFileName += "reg";
+  outFileName += reg;
+
+  outFile = new TFile(Form("%s/%s.root",outDir.Data(),outFileName.Data()),"RECREATE");
   compareEfficiencies(1);
   compareEfficiencies(0);
   if(isRaw) compareRawSpectra();
@@ -189,7 +169,7 @@ void compareEfficiencies(int isprompt=1)
     TString fileName;
     if(isprompt) fileName = "DjetEff_prompt_jetpt5_50.root";
     else fileName = "DjetEff_nonPrompt_jetpt5_50.root";
-    TH1D *hSpectrum[nFiles];
+    TH1F *hSpectrum[nFiles];
 
     TLegend  *leg;
     if(isprompt) leg = new TLegend(0.6,0.15,0.85,0.55,"Prompt efficiency");
@@ -198,7 +178,7 @@ void compareEfficiencies(int isprompt=1)
     cJetPt->SetLogy();
     for(int i=0;i<nFiles;i++){
         TFile *fileIn = new TFile(Form("%s/efficiency/%s", inDir[i].Data(),fileName.Data()) );
-        hSpectrum[i] = (TH1D*)fileIn->Get("hEff_reb");
+        hSpectrum[i] = (TH1F*)fileIn->Get("hEff_reb");
         hSpectrum[i]->SetLineColor(colors[i]);
         hSpectrum[i]->SetMarkerColor(colors[i]);
         hSpectrum[i]->SetMarkerSize(0.9);
@@ -229,13 +209,13 @@ void compareEfficiencies(int isprompt=1)
 
      TCanvas *cRatio = new TCanvas("cRatio","cRatio",800,400);
 
-     TH1D *hcentral = (TH1D*) hSpectrum[0]->Clone("hcentral");
-     TH1D *hratios[nFiles-1];
+     TH1F *hcentral = (TH1F*) hSpectrum[0]->Clone("hcentral");
+     TH1F *hratios[nFiles-1];
      //TF1 *fline;
      TF1 *fline[nFiles-1];
 
      for(int i=0; i<nFiles-1; i++){
-            hratios[i] = (TH1D*)hSpectrum[i+1]->Clone(Form("hratios_%d",i));
+            hratios[i] = (TH1F*)hSpectrum[i+1]->Clone(Form("hratios_%d",i));
             hratios[i]->Divide(hcentral);
             hratios[i]->GetYaxis()->SetTitle("ratio");
             hratios[i]->GetYaxis()->SetRangeUser(0.5,1.8);
@@ -266,7 +246,7 @@ void compareRawSpectra()
 
     TString fileName;
     fileName = "JetPtSpectra_SB_noEff.root";
-    TH1D *hSpectrum[nFiles];
+    TH1F *hSpectrum[nFiles];
     double events = 3.87988E8;
 
 
@@ -276,7 +256,7 @@ void compareRawSpectra()
 
     for(int i=0;i<nFiles;i++){
         TFile *fileIn = new TFile(Form("%s/signalExtraction/%s", inDir[i].Data(),fileName.Data()) );
-        hSpectrum[i] = (TH1D*)fileIn->Get("hjetptspectrumReb");
+        hSpectrum[i] = (TH1F*)fileIn->Get("hjetptspectrumReb");
         hSpectrum[i]->SetName(Form("rawSpectrum_%d",i));
         hSpectrum[i]->Scale(1./events);
         hSpectrum[i]->Scale(1,"width");
@@ -306,13 +286,13 @@ void compareRawSpectra()
 
      TCanvas *cRatio = new TCanvas("cRatio","cRatio",800,400);
 
-     TH1D *hcentral = (TH1D*) hSpectrum[0]->Clone("hcentral");
-     TH1D *hratios[nFiles-1];
+     TH1F *hcentral = (TH1F*) hSpectrum[0]->Clone("hcentral");
+     TH1F *hratios[nFiles-1];
      //TF1 *fline;
      TF1 *fline[nFiles-1];
 
      for(int i=0; i<nFiles-1; i++){
-            hratios[i] = (TH1D*)hSpectrum[i+1]->Clone(Form("hratios_%d",i));
+            hratios[i] = (TH1F*)hSpectrum[i+1]->Clone(Form("hratios_%d",i));
             hratios[i]->Divide(hcentral);
             hratios[i]->SetName(Form("rawSpectrumRatio_%d",i));
             hratios[i]->GetYaxis()->SetTitle("ratio");
@@ -340,7 +320,7 @@ void compareCorrSpectra(int reg, int unfold)
     if(unfold) fileName = "unfoldedSpectrum_unfoldedJetSpectrum.root";
     else fileName = "JetPtSpectrum_FDsub.root";
 
-    TH1D *hSpectrum[nFiles];
+    TH1F *hSpectrum[nFiles];
     double events = 3.87988E8;
 
     TLegend  *leg = new TLegend(0.65,0.45,0.85,0.85, "corrected yields");
@@ -351,11 +331,11 @@ void compareCorrSpectra(int reg, int unfold)
         TFile *fileIn;
         if(unfold) {
           fileIn = new TFile(Form("%s/unfolding_Bayes_%d/%s", inDir[i].Data(),reg,fileName.Data()) );
-          hSpectrum[i] = (TH1D*)fileIn->Get("unfoldedSpectrum");
+          hSpectrum[i] = (TH1F*)fileIn->Get("unfoldedSpectrum");
         }
         else {
           fileIn = new TFile(Form("%s/FDsubtraction/%s", inDir[i].Data(),fileName.Data()) );
-          hSpectrum[i] = (TH1D*)fileIn->Get("hData_binned_sub");
+          hSpectrum[i] = (TH1F*)fileIn->Get("hData_binned_sub");
         }
         hSpectrum[i]->SetName(Form("corrSpectrum_%d",i));
         hSpectrum[i]->Scale(1./events);
@@ -366,7 +346,6 @@ void compareCorrSpectra(int reg, int unfold)
         hSpectrum[i]->SetMarkerColor(colors[i]);
         hSpectrum[i]->SetMarkerSize(0.9);
         hSpectrum[i]->SetMarkerStyle(markers[i]);
-        //hSpectrum[i]->GetXaxis()->SetTitle("#it{p}_{T,D*} (GeV/#it{c})");
         hSpectrum[i]->GetYaxis()->SetTitle("dN/dp_{T} / events");
         if(!i) hSpectrum[i]->Draw();
         else hSpectrum[i]->Draw("same");
@@ -399,10 +378,20 @@ void compareCorrSpectra(int reg, int unfold)
             hratios[i]->SetName(Form("corrSpectrumRatio_%d",i));
             hratios[i]->GetYaxis()->SetTitle("ratio");
             hratios[i]->GetYaxis()->SetRangeUser(0.7,1.5);
-            if(!i)hratios[i]->Draw();
-            else hratios[i]->Draw("same");
-            hratios[i]->Write();
+
     }
+
+    TH1F *hsys = new TH1F("hsys","syst. rms; p_{T,ch jet};  sys [%] (rms)",nJetBins,ptJetbins);
+    TH1F *hmean = (TH1F*)hsys->Clone("hmean");
+    if(barlow) getRMSBarlow(nFiles,hSpectrum,hratios,hmean,hsys);
+    else getRMS(nFiles,hratios,hmean,hsys);
+
+    for(int i=0; i<nFiles-1; i++){
+           if(!i)hratios[i]->Draw();
+           else hratios[i]->Draw("same");
+           hratios[i]->Write();
+   }
+
     TLine *l=new TLine(3,1,50,1);
     l->SetLineStyle(2);
     l->SetLineWidth(2);
@@ -411,10 +400,6 @@ void compareCorrSpectra(int reg, int unfold)
         cRatio->SaveAs(Form("%s/%s_CorrectedSpectra_ratio.pdf",outDir.Data(),outPlotName.Data()));
         cRatio->SaveAs(Form("%s/%s_CorrectedSpectra_ratio.png",outDir.Data(),outPlotName.Data()));
 
-        TH1F *hsys = new TH1F("hsys","syst. rms; p_{T,ch jet};  sys [%] (rms)",nJetBins,ptJetbins);
-
-        TH1F *hmean = (TH1F*)hsys->Clone("hmean");
-        getRMS(nFiles,hratios,hmean,hsys);
         hsys->SetName("cutSysRMS");
         hmean->SetName("cutSysMean");
 
@@ -446,7 +431,7 @@ void compareFD()
 
     TString fileName;
     fileName = "JetPtSpectrum_FDsub.root";
-    TH1D *hSpectrum[nFiles];
+    TH1F *hSpectrum[nFiles];
     double events = 3.87988E8;
 
     TLegend  *leg = new TLegend(0.6,0.12,0.85,0.45);
@@ -454,7 +439,7 @@ void compareFD()
     //cJetPt->SetLogy();
     for(int i=0;i<nFiles;i++){
         TFile *fileIn = new TFile(Form("%s/FDsubtraction/%s", inDir[i].Data(),fileName.Data()) );
-        hSpectrum[i] = (TH1D*)fileIn->Get("hFD_ratio");
+        hSpectrum[i] = (TH1F*)fileIn->Get("hFD_ratio");
         //hSpectrum[i]->Scale(1./events);
         //hSpectrum[i]->Scale(1,"width");
         hSpectrum[i]->SetName(Form("FDfraction_%d",i));
@@ -480,13 +465,13 @@ void compareFD()
 
      TCanvas *cRatio = new TCanvas("cRatio","cRatio",800,400);
 
-     TH1D *hcentral = (TH1D*) hSpectrum[0]->Clone("hcentral");
-     TH1D *hratios[nFiles-1];
+     TH1F *hcentral = (TH1F*) hSpectrum[0]->Clone("hcentral");
+     TH1F *hratios[nFiles-1];
      //TF1 *fline;
      TF1 *fline[nFiles-1];
 
      for(int i=0; i<nFiles-1; i++){
-            hratios[i] = (TH1D*)hSpectrum[i+1]->Clone(Form("hratios_%d",i));
+            hratios[i] = (TH1F*)hSpectrum[i+1]->Clone(Form("hratios_%d",i));
             hratios[i]->Divide(hcentral);
             hratios[i]->SetName(Form("FDfractionRatio_%d",i));
             hratios[i]->GetYaxis()->SetTitle("ratio");
@@ -509,8 +494,7 @@ void compareFD()
 
 void getRMS(const int nFiles, TH1F **hratio, TH1F *hmean, TH1F *hsys)
 {
-
-  //TH1D *hsys = new TH1D("hsys","syst. rms; p_{T,ch jet};  sys [%] (rms)",nJetBins,ptJetbins);
+  //TH1F *hsys = new TH1F("hsys","syst. rms; p_{T,ch jet};  sys [%] (rms)",nJetBins,ptJetbins);
   hsys->SetTitle();
   hsys->SetLineColor(1);
   hsys->SetLineWidth(2);
@@ -522,9 +506,7 @@ void getRMS(const int nFiles, TH1F **hratio, TH1F *hmean, TH1F *hsys)
   hsys->GetYaxis()->SetLabelSize(0.05);
   hsys->GetYaxis()->SetTitleOffset(0.8);
 
-  //hmean = (TH1F*)hsys->Clone("hmean");
   hmean->GetYaxis()->SetTitle("mean");
-//  hmean->GetYaxis()->SetRangeUser(0.95,1.1);
   hmean->SetMarkerStyle(20);
   hmean->SetLineStyle(1);
   hmean->SetTitle();
@@ -533,26 +515,78 @@ void getRMS(const int nFiles, TH1F **hratio, TH1F *hmean, TH1F *hsys)
   double *mean = new double[nJetBins];
   for(int i=0; i<nJetBins; i++){
       rms[i] = 0;
-       mean[i] = 0;
-       for (int j=0; j<nFiles-1; j++){
-         mean[i] = mean[i]+ ( hratio[j]->GetBinContent(hratio[j]->FindBin( (ptJetbins[i]+ptJetbins[i+1])/2. )) );
-      //double m = ( hratios[j]->GetBinContent(hratios[j]->FindBin( (ptJetbins[i]+ptJetbins[i+1])/2. )) );
-      //rms[i] = rms[i]+ ( 1-hratios[j]->GetBinContent(hratios[j]->FindBin( (ptJetbins[i]+ptJetbins[i+1])/2. )) ) * ( 1-hratios[j]->GetBinContent(hratios[j]->FindBin( (ptJetbins[i]+ptJetbins[i+1])/2. )) ) ;
+      mean[i] = 0;
+      for (int j=0; j<nFiles-1; j++){
+        mean[i] = mean[i]+ ( hratio[j]->GetBinContent(hratio[j]->FindBin( (ptJetbins[i]+ptJetbins[i+1])/2. )) );
       }
-   mean[i] = mean[i]/(double)(nFiles-1);
+      mean[i] = mean[i]/(double)(nFiles-1);
 
-   for (int j=0; j<nFiles-1; j++){
-      //mean[i] = mean[i]+ ( hratios[j]->GetBinContent(hratios[j]->FindBin( (ptJetbins[i]+ptJetbins[i+1])/2. )) );
-      //double m = ( hratios[j]->GetBinContent(hratios[j]->FindBin( (ptJetbins[i]+ptJetbins[i+1])/2. )) );
-    //  rms[i] = rms[i]+ ( mean[i]-hratio[j]->GetBinContent(hratio[j]->FindBin( (ptJetbins[i]+ptJetbins[i+1])/2. )) ) * ( mean[i]-hratio[j]->GetBinContent(hratio[j]->FindBin( (ptJetbins[i]+ptJetbins[i+1])/2. )) ) ;
-      rms[i] = rms[i]+ ( 1-hratio[j]->GetBinContent(hratio[j]->FindBin( (ptJetbins[i]+ptJetbins[i+1])/2. )) ) * ( 1-hratio[j]->GetBinContent(hratio[j]->FindBin( (ptJetbins[i]+ptJetbins[i+1])/2. )) ) ;
-
-
-  }
+      for (int j=0; j<nFiles-1; j++){
+        rms[i] = rms[i]+ ( 1-hratio[j]->GetBinContent(hratio[j]->FindBin( (ptJetbins[i]+ptJetbins[i+1])/2. )) ) * ( 1-hratio[j]->GetBinContent(hratio[j]->FindBin( (ptJetbins[i]+ptJetbins[i+1])/2. )) ) ;
+      }
       rms[i] = sqrt(rms[i]/(double)(nFiles-1));
       hsys->SetBinContent(i+1,rms[i]*100);
 
       hmean->SetBinContent(i+1,mean[i]);
+      cout << "RMS pT " << (ptJetbins[i]+ptJetbins[i+1])/2. << " GeV/c:\t" << rms[i]*100 << endl;
+      cout << "Mean pT " << (ptJetbins[i]+ptJetbins[i+1])/2. << " GeV/c:\t" << mean[i] << endl;
+  }
+
+}
+
+
+void getRMSBarlow(const int nFiles,  TH1F **hspectra, TH1F **hratio, TH1F *hmean, TH1F *hsys)
+{
+  //TH1F *hsys = new TH1F("hsys","syst. rms; p_{T,ch jet};  sys [%] (rms)",nJetBins,ptJetbins);
+  hsys->SetTitle();
+  hsys->SetLineColor(1);
+  hsys->SetLineWidth(2);
+  hsys->SetLineStyle(2);
+  hsys->SetMaximum(0.12);
+  hsys->GetXaxis()->SetLabelSize(0.05);
+  hsys->GetXaxis()->SetTitleSize(0.05);
+  hsys->GetYaxis()->SetTitleSize(0.05);
+  hsys->GetYaxis()->SetLabelSize(0.05);
+  hsys->GetYaxis()->SetTitleOffset(0.8);
+
+  hmean->GetYaxis()->SetTitle("mean");
+  hmean->SetMarkerStyle(20);
+  hmean->SetLineStyle(1);
+  hmean->SetTitle();
+
+  double *rms = new double[nJetBins];
+  double *mean = new double[nJetBins];
+  for(int i=0; i<nJetBins; i++){
+      rms[i] = 0;
+      mean[i] = 0;
+      double errBase = hspectra[0]->GetBinError(hspectra[0]->FindBin( (ptJetbins[i]+ptJetbins[i+1])/2. ));
+      int files = 0;
+      for (int j=0; j<nFiles-1; j++){
+        double err = hspectra[j+1]->GetBinError(hspectra[j]->FindBin( (ptJetbins[i]+ptJetbins[i+1])/2. ));
+        double errSigma = TMath::Sqrt( TMath::Abs(errBase*errBase - err*err) );
+        double diff = TMath::Abs( hspectra[j+1]->GetBinError(hspectra[j]->FindBin( (ptJetbins[i]+ptJetbins[i+1])/2. )) - hspectra[0]->GetBinError(hspectra[0]->FindBin( (ptJetbins[i]+ptJetbins[i+1])/2. )) );
+        cout << "jetbin: " << i << "\t file: " << j << "\t dif: " << diff << "\t errSigma: " << 2*errSigma << endl;
+        if ( diff < 2*errSigma ) {
+          hratio[j]->SetBinContent(hratio[j]->FindBin( (ptJetbins[i]+ptJetbins[i+1])/2. ),1);
+          hratio[j]->SetBinError(hratio[j]->FindBin( (ptJetbins[i]+ptJetbins[i+1])/2. ),0);
+            continue;
+        }
+        cout << "!! significant deviation !!" << endl;
+        files++;
+        mean[i] = mean[i]+ ( hratio[j]->GetBinContent(hratio[j]->FindBin( (ptJetbins[i]+ptJetbins[i+1])/2. )) );
+        rms[i] = rms[i]+ ( 1-hratio[j]->GetBinContent(hratio[j]->FindBin( (ptJetbins[i]+ptJetbins[i+1])/2. )) ) * ( 1-hratio[j]->GetBinContent(hratio[j]->FindBin( (ptJetbins[i]+ptJetbins[i+1])/2. )) ) ;
+      }
+      if(files){
+        mean[i] = mean[i]/(double)(files);
+        rms[i] = sqrt(rms[i]/(double)(files));
+      }
+      else {
+        mean[i] = 0;
+        rms[i] = 0;
+      }
+      hsys->SetBinContent(i+1,rms[i]*100);
+      hmean->SetBinContent(i+1,mean[i]);
+
       cout << "RMS pT " << (ptJetbins[i]+ptJetbins[i+1])/2. << " GeV/c:\t" << rms[i]*100 << endl;
       cout << "Mean pT " << (ptJetbins[i]+ptJetbins[i+1])/2. << " GeV/c:\t" << mean[i] << endl;
   }

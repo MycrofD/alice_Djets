@@ -13,14 +13,14 @@ Int_t linestyle2[] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
 /*
 const int nFiles = 8;
 TString inDir[nFiles] = {
-  "Default_jetMeas3_50_jetTrue3_50_ppbinning",
-  "SB49_jetMeas3_50_jetTrue3_50_ppbinning",
-  "SB48_jetMeas3_50_jetTrue3_50_ppbinning",
-  "SB47_jetMeas3_50_jetTrue3_50_ppbinning",
-  "SB58_jetMeas3_50_jetTrue3_50_ppbinning",
-  "S2sigma_jetMeas3_50_jetTrue3_50_ppbinning",
-  "S2sigma_SB49_jetMeas3_50_jetTrue3_50_ppbinning",
-  "S2sigma_SB48_jetMeas3_50_jetTrue3_50_ppbinning"
+  "Default_jetMeas3_50_jetTrue3_50_PbPbbinning",
+  "SB49_jetMeas3_50_jetTrue3_50_PbPbbinning",
+  "SB48_jetMeas3_50_jetTrue3_50_PbPbbinning",
+  "SB47_jetMeas3_50_jetTrue3_50_PbPbbinning",
+  "SB58_jetMeas3_50_jetTrue3_50_PbPbbinning",
+  "S2sigma_jetMeas3_50_jetTrue3_50_PbPbbinning",
+  "S2sigma_SB49_jetMeas3_50_jetTrue3_50_PbPbbinning",
+  "S2sigma_SB48_jetMeas3_50_jetTrue3_50_PbPbbinning"
 }
 
 TString desc[nFiles] = {
@@ -36,13 +36,13 @@ TString desc[nFiles] = {
 */
 const int nFiles = 7;
 TString inDir[nFiles] = {
-  "Default_jetMeas3_50_jetTrue3_50_ppbinning",
-  "SB59_jetMeas3_50_jetTrue3_50_ppbinning",
-  "SB48_jetMeas3_50_jetTrue3_50_ppbinning",
-  "SB47_jetMeas3_50_jetTrue3_50_ppbinning",
-  "SB58_jetMeas3_50_jetTrue3_50_ppbinning",
-  "S2sigma_SB49_jetMeas3_50_jetTrue3_50_ppbinning",
-  "S2sigma_SB59_jetMeas3_50_jetTrue3_50_ppbinning"
+  "Default_jetMeas3_50_jetTrue3_50_PbPbbinning",
+  "SB59_jetMeas3_50_jetTrue3_50_PbPbbinning",
+  "SB48_jetMeas3_50_jetTrue3_50_PbPbbinning",
+  "SB47_jetMeas3_50_jetTrue3_50_PbPbbinning",
+  "SB58_jetMeas3_50_jetTrue3_50_PbPbbinning",
+  "S2sigma_SB49_jetMeas3_50_jetTrue3_50_PbPbbinning",
+  "S2sigma_SB59_jetMeas3_50_jetTrue3_50_PbPbbinning"
 };
 
 TString desc[nFiles] = {
@@ -57,12 +57,12 @@ TString desc[nFiles] = {
 
 const int nFilesCut = 6;
 TString inDirCut[nFilesCut] = {
-  "Default_jetMeas3_50_jetTrue3_50_ppbinning",
-  "SB59_jetMeas3_50_jetTrue3_50_ppbinning",
-  "SB48_jetMeas3_50_jetTrue3_50_ppbinning",
-  "SB47_jetMeas3_50_jetTrue3_50_ppbinning",
-  "S2sigma_SB49_jetMeas3_50_jetTrue3_50_ppbinning",
-  "S2sigma_SB59_jetMeas3_50_jetTrue3_50_ppbinning"
+  "Default_jetMeas3_50_jetTrue3_50_PbPbbinning",
+  "SB59_jetMeas3_50_jetTrue3_50_PbPbbinning",
+  "SB48_jetMeas3_50_jetTrue3_50_PbPbbinning",
+  "SB47_jetMeas3_50_jetTrue3_50_PbPbbinning",
+  "S2sigma_SB49_jetMeas3_50_jetTrue3_50_PbPbbinning",
+  "S2sigma_SB59_jetMeas3_50_jetTrue3_50_PbPbbinning"
 };
 
 TString descCut[nFilesCut] = {
@@ -75,13 +75,15 @@ TString descCut[nFilesCut] = {
 };
 
 double plotmin = 5, plotmax = 50;
-const int ptbinsN = 7;
-double ptbinsA[ptbinsN+1] = { 5,6,8,10,14,20,30,50 };
+const int ptbinsN = 6;
+//double ptbinsA[ptbinsN+1] = { 5,6,8,10,14,20,30,50 };
+double ptbinsA[ptbinsN+1] = { 5,10,15,20,25,35,50 };
 
-int nJetBins2 = 7;
-double ptJetbins2[] = {5,6,8,10,14,20,30,50};
+int nJetBins2 = 6;
+//double ptJetbins2[] = {5,6,8,10,14,20,30,50};
+double ptJetbins2[] = { 5,10,15,20,25,35,50 };
 
-void BkgSRangesComparison(int reg=3,  TString inDirBase = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts", TString inName = "Default_jetMeas3_50_jetTrue3_50_ppbinning/systematics")
+void BkgSRangesComparison(int reg=3,  TString inDirBase = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts", TString inName = "Default_jetMeas3_50_jetTrue3_50_PbPbbinning/systematics")
 {
 
   TString inputDir = inDirBase;

@@ -7,7 +7,7 @@
 #include "config.h"
 
 
-void JetSpectrumSys(int reg=3,  TString inDirBase = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts", TString input = "Default_jetMeas3_50_jetTrue3_50", bool isChain = 0, TString int measmin=3, int measmax=50, int truemin=5, int truemax=50)
+void JetSpectrumSys(int reg=3,  TString inDirBase = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts", TString input = "Default_jetMeas3_50_jetTrue3_50_ppbinning", bool isChain = 1, TString int measmin=3, int measmax=50, int truemin=5, int truemax=50)
 {
 
   if(!isChain) {
@@ -43,9 +43,9 @@ void JetSpectrumSys(int reg=3,  TString inDirBase = "/home/basia/Work/alice/anal
   gSystem->Exec(Form("mkdir %s/systematics",inDir.Data()));
 
 
-  FDsys(reg,inDir);
-  comparePriors(reg,inDir);
-  compareBkgM(reg,inDir);
+//  FDsys(reg,inDir);
+//  comparePriors(reg,inDir);
+//  compareBkgM(reg,inDir);
   compareJES(reg,inDir);
 //  compareRanges(reg,inDirBase,measmin,measmax,truemin,truemax);
 
@@ -87,7 +87,7 @@ void compareJES(int reg = 3 , TString inDir = "/home/basia/Work/alice/analysis/p
         TString desc[nFiles] = {"central","inefficiency 4%","inefficiency 5%","inefficiency 10%"};
 
         double plotmin = ptJetbins[0], plotmax = ptJetbins[nJetBins];
-          double plotmin = 5;
+        //  double plotmin = 5;
 
         TFile *fproj[nFiles];
         for(int i=0; i<nFiles; i++) fproj[i] = new TFile(Form("%s/unfoldedSpectrum_unfoldedJetSpectrum.root",dirName[i].Data()),"READ");
@@ -107,7 +107,7 @@ void compareJES(int reg = 3 , TString inDir = "/home/basia/Work/alice/analysis/p
             spec[i]->SetLineColor(colors[i]);
             spec[i]->SetMarkerColor(colors[i]);
             spec[i]->SetMarkerStyle(markers[i]);
-            spec[i]->GetXaxis()->SetRangeUser(plotmin,plotmax);
+          //  spec[i]->GetXaxis()->SetRangeUser(plotmin,plotmax);
             if(!i) spec[i]->Draw();
             else spec[i]->Draw("same");
             leg->AddEntry(spec[i],desc[i].Data());
@@ -118,16 +118,11 @@ void compareJES(int reg = 3 , TString inDir = "/home/basia/Work/alice/analysis/p
       cspec->SaveAs(Form("%s/systematics/JES_reg%d.png",inDir.Data(),reg));
 
 
-        TLegend *leg2 = new TLegend(0.6,0.65,0.85,0.85);
-        leg2->SetBorderSize(0);
-        TCanvas *cspec2 = new TCanvas("cspec2","cspec2",800,400);
         TH1F *hratio[nFiles-1];
         TH1F *hratiof[nFiles-1];
-
         TF1 *fr[nFiles-1];
         for(int i=0; i<nFiles-1; i++){
             hratio[i] = (TH1F*)spec[i+1]->Clone( Form("hratio_%d",i));
-            //TH1D * hEff = (TH1D*)hMCpt_reco->Clone("hEff");
           	hratio[i] -> Divide(spec[i+1],spec[0],1,1,"b");
             hratio[i]->SetLineStyle(linestyle[i]);
             hratio[i]->GetXaxis()->SetRangeUser(plotmin,plotmax);
@@ -140,8 +135,26 @@ void compareJES(int reg = 3 , TString inDir = "/home/basia/Work/alice/analysis/p
             fr[i]->SetLineColor(colors[i+1]);
             hratio[i]->Fit(fr[i],"EM0","",6,plotmax);
 
-            //if(!i) hratio[i]->Draw("hist");
-            //else hratio[i]->Draw("histsame");
+            double value = 0;
+            hratiof[i] = (TH1F*)hratio[i]->Clone(Form("hratiof_%d",i));
+            for(int j=0; j<hratio[i]->GetNbinsX();j++){
+                value = (1 - fr[i]->Eval(hratio[i]->GetBinCenter(j+1))) *100;
+                hratiof[i]->SetBinContent(j+1,value);
+                //if(!i)cout << "bin: " << j+1 << "\t\t 4% value in: " << hratio[i]->GetBinCenter(j+1) << ":\t\t" << value << endl;
+            }
+            hratiof[i]->GetYaxis()->SetRangeUser(0,20);
+            hratiof[i]->GetYaxis()->SetTitle("unc.from fit [%]");
+          //  hratiof[i]->Write();
+
+        }
+
+        TLegend *leg2 = new TLegend(0.6,0.65,0.85,0.85);
+        leg2->SetBorderSize(0);
+        TCanvas *cspec2 = new TCanvas("cspec2","cspec2",800,400);
+        for(int i=0; i<nFiles-1; i++){
+            hratio[i]->GetXaxis()->SetRangeUser(5,plotmax);
+            hratio[i]->GetYaxis()->SetRangeUser(0.82,1.1);
+
             if(!i) hratio[i]->Draw();
             else hratio[i]->Draw("same");
              fr[i]->Draw("same");
@@ -149,31 +162,27 @@ void compareJES(int reg = 3 , TString inDir = "/home/basia/Work/alice/analysis/p
         }
         leg2->Draw("same");
 
-        TLine *line = new TLine(plotmin,1,plotmax,1);
+        TLine *line = new TLine(5,1,plotmax,1);
         line->SetLineStyle(2);
         line->SetLineWidth(2);
         line->Draw("same");
 
-
         cspec2->SaveAs(Form("%s/systematics/JES_reg%d_ratio.pdf",inDir.Data(),reg));
         cspec2->SaveAs(Form("%s/systematics/JES_reg%d_ratio.png",inDir.Data(),reg));
 
-
         outFile->cd();
+        hratiof[0]->Write();
+        hratiof[1]->Write();
+        hratiof[2]->Write();
+
     TCanvas *cspecf2 = new TCanvas("cspecf2","cspecf2",800,400);
     for(int i=0; i<nFiles-1; i++){
-        double value = 0;
-        hratiof[i] = (TH1F*)hratio[i]->Clone(Form("hratiof_%d",i));
-        for(int j=0; j<hratio[i]->GetNbinsX();j++){
-            value = (1 - fr[i]->Eval(hratio[i]->GetBinCenter(j+1))) *100;
-            hratiof[i]->SetBinContent(j+1,value);
-            //if(!i)cout << "bin: " << j+1 << "\t\t 4% value in: " << hratio[i]->GetBinCenter(j+1) << ":\t\t" << value << endl;
-        }
-        hratiof[i]->GetYaxis()->SetRangeUser(-1,20);
+        hratiof[i]->GetYaxis()->SetRangeUser(0,20);
+        hratiof[i]->GetXaxis()->SetRangeUser(5,plotmax);
         hratiof[i]->GetYaxis()->SetTitle("unc.from fit [%]");
+        cspecf2->cd();
         if(!i) hratiof[i]->Draw();
         else hratiof[i]->Draw("same");
-        hratiof[i]->Write();
     }
     leg2->Draw("same");
 
@@ -184,6 +193,10 @@ void compareJES(int reg = 3 , TString inDir = "/home/basia/Work/alice/analysis/p
     cspecf2->SaveAs(Form("%s/systematics/JES_reg%d_unc.pdf",inDir.Data(),reg));
     cspecf2->SaveAs(Form("%s/systematics/JES_reg%d_unc.png",inDir.Data(),reg));
 
+    outFile->cd();
+  //  hratiof[0]->Write();
+  //  hratiof[1]->Write();
+  //  hratiof[2]->Write();
     cspec->Write();
     cspec2->Write();
     cspecf2->Write();
@@ -638,7 +651,7 @@ void compareBkgM(int reg = 4 , TString inDir = "/home/basia/Work/alice/analysis/
     hmean->Write();
     hsys->Write();
     outFile->Close();
-    
+
     return;
 
 /*

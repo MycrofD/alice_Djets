@@ -14,18 +14,18 @@ Int_t linestyle2[] = {1,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
 /*
 const int nFiles = 12;
 TString inDir[nFiles] = {
-  "Default_jetMeas3_50_jetTrue3_50_ppbinning/unfolding_Bayes_3",
-  "Default_jetMeas3_50_jetTrue5_50_ppbinning/unfolding_Bayes_3",
-  "Default_jetMeas5_50_jetTrue5_50_ppbinning/unfolding_Bayes_3",
-  "Default_jetMeas3_50_jetTrue3_50_ppbinning/unfolding_SVD_7",
-  "Default_jetMeas3_50_jetTrue5_50_ppbinning/unfolding_SVD_7",
-  "Default_jetMeas5_50_jetTrue5_50_ppbinning/unfolding_SVD_7",
-  "Default_jetMeas3_50_jetTrue3_50_ppbinning/unfolding_Bayes_4",
-  "Default_jetMeas3_50_jetTrue5_50_ppbinning/unfolding_Bayes_4",
-  "Default_jetMeas5_50_jetTrue5_50_ppbinning/unfolding_Bayes_4",
-  "Default_jetMeas3_50_jetTrue3_50_ppbinning/unfolding_SVD_6",
-  "Default_jetMeas3_50_jetTrue5_50_ppbinning/unfolding_SVD_6",
-  "Default_jetMeas5_50_jetTrue5_50_ppbinning/unfolding_SVD_6"
+  "Default_jetMeas3_50_jetTrue3_50_PbPbbinning/unfolding_Bayes_3",
+  "Default_jetMeas3_50_jetTrue5_50_PbPbbinning/unfolding_Bayes_3",
+  "Default_jetMeas5_50_jetTrue5_50_PbPbbinning/unfolding_Bayes_3",
+  "Default_jetMeas3_50_jetTrue3_50_PbPbbinning/unfolding_SVD_7",
+  "Default_jetMeas3_50_jetTrue5_50_PbPbbinning/unfolding_SVD_7",
+  "Default_jetMeas5_50_jetTrue5_50_PbPbbinning/unfolding_SVD_7",
+  "Default_jetMeas3_50_jetTrue3_50_PbPbbinning/unfolding_Bayes_4",
+  "Default_jetMeas3_50_jetTrue5_50_PbPbbinning/unfolding_Bayes_4",
+  "Default_jetMeas5_50_jetTrue5_50_PbPbbinning/unfolding_Bayes_4",
+  "Default_jetMeas3_50_jetTrue3_50_PbPbbinning/unfolding_SVD_6",
+  "Default_jetMeas3_50_jetTrue5_50_PbPbbinning/unfolding_SVD_6",
+  "Default_jetMeas5_50_jetTrue5_50_PbPbbinning/unfolding_SVD_6"
 
 }
 
@@ -44,16 +44,42 @@ TString desc[nFiles] = {
   "meas: 5-50, true: 5-50, SVD reg=6"
 };
 */
+/*
+const int nFiles = 9;
+TString inDir[nFiles] = {
+  "Default_jetMeas3_50_jetTrue3_50_PbPbbinning/unfolding_Bayes_3",
+  "Default_jetMeas3_50_jetTrue5_50_PbPbbinning/unfolding_Bayes_3",
+  "Default_jetMeas3_50_jetTrue3_50_PbPbbinning2/unfolding_Bayes_3",
+  "Default_jetMeas3_50_jetTrue3_50_PbPbbinning/unfolding_SVD_7",
+  "Default_jetMeas3_50_jetTrue5_50_PbPbbinning/unfolding_SVD_7",
+  "Default_jetMeas3_50_jetTrue3_50_PbPbbinning/unfolding_Bayes_4",
+  "Default_jetMeas3_50_jetTrue5_50_PbPbbinning/unfolding_Bayes_4",
+  "Default_jetMeas3_50_jetTrue3_50_PbPbbinning/unfolding_SVD_6",
+  "Default_jetMeas3_50_jetTrue5_50_PbPbbinning/unfolding_SVD_6"
+}
+
+TString desc[nFiles] = {
+  "meas: 3-50, true: 3-50, reg=3",
+  "meas: 3-50, true: 5-50, reg=3",
+  "meas: 3-50, true: 3-50, reg=3, bin2",
+  "meas: 3-50, true: 3-50, SVD reg=7",
+  "meas: 3-50, true: 5-50, SVD reg=7",
+  "meas: 3-50, true: 3-50, reg=4",
+  "meas: 3-50, true: 5-50, reg=4",
+  "meas: 3-50, true: 3-50, SVD reg=6",
+  "meas: 3-50, true: 5-50, SVD reg=6"
+};
+*/
 const int nFiles = 8;
 TString inDir[nFiles] = {
-  "Default_jetMeas3_50_jetTrue3_50_ppbinning/unfolding_Bayes_3",
-  "Default_jetMeas3_50_jetTrue5_50_ppbinning/unfolding_Bayes_3",
-  "Default_jetMeas3_50_jetTrue3_50_ppbinning/unfolding_SVD_7",
-  "Default_jetMeas3_50_jetTrue5_50_ppbinning/unfolding_SVD_7",
-  "Default_jetMeas3_50_jetTrue3_50_ppbinning/unfolding_Bayes_4",
-  "Default_jetMeas3_50_jetTrue5_50_ppbinning/unfolding_Bayes_4",
-  "Default_jetMeas3_50_jetTrue3_50_ppbinning/unfolding_SVD_6",
-  "Default_jetMeas3_50_jetTrue5_50_ppbinning/unfolding_SVD_6"
+  "Default_jetMeas3_50_jetTrue3_50_PbPbbinning/unfolding_Bayes_3",
+  "Default_jetMeas3_50_jetTrue5_50_PbPbbinning/unfolding_Bayes_3",
+  "Default_jetMeas3_50_jetTrue3_50_PbPbbinning/unfolding_SVD_7",
+  "Default_jetMeas3_50_jetTrue5_50_PbPbbinning/unfolding_SVD_7",
+  "Default_jetMeas3_50_jetTrue3_50_PbPbbinning/unfolding_Bayes_4",
+  "Default_jetMeas3_50_jetTrue5_50_PbPbbinning/unfolding_Bayes_4",
+  "Default_jetMeas3_50_jetTrue3_50_PbPbbinning/unfolding_SVD_6",
+  "Default_jetMeas3_50_jetTrue5_50_PbPbbinning/unfolding_SVD_6"
 }
 
 TString desc[nFiles] = {
@@ -134,7 +160,7 @@ double ptbinsA[ptbinsN+1] = { 5,6,8,10,14,20,30,50 };
 int nJetBins2 = 7;
 double ptJetbins2[] = {5,6,8,10,14,20,30,50};
 
-void unfRangesComparison(int reg=3,  TString inDirBase = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts", TString inName = "Default_jetMeas3_50_jetTrue3_50_ppbinning/systematics", bool isChain = 0,  int measmin=3, int measmax=50, int truemin=5, int truemax=50)
+void unfRangesComparison(int reg=3,  TString inDirBase = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts", TString inName = "Default_jetMeas3_50_jetTrue3_50_PbPbbinning/systematics", bool isChain = 0,  int measmin=3, int measmax=50, int truemin=5, int truemax=50)
 {
 
   TString inputDir = inDirBase;
@@ -234,7 +260,7 @@ void compareRanges(TString inName, TString inDirBase, int measmin, int measmax, 
                 hratio[i]->SetLineStyle(linestyle2[i]);
                 hratio[i]->SetLineWidth(2);
                 hratio[i]->GetXaxis()->SetRangeUser(ptbinsA[0],ptbinsA[ptbinsN]);
-                hratio[i]->GetYaxis()->SetRangeUser(0.8,1.25);
+                hratio[i]->GetYaxis()->SetRangeUser(0.8,1.45);
                 hratio[i]->GetYaxis()->SetTitle(Form("ratio to central (%s)",desc[0].Data()));
                 if(!i) hratio[i]->Draw("hist");
                 else hratio[i]->Draw("samehist");
@@ -254,7 +280,7 @@ void compareRanges(TString inName, TString inDirBase, int measmin, int measmax, 
             TH1F *hmean = (TH1F*)hsys->Clone("hmean");
             getRMS(nFiles,hratio,hmean,hsys);
 
-            hsys->GetYaxis()->SetRangeUser(0,15);
+            hsys->GetYaxis()->SetRangeUser(0,20);
             hsys->SetLineColor(kViolet+2);
             TCanvas *cspecRMS = new TCanvas("cspecRMS","cspecRMS",800,400);
             hsys->Draw("hist");

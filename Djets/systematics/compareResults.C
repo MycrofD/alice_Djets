@@ -6,47 +6,59 @@
 #include "sys.h"
 #include "config.h"
 
-Int_t colors2[] = {1,2,kGreen+3,kMagenta+2,4,6,kCyan+1,8,kOrange-1,kGray+1,kViolet+5,kYellow+2};
+Int_t colors2[] = {1,2,4,kGreen+3,kMagenta+2,4,6,kCyan+1,8,kOrange-1,kGray+1,kViolet+5,kYellow+2};
 Int_t markers2[] = {20,21,22,23,24,25,26,27,28,29,30,32,33,34};
 Int_t linestyle2[] = {1,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
 
 
-const int nFiles = 2;
-TString inDirData[nFiles] = {
+const int nFiles = 3;
+/*TString inDirData[nFiles] = {
   "DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_PbPbbinning/unfolding_Bayes_3",
   "DzeroR03_RefDPt3PythiaEff_Dpt321_BaseCuts/Default_jetMeas3_50_jetTrue3_50_PbPbbinning/unfolding_Bayes_3"
+}*/
+
+TString inDirData[nFiles] = {
+  "DzeroR03_RefDPt324PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning/unfolding_Bayes_3",
+  "DzeroR03_RefDPt424PythiaEff_BaseCuts/Default_jetMeas4_50_jetTrue4_50_ppbinning/unfolding_Bayes_3",
+  "DzeroR03_RefDPt224PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning/unfolding_Bayes_3"
 }
+
 
 TString inDirSim[nFiles] = {
   "DzeroR03_RefDPt3PythiaEff_BaseCuts/Simulations/Prompt",
+  "DzeroR03_RefDPt3PythiaEff_Dpt320_BaseCuts/Simulations/Prompt",
   "DzeroR03_RefDPt3PythiaEff_Dpt320_BaseCuts/Simulations/Prompt"
 }
 
 TString simFile[nFiles] = {
   "JetPt_AnalysisResults_FastSim_powheg+pythia6_charm_1520422975_Dpt3_36_Dzero.root",
+  "JetPt_AnalysisResults_FastSim_powheg+pythia6_charm_1520422975_Dpt3_20_Dzero.root",
   "JetPt_AnalysisResults_FastSim_powheg+pythia6_charm_1520422975_Dpt3_20_Dzero.root"
 }
 
 
 TString desc[nFiles] = {
-  "3 < D p_{T} < 36 GeV/c",
-  "3 < D p_{T} < 21 GeV/c"
+  "3 < D p_{T} < 24 GeV/c",
+  "4 < D p_{T} < 24 GeV/c",
+  "2 < D p_{T} < 24 GeV/c"
 };
 
 
 
-double plotmin = 5, plotmax = 50;
-const int ptbinsN = 7;
-double ptbinsA[ptbinsN+1] = { 3,5,10,15,20,25,35,50 };
+double plotmin = 5, plotmax = 30;
+//const int ptbinsN = 7;
+//double ptbinsA[ptbinsN+1] = { 3,5,10,15,20,25,35,50 };
 
+const int ptbinsN = 6;
+double ptbinsA[ptbinsN+1] = { 5,6,8,10,14,20,30 };
 
-void compareResults(TString inDirBase = "/home/basia/Work/alice/analysis/pPb_run2/", TString outName = "/home/basia/Work/alice/analysis/pPb_run2/compareD0JetSpectra_Dcuts/")
+void compareResults(TString inDirBase = "/home/basia/Work/alice/analysis/pp5TeV/", TString outName = "/home/basia/Work/alice/analysis/pp5TeV/compareDPtCuts")
 {
 
   gSystem->Exec(Form("mkdir %s",outName.Data()));
 
- compareData(outName,inDirBase,"JetSpectraComparisonData_Dcut");
- compareSim(outName,inDirBase,"JetSpectraComparisonSim_Dcut");
+ compareData(outName,inDirBase,"JetSpectraComparisonData_Dcut3to4");
+ //compareSim(outName,inDirBase,"JetSpectraComparisonSim_Dcut");
 
 return;
 
@@ -77,7 +89,8 @@ void compareData(TString inName, TString inDirBase, TString outHistName)
             TCanvas *cspec = new TCanvas("cspec","cspec",800,600);
             cspec->SetLogy();
 
-            TLegend *leg = new TLegend(0.5,0.65,0.85,0.85,"p-Pb data");
+            TLegend *leg = new TLegend(0.5,0.65,0.85,0.85,"pp data");
+            //TLegend *leg = new TLegend(0.5,0.65,0.85,0.85,"p-Pb data");
             leg->SetBorderSize(0);
 
             TH1F *spec[nFiles];
@@ -91,6 +104,22 @@ void compareData(TString inName, TString inDirBase, TString outHistName)
                 spec[i]->SetLineColor(colors2[i]);
                 spec[i]->SetMarkerColor(colors2[i]);
                 spec[i]->SetMarkerStyle(markers2[i]);
+
+                specReb[i] = new TH1F(Form("specReb%d",i),"specReb",ptbinsN,ptbinsA);
+                for(int j=1;j<specReb[i]->GetNbinsX()+1;j++){
+                    double pt = specReb[i]->GetBinCenter(j);
+                    int bin = spec[i]->GetXaxis()->FindBin(pt);
+                    double value = spec[i]->GetBinContent(bin);
+                    double error = spec[i]->GetBinError(bin);
+                    specReb[i]->SetBinContent(j,value);
+                    specReb[i]->SetBinError(j,error);
+                }
+
+                specReb[i]->SetTitle();
+                specReb[i]->SetLineColor(colors2[i]);
+                specReb[i]->SetMarkerColor(colors2[i]);
+                specReb[i]->SetMarkerStyle(markers2[i]);
+
                 spec[i]->GetXaxis()->SetRangeUser(plotmin,plotmax);
                 if(!i) spec[i]->Draw();
                 else spec[i]->Draw("same");
@@ -101,18 +130,20 @@ void compareData(TString inName, TString inDirBase, TString outHistName)
           cspec->SaveAs(Form("%s/%s.pdf",out.Data(),outHistName.Data()));
           cspec->SaveAs(Form("%s/%s.png",out.Data(),outHistName.Data()));
 
-            TLegend *leg2 = new TLegend(0.55,0.75,0.85,0.85,"p-Pb data");
+          //TLegend *leg2 = new TLegend(0.55,0.75,0.85,0.85,"p-Pb data");
+            TLegend *leg2 = new TLegend(0.55,0.75,0.85,0.85,"pp data");
             leg2->SetBorderSize(0);
             TCanvas *cspec2 = new TCanvas("cspec2","cspec2",1200,800);
             TH1F *hratio[nFiles-1];
             for(int i=0; i<nFiles-1; i++){
-              //  hratio[i] = (TH1F*)specReb[i+1]->Clone( Form("hratio_%d",i));
-                hratio[i] = (TH1F*)spec[i+1]->Clone(Form("hratio_%d",i));
-                hratio[i]->Divide(spec[0]);
+                hratio[i] = (TH1F*)specReb[i+1]->Clone( Form("hratio_%d",i));
+                  hratio[i]->Divide(specReb[0]);
+              //  hratio[i] = (TH1F*)spec[i+1]->Clone(Form("hratio_%d",i));
+              //  hratio[i]->Divide(spec[0]);
                 hratio[i]->SetLineStyle(linestyle2[i]);
                 hratio[i]->SetLineWidth(2);
               //  hratio[i]->GetXaxis()->SetRangeUser(ptbinsA[0],ptbinsA[ptbinsN]);
-                hratio[i]->GetYaxis()->SetRangeUser(0.4,1.02);
+                hratio[i]->GetYaxis()->SetRangeUser(0.6,1.4);
                 hratio[i]->GetYaxis()->SetTitle(Form("ratio to central (%s)",desc[0].Data()));
                 if(!i) hratio[i]->Draw("hist");
                 else hratio[i]->Draw("samehist");
