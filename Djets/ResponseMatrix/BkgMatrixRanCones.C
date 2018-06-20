@@ -5,7 +5,16 @@ TString postfix = "Djet5Excl", double binmax = 15, TString outDir = "bkgRM03", i
 {
 
 	gStyle->SetOptStat(0000); //Mean and RMS shown
-	gStyle->SetPadRightMargin(0.1);
+	//gStyle->SetPadRightMargin(0.1);
+
+	gStyle->SetLegendFont(42);
+	//gStyle->SetLegendTextSize(0.05);
+	gStyle->SetPadLeftMargin(0.13);
+	gStyle->SetPadRightMargin(0.05);
+	gStyle->SetPadTopMargin(0.05);
+	gStyle->SetPadBottomMargin(0.15);
+
+
 	gSystem->Exec(Form("mkdir %s",outDir.Data()));
 
     double rhoMin = 0.1, rhoMax = 100;
@@ -105,23 +114,24 @@ TString postfix = "Djet5Excl", double binmax = 15, TString outDir = "bkgRM03", i
 
 
 		hDeltaPtDraw->Rebin(2);
-	  hDeltaPtDraw->Scale(1.,"width");
+		//hDeltaPtDraw->Scale(1.,"width");
 		hDeltaPtDraw->Scale(1./hDeltaPtDraw->Integral());
+		hDeltaPtDraw->Scale(1.,"width");
 		hDeltaPtDraw->SetMarkerColor(1);
 		hDeltaPtDraw->SetLineColor(1);
 		hDeltaPtDraw->SetMarkerStyle(20);
 		hDeltaPtDraw->SetMarkerSize(1.2);
 
-		hDeltaPtDraw->GetXaxis()->SetTitle("#delta #it{p}_{T} (GeV/#it{c})");
-		hDeltaPtDraw->GetYaxis()->SetTitle("Probability density");
+		hDeltaPtDraw->GetXaxis()->SetTitle("#delta#it{p}_{T,ch} (GeV/#it{c})");
+		hDeltaPtDraw->GetYaxis()->SetTitle("Probability density (GeV/#it{c})^{-1}");
 		hDeltaPtDraw->GetXaxis()->SetLabelSize(0.04);
 		hDeltaPtDraw->GetXaxis()->SetTitleSize(0.05);
 		hDeltaPtDraw->GetXaxis()->SetTitleOffset(1.);
 		hDeltaPtDraw->GetYaxis()->SetLabelSize(0.045);
 		hDeltaPtDraw->GetYaxis()->SetTitleSize(0.05);
-		hDeltaPtDraw->GetYaxis()->SetTitleOffset(1.);
+		hDeltaPtDraw->GetYaxis()->SetTitleOffset(1.1);
 		hDeltaPtDraw->GetXaxis()->SetRangeUser(-7,25);
-		hDeltaPtDraw->SetMaximum(hDeltaPt2->GetMaximum()*40);
+		hDeltaPtDraw->SetMaximum(hDeltaPt2->GetMaximum()*100);
 
 
 		TH1F *hDeltaPtDrawFill = (TH1F*)hDeltaPtDraw->Clone("hDeltaPtDrawFill");
@@ -142,7 +152,6 @@ pvEn->SetBorderSize(0);
 pvEn->SetTextFont(42);
 pvEn->SetTextSize(0.045);
 pvEn->SetTextAlign(11);
-// pvEn->AddText("PYTHIA6+HIJING, p-Pb, #sqrt{#it{s}_{NN}} = 5.02 TeV");
 pvEn->AddText("p-Pb, #sqrt{#it{s}_{NN}} = 5.02 TeV");
 
 TPaveText *pvCent= new TPaveText(0.15,0.74,0.8,0.79,"brNDC");
@@ -151,29 +160,26 @@ pvCent->SetBorderSize(0);
 pvCent->SetTextFont(42);
 pvCent->SetTextSize(0.045);
 pvCent->SetTextAlign(11);
-// pvEn->AddText("PYTHIA6+HIJING, p-Pb, #sqrt{#it{s}_{NN}} = 5.02 TeV");
 pvCent->AddText("Minimum bias");
 
 double shift = 0.;
 
-TPaveText *pvEta = new TPaveText(0.6,0.72,0.8,0.82,"brNDC");
-pvEta->SetFillStyle(0);
-pvEta->SetBorderSize(0);
-pvEta->SetTextFont(42);
-pvEta->SetTextSize(0.045);
-pvEta->SetTextAlign(11);
-//pvEta->AddText("|#it{#eta}_{lab}| < 0.9, #it{p}_{T, track} > 0.15 GeV/#it{c}");
-pvEta->AddText("#splitline{|#it{#eta}_{lab}| < 0.9}{#it{p}_{T, track} > 0.15 GeV/#it{c}}");
+     TPaveText *pvEta = new TPaveText(0.6,0.72,0.8,0.82,"brNDC");
+    pvEta->SetFillStyle(0);
+    pvEta->SetBorderSize(0);
+    pvEta->SetTextFont(42);
+    pvEta->SetTextSize(0.045);
+    pvEta->SetTextAlign(11);
+    pvEta->AddText("#splitline{|#it{#eta}_{lab}| < 0.9}{#it{p}_{T, track} > 0.15 GeV/#it{c}}");
 
 
-TPaveText *pvJet = new TPaveText(0.6,0.6,0.8,0.7,"brNDC");
-pvJet->SetFillStyle(0);
-pvJet->SetBorderSize(0);
-pvJet->SetTextFont(42);
-pvJet->SetTextSize(0.045);
-pvJet->SetTextAlign(11);
-//pvJet->AddText("#it{R} = 0.4");
-pvJet->AddText("#splitline{#it{R} = 0.3}{Random Cones}");
+    TPaveText *pvJet = new TPaveText(0.6,0.6,0.8,0.7,"brNDC");
+    pvJet->SetFillStyle(0);
+    pvJet->SetBorderSize(0);
+    pvJet->SetTextFont(42);
+    pvJet->SetTextSize(0.045);
+    pvJet->SetTextAlign(11);
+    pvJet->AddText("#splitline{#it{R} = 0.3}{Random Cones}");
 
 
 TPaveText *pvD = new TPaveText(0.6,0.48,0.8,0.59,"brNDC");
@@ -182,26 +188,29 @@ pvD->SetBorderSize(0);
 pvD->SetTextFont(42);
 pvD->SetTextSize(0.045);
 pvD->SetTextAlign(11);
-//pvD->AddText("#splitline{with D^{0} #rightarrow K#pi}{and charge conj.}");
-pvD->AddText("D^{0} #rightarrow K#pi");
+pvD->AddText("#splitline{with D^{0} #rightarrow K^{-}#pi^{+}}{and charge conj.}");
 
 
-TCanvas *cDelta = new TCanvas("cEff","cEff",800,600);
+TCanvas *cDelta = new TCanvas("cEff","cEff",1200,900);
 //cEff->SetBatch();
 cDelta->SetLogy();
 //cMass->Divide(3,1);
 //cMass->cd(1);
 hDeltaPtDrawFill->Draw("hist");
 hDeltaPtDraw->Draw("ep same");
-//pvALICE->Draw("same");
+pvALICE->Draw("same");
 pvEn->Draw("same");
 pvJet->Draw("same");
-//pvD->Draw("same");
+pvD->Draw("same");
 pvEta->Draw("same");
 
+cout << "=== integral: " << hDeltaPtDraw->Integral() << "\t bin width: " << hDeltaPtDraw->GetBinWidth(1) << endl;
 
     // ---- SAVE ----
-    cDelta->SaveAs(Form("%s/DeltaPt_%s.png",outDir.Data(),postfix.Data()));
+		cDelta->SaveAs(Form("%s/DeltaPt2_%s.png",outDir.Data(),postfix.Data()));
+		cDelta->SaveAs(Form("%s/DeltaPt2_%s.pdf",outDir.Data(),postfix.Data()));
+    cDelta->SaveAs(Form("%s/DeltaPt2_%s.eps",outDir.Data(),postfix.Data()));
+
     cBkgM->SaveAs(Form("%s/BkgMatrix_%s.png",outDir.Data(),postfix.Data()));
     c2->SaveAs(Form("%s/BkgMatrixGenProj_%s.png",outDir.Data(),postfix.Data()));
 

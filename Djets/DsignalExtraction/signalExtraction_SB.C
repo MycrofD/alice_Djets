@@ -25,6 +25,9 @@
 
 #include "signalExtraction.h"
 
+bool isRefSys=0;
+double refScale = 1.5;
+
 void signalExtraction_SB(
   //TString dataFile = "$HOME/Work/alice/analysis/pp13tev/outData/losser_15Nov/AnalysisResults",
   TString dataFile = "$HOME/ALICE_HeavyFlavour/out/QM2018/AnalysisResults",
@@ -171,7 +174,7 @@ cout << "======= out: " << outdir << endl;
         if(fullfit[i]) fullfit[i]->Write();
         if(massfit[i]) massfit[i]->Write();
         if(bkgfit[i]) bkgfit[i]->Write();
-        if(bkgRfit[i] && fUseRefl && fDmesonSpecie == 0) bkgRfit[i]->Write();
+        if(bkgRfit[i] && fUseRefl && fDmesonSpecie == 0) {   bkgRfit[i]->Write(); }
         if(hjetptcorr[i]) hjetptcorr[i]->Write();
     }
 
@@ -302,12 +305,12 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         bkgfit[i] = fitterp->GetBackgroundRecalcFunc();
         bkgfit[i]->SetRange(hmin,hmax);
         bkgfit[i]->SetLineColor(2);
-        bkgfit[i]->SetName("bkgFit");
+        bkgfit[i]->SetName(Form("bkgFit_%d",i));
 
         // bkg+reflection function
         if(fUseRefl && fDmesonSpecie == 0) {
           bkgRfit[i] = fitterp->GetBkgPlusReflFunc();
-          bkgRfit[i]->SetName("bkgFitWRef");
+          bkgRfit[i]->SetName(Form("bkgFitWRef_%d",i));
           bkgRfit[i]->SetRange(hmin,hmax);
           bkgRfit[i]->SetLineColor(15);
           hReflRS->SetBinContent(i+1,RS);
@@ -570,6 +573,7 @@ Bool_t SetReflection(AliHFInvMassFitter* &fitter, Int_t iBin, Float_t fLeftFitRa
 
   fitter->SetTemplateReflections(histRefl,"template",fLeftFitRange,fRightFitRange);
   Double_t RoverS = histRefl->Integral(histRefl->FindBin(fLeftFitRange),histRefl->FindBin(fRightFitRange))/histSign->Integral(histSign->FindBin(fLeftFitRange),histSign->FindBin(fRightFitRange));
+  if(isRefSys) RoverS*=refScale;
   printf("R/S ratio in fit range for bin %d = %1.3f\n",iBin,RoverS);
   fitter->SetFixReflOverS(RoverS);
 

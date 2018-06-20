@@ -42,10 +42,14 @@ bool isSys = 1, bool rebinned = 1,  bool isEff = 1 )
     else histList =  (TList*)dir->Get("histosD0MBN0");
     TH1F* hEvents = (TH1F*)histList->FindObject("hstat");
     double nEvSel = hEvents->GetBinContent(2);
+    double nEvAna = hEvents->GetBinContent(1);
+    double nEv;
+    if(fSystem) nEv = nEvScale*nEvSel;
+    else nEv = nEvScale*nEvAna;
 
   //  cout << "==== Number of events: " << nEvSel << endl;
 
-    double dataLum = 1.0444*nEvSel/(sigma_in*1000) ;//Luminosity in mbar
+    double dataLum = nEv/(sigma_in*1000) ;//Luminosity in mbar
     double simScaling;
     if(fSystem){
       if(fDmesonSpecie) simScaling = BRDstar*APb*dataLum;

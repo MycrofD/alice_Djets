@@ -936,8 +936,8 @@ TF1* getPriorFunction(int prior, TH1D* spect, int priorType = 0, TH1D* rawspectr
 		return 0;
 	}
 
-	double fitlo = fptbinsDA[0]; // fFitPtMin;
-	double fithi = 50; // fFitPtMax;
+	double fitlo = fptbinsJetMeasA[0]; // fFitPtMin;
+	double fithi = fptbinsJetMeasA[fptbinsJetMeasN]; // fFitPtMax;
 	//fithi = 30;
 
 	TF1 *fPriorFunction = 0;
@@ -957,7 +957,7 @@ TF1* getPriorFunction(int prior, TH1D* spect, int priorType = 0, TH1D* rawspectr
 		else if(priorType == 5) { PriorFunction->FixParameter(1,7);   PriorFunction->FixParameter(2,4);}
 		else if(priorType == 6) { PriorFunction->FixParameter(1,4.5); PriorFunction->FixParameter(2,3); }
 		else if(priorType == 7) { PriorFunction->FixParameter(1,4.5); PriorFunction->FixParameter(2,5); }
-		else if(priorType == 8) { PriorFunction->SetParLimits(1,2,8); fitlo = fptbinsJetMeasA[0]; }
+		else if(priorType == 8) { PriorFunction->SetParLimits(1,2,8); PriorFunction->SetParLimits(2,2,8); fitlo = fptbinsJetMeasA[0]; }
 		if(priorType == 8) { rawspectrum->Fit(PriorFunction, fitopt,"",fitlo,fithi); }
 		else spect->Fit(PriorFunction, fitopt,"",fitlo,fithi);
 
