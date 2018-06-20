@@ -7,18 +7,9 @@
 
 double jetEta = 0.9 - fRpar;
 double dy = 2*jetEta;
-<<<<<<< HEAD
-//const int fptbinsJetTrueN = 7;
-//const double fptbinsJetTrueA[fptbinsJetTrueN+1] = { 5,6,8,10,14,20,30,50 };
-
-double *systuncP;
-//double systuncP[] = { 18,11,10,10,12,20,23 };
-const double sysG = 3.8;
-=======
 
 const int ptbinsNpp = 9;
 double fptbinsJetTrueFinalpp[ptbinsNpp+1] = { 3,4,5,6,8,10,14,20,30,50 };
->>>>>>> upstream/master
 
 const int ptbinsNPbPb = 7;
 double fptbinsJetTrueFinalPbPb[ptbinsNPbPb+1] = { 3,5,10,15,20,25,35,50 };
@@ -101,12 +92,6 @@ bool isStart5 = 1)*/
   gSystem->Exec(Form("mkdir %s",outSpectraDir.Data()));
   gSystem->Exec(Form("mkdir %s",outPlotDir.Data()));
 
-<<<<<<< HEAD
-  xAxis = new double[Naxis+1];
-  for(int k=0; k<Naxis+1; k++) xAxis[k] = fptbinsJetTrueA[k];
-  systuncP = new double[fptbinsJetTrueN+1];
-  for(int k=0; k<fptbinsJetTrueN+1; k++) systuncP[k] = 15;
-=======
   if(ppbin){
     if(isStart5) Naxis = ptbinsNpp-2;
     else Naxis = ptbinsNpp;
@@ -136,7 +121,6 @@ bool isStart5 = 1)*/
   for(int k=0; k<Naxis; k++) systuncP[k] = 0.15;
 
   if(issys)getSystematics(sysDir,outPlotDir);
->>>>>>> upstream/master
 
   TFile *File = new TFile(dataAnalysisFile,"read");
   TDirectoryFile* dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
@@ -176,12 +160,8 @@ bool isStart5 = 1)*/
         if(fDmesonSpecie) file += "_Dstar";
         else file += "_Dzero";
         file += ".root";
-<<<<<<< HEAD
-      
-=======
         //if(!file) { cout << "sim file doesn't exist !!! " << file << endl; return; }
 
->>>>>>> upstream/master
         TH1D *htmp;
         htmp = (TH1D*) GetInputHist(file, "hPt", htmp);
         //htmp->Scale(sigma_c[nr]);

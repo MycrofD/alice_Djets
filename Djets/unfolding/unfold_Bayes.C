@@ -42,7 +42,7 @@ bool debug = 0
 )
 {
 
-gSystem->Load("$HOME/ALICE_HeavyFlavour/RooUnfold-1.1.1/libRooUnfold");
+gSystem->Load("/home/basia/Work/alice/RooUnfold-1.1.1/libRooUnfold.so");
 gStyle->SetOptStat(0000); //Mean and RMS shown
 gSystem->Exec(Form("mkdir  %s",outDir.Data()));
 gSystem->Exec(Form("mkdir  %s/plots",outDir.Data()));

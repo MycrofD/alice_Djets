@@ -29,13 +29,11 @@ bool isRefSys=0;
 double refScale = 1.5;
 
 void signalExtraction_SB(
-  //TString dataFile = "$HOME/Work/alice/analysis/pp13tev/outData/losser_15Nov/AnalysisResults",
-  TString dataFile = "$HOME/ALICE_HeavyFlavour/out/QM2018/AnalysisResults",
-  TString lhcprod = "_LHC16R03", // if one file: e.g. LHC16k, LHC16kl ... ; for more than one file: LHC16: -- pattern of the out file is: PATH_TO_OUTFILE/AnalysiResultsLHCPROD
+  TString dataFile = "$HOME/Work/alice/analysis/pp13tev/outData/losser_15Nov/AnalysisResults",
+  TString lhcprod = "LHC16kl", // if one file: e.g. LHC16k, LHC16kl ... ; for more than one file: LHC16: -- pattern of the out file is: PATH_TO_OUTFILE/AnalysiResultsLHCPROD
   bool isMoreFiles = 0, TString prod = "kl",    // for more than 1 file, for one file leave it empty
-  //bool isEff = 0, TString efffile = "../efficiency/DjetEff_prompt.root",
-  bool isEff = 1, TString efffile = "$HOME/ALICE_HeavyFlavour/work/jets2/alice_Djets/Djets/efficiency/_Dzero_DjetEff_prompt_jetpt2_50.root",
-  bool isRef = 1, TString refFile = "$HOME/ALICE_HeavyFlavour/out/QM2018/reflections_fitted_DoubleGaus.root",
+  bool isEff = 0, TString efffile = "../efficiency/DjetEff_prompt.root",
+  bool isRef = 0, TString refFile = "test.root",
   bool save = 1,
   bool postfix = 0, TString listName = "Cut",
   TString out = "signalExtraction")
@@ -52,9 +50,6 @@ void signalExtraction_SB(
     TString outdir = out;
     gSystem->Exec(Form("mkdir %s",outdir.Data()));
     gSystem->Exec(Form("mkdir %s%s",outdir.Data(),plotsDir.Data()));
-
-
-cout << "======= out: " << outdir << endl;
 
     if(!isMoreFiles) prod="";
     int nFiles = (int)prod.Length();
@@ -76,7 +71,7 @@ cout << "======= out: " << outdir << endl;
       File = new TFile(datafile,"read");
       if(!File) { cout << "==== WRONG FILE WITH DATA =====\n\n"; return ;}
       dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
-//		TH3D *h3[ND];
+
       for(int i=0;i<ND; i++){
           if(postfix) histList =  (TList*)dir->Get(Form("%s%d%s",histName.Data(),i,listName.Data()));
           else histList =  (TList*)dir->Get(Form("%s%d",histName.Data(),i));
@@ -84,17 +79,11 @@ cout << "======= out: " << outdir << endl;
           sparse->GetAxis(0)->SetRangeUser(zmin,zmax);
           sparse->GetAxis(1)->SetRangeUser(jetmin,jetmax);
           if(isEta) sparse->GetAxis(5)->SetRangeUser(-jetEta,jetEta);
-//		h3[i] = (TH3D*)sparse->Projection(3,1,2);		////
-//          if(i==0) hInvMassptD=h3[i];	////
-//          else hInvMassptD->Add(h3[i]);	////
-      		
           if(i==0) hInvMassptD=(TH3D*)sparse->Projection(3,1,2);
           else hInvMassptD->Add((TH3D*)sparse->Projection(3,1,2));
-	}
+      }
     }
-
     else {
-	//	TH3D *h33[nFiles][ND];
       for (int j=0;j<nFiles;j++){
           datafile = dataFile;
           datafile += lhcprod;
@@ -103,6 +92,7 @@ cout << "======= out: " << outdir << endl;
           File = new TFile(datafile,"read");
           if(!File) { cout << "==== WRONG FILE WITH DATA =====\n\n"; return ;}
           dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
+
           for(int i=0;i<ND; i++){
               if(postfix) histList =  (TList*)dir->Get(Form("%s%d%s",histName.Data(),i,listName.Data()));
               else histList =  (TList*)dir->Get(Form("%s%d",histName.Data(),i));
@@ -110,13 +100,8 @@ cout << "======= out: " << outdir << endl;
               sparse->GetAxis(0)->SetRangeUser(zmin,zmax);
               sparse->GetAxis(1)->SetRangeUser(jetmin,jetmax);
               if(isEta) sparse->GetAxis(5)->SetRangeUser(-jetEta,jetEta);
-      		
               if(j==0 && i==0) hInvMassptD=(TH3D*)sparse->Projection(3,1,2);
               else hInvMassptD->Add((TH3D*)sparse->Projection(3,1,2));
-	// An attempt at removing "Potential memory leak"
-	//	h33[j][i] = (TH3D*)sparse->Projection(3,1,2);		////
-        //  	if(j==0 && i==0) hInvMassptD=h33[j][i];	////
-        //  	else hInvMassptD->Add(h33[j][i]);	////
           }
       }
     }

@@ -584,7 +584,7 @@ TH1* GetDownSys(TH1D **hFD, const int nFiles = 11, TH1D *hFD_down){
 
 TH1* foldB(TString matrixFile, TH1D *hFD, TH1D *folded ){
 
-    gSystem->Load("$HOME/ALICE_HeavyFlavour/RooUnfold-1.1.1/libRooUnfold"); //"$HOME/ALICE_HeavyFlavour/RooUnfold-1.1.1/libRooUnfold"
+    gSystem->Load("/home/basia/Work/alice/RooUnfold-1.1.1/libRooUnfold.so");
     gStyle->SetOptStat(0000); //Mean and RMS shown
 
 

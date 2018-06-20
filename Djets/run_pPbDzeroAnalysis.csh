@@ -1,5 +1,5 @@
 #!/bin/bash
-#run_pPbDzeroAnalysis.csh
+
 currDir=`pwd`
 
 ptbinning=$1
@@ -13,17 +13,14 @@ efficiencyfile=AnalysisResults_fast_R03_D0MCPythia_default.root
 detRMpromptfile=AnalysisResults_fast_R03_D0MCPythia_default.root
 detRMnonpromptfile=AnalysisResults_fast_R03_D0MCPythia_default.root
 
-#outputdirectorybase has to be same as the output directory of signalExtractin_SB.C
-outputdirectorybase=$HOME/ALICE_HeavyFlavour/work/jets2/pPb_run2/DzeroR03_RefDPt3PythiaEff_
+outputdirectorybase=$HOME/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_
 #outputdirectorybase=$HOME/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_Dpt320_
 
-###################################################
-### Please don't touch the code below this line ###
-###################################################
 outputdirectory=${outputdirectorybase}BaseCuts
 outputdirectorySignal=Default
 if [ $ptbinning -eq 0 ]; then
   outputdirectorySignal=Default_jetMeas$jetptmeasmin\_$jetptmeasmax\_jetTrue$jetpttruemin\_$jetpttruemax\_ppbinning
+#outputdirectorySignal=S2sigma_SB49_jetMeas$jetptmeasmin\_$jetptmeasmax\_jetTrue$jetpttruemin\_$jetpttruemax\_ppbinning
 fi
 if [ $ptbinning -eq 1 ]; then
 outputdirectorySignal=Default_jetMeas$jetptmeasmin\_$jetptmeasmax\_jetTrue$jetpttruemin\_$jetpttruemax\_finebinning
