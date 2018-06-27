@@ -1,7 +1,7 @@
 
 #include "config.h"
 
-void DetRM(bool isPrompt = 1, TString datafile = "../outMC/AnalysisResults_fast_D0MCPythia_SMQcorr2.root", TString outDir = "plots",
+void DetRM(bool isPrompt = 1, TString datafile = "../outMC/AnalysisResults.root", TString outDir = "plots",
 bool postfix = 0, TString listName = "FD" )
 {
 
@@ -14,7 +14,7 @@ bool postfix = 0, TString listName = "FD" )
     TDirectoryFile* dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
     TString histName;
   	if(fDmesonSpecie) histName = "histosDStarMBN";
-  	else histName = "histosD0MBN";
+  	else histName = "histosD0";
 
     float jetmin = 0, jetmax = 60;
     float Dptmin = fptbinsDA[0], Dptmax = fptbinsDA[fptbinsDN];
@@ -39,7 +39,7 @@ bool postfix = 0, TString listName = "FD" )
     TH1F *hPtJetRec;
 
 	  for(int i=0; i<NDMC; i++){
-        if(postfix) { histList[i] =  (TList*)dir->Get(Form("%s%d%sMCrec",histName.Data(),i,listName.Data())); }
+        if(postfix) { histList[i] =  (TList*)dir->Get(Form("%s%sMBN%dMCrec",histName.Data(),listName.Data(),i)); }
         else {
     			 if(isPrompt) histList[i] =  (TList*)dir->Get(Form("%s%dMCrec",histName.Data(),i));
     			 else histList[i] =  (TList*)dir->Get(Form("%s%dFDMCrec",histName.Data(),i));

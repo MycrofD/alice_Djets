@@ -27,7 +27,7 @@ float jetptmin = 2, float jetptmax = 50, bool recoPt = 0, bool postfix = 0, TStr
 
 	TString histName;
 	if(fDmesonSpecie) histName = "histosDStarMBN";
-	else histName = "histosD0MBN";
+	else histName = "histosD0";
 
 	TH1F *hMCpt;
 	TH1F *hMCpt_reco;
@@ -40,7 +40,7 @@ float jetptmin = 2, float jetptmax = 50, bool recoPt = 0, bool postfix = 0, TStr
 
 	for(int i=0; i<NDMC; i++){
 
-		if(postfix) { histList[i] =  (TList*)dir->Get(Form("%s%d%sMCrec",histName.Data(),i,listName.Data())); }
+		if(postfix) { histList[i] =  (TList*)dir->Get(Form("%s%sMBN%dMCrec",histName.Data(),listName.Data(),i)); }
     else {
 			 if(isPrompt) histList[i] =  (TList*)dir->Get(Form("%s%dMCrec",histName.Data(),i));
 			 else histList[i] =  (TList*)dir->Get(Form("%s%dFDMCrec",histName.Data(),i));

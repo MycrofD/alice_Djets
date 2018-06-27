@@ -29,7 +29,7 @@ bool isRefSys=0;
 double refScale = 1.5;
 
 void signalExtraction_SB(
-  TString dataFile = "$HOME/Work/alice/analysis/pp13tev/outData/losser_15Nov/AnalysisResults",
+  TString dataFile = "$HOME/AnalysisResults",
   TString lhcprod = "LHC16kl", // if one file: e.g. LHC16k, LHC16kl ... ; for more than one file: LHC16: -- pattern of the out file is: PATH_TO_OUTFILE/AnalysiResultsLHCPROD
   bool isMoreFiles = 0, TString prod = "kl",    // for more than 1 file, for one file leave it empty
   bool isEff = 0, TString efffile = "../efficiency/DjetEff_prompt.root",
@@ -56,7 +56,7 @@ void signalExtraction_SB(
 
     TString histName;
     if(fDmesonSpecie) histName = "histosDStarMBN";
-    else histName = "histosD0MBN";
+    else histName = "histosD0";
     // get analysis output file
     TString datafile;
     TFile *File;
@@ -73,7 +73,7 @@ void signalExtraction_SB(
       dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
 
       for(int i=0;i<ND; i++){
-          if(postfix) histList =  (TList*)dir->Get(Form("%s%d%s",histName.Data(),i,listName.Data()));
+          if(postfix) histList =  (TList*)dir->Get(Form("%s%sMBN%d",histName.Data(),listName.Data(),i));
           else histList =  (TList*)dir->Get(Form("%s%d",histName.Data(),i));
           sparse = (THnSparseF*)histList->FindObject("hsDphiz");
           sparse->GetAxis(0)->SetRangeUser(zmin,zmax);
@@ -94,7 +94,7 @@ void signalExtraction_SB(
           dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
 
           for(int i=0;i<ND; i++){
-              if(postfix) histList =  (TList*)dir->Get(Form("%s%d%s",histName.Data(),i,listName.Data()));
+              if(postfix) histList =  (TList*)dir->Get(Form("%s%sMBN%d",histName.Data(),listName.Data(),i));
               else histList =  (TList*)dir->Get(Form("%s%d",histName.Data(),i));
               sparse = (THnSparseF*)histList->FindObject("hsDphiz");
               sparse->GetAxis(0)->SetRangeUser(zmin,zmax);

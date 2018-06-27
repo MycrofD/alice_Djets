@@ -30,8 +30,8 @@
 //  barbara.antonina.trzeciak@cern.ch
 //-----------------------------------------------------------------------
 
-    int fSystem = 1; // 0: pp, 1: p-Pb
-    TString fSystemS = "p-Pb, #sqrt{#it{s}_{NN}} = 5.02 TeV";
+    int fSystem = 0; // 0: pp, 1: p-Pb
+TString fSystemS = "pp, #sqrt{#it{s}_{NN}} = 5.02 TeV";
 
     const int Rpar = 3;
     const double fRpar = 0.3;
@@ -42,11 +42,11 @@
     TString fDmesonS="D^{0}";
 
     //------- D pT bins
-  //const int fptbinsDN = 11;
-  //double fptbinsDA[fptbinsDN+1] = { 2,3,4,5,6,7,8,10,12,16,24,36 };
+  const int fptbinsDN = 11;
+  double fptbinsDA[fptbinsDN+1] = { 2,3,4,5,6,7,8,10,12,16,24,36 };
 
-  const int fptbinsDN = 10;
-  double fptbinsDA[fptbinsDN+1] = { 3,4,5,6,7,8,10,12,16,24,36 };
+//  const int fptbinsDN = 10;
+//  double fptbinsDA[fptbinsDN+1] = { 3,4,5,6,7,8,10,12,16,24,36 };
 
   // for Pb-Pb baseline
   //  const int fptbinsDN = 9;
@@ -56,7 +56,7 @@
     double zmin = -2, zmax = 2.;
 
     //------- signal extraction config
-    Bool_t  fUseRefl = 1;
+    Bool_t  fUseRefl = 0;
     Int_t   fbkgtype = 0; // kExpo=0, kLin=1, kPol2=2, kNoBk=3, kPow=4, kPowEx=5
     Float_t fsigmaSignal = 3;
     Float_t fsigmaBkg[] = {-9,-4,4,9};
@@ -68,28 +68,56 @@
     Int_t fColors[] = {1,2,8,4,kOrange-1,6,kGray+1,kCyan+1,kMagenta+2,kGreen+3,kViolet+5,kYellow+2};
     Int_t fMarkers[] = {20,21,22,23,24,25,26,27,28,29,30,32,33,34};
 
-    const double sigma_in = 2.09; // in bars
+    const double sigma_in = 0.0512;//pp//2.09;//pPb // in bars
     const double BRDstar = 0.0257;
     const double BRDzero = 0.0393;
-    const int APb = 208;
+    const int APb = 1;//208;
+    const double nEvScale = 0.80;
 
     //------- POWHEG simulations
 
-     // New simulations, with R=0.3,0.4 (Dzero and Dstar)
-    const Int_t fBsimN = 10;
-    TString fRunB[] = {
-    "AnalysisResults_FastSim_powheg+pythia6_beauty_1519042424",
-    "AnalysisResults_FastSim_powheg+pythia6_beauty_1519293768",
-    "AnalysisResults_FastSim_powheg+pythia6_beauty_1519292550",
-    "AnalysisResults_FastSim_powheg+pythia6_beauty_1519275692",
-    "AnalysisResults_FastSim_powheg+pythia6_beauty_1519241992",
-    "AnalysisResults_FastSim_powheg+pythia6_beauty_1519127831",
-    "AnalysisResults_FastSim_powheg+pythia6_beauty_1519049991",
-    "AnalysisResults_FastSim_powheg+pythia6_beauty_1519079649",
-    "AnalysisResults_FastSim_powheg+pythia6_beauty_1519124826",
-    "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1520259013"
-  };
+//     // New simulations, with R=0.3,0.4 (Dzero and Dstar)
+//    const Int_t fBsimN = 10;
+//    TString fRunB[] = {
+//    "AnalysisResults_FastSim_powheg+pythia6_beauty_1519042424",
+//    "AnalysisResults_FastSim_powheg+pythia6_beauty_1519293768",
+//    "AnalysisResults_FastSim_powheg+pythia6_beauty_1519292550",
+//    "AnalysisResults_FastSim_powheg+pythia6_beauty_1519275692",
+//    "AnalysisResults_FastSim_powheg+pythia6_beauty_1519241992",
+//    "AnalysisResults_FastSim_powheg+pythia6_beauty_1519127831",
+//    "AnalysisResults_FastSim_powheg+pythia6_beauty_1519049991",
+//    "AnalysisResults_FastSim_powheg+pythia6_beauty_1519079649",
+//    "AnalysisResults_FastSim_powheg+pythia6_beauty_1519124826",
+//    "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1520259013"
+//  };
 
+//    150593961473 -> central
+//    1504197966 -> mb = 4.5
+//    1504202511 -> mb = 5
+//    1504318569 -> mu_f = 2 mu_r = 2
+//    1504296768 -> mu_f = 2 mu_r = 1
+//    1506803374 -> mu_f = 1 mu_r = 2
+//    1504212024 -> mu_f = 0.5 mu_r = 0.5
+//    1504284947 -> mu_f = 0.5 mu_r = 1
+//    1504259653 -> mu_f = 1 mu_r = 0.5
+//    1504197460 -> PDF 21200
+//    1504199953 -> PDF 10800
+     // New simulations, with R=0.3,0.4 (Dzero and Dstar)
+    const Int_t fBsimN = 11;
+    TString fRunB[] = {
+    "AnalysisResults_FastSim_powheg+pythia6_beauty_150593961473",
+    "AnalysisResults_FastSim_powheg+pythia6_beauty_1504197966",
+    "AnalysisResults_FastSim_powheg+pythia6_beauty_1504202511",
+    "AnalysisResults_FastSim_powheg+pythia6_beauty_1504318569",
+    "AnalysisResults_FastSim_powheg+pythia6_beauty_1504296768",
+    "AnalysisResults_FastSim_powheg+pythia6_beauty_1506803374",
+    "AnalysisResults_FastSim_powheg+pythia6_beauty_1504212024",
+    "AnalysisResults_FastSim_powheg+pythia6_beauty_1504284947",
+    "AnalysisResults_FastSim_powheg+pythia6_beauty_1504259653",
+    "AnalysisResults_FastSim_powheg+pythia6_beauty_1504197460",
+    "AnalysisResults_FastSim_powheg+pythia6_beauty_1504199953"
+//    "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1520259013"
+  };
     TString fDescB[] = {
     "central",
     "m_{b}=4.5",
@@ -100,7 +128,9 @@
     "muR=0.5,muF=0.5",
     "muR=1,muF=0.5" ,
     "muR=0.5,muF=1",
-    "EvtGen" };
+	"pdf 21200",
+	"pdf 10800" };
+//    "EvtGen" };
 
     const Int_t fCsimN = 9;
     TString fRunC[] = {
@@ -125,6 +155,7 @@
     "muR=1,muF=0.5",
     "muR=0.5,muF=1"};
 
+double yplotmin = 1, yplotmax = 100000;
 
 //// PromptSimDirOut
 /*
