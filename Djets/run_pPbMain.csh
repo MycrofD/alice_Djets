@@ -82,15 +82,15 @@ fi
 ############### FULL with sys
 ################################################
 
-ptbinning=2 			# 0: pp bining 1: more fine binning 2: Pb-Pb binning 5: more fine pp binning
+ptbinning=0 			# 0: pp bining 1: more fine binning 2: Pb-Pb binning 5: more fine pp binning
 
 dbkg=0
 dprior=0
-dcutvar=1
+dcutvar=0
 dJESsys=0
 dsys=0
 dFDsys=0
-drawcutvar=1
+drawcutvar=0
 ################################################
 ############### ptmeas: 3-50, pttrue: 3-50, reg=3
 ################################################

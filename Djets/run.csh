@@ -28,22 +28,22 @@ currDir=`pwd`
 ############### analysis flags (you can switch some of the flags to run on a part of the analysis chain)
 Dmeson=0            #0: D0, 1: D*
 isSignal=1
-isRefl=1            #reflections for D0
+isRefl=0            #reflections for D0
 isEffPrompt=1
 isEffNonPrompt=1
 isDetRMPrompt=1
 isDetRMNonPrompt=1
-isUnfolding=1
-isFinalSpectra=1
+isUnfolding=0
+isFinalSpectra=0
 
 isFDSub=1
 isFDSys=${21}
 isFDUpSys=${22}
 isFDDownSys=${23}
-isBkgRM=1
+isBkgRM=0
 bkgRMtype=$7         # which bkg RM, 0 is the default one: RandCones_BkgM_Djet5Excl.root
 isCsim=0              # switch one (provide below path (simFilesDir) to your raw simulation files, and file names in the config header file), swith this flag on if you haven't got output of the simulation yet, it takes time
-isBsim=0            # switch one (provide below path (simFilesDir) to your raw simulation files, and file names in the config header file), swith this flag on if you haven't got output of the simulation yet with a current efficiencies, it takes time
+isBsim=1            # switch one (provide below path (simFilesDir) to your raw simulation files, and file names in the config header file), swith this flag on if you haven't got output of the simulation yet with a current efficiencies, it takes time
 isBsimNoEff=0       # switch one if you want non-prompt simulations without scaling for non-prompt/prompt efficiency
 
 ispostfix=${12}
@@ -158,15 +158,15 @@ PromptSimDirOut=$outdirBase/Simulations/Prompt
 
 
 ############### D-jet signal config
-anaoutfiledir=$HOME/Work/alice/analysis/pPb_run2/D0jet/outData
+anaoutfiledir=$HOME/ALICE_HeavyFlavour/work/Djets/out
 analysisfile=$anaoutfiledir/AnalysisResults
 isMoreFiles=0
 production=kl #if more than one file to analyse
 analysisDataFile=$anaoutfiledir/AnalysisResults$lhcprod.root
-reflfile=$HOME/Work/alice/analysis/pPb_run2/D0jet/outMC/reflections/reflections_fitted_DoubleGaus.root
+reflfile=$anaoutfiledir/outMC/reflections/reflections_fitted_DoubleGaus.root
 
 ############### efficiency config
-MCoutfiledir=$HOME/Work/alice/analysis/pPb_run2/D0jet/outMC
+MCoutfiledir=$anaoutfiledir/outMC
 #efffile=$MCoutfiledir/AnalysisResults_fast_D0MCHijing_SMQcorr2.root
 efffile=$MCoutfiledir/$efficiencyfile
 jetpteffmin=5
@@ -182,9 +182,9 @@ detRMPrompt=$MCoutfiledir/$detRMpromptfile
 detRMNonPrompt=$MCoutfiledir/$detRMnonpromptfile
 
 ############### POWHEG simulations
-simFilesDir=/media/basia/Disk2/Work/Djets/POWHEGSimulations/fastSim_pPb5TeV
+simFilesDir=$anaoutfiledir/outMC/beauty
 #simFilesDir=/home/basia/Work/alice/analysis/fastSim_pPb5TeV/files #old simulations
-nSimFilesB=9           # have to correspond to what defined in the config file -1
+nSimFilesB=10           # have to correspond to what defined in the config file -1
 nSimFilesC=8            # have to correspond to what defined in the config file -1
 
 
@@ -202,12 +202,12 @@ fi
 
 #outdirectory=$outdir
 mkdir -p $outdirBase/$outdir
-echo >> config.h
+echo >> config.h	#creates a blank line after confiDzero/star.h has been written into config.h
 echo "TString OUTDIRECTORY=\"$outdirBase\";"  >> config.h
 
 if [ $isDefaultAn -eq 1 ]; then
   echo "const int ND = 4;"  >> config.h
-  echo "const int NDMC = 3;"  >> config.h
+  echo "const int NDMC = 2;"  >> config.h
 else
   echo "const int ND = 2;"  >> config.h
   echo "const int NDMC = 2;"  >> config.h
@@ -623,7 +623,7 @@ cd $currDir
 ############### B feed-down simulations
 ################################################
 
-if [ ! -d "$BFDSimDirOut" ] || [ $isBsim -eq 1 ]; then
+if [ ! -d "$BFDSimDirOut" ] && [ $isBsim -eq 1 ]; then
 
 cd $SimDir
 # 1: number of simulation files (as defined in the config file)
@@ -730,7 +730,7 @@ fi
 ############### prompt D-jet simulations
 ################################################
 
-if [ ! -d "$PromptSimDirOut" ] || [ $isCsim -eq 1 ]; then
+if [ ! -d "$PromptSimDirOut" ] && [ $isCsim -eq 1 ]; then
 
 cd $SimDir
 # 1: number of simulation files (as defined in the config file)

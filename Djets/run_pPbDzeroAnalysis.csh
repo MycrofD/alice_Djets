@@ -13,7 +13,7 @@ efficiencyfile=AnalysisResults_fast_R03_D0MCPythia_default.root
 detRMpromptfile=AnalysisResults_fast_R03_D0MCPythia_default.root
 detRMnonpromptfile=AnalysisResults_fast_R03_D0MCPythia_default.root
 
-outputdirectorybase=$HOME/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_
+outputdirectorybase=$HOME/ALICE_HeavyFlavour/work/Djets/pp_run2/D_
 #outputdirectorybase=$HOME/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_Dpt320_
 
 outputdirectory=${outputdirectorybase}BaseCuts
@@ -47,7 +47,7 @@ fi
 
 
 ispostfix=0
-postfix=Cut
+postfix=HP
 ispostfixFD=1
 postfixFD=FD
 
