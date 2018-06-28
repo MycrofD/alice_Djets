@@ -14,8 +14,8 @@ double ptDbins[ptbinsDN+1] = { 1,2,3,4,5,6,7,8,10,12,16,20 };
 float ptmin = 1, ptmax = 20;
 */
 
-void DjetEfficiency(bool isPrompt = 1, TString effFile = "../outMC/AnalysisResults_fast_D0MCHijing_SMQcorr2.root", TString outDir = "SQMCorrcuts",
-float jetptmin = 2, float jetptmax = 50, bool recoPt = 0, bool postfix = 0, TString listName = "FD")
+void DjetEfficiency(bool isPrompt = 0, TString effFile = "../outMC/AnalysisResults_fast_D0MCHijing_SMQcorr2.root", TString outDir = "SQMCorrcuts",
+float jetptmin = 5, float jetptmax = 50, bool recoPt = 0, bool postfix = 0, TString listName = "FD")
 {
 
  	gStyle->SetOptStat(0000); //Mean and RMS shown
@@ -41,31 +41,30 @@ float jetptmin = 2, float jetptmax = 50, bool recoPt = 0, bool postfix = 0, TStr
 	for(int i=0; i<NDMC; i++){
 
 		if(postfix) { histList[i] =  (TList*)dir->Get(Form("%s%sMBN%dMCrec",histName.Data(),listName.Data(),i)); }
-    else {
-			 if(isPrompt) histList[i] =  (TList*)dir->Get(Form("%s%dMCrec",histName.Data(),i));
-			 else histList[i] =  (TList*)dir->Get(Form("%s%dFDMCrec",histName.Data(),i));
+		else {
+			if(isPrompt) histList[i] =  (TList*)dir->Get(Form("%s%dMCrec",histName.Data(),i));
+			else histList[i] =  (TList*)dir->Get(Form("%s%dFDMCrec",histName.Data(),i));
 		}
 
 		sparseMC[i] = (THnSparseF*)histList[i]->FindObject("ResponseMatrix");
-    if(fDmesonSpecie) sparseMC[i]->GetAxis(5)->SetRangeUser(jetptmin,jetptmax); // Dstar tmp
-    else sparseMC[i]->GetAxis(6)->SetRangeUser(jetptmin,jetptmax); // jet pT gen
+		if(fDmesonSpecie) sparseMC[i]->GetAxis(5)->SetRangeUser(jetptmin,jetptmax); // Dstar tmp
+		else sparseMC[i]->GetAxis(6)->SetRangeUser(jetptmin,jetptmax); // jet pT gen
 
-    if(fDmesonSpecie) hMC[i] = (TH1F*)sparseMC[i]->Projection(6); // Dstar tmp
-    else hMC[i] = (TH1F*)sparseMC[i]->Projection(7); // Dpt gen
-    hMC[i]->SetName(Form("hMC_%d",i));
+		if(fDmesonSpecie) hMC[i] = (TH1F*)sparseMC[i]->Projection(6); // Dstar tmp
+		else hMC[i] = (TH1F*)sparseMC[i]->Projection(7); // Dpt gen
+		hMC[i]->SetName(Form("hMC_%d",i));
 
 		sparsereco[i] = (THnSparseF*)histList[i]->FindObject("ResponseMatrix");
-    if(recoPt) {
-      sparsereco[i]->GetAxis(1)->SetRangeUser(ptmin,ptmax); // jet pT reco
-    }
-    else {
-      if(fDmesonSpecie)sparsereco[i]->GetAxis(5)->SetRangeUser(jetptmin,jetptmax); // Dstar tmp
-      else sparsereco[i]->GetAxis(6)->SetRangeUser(jetptmin,jetptmax); // jet pT gen
-  		sparsereco[i]->GetAxis(1)->SetRangeUser(0,100); // jet pT reco
-    }
+		if(recoPt) {sparsereco[i]->GetAxis(1)->SetRangeUser(ptmin,ptmax); // jet pT reco
+			}
+		else {
+			if(fDmesonSpecie)sparsereco[i]->GetAxis(5)->SetRangeUser(jetptmin,jetptmax); // Dstar tmp
+			else sparsereco[i]->GetAxis(6)->SetRangeUser(jetptmin,jetptmax); // jet pT gen
+			sparsereco[i]->GetAxis(1)->SetRangeUser(0,100); // jet pT reco
+		}
 
-    if(fDmesonSpecie)hreco[i] = (TH1F*)sparsereco[i]->Projection(6); // Dstar tmp
-    else hreco[i] = (TH1F*)sparsereco[i]->Projection(7); // Dpt gen
+		if(fDmesonSpecie)hreco[i] = (TH1F*)sparsereco[i]->Projection(6); // Dstar tmp
+		else hreco[i] = (TH1F*)sparsereco[i]->Projection(7); // Dpt gen
 		hreco[i]->SetName(Form("hreco_%d",i));
 
 		if (!i){
@@ -88,7 +87,7 @@ float jetptmin = 2, float jetptmax = 50, bool recoPt = 0, bool postfix = 0, TStr
 	hMCpt_reco->SetMarkerColor(2);
 	hMCpt_reco->SetMarkerStyle(20);
 
-	TH1D * hEff = (TH1D*)hMCpt_reco->Clone("hEff");
+	TH1D* hEff = (TH1D*)hMCpt_reco->Clone("hEff");
 	hEff -> Divide(hMCpt_reco,hMCpt,1,1,"b");
 
 	//hEff->GetXaxis()->SetRangeUser(ptmin,ptmax);
