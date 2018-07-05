@@ -13,20 +13,29 @@ efficiencyfile=AnalysisResults_fast_R03_D0MCPythia_default.root
 detRMpromptfile=AnalysisResults_fast_R03_D0MCPythia_default.root
 detRMnonpromptfile=AnalysisResults_fast_R03_D0MCPythia_default.root
 
-outputdirectorybase=$HOME/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_
-#outputdirectorybase=$HOME/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_Dpt320_
 
+outputdirectorybase=$HOME/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_
+#outputdirectorybase=$HOME/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt324PythiaEff_
 outputdirectory=${outputdirectorybase}BaseCuts
 outputdirectorySignal=Default
+
 if [ $ptbinning -eq 0 ]; then
   outputdirectorySignal=Default_jetMeas$jetptmeasmin\_$jetptmeasmax\_jetTrue$jetpttruemin\_$jetpttruemax\_ppbinning
-#outputdirectorySignal=S2sigma_SB49_jetMeas$jetptmeasmin\_$jetptmeasmax\_jetTrue$jetpttruemin\_$jetpttruemax\_ppbinning
-fi
-if [ $ptbinning -eq 1 ]; then
-outputdirectorySignal=Default_jetMeas$jetptmeasmin\_$jetptmeasmax\_jetTrue$jetpttruemin\_$jetpttruemax\_finebinning
+#outputdirectorySignal=Refl15_jetMeas$jetptmeasmin\_$jetptmeasmax\_jetTrue$jetpttruemin\_$jetpttruemax\_ppbinning
+#outputdirectorySignal=S2sigma_SB59_jetMeas$jetptmeasmin\_$jetptmeasmax\_jetTrue$jetpttruemin\_$jetpttruemax\_ppbinning
+#outputdirectorySignal=SB58_jetMeas$jetptmeasmin\_$jetptmeasmax\_jetTrue$jetpttruemin\_$jetpttruemax\_ppbinning
 fi
 if [ $ptbinning -eq 2 ]; then
 outputdirectorySignal=Default_jetMeas$jetptmeasmin\_$jetptmeasmax\_jetTrue$jetpttruemin\_$jetpttruemax\_PbPbbinning
+#outputdirectorySignal=Refl15_jetMeas$jetptmeasmin\_$jetptmeasmax\_jetTrue$jetpttruemin\_$jetpttruemax\_PbPbbinning
+#outputdirectorySignal=S2sigma_SB59_jetMeas$jetptmeasmin\_$jetptmeasmax\_jetTrue$jetpttruemin\_$jetpttruemax\_PbPbbinning
+#outputdirectorySignal=SB58_jetMeas$jetptmeasmin\_$jetptmeasmax\_jetTrue$jetpttruemin\_$jetpttruemax\_PbPbbinning
+fi
+if [ $ptbinning -eq 8 ]; then
+  outputdirectorySignal=Default_jetMeas$jetptmeasmin\_$jetptmeasmax\_jetTrue$jetpttruemin\_$jetpttruemax\_ppbinning2
+fi
+if [ $ptbinning -eq 1 ]; then
+outputdirectorySignal=Default_jetMeas$jetptmeasmin\_$jetptmeasmax\_jetTrue$jetpttruemin\_$jetpttruemax\_finebinning
 fi
 if [ $ptbinning -eq 3 ]; then
 outputdirectorySignal=Default_jetMeas$jetptmeasmin\_$jetptmeasmax\_jetTrue$jetpttruemin\_$jetpttruemax\_binning2
@@ -43,8 +52,6 @@ fi
 if [ $ptbinning -eq 5 ]; then
 outputdirectorySignal=Default_jetMeas$jetptmeasmin\_$jetptmeasmax\_jetTrue$jetpttruemin\_$jetpttruemax\_finebinning5
 fi
-
-
 
 ispostfix=0
 postfix=Cut
@@ -75,12 +82,15 @@ unfCutSys=0
 ############### Default
 ################################################
 
-if [ $doRawSpectra -eq 1 ]; then
+  ################################################
+  ############### without efficiency correction
+  ################################################
+  if [ $doRawSpectra -eq 1 ]; then
  ./run.csh $outputdirectory $outputdirectorySignal $lhcprod $efficiencyfile $detRMpromptfile $detRMnonpromptfile $bkgRMtype $unfType $regPar $isPrior $priorType $ispostfix $postfix $ispostfixFD $postfixFD $ptbinning $jetpttruemin $jetptmeasmin 1 0 0 0 0 1
 
- ################################################
- ############### Cut Variation
- ################################################
+     ################################################
+     ############### Cut Variation
+     ################################################
 
  if [ $doCutVar -eq 1 ]; then
  	./run_cut.csh $ptbinning $jetpttruemin $jetpttruemax $jetptmeasmin $jetptmeasmax $bkgRMtype $unfType $regPar $isPrior $priorType $outputdirectorySignal $outputdirectorybase $doRawSpectra
@@ -89,11 +99,17 @@ fi
 exit 1
 fi
 
+  ################################################
+  ############### full signal, with efficiency correction
+  ################################################
 
 if [ $doSignal -eq 1 ]; then
 ./run.csh $outputdirectory $outputdirectorySignal $lhcprod $efficiencyfile $detRMpromptfile $detRMnonpromptfile $bkgRMtype $unfType $regPar $isPrior $priorType $ispostfix $postfix $ispostfixFD $postfixFD $ptbinning $jetpttruemin $jetptmeasmin 1 0 0 0 0 0
 fi
 
+    ################################################
+    ############### B FD systematics
+    ################################################
 if [ $doFDSys -eq 1 ]; then
 	./run.csh $outputdirectory $outputdirectorySignal $lhcprod $efficiencyfile $detRMpromptfile $detRMnonpromptfile $bkgRMtype $unfType $regPar $isPrior $priorType $ispostfix $postfix $ispostfixFD $postfixFD $ptbinning $jetpttruemin $jetptmeasmin 1 0 1 1 0 0
 
@@ -112,10 +128,20 @@ if [ $doCutVar -eq 1 ]; then
   # cut variation systematics
   cd systematics
   #after unfolding
-  root -l -b -q cutsSystematics.C'('$regPar',"'$outputdirectorybase'","'$outputdirectorySignal'",0,1,1)'
+  root -l -b -q cutsSystematics.C'('$regPar',"'$outputdirectorybase'","'$outputdirectorySignal'",'$doRawCutVar',1,1)'
   #before unfolding
   root -l -b -q cutsSystematics.C'('$regPar',"'$outputdirectorybase'","'$outputdirectorySignal'",'$doRawCutVar',0,1)'
   cd $currDir
+fi
+
+################################################
+############### JES systematics
+################################################
+
+if [ $doJESSys -eq 1 ]; then
+
+	./run_JES.csh $ptbinning $jetpttruemin $jetpttruemax $jetptmeasmin $jetptmeasmax $bkgRMtype $unfType $regPar $isPrior $priorType $outputdirectorySignal $outputdirectory
+
 fi
 
 ################################################
@@ -177,24 +203,12 @@ for bkg in `seq 0 1 11`; do
 
 done
 
-fi
-
-################################################
-############### JES systematics
-################################################
-
-if [ $doJESSys -eq 1 ]; then
-
-	./run_JES.csh $ptbinning $jetpttruemin $jetpttruemax $jetptmeasmin $jetptmeasmax $bkgRMtype $unfType $regPar $isPrior $priorType $outputdirectorySignal $outputdirectory
 
 fi
-
-
 
 ################################################
 ############### Get systematic uncertanties
 ################################################
-
 
 if [ $doSystematics -eq 1 ]; then
 	cd systematics

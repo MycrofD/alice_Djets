@@ -47,11 +47,13 @@
 
   const int fptbinsDN = 10;
   double fptbinsDA[fptbinsDN+1] = { 3,4,5,6,7,8,10,12,16,24,36 };
+  //const int fptbinsDN = 9;
+  //double fptbinsDA[fptbinsDN+1] = { 3,4,5,6,7,8,10,12,16,24 };
 
   // for Pb-Pb baseline
   //  const int fptbinsDN = 9;
   //  double fptbinsDA[fptbinsDN+1] = { 3,4,5,6,7,8,10,12,16,20 };
-  
+
 
     double zmin = -2, zmax = 2.;
 
@@ -72,6 +74,7 @@
     const double BRDstar = 0.0257;
     const double BRDzero = 0.0393;
     const int APb = 208;
+    const double nEvScale = 1.017;
 
     //------- POWHEG simulations
 

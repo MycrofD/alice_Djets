@@ -47,11 +47,13 @@
 
   const int fptbinsDN = 10;
   double fptbinsDA[fptbinsDN+1] = { 3,4,5,6,7,8,10,12,16,24,36 };
+  //const int fptbinsDN = 9;
+  //double fptbinsDA[fptbinsDN+1] = { 3,4,5,6,7,8,10,12,16,24 };
 
   // for Pb-Pb baseline
   //  const int fptbinsDN = 9;
   //  double fptbinsDA[fptbinsDN+1] = { 3,4,5,6,7,8,10,12,16,20 };
-  
+
 
     double zmin = -2, zmax = 2.;
 
@@ -72,6 +74,7 @@
     const double BRDstar = 0.0257;
     const double BRDzero = 0.0393;
     const int APb = 208;
+    const double nEvScale = 1.017;
 
     //------- POWHEG simulations
 
@@ -163,10 +166,10 @@
     "AnalysisResults_FastSim_powheg_beauty_1497130041",
     "AnalysisResults_FastSim_powheg_beauty_1497121734"};*/
 
-TString OUTDIRECTORY="/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_CutVarBase";
-const int ND = 2;
-const int NDMC = 2;
-const int fptbinsJetTrueN = 7;
-double fptbinsJetTrueA[fptbinsJetTrueN+1] = { 3,5,10,15,20,25,35,50 };
-const int fptbinsJetMeasN = 7;
-double fptbinsJetMeasA[fptbinsJetMeasN+1] = { 3,5,10,15,20,25,35,50 };
+TString OUTDIRECTORY="/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts";
+const int ND = 4;
+const int NDMC = 3;
+const int fptbinsJetTrueN = 9;
+double fptbinsJetTrueA[fptbinsJetTrueN+1] = { 3,4,5,6,8,10,14,20,30,50 };
+const int fptbinsJetMeasN = 9;
+double fptbinsJetMeasA[fptbinsJetMeasN+1] = { 3,4,5,6,8,10,14,20,30,50 };

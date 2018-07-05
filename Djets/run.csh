@@ -59,6 +59,16 @@ isDefaultAn=${19}
 doCutVar=${20}
 isRawSpectra=${24}
 
+isOnlyFinal=0
+if [ $isOnlyFinal -eq 1 ]; then
+  isSignal=0
+  isRefl=0            #reflections for D0
+  isEffPrompt=0
+  isEffNonPrompt=0
+  isDetRMPrompt=0
+  isDetRMNonPrompt=0
+  isUnfolding=0
+fi
 
 ############### unfolding config
 unfType=$8 #0:bayes, 1:SVD
@@ -213,6 +223,7 @@ else
   echo "const int NDMC = 2;"  >> config.h
 fi
 
+# pp binning
 if [ $ptbinning -eq 0 ]; then
 
   case $jetpttruemin in
@@ -220,6 +231,9 @@ if [ $ptbinning -eq 0 ]; then
     echo "const int fptbinsJetTrueN = 9;" >> config.h
     echo "double fptbinsJetTrueA[fptbinsJetTrueN+1] = { 3,4,5,6,8,10,14,20,30,50 };" >> config.h
     ;;
+    #echo "const int fptbinsJetTrueN = 8;" >> config.h
+    #echo "double fptbinsJetTrueA[fptbinsJetTrueN+1] = { 3,4,5,6,8,10,14,20,30 };" >> config.h
+    #;;
   4)
     echo "const int fptbinsJetTrueN = 8;" >> config.h
     echo "double fptbinsJetTrueA[fptbinsJetTrueN+1] = { 4,5,6,8,10,14,20,30,50 };" >> config.h
@@ -228,7 +242,9 @@ if [ $ptbinning -eq 0 ]; then
     echo "const int fptbinsJetTrueN = 7;" >> config.h
     echo "double fptbinsJetTrueA[fptbinsJetTrueN+1] = { 5,6,8,10,14,20,30,50 };" >> config.h
     ;;
-
+    #echo "const int fptbinsJetTrueN = 6;" >> config.h
+    #echo "double fptbinsJetTrueA[fptbinsJetTrueN+1] = { 5,6,8,10,14,20,30 };" >> config.h
+    #;;
   *)
     echo "!!! Wrong value of min true pT  !!!"
     exit 1
@@ -240,6 +256,9 @@ if [ $ptbinning -eq 0 ]; then
     echo "const int fptbinsJetMeasN = 9;" >> config.h
     echo "double fptbinsJetMeasA[fptbinsJetMeasN+1] = { 3,4,5,6,8,10,14,20,30,50 };" >> config.h
     ;;
+    #echo "const int fptbinsJetMeasN = 8;" >> config.h
+    #echo "double fptbinsJetMeasA[fptbinsJetMeasN+1] = { 3,4,5,6,8,10,14,20,30 };" >> config.h
+    #;;
   4)
     echo "const int fptbinsJetMeasN = 8;" >> config.h
     echo "double fptbinsJetMeasA[fptbinsJetMeasN+1] = { 4,5,6,8,10,14,20,30,50 };" >> config.h
@@ -248,6 +267,9 @@ if [ $ptbinning -eq 0 ]; then
     echo "const int fptbinsJetMeasN = 7;" >> config.h
     echo "double fptbinsJetMeasA[fptbinsJetMeasN+1] = { 5,6,8,10,14,20,30,50 };" >> config.h
     ;;
+    #echo "const int fptbinsJetMeasN = 6;" >> config.h
+    #echo "double fptbinsJetMeasA[fptbinsJetMeasN+1] = { 5,6,8,10,14,20,30 };" >> config.h
+    #;;
   *)
     echo "!!! Wrong value of min true pT  !!!"
     exit 1
@@ -255,6 +277,62 @@ if [ $ptbinning -eq 0 ]; then
   esac
 
 fi
+
+# pp binning 2
+if [ $ptbinning -eq 8 ]; then
+
+  case $jetpttruemin in
+  3)
+    echo "const int fptbinsJetTrueN = 8;" >> config.h
+    echo "double fptbinsJetTrueA[fptbinsJetTrueN+1] = { 3,5,6,8,10,14,20,30,50 };" >> config.h
+    ;;
+    #echo "const int fptbinsJetTrueN = 8;" >> config.h
+    #echo "double fptbinsJetTrueA[fptbinsJetTrueN+1] = { 3,4,5,6,8,10,14,20,30 };" >> config.h
+    #;;
+  4)
+    echo "const int fptbinsJetTrueN = 8;" >> config.h
+    echo "double fptbinsJetTrueA[fptbinsJetTrueN+1] = { 4,5,6,8,10,14,20,30,50 };" >> config.h
+    ;;
+  5)
+    echo "const int fptbinsJetTrueN = 7;" >> config.h
+    echo "double fptbinsJetTrueA[fptbinsJetTrueN+1] = { 5,6,8,10,14,20,30,50 };" >> config.h
+    ;;
+    #echo "const int fptbinsJetTrueN = 6;" >> config.h
+    #echo "double fptbinsJetTrueA[fptbinsJetTrueN+1] = { 5,6,8,10,14,20,30 };" >> config.h
+    #;;
+  *)
+    echo "!!! Wrong value of min true pT  !!!"
+    exit 1
+    ;;
+  esac
+
+  case $jetptmeasmin in
+  3)
+    echo "const int fptbinsJetMeasN = 8;" >> config.h
+    echo "double fptbinsJetMeasA[fptbinsJetMeasN+1] = { 3,5,6,8,10,14,20,30,50 };" >> config.h
+    ;;
+    #echo "const int fptbinsJetMeasN = 8;" >> config.h
+    #echo "double fptbinsJetMeasA[fptbinsJetMeasN+1] = { 3,4,5,6,8,10,14,20,30 };" >> config.h
+    #;;
+  4)
+    echo "const int fptbinsJetMeasN = 8;" >> config.h
+    echo "double fptbinsJetMeasA[fptbinsJetMeasN+1] = { 4,5,6,8,10,14,20,30,50 };" >> config.h
+    ;;
+  5)
+    echo "const int fptbinsJetMeasN = 7;" >> config.h
+    echo "double fptbinsJetMeasA[fptbinsJetMeasN+1] = { 5,6,8,10,14,20,30,50 };" >> config.h
+    ;;
+    #echo "const int fptbinsJetMeasN = 6;" >> config.h
+    #echo "double fptbinsJetMeasA[fptbinsJetMeasN+1] = { 5,6,8,10,14,20,30 };" >> config.h
+    #;;
+  *)
+    echo "!!! Wrong value of min true pT  !!!"
+    exit 1
+    ;;
+  esac
+
+fi
+
 
 if [ $ptbinning -eq 5 ]; then
 
@@ -290,6 +368,41 @@ if [ $ptbinning -eq 5 ]; then
   5)
     echo "const int fptbinsJetMeasN = 7;" >> config.h
     echo "double fptbinsJetMeasA[fptbinsJetMeasN+1] = { 5,6,8,10,14,20,30,50 };" >> config.h
+    ;;
+  *)
+    echo "!!! Wrong value of min true pT  !!!"
+    exit 1
+    ;;
+  esac
+
+fi
+# Pb-Pb binning
+if [ $ptbinning -eq 2 ]; then
+
+  case $jetpttruemin in
+  3)
+    echo "const int fptbinsJetTrueN = 7;" >> config.h
+    echo "double fptbinsJetTrueA[fptbinsJetTrueN+1] = { 3,5,10,15,20,25,35,50 };" >> config.h
+    ;;
+  5)
+    echo "const int fptbinsJetTrueN = 6;" >> config.h
+    echo "double fptbinsJetTrueA[fptbinsJetTrueN+1] = { 5,10,15,20,25,35,50 };" >> config.h
+    ;;
+
+  *)
+    echo "!!! Wrong value of min true pT  !!!"
+    exit 1
+    ;;
+  esac
+
+  case $jetptmeasmin in
+  3)
+    echo "const int fptbinsJetMeasN = 7;" >> config.h
+    echo "double fptbinsJetMeasA[fptbinsJetMeasN+1] = { 3,5,10,15,20,25,35,50 };" >> config.h
+    ;;
+  5)
+    echo "const int fptbinsJetMeasN = 6;" >> config.h
+    echo "double fptbinsJetMeasA[fptbinsJetMeasN+1] ={ 5,10,15,20,25,35,50 };" >> config.h
     ;;
   *)
     echo "!!! Wrong value of min true pT  !!!"
@@ -341,43 +454,6 @@ if [ $ptbinning -eq 1 ]; then
   esac
 
 fi
-
-# Pb-Pb binning
-if [ $ptbinning -eq 2 ]; then
-
-  case $jetpttruemin in
-  3)
-    echo "const int fptbinsJetTrueN = 7;" >> config.h
-    echo "double fptbinsJetTrueA[fptbinsJetTrueN+1] = { 3,5,10,15,20,25,35,50 };" >> config.h
-    ;;
-  5)
-    echo "const int fptbinsJetTrueN = 6;" >> config.h
-    echo "double fptbinsJetTrueA[fptbinsJetTrueN+1] = { 5,10,15,20,25,35,50 };" >> config.h
-    ;;
-
-  *)
-    echo "!!! Wrong value of min true pT  !!!"
-    exit 1
-    ;;
-  esac
-
-  case $jetptmeasmin in
-  3)
-    echo "const int fptbinsJetMeasN = 7;" >> config.h
-    echo "double fptbinsJetMeasA[fptbinsJetMeasN+1] = { 3,5,10,15,20,25,35,50 };" >> config.h
-    ;;
-  5)
-    echo "const int fptbinsJetMeasN = 6;" >> config.h
-    echo "double fptbinsJetMeasA[fptbinsJetMeasN+1] ={ 5,10,15,20,25,35,50 };" >> config.h
-    ;;
-  *)
-    echo "!!! Wrong value of min true pT  !!!"
-    exit 1
-    ;;
-  esac
-
-fi
-
 #binning 2
 if [ $ptbinning -eq 3 ]; then
 
@@ -413,8 +489,6 @@ if [ $ptbinning -eq 3 ]; then
  esac
 
 fi
-
-
 #binning 3
 if [ $ptbinning -eq 4 ]; then
 
@@ -754,9 +828,9 @@ fi
 ################################################
 
 if [ $isFinalSpectra -eq 1 ]; then
-
+sysDir=$outdirBase/$outdir/systematics
   cd $finalDir
-  aliroot -l -b -q finalJetSpectra.C'("'$signalUnfoldedFile'","'$analysisDataFile'","'$PromptSimDirOut'","'$finalDirOut'")'
+  aliroot -l -b -q finalJetSpectra.C'("'$signalUnfoldedFile'","'$analysisDataFile'","'$PromptSimDirOut'","'$finalDirOut'","'$sysDir'")'
 
   cd $currDir
 fi
