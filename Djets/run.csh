@@ -105,7 +105,7 @@ fi
 
 ######### config file
 mkdir -p $outdirBase/$outdir
-echo >> config.h
+cat $conffile > config.h
 echo "const Int_t fBsimN = ${nSimFilesB};"  >> config.h
 echo "const Int_t fCsimN = ${nSimFilesC};"  >> config.h
 echo "TString OUTDIRECTORY=\"$outdirBase\";"  >> config.h
@@ -340,7 +340,7 @@ fi
 ############### prompt D-jet simulations
 ################################################
 
-if [ ! -d "$PromptSimDirOut" ] || [ $isCsim -eq 1 ]; then
+if [ $isCsim -eq 1 ]; then
 
 cd $SimDir
 # 1: number of simulation files (as defined in the config file)

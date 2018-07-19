@@ -164,7 +164,6 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
 /***********************************
 ############# unfolding ##################
 ************************************/
-//	if (bayesUnfolding)
 		RooUnfoldBayes unfold (&response, fRawRebin, ivar+1);
 		fUnfoldedBayes[ivar] = (TH1D*)unfold.Hreco();
 		folded[ivar] = (TH1D*)response.ApplyToTruth(fUnfoldedBayes[ivar]);
@@ -272,7 +271,8 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
     for(Int_t ivar=0; ivar<NTrials; ivar++){
         hRatioSpectrum[ivar] = (TH1D*) fUnfoldedBayes[ivar]->Clone(Form("hRatioSpectrum%d",ivar));
         hRatioSpectrum[ivar]->Divide(hBaseSpectrum);
-        hRatioSpectrum[ivar]->GetYaxis()->SetTitle(Form("RegX/Reg%d",regBayes));
+				hRatioSpectrum[ivar]->GetYaxis()->SetTitle(Form("RegX/Reg%d",regBayes));
+        hRatioSpectrum[ivar]->SetTitle(Form("Reg=%d",ivar+1));
         hRatioSpectrum[ivar]->SetMarkerStyle(fMarkers[ivar]);//[iter]);
         hRatioSpectrum[ivar]->SetMarkerColor(colortable[ivar]);//[iter]);//(colortable[iter+1]);
         hRatioSpectrum[ivar]->SetMarkerSize(0);
@@ -288,13 +288,12 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
 
     }
 		hRatioUnfS->SetMinimum(hRatioUnfS->GetMinimum("nostack"));
+		//hRatioUnfS->SetMaximum(hRatioUnfS->GetMaximum("nostack")*0.8);
 		hRatioUnfS->Draw("nostackhist");
 		hRatioUnfS->GetXaxis()->SetTitle("p_{T, ch.jet}");
 		gPad->BuildLegend(0.55,0.65,0.9,0.9,"");
-
     line->Draw("same");
 
-		//cRatio->SaveAs(Form("%s/%s_unfRatio.png",outDir.Data(),outName.Data()));
 		cRatio->SaveAs(Form("%s/plots/%s_unfRatio.pdf",outDir.Data(),outName.Data()));
 		cRatio->SaveAs(Form("%s/plots/%s_unfRatio.png",outDir.Data(),outName.Data()));
 
@@ -326,6 +325,7 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
 								hUnfolded_Unc->SetBinError(j,0);
 		}
 
+		hUnfolded_Unc->SetTitle();
 		hUnfolded_Unc->SetMaximum(hUnfolded_Unc->GetMaximum()*1.2);
 		hUnfolded_Unc->SetMinimum(0);
 
