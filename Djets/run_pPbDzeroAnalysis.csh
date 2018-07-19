@@ -12,12 +12,16 @@ lhcprod=_LHC16R03
 efficiencyfile=AnalysisResults_fast_R03_D0MCPythia_default.root
 detRMpromptfile=AnalysisResults_fast_R03_D0MCPythia_default.root
 detRMnonpromptfile=AnalysisResults_fast_R03_D0MCPythia_default.root
-
+ispostfix=0
+postfix=Cut
+ispostfixFD=1
+postfixFD=FD
 
 outputdirectorybase=$HOME/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_
 #outputdirectorybase=$HOME/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt324PythiaEff_
 outputdirectory=${outputdirectorybase}BaseCuts
 outputdirectorySignal=Default
+
 
 if [ $ptbinning -eq 0 ]; then
   outputdirectorySignal=Default_jetMeas$jetptmeasmin\_$jetptmeasmax\_jetTrue$jetpttruemin\_$jetpttruemax\_ppbinning
@@ -53,18 +57,17 @@ if [ $ptbinning -eq 5 ]; then
 outputdirectorySignal=Default_jetMeas$jetptmeasmin\_$jetptmeasmax\_jetTrue$jetpttruemin\_$jetpttruemax\_finebinning5
 fi
 
-ispostfix=0
-postfix=Cut
-ispostfixFD=1
-postfixFD=FD
 
 bkgRMtype=$6
-unfType=$7 #bayes
+unfType=$7
 regPar=$8
 isPrior=$9
 priorType=${10}
 
-# systematics
+doRawSpectra=${19}
+doSignal=${20}
+
+#### systematics
 doBkg=${11}
 doPrior=${12}
 doBkgPrior=${13}
@@ -73,8 +76,6 @@ doJESSys=${15}
 doFDSys=${16}
 doSystematics=${17}
 doRawCutVar=${18}
-doRawSpectra=${19}
-doSignal=${20}
 
 unfCutSys=0
 
@@ -85,7 +86,7 @@ unfCutSys=0
   ################################################
   ############### without efficiency correction
   ################################################
-  if [ $doRawSpectra -eq 1 ]; then
+if [ $doRawSpectra -eq 1 ]; then
  ./run.csh $outputdirectory $outputdirectorySignal $lhcprod $efficiencyfile $detRMpromptfile $detRMnonpromptfile $bkgRMtype $unfType $regPar $isPrior $priorType $ispostfix $postfix $ispostfixFD $postfixFD $ptbinning $jetpttruemin $jetptmeasmin 1 0 0 0 0 1
 
      ################################################

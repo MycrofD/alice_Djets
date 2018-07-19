@@ -8,7 +8,6 @@
 
 double plotmin = fptbinsJetMeasA[0], plotmax = fptbinsJetMeasA[fptbinsJetMeasN];
 
-
 TH1* GetInputHist(TString inFile = "JetPtSpectra_effScale.root", string histName = "hjetpt",TH1 *hh);
 TH1* GetInputSimHist(TString inFile, TH1 *hJetPt_B);
 
@@ -43,9 +42,9 @@ bool isSys = 1, bool rebinned = 1,  bool isEff = 1 )
     TH1F* hEvents = (TH1F*)histList->FindObject("hstat");
     double nEvSel = hEvents->GetBinContent(2);
     double nEvAna = hEvents->GetBinContent(1);
-    double nEv;
-    if(fSystem) nEv = nEvScale*nEvSel;
-    else nEv = nEvScale*nEvAna;
+    double nEv = nEvScale*nEvSel;
+  //  if(fSystem) nEv = nEvScale*nEvSel;
+  //  else nEv = nEvScale*nEvAna;
 
   //  cout << "==== Number of events: " << nEvSel << endl;
 

@@ -29,15 +29,15 @@ bool isRefSys=0;
 double refScale = 1.5;
 
 void signalExtraction_SB(
-  TString dataFile = "$HOME/Work/alice/analysis/pp13tev/outData/losser_15Nov/AnalysisResults",
-  TString lhcprod = "LHC16kl", // if one file: e.g. LHC16k, LHC16kl ... ; for more than one file: LHC16: -- pattern of the out file is: PATH_TO_OUTFILE/AnalysiResultsLHCPROD
-  bool isMoreFiles = 0, TString prod = "kl",    // for more than 1 file, for one file leave it empty
+  TString data = "$HOME/Work/alice/analysis/out/AnalysisResults.root",
   bool isEff = 0, TString efffile = "../efficiency/DjetEff_prompt.root",
   bool isRef = 0, TString refFile = "test.root",
-  bool save = 1,
   bool postfix = 0, TString listName = "Cut",
-  TString out = "signalExtraction")
-
+  TString out = "signalExtraction",
+  bool save = 1,
+  bool isMoreFiles = 0,
+  TString prod = "kl"   // for more than 1 file, for one file leave it empty)
+)
 {
 
     fUseRefl = isRef;
@@ -64,10 +64,8 @@ void signalExtraction_SB(
     TList *histList;
     THnSparseF *sparse;
 
-    if(!nFiles) {
-      datafile = dataFile;
-      datafile += lhcprod;
-      datafile += ".root";
+    if(!isMoreFiles) {
+      datafile = data;
       File = new TFile(datafile,"read");
       if(!File) { cout << "==== WRONG FILE WITH DATA =====\n\n"; return ;}
       dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
@@ -85,8 +83,7 @@ void signalExtraction_SB(
     }
     else {
       for (int j=0;j<nFiles;j++){
-          datafile = dataFile;
-          datafile += lhcprod;
+          datafile = data;
           datafile += prod.Data()[j];
           datafile += ".root";
           File = new TFile(datafile,"read");
@@ -123,15 +120,15 @@ void signalExtraction_SB(
 
     // --------------------------------------------------------
     // fit inv. mass in D pT bins and get raw jet pT spectra in the signal and side-bands regions
-     Bool_t okSignalExt = rawJetSpectra(outdir,lhcprod+prod);
+     Bool_t okSignalExt = rawJetSpectra(outdir,prod);
      if(!okSignalExt) { std::cout << "!!!!!! Something wrong in the raw signal extraction !!!!" << endl; return; }
     // --------------------------------------------------------
 
     // --------------------------------------------------------
    //------------------- draw output histos -------------------
     if(savePlots){
-      saveFitParams(outdir,lhcprod+prod);
-      saveSpectraPlots(outdir,lhcprod+prod);
+      saveFitParams(outdir,prod);
+      saveSpectraPlots(outdir,prod);
     }
 
     // --------------------------------------------------------

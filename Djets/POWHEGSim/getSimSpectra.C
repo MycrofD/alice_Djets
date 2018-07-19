@@ -7,14 +7,13 @@
 
 #include "config.h"
 
-double jetptmin = 5, jetptmax = 30; // for D pT spectra
-double jetEta = 0.9-fRpar;
-int BFDsim;
-
-
 //fDmesonSpecie = 1;
 //fRpar = 0.4;
 //Rpar = 4;
+
+double jetptmin = 5, jetptmax = 30; // for D pT spectra
+double jetEta = 0.9-fRpar;
+int BFDsim;
 
 //quark: 1 = beauty, 0 = charm
 void getSimSpectra(
@@ -25,7 +24,7 @@ TString effFileNonPrompt = "$HOME/file.root",
 TString outFileDir = "outR03Test/",
 bool isjetptcut = 0, double jetmin = 5, double jetmax = 30 );
 
-double GetEfficiency(TH1 *hh, double Dpt); //double GetEfficiency(TH1 *hh, double Dpt){  return hh->GetBinContent(hh->GetXaxis()->FindBin(Dpt));}
+double GetEfficiency(TH1 *hh, double Dpt);
 void setHistoDetails(TH1 *hh, Color_t color, Style_t Mstyle, Width_t width, string name);
 void SaveCanvas(TCanvas *c, string name = "tmp");
 

@@ -130,9 +130,9 @@ bool isStart5 = 1)*/
   TH1F* hEvents = (TH1F*)histList->FindObject("hstat");
   double nEvSel = hEvents->GetBinContent(2);
   double nEvAna = hEvents->GetBinContent(1);
-  double nEv;
-  if(fSystem) nEv = nEvScale*nEvSel;
-  else nEv = nEvScale*nEvAna;
+  double nEv = nEvScale*nEvSel;
+  //if(fSystem) nEv = nEvScale*nEvSel;
+  //else nEv = nEvScale*nEvAna;
 
   double dataLum = nEv/(sigma_in*1000) ;//Luminosity in mbar
   double simScaling = APb/2.;

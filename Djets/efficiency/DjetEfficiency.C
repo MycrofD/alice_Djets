@@ -3,16 +3,7 @@
 
 using namespace std;
 
-
-const int ptbinsDN = 12;
-double ptDbins[ptbinsDN+1] = { 1,2,3,4,5,6,7,8,10,12,16,24,36 };
-float ptmin = 1, ptmax = 36;
-
-/* //for Pb-Pb analysis
-const int ptbinsDN = 11;
-double ptDbins[ptbinsDN+1] = { 1,2,3,4,5,6,7,8,10,12,16,20 };
-float ptmin = 1, ptmax = 20;
-*/
+float ptmin = fptbinsDA[0], ptmax = fptbinsDA[fptbinsDN];
 
 void DjetEfficiency(bool isPrompt = 1, TString effFile = "../outMC/AnalysisResults_fast_D0MCHijing_SMQcorr2.root", TString outDir = "SQMCorrcuts",
 float jetptmin = 2, float jetptmax = 50, bool recoPt = 0, bool postfix = 0, TString listName = "FD")
@@ -104,8 +95,8 @@ float jetptmin = 2, float jetptmax = 50, bool recoPt = 0, bool postfix = 0, TStr
 	TCanvas *cEff = new TCanvas();
 	hEff->Draw("ep");
 
-	TH1D *hpt_mc_reb = (TH1D*)hMCpt->Rebin(ptbinsDN,"hpt_mc_reb",ptDbins);
-	TH1D *hpt_reco_reb = (TH1D*)hMCpt_reco->Rebin(ptbinsDN,"hpt_reco_reb",ptDbins);
+	TH1D *hpt_mc_reb = (TH1D*)hMCpt->Rebin(fptbinsDN,"hpt_mc_reb",fptbinsDA);
+	TH1D *hpt_reco_reb = (TH1D*)hMCpt_reco->Rebin(fptbinsDN,"hpt_reco_reb",fptbinsDA);
 
 	TH1D * hEff_reb = (TH1D*)hpt_reco_reb->Clone("hEff_reb");
 	hEff_reb -> Divide(hpt_reco_reb,hpt_mc_reb,1,1,"b");

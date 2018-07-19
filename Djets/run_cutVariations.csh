@@ -40,7 +40,6 @@ if [ $doCuts -gt 0 ]; then
 	postfixFD=$1FD
 fi
 
-
 bkgRMtype=$8
 unfType=$9 #bayes
 regPar=${10}
