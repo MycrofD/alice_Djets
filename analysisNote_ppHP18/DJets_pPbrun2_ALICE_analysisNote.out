@@ -1,0 +1,35 @@
+\BOOKMARK [1][-]{section.1}{Software}{}% 1
+\BOOKMARK [1][-]{section.2}{Dataset and Event Selection}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Monte Carlo productions}{section.2}% 3
+\BOOKMARK [3][-]{subsubsection.2.1.1}{D0-tagged jets}{subsection.2.1}% 4
+\BOOKMARK [1][-]{section.3}{D-Meson Selection}{}% 5
+\BOOKMARK [2][-]{subsection.3.1}{Particle Identification}{section.3}% 6
+\BOOKMARK [1][-]{section.4}{Jet Reconstruction}{}% 7
+\BOOKMARK [2][-]{subsection.4.1}{Jet Selection}{section.4}% 8
+\BOOKMARK [1][-]{section.5}{Raw Yield Extraction}{}% 9
+\BOOKMARK [2][-]{subsection.5.1}{Side-Band Subtraction Method}{section.5}% 10
+\BOOKMARK [1][-]{section.6}{Efficiency Correction Procedure}{}% 11
+\BOOKMARK [2][-]{subsection.6.1}{Reconstruction Efficiency}{section.6}% 12
+\BOOKMARK [2][-]{subsection.6.2}{Efficiency-Corrected Yields}{section.6}% 13
+\BOOKMARK [3][-]{subsubsection.6.2.1}{Side-Band Subtraction Method}{subsection.6.2}% 14
+\BOOKMARK [1][-]{section.7}{Jet Momentum Detector Response \205 Detector Response Matrix}{}% 15
+\BOOKMARK [1][-]{section.8}{Feed-Down Correction}{}% 16
+\BOOKMARK [2][-]{subsection.8.1}{Monte Carlo Simulation}{section.8}% 17
+\BOOKMARK [2][-]{subsection.8.2}{Feed-Down Subtraction}{section.8}% 18
+\BOOKMARK [1][-]{section.9}{Unfolding}{}% 19
+\BOOKMARK [2][-]{subsection.9.1}{D0-tagged jets}{section.9}% 20
+\BOOKMARK [1][-]{section.10}{Systematic Uncertainties}{}% 21
+\BOOKMARK [2][-]{subsection.10.1}{Raw Yield Extraction}{section.10}% 22
+\BOOKMARK [3][-]{subsubsection.10.1.1}{Variation of signal and side-band ranges}{subsection.10.1}% 23
+\BOOKMARK [3][-]{subsubsection.10.1.2}{Variation of reflection to signal ratio}{subsection.10.1}% 24
+\BOOKMARK [2][-]{subsection.10.2}{D-Meson Selection Cuts}{section.10}% 25
+\BOOKMARK [2][-]{subsection.10.3}{B Feed-Down Correction}{section.10}% 26
+\BOOKMARK [2][-]{subsection.10.4}{Unfolding}{section.10}% 27
+\BOOKMARK [2][-]{subsection.10.5}{Tracking Efficiency}{section.10}% 28
+\BOOKMARK [2][-]{subsection.10.6}{Tracking Efficiency \205 Jet Energy Scale}{section.10}% 29
+\BOOKMARK [2][-]{subsection.10.7}{pT Shape of the Monte Carlo Spectrum}{section.10}% 30
+\BOOKMARK [2][-]{subsection.10.8}{Summary of Systematic Uncertainties}{section.10}% 31
+\BOOKMARK [1][-]{section.11}{Results}{}% 32
+\BOOKMARK [2][-]{subsubsection.11.0.1}{Monte Carlo Simulations}{section.11}% 33
+\BOOKMARK [1][-]{section.12}{Preliminary Figures}{}% 34
+\BOOKMARK [1][-]{section.13}{Nuclear Modification Factor \(RpPb\)}{}% 35
