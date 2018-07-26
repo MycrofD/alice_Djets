@@ -1,6 +1,10 @@
 #!/bin/bash
-
-# B. Trzeciak (Utrecht University)
+#
+#//-----------------------------------------------------------------------
+#//  Author B.Trzeciak
+#//  Utrecht University
+#//  barbara.antonina.trzeciak@cern.ch
+#//-----------------------------------------------------------------------
 #-- script to run D-jets analysis
 # examples from D0-jet p-Pb analysis
 
@@ -16,34 +20,37 @@ fi
 currDir=`pwd`
 outputdirectorybase=$HOME/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_
 outputdirectory=${outputdirectorybase}pPbCuts
-outputdirectorySignal=DefaultTest
+outputdirectory=${outputdirectorybase}cuts2
+outputdirectorySignal=Default
 
 # ========== input directories
 anaoutfiledir=$HOME/Work/alice/analysis/pp5TeV/D0jet/outData
-refoutfiledir=$HOME/Work/alice/analysis/pp5TeV/D0jet/outMC/reflections
 MCoutfiledir=$HOME/Work/alice/analysis/pp5TeV/D0jet/outMC
-simFilesDir=/media/basia/Disk2/Work/Djets/POWHEGSimulations/fastSim_pp5TeV
+refoutfiledir=$HOME/Work/alice/analysis/pp5TeV/D0jet/outMC/reflections
+simFilesDir=/media/basia/Disk2/Work/Djets/POWHEGSimulations/fastSim_pp5TeV # POWHEG sim
 bkgRMDir=$currDir/ResponseMatrix/BkgRM03
 
 # ========== file names
 analysisdatafile=AnalysisResults_LHC17pq.root
-isMoreFiles=0   # 1 if there are more input files to be read
-prod=kl         # if there are more input files to be read
-reflfile=reflections_fitted_DoubleGaus.root
-efficiencyfile=AnalysisResults_fast_R03_D0MC_def.root
-detRMpromptfile=AnalysisResults_fast_R03_D0MC_def.root
-detRMnonpromptfile=AnalysisResults_fast_R03_D0MC_def.root
-ispostfix=0     # if container in the analysis output file has different name than default you set here if and what is the postfix, this is set up in the signal, efficiency and RM extraction macros
-postfix=Cut
-ispostfixFD=1   # if container in the analysis output file has different name than default you set here if and what is the postfix, for the FD part wagons are usually configured with additional "FD" string in the container name, you should adjust this to yours configuration
+isMoreFiles=0                                     # 1 if there are more input files to be read
+prod=kl                                           # if there are more input files to be read
+reflfile=reflectionTemplates_pPb.root
+MCfile=AnalysisResults_fast_R03_D0MC_def.root
+efficiencyfile=$MCfile
+detRMpromptfile=$MCfile
+detRMnonpromptfile=$MCfile
+ispostfix=1                                       # if container in the analysis output file has different name than default you set here if and what is the postfix, this is set up in the signal, efficiency and RM extraction macros
+postfix=cut2
+ispostfixFD=1                                     # if container in the analysis output file has different name than default you set here if and what is the postfix, for the FD part wagons are usually configured with additional "FD" string in the container name, you should adjust this to yours configuration
 postfixFD=FD
+postfixFD=FDcut2
 
-isRefl=0
+isRefl=1
 isBkgRM=0
 
 ######## !!! POWHEG simulations config
-nSimFilesB=4     # have to correspond to number of files defined in the config file
-nSimFilesC=0      # have to correspond to number of files defined in the config file
+nSimFilesB=4                                    # have to correspond to number of files defined in the config file
+nSimFilesC=1                                    # have to correspond to number of files defined in the config file
 
 unfType=$1
 regPar=$2

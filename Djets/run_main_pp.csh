@@ -1,6 +1,10 @@
 #!/bin/bash
 
-# B. Trzeciak (Utrecht University)
+#//-----------------------------------------------------------------------
+#//  Author B.Trzeciak
+#//  Utrecht University
+#//  barbara.antonina.trzeciak@cern.ch
+#//-----------------------------------------------------------------------
 #-- script to run D-jets analysis
 
 ################################################

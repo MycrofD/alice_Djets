@@ -1,5 +1,8 @@
-//Charm-jet pT unfolding for p-Pb
-//Barbara Trzeciak
+//-----------------------------------------------------------------------
+//  Author B.Trzeciak
+//  Utrecht University
+//  barbara.antonina.trzeciak@cern.ch
+//-----------------------------------------------------------------------
 
 #include "config.h"
 

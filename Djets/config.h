@@ -39,7 +39,7 @@ enum DMesonSpecies {kD0toKpi=0, kDStarD0pi};
     const double  fRpar = 0.3;           //-----! jet R parameter for your studies (the one that you use in your jet finder!)
     const int     Rpar = 3;
     const int     ND = 4;                //-----!  change these numbers based on how many D mesons you analyse in data !
-    const int     NDMC = 2;              //-----!  change these numbers based on how many D mesons you analyse in MC !
+    const int     NDMC = 3;              //-----!  change these numbers based on how many D mesons you analyse in MC !
 
     const double  sigma_in = 0.0512;       //-----! inelastic x-section in bars
     const double  nEvScale = 1.063;      //-----! scaling factor from the number of selected events to the number of events needed for the nomrmalization, taken from the D2H normalization counter
@@ -55,8 +55,10 @@ enum DMesonSpecies {kD0toKpi=0, kDStarD0pi};
     double        fptbinsJetTrueA[fptbinsJetTrueN+1] = { 3,4,5,6,8,10,14,20,30,50 };
     const int     fptbinsJetMeasN = 9;
     double        fptbinsJetMeasA[fptbinsJetMeasN+1] = { 3,4,5,6,8,10,14,20,30,50 };
+    const int     fptbinsJetFinalN = 7;
+    double        fptbinsJetFinalA[fptbinsJetFinalN+1] = { 5,6,8,10,14,20,30,50 };
     //====== z range ---- set up your min, max z ======
-    double        zmin = -2, zmax = 2.;
+    double        zmin = -2, zmax = 2.; // for D-jet pT spectrum
 
     //====== signal extraction config ======
     Bool_t        fUseRefl = 1;                      //-----! if to use reflections (for D0, you must have reflections files ready)
@@ -89,7 +91,7 @@ enum DMesonSpecies {kD0toKpi=0, kDStarD0pi};
     };
 
     TString fRunC[] = {
-
+      "RAW_CHARM_POWHEG"
     };
     TString fDescC[] = {
       "central",
@@ -103,5 +105,5 @@ enum DMesonSpecies {kD0toKpi=0, kDStarD0pi};
       "muR=0.5,muF=1"
     };
 const Int_t fBsimN = 4;
-const Int_t fCsimN = 0;
-TString OUTDIRECTORY="/home/basia/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts";
+const Int_t fCsimN = 1;
+TString OUTDIRECTORY="/home/basia/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_cuts2";

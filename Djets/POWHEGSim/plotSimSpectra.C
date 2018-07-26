@@ -1,8 +1,10 @@
+//-----------------------------------------------------------------------
+//  Author B.Trzeciak
+//  Utrecht University
+//  barbara.antonina.trzeciak@cern.ch
+//-----------------------------------------------------------------------
 //
-// Macro to extract jet pt spectra from simulation, prompt or non-prompt D
-//
-// Author: B.Trzeciak (barbara.antonina.trzeciak@cern.ch)
-//
+// Macro to plot jet pt spectra from simulation, prompt or non-prompt D
 
 #include "config.h"
 

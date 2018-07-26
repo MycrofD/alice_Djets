@@ -13,14 +13,14 @@
  * provided "as is" without express or implied warranty.                  *
  **************************************************************************/
 
+ //-----------------------------------------------------------------------
+ //  Author B.Trzeciak
+ //  Utrecht University
+ //  barbara.antonina.trzeciak@cern.ch
+ //-----------------------------------------------------------------------
+
  // Extraction of raw (or efficiency-corrected) D-jet pT spectrum
  // inv. mass method: side-band
-//
-//-----------------------------------------------------------------------
-//  Author B.Trzeciak
-//  Utrecht University
-//  barbara.antonina.trzeciak@cern.ch
-//-----------------------------------------------------------------------
 
 
 #include "signalExtraction.h"
@@ -268,7 +268,8 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         fitterp->SetInitialGaussianSigma(fDsigma);
 
         if(fUseRefl && fDmesonSpecie == 0) {
-          SetReflection(fitterp,i+firstPtBin,hmin,hmax,RS);
+          if(fSystem) SetReflection(fitterp,hmin,hmax,RS,i+firstPtBin); // older way from Fabio's templates for p-Pb
+          else SetReflection(fitterp,hmin,hmax,RS,(Int_t)fptbinsDA[i],(Int_t)fptbinsDA[i+1]); // new for pp (new templates from D-jet code)
         }
 
         fitterp->MassFitter(kFALSE);
@@ -538,7 +539,7 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
 
 }
 
-Bool_t SetReflection(AliHFInvMassFitter* &fitter, Int_t iBin, Float_t fLeftFitRange, Float_t fRightFitRange, Float_t &RS) {
+Bool_t SetReflection(AliHFInvMassFitter* &fitter, Float_t fLeftFitRange, Float_t fRightFitRange, Float_t &RS, Int_t iBin) {
 
   TFile *fileRefl = TFile::Open(fReflFilename.Data());
   if(!fileRefl){
@@ -557,6 +558,33 @@ Bool_t SetReflection(AliHFInvMassFitter* &fitter, Int_t iBin, Float_t fLeftFitRa
   Double_t RoverS = histRefl->Integral(histRefl->FindBin(fLeftFitRange),histRefl->FindBin(fRightFitRange))/histSign->Integral(histSign->FindBin(fLeftFitRange),histSign->FindBin(fRightFitRange));
   if(isRefSys) RoverS*=refScale;
   printf("R/S ratio in fit range for bin %d = %1.3f\n",iBin,RoverS);
+  fitter->SetFixReflOverS(RoverS);
+
+  RS = (Float_t)RoverS;
+  return kTRUE;
+
+}
+
+
+Bool_t SetReflection(AliHFInvMassFitter* &fitter, Float_t fLeftFitRange, Float_t fRightFitRange, Float_t &RS, Int_t ptmin, Int_t ptmax) {
+
+  TFile *fileRefl = TFile::Open(fReflFilename.Data());
+  if(!fileRefl){
+    std::cout << "File " << fReflFilename << " (reflection templates) cannot be opened! check your file path!"; return kFALSE;
+  }
+
+  TString fHistnameRefl = "histRflFittedDoubleGaus_pt";
+  TString fHistnameSign = "histSgn_";
+  TH1F *histRefl = (TH1F*)fileRefl->Get(Form("%s%d_%d",fHistnameRefl.Data(),ptmin,ptmax));
+  TH1F *histSign = (TH1F*)fileRefl->Get(Form("%s%d_%d",fHistnameSign.Data(),ptmin,ptmax));
+  if(!histRefl || !histSign){
+    std::cout << "Error in loading the template/signal histrograms! Exiting..." << endl; return kFALSE;
+  }
+
+  fitter->SetTemplateReflections(histRefl,"template",fLeftFitRange,fRightFitRange);
+  Double_t RoverS = histRefl->Integral(histRefl->FindBin(fLeftFitRange),histRefl->FindBin(fRightFitRange))/histSign->Integral(histSign->FindBin(fLeftFitRange),histSign->FindBin(fRightFitRange));
+  if(isRefSys) RoverS*=refScale;
+  //printf("R/S ratio in fit range for bin %d = %1.3f\n",iBin,RoverS);
   fitter->SetFixReflOverS(RoverS);
 
   RS = (Float_t)RoverS;

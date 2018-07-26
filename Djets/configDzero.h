@@ -55,8 +55,10 @@ enum DMesonSpecies {kD0toKpi=0, kDStarD0pi};
     double        fptbinsJetTrueA[fptbinsJetTrueN+1] = { 3,4,5,6,8,10,14,20,30,50 };
     const int     fptbinsJetMeasN = 9;
     double        fptbinsJetMeasA[fptbinsJetMeasN+1] = { 3,4,5,6,8,10,14,20,30,50 };
+    const int     fptbinsJetFinalN = 7;
+    double        fptbinsJetFinalA[fptbinsJetFinalN+1] = { 5,6,8,10,14,20,30,50 };
     //====== z range ---- set up your min, max z ======
-    double        zmin = -2, zmax = 2.;
+    double        zmin = -2, zmax = 2.; // for D-jet pT spectrum
 
     //====== signal extraction config ======
     Bool_t        fUseRefl = 1;                      //-----! if to use reflections (for D0, you must have reflections files ready)
@@ -92,7 +94,7 @@ enum DMesonSpecies {kD0toKpi=0, kDStarD0pi};
     };
 
     TString fRunC[] = {
-    
+
     };
     TString fDescC[] = {
       "central",

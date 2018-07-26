@@ -27,23 +27,23 @@ bkgRMDir=$currDir/ResponseMatrix/BkgRM03
 
 # ========== file names
 analysisdatafile=AnalysisResults_LHC16R03.root
-isMoreFiles=0   # 1 if there are more input files to be read
-prod=kl         # if there are more input files to be read
+isMoreFiles=0                                                       # 1 if there are more input files to be read
+prod=kl                                                             # if there are more input files to be read
 reflfile=reflections_fitted_DoubleGaus.root
 efficiencyfile=AnalysisResults_fast_R03_D0MCPythia_default.root
 detRMpromptfile=AnalysisResults_fast_R03_D0MCPythia_default.root
 detRMnonpromptfile=AnalysisResults_fast_R03_D0MCPythia_default.root
-ispostfix=0     # if container in the analysis output file has different name than default you set here if and what is the postfix, this is set up in the signal, efficiency and RM extraction macros
+ispostfix=0                                                         # if container in the analysis output file has different name than default you set here if and what is the postfix, this is set up in the signal, efficiency and RM extraction macros
 postfix=Cut
-ispostfixFD=1   # if container in the analysis output file has different name than default you set here if and what is the postfix, for the FD part wagons are usually configured with additional "FD" string in the container name, you should adjust this to yours configuration
+ispostfixFD=1                                                       # if container in the analysis output file has different name than default you set here if and what is the postfix, for the FD part wagons are usually configured with additional "FD" string in the container name, you should adjust this to yours configuration
 postfixFD=FD
 
 isRefl=1
 isBkgRM=1
 
 ######## !!! POWHEG simulations config
-nSimFilesB=0     # have to correspond to number of files defined in the config file
-nSimFilesC=0      # have to correspond to number of files defined in the config file
+nSimFilesB=0                                                        # have to correspond to number of files defined in the config file
+nSimFilesC=0                                                        # have to correspond to number of files defined in the config file
 
 unfType=$1
 regPar=$2

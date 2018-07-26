@@ -1,6 +1,10 @@
 #!/bin/bash
 
-# B. Trzeciak (Utrecht University)
+#//-----------------------------------------------------------------------
+#//  Author B.Trzeciak
+#//  Utrecht University
+#//  barbara.antonina.trzeciak@cern.ch
+#//-----------------------------------------------------------------------
 #-- script to run D-jets analysis
 
 ############### set up the output directory name (the whole analysis output will be saved there)
@@ -20,9 +24,9 @@ isDetRMPrompt=1     # if to extract prompt D-jet response matrix
 isDetRMNonPrompt=1  # if to extract non-prompt D-jet response matrix
 isUnfolding=1       # if to perform unfolding
 isFDSub=1           # if to subtract feed-down
-isFinalSpectra=0    # if to extract the final x-section
+isFinalSpectra=1    # if to extract the final x-section
 
-isCsim=0            # switch this flag on if you haven't prepared output of the simulations yet, it takes time -- if the simulation output directory is empty the simulations will be run anyway
+isCsim=1            # switch this flag on if you haven't prepared output of the simulations yet, it takes time -- if the simulation output directory is empty the simulations will be run anyway
 isBsim=0            # switch this flag on if you haven't prepared output of the simulations yet with a current efficiencies, it takes time -- if the simulation output directory is empty the simulations will be run anyway
 isBsimNoEff=0       # switch one if you want non-prompt simulations without scaling for non-prompt/prompt efficiency (shouldn't be used in a standard analysis chain)
 
@@ -321,9 +325,7 @@ if [ $isUnfolding -eq 1 ]; then
           aliroot -l -b -q unfold_SVD.C'("'$signalBCorrFile'","'$detRMFilePrompt'","'$bkgRMFile'","'$unfoldingDirOut'",'$regPar','$isPrior','$priorType','$isBkgRM','$isFDUpSys','$isFDDownSys')'
       fi
 
-
   cd $currDir
-
 fi
 
 cd $currDir
@@ -340,22 +342,11 @@ fi
 ############### prompt D-jet simulations
 ################################################
 
-if [ $isCsim -eq 1 ]; then
-
+if [ ! -d "$PromptSimDirOut" ] && [ $isCsim -eq 1 ]; then
 cd $SimDir
-# 1: number of simulation files (as defined in the config file)
-# 2: simulation file directory;
-# 3: quark type: 0: charm, 1: beauty
-# 4: D-jet pT spectrum: 1, D-meson pT spectrum: 0
-# 5: if D meson pT cut applied (for D-jet pT spectrum case), if yes the lower and upper values from the D-meson pT bins from the config file are taken
-# 6: if efficiency applied (for B simulations, ratio of non-prompt/prompt efficiency)
-# 7: prompt efficiency file
-# 8: non-prompt efficiency file
-# 9: direcotry for the output files
   ./doGetSimOut.csh $nSimFilesC $simFilesDir 0 1 1 0 $effFilePrompt $effFileNonPrompt $PromptSimDirOut
   #plot all the variations
   aliroot -l -b -q plotSimSpectra.C'(0,1,1,0,"'$PromptSimDirOut'","'$PromptSimDirOut'")'
-
 cd $currDir
 fi
 
@@ -366,8 +357,7 @@ fi
 if [ $isFinalSpectra -eq 1 ]; then
 sysDir=$outdirBase/$outdir/systematics
   cd $finalDir
-  aliroot -l -b -q finalJetSpectra.C'("'$signalUnfoldedFile'","'$analysisDataFile'","'$PromptSimDirOut'","'$finalDirOut'","'$sysDir'")'
-
+  aliroot -l -b -q finalJetSpectra.C'("'$signalUnfoldedFile'","'$analysisDataFile'","'$PromptSimDirOut'","'$finalDirOut'","'$sysDir'",1,1,0)'
   cd $currDir
 fi
 
