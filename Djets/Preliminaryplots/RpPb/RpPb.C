@@ -43,11 +43,10 @@ double        sysUncErr_pp[ptbinsN];
 double        sysUnc[ptbinsN];
 double        sysUncErr[ptbinsN];
 
-void RpPb(TString inDirBase = "$HOME/Work/alice/analysis/", TString outName = "$HOME/Work/alice/analysis/pPb/")
+void RpPb(TString inDirBase = "$HOME/Work/alice/analysis/", TString outName = "$HOME/Work/alice/analysis/RpPb")
 {
 
   gSystem->Exec(Form("mkdir %s",outName.Data()));
-
   plotmin = ptbinsA[0], plotmax = ptbinsA[ptbinsN];
 
   compareData(outName,inDirBase,"RpPb_pPbcuts");
@@ -60,8 +59,6 @@ void compareData(TString inName, TString inDirBase, TString outHistName)
 {
 
             TString out = inName; //= inDirBase;
-          //  out += "/";
-          //  out += inName;
             gStyle->SetOptStat(0000); //Mean and RMS shown
             gSystem->Exec(Form("mkdir %s",out.Data()));
 
@@ -93,7 +90,6 @@ void compareData(TString inName, TString inDirBase, TString outHistName)
             for(int i=0; i<nFiles; i++) {
                 spec[i] = (TH1F*)fproj[i]->Get(Form("%s",histName[i].Data()));
                 spec[i]->Sumw2();
-              //  if(!i)spec[i] -> Scale(1,"width");
                 spec[i]->SetTitle();
                 spec[i]->SetLineColor(colors2[i]);
                 spec[i]->SetMarkerColor(colors2[i]);
@@ -119,18 +115,12 @@ void compareData(TString inName, TString inDirBase, TString outHistName)
                   //cout << "rel error " << relError << endl;
                   double totalError = TMath::Sqrt(relError*relError);
                   specReb[i]->SetBinError(j+1,totalError*value);
-                //  if(i) totalError = TMath::Sqrt(error*error+sysUncpPb[j]*sysUncpPb[j]);
-                //  else totalError = TMath::Sqrt(error*error+sysUncpp[j]*sysUncpp[j]);
-
                   if(!i) {
                     sysUnc_pp[j] = specReb[i]->GetBinContent(j+1);
                     sysUncErr_pp[j] = specReb[i]->GetBinContent(j+1)*0.15;
                   }
 
                 }
-
-                //if(!i) specReb[i]->Draw();
-                //else specReb[i]->Draw("same");
                 leg->AddEntry(specReb[i],desc[i].Data());
             }
 

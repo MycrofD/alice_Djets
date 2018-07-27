@@ -31,7 +31,7 @@ simFilesDir=/media/basia/Disk2/Work/Djets/POWHEGSimulations/fastSim_pp5TeV # POW
 bkgRMDir=$currDir/ResponseMatrix/BkgRM03
 
 # ========== file names
-analysisdatafile=AnalysisResults_LHC17pq.root
+analysisdatafile=AnalysisResults_LHC17pq_FASTwoSDD.root
 isMoreFiles=0                                     # 1 if there are more input files to be read
 prod=kl                                           # if there are more input files to be read
 reflfile=reflectionTemplates_pPb.root
