@@ -8,20 +8,21 @@
 \contentsline {subsection}{\numberline {4.1}Jet Selection}{5}{subsection.4.1}
 \contentsline {section}{\numberline {5}Raw Yield Extraction}{5}{section.5}
 \contentsline {subsection}{\numberline {5.1}Side-Band Subtraction Method}{5}{subsection.5.1}
-\contentsline {section}{\numberline {6}Efficiency Correction Procedure}{6}{section.6}
-\contentsline {subsection}{\numberline {6.1}Reconstruction Efficiency}{6}{subsection.6.1}
+\contentsline {section}{\numberline {6}Efficiency Correction Procedure}{7}{section.6}
+\contentsline {subsection}{\numberline {6.1}Reconstruction Efficiency}{7}{subsection.6.1}
 \contentsline {subsection}{\numberline {6.2}Efficiency-Corrected Yields}{7}{subsection.6.2}
 \contentsline {subsubsection}{\numberline {6.2.1}Side-Band Subtraction Method}{7}{subsubsection.6.2.1}
 \contentsline {section}{\numberline {7}Jet Momentum Detector Response -- Detector Response Matrix}{8}{section.7}
 \contentsline {section}{\numberline {8}Feed-Down Correction}{8}{section.8}
-\contentsline {subsection}{\numberline {8.1}Monte Carlo Simulation}{8}{subsection.8.1}
+\contentsline {subsection}{\numberline {8.1}Monte Carlo Simulation}{9}{subsection.8.1}
 \contentsline {subsection}{\numberline {8.2}Feed-Down Subtraction}{9}{subsection.8.2}
 \contentsline {section}{\numberline {9}Unfolding}{10}{section.9}
 \contentsline {subsection}{\numberline {9.1}\ensuremath {\mathrm {D^{0}}}-tagged jets}{10}{subsection.9.1}
 \contentsline {section}{\numberline {10}Systematic Uncertainties}{11}{section.10}
 \contentsline {subsection}{\numberline {10.1}Raw Yield Extraction}{11}{subsection.10.1}
-\contentsline {subsubsection}{\numberline {10.1.1}Variation of signal and side-band ranges}{12}{subsubsection.10.1.1}
-\contentsline {subsubsection}{\numberline {10.1.2}Variation of reflection to signal ratio}{12}{subsubsection.10.1.2}
+\contentsline {subsubsection}{\numberline {10.1.1}Fitting procedure}{11}{subsubsection.10.1.1}
+\contentsline {subsubsection}{\numberline {10.1.2}Variation of signal and side-band ranges}{12}{subsubsection.10.1.2}
+\contentsline {subsubsection}{\numberline {10.1.3}Variation of reflection to signal ratio}{12}{subsubsection.10.1.3}
 \contentsline {subsection}{\numberline {10.2}D-Meson Selection Cuts}{13}{subsection.10.2}
 \contentsline {subsection}{\numberline {10.3}B Feed-Down Correction}{14}{subsection.10.3}
 \contentsline {subsection}{\numberline {10.4}Unfolding}{16}{subsection.10.4}

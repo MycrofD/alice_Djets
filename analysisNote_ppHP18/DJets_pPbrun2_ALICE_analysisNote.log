@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.6.13)  27 JUL 2018 12:13
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.6.13)  27 JUL 2018 14:17
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -530,13 +530,13 @@ LaTeX Info: Redefining \nameref on input line 18.
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
 
-<alicelogo.pdf, id=144, 116.1138pt x 142.61281pt>
+<alicelogo.pdf, id=148, 116.1138pt x 142.61281pt>
 File: alicelogo.pdf Graphic file (type pdf)
  <use alicelogo.pdf>
 Package pdftex.def Info: alicelogo.pdf used on input line 29.
 (pdftex.def)             Requested size: 46.3313pt x 56.9055pt.
 
-<cernlogo.pdf, id=145, 426.59375pt x 427.5975pt>
+<cernlogo.pdf, id=149, 426.59375pt x 427.5975pt>
 File: cernlogo.pdf Graphic file (type pdf)
  <use cernlogo.pdf>
 Package pdftex.def Info: cernlogo.pdf used on input line 29.
@@ -591,7 +591,7 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
  the same identifier (name{page.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.29 ... -- Jet Energy Scale}{19}{subsection.10.6}
+l.29 ...}Tracking Efficiency}{18}{subsection.10.5}
                                                    [1])
 \tf@toc=\write5
 \openout5 = `DJets_pPbrun2_ALICE_analysisNote.toc'.
@@ -630,15 +630,19 @@ Overfull \hbox (28.69489pt too wide) in paragraph at lines 106--123
  [] 
  []
 
-[4] <missing.png, id=233, 371.3875pt x 215.80624pt>
+[4] <missing.png, id=238, 371.3875pt x 215.80624pt>
 File: missing.png Graphic file (type png)
  <use missing.png>
-Package pdftex.def Info: missing.png used on input line 196.
+Package pdftex.def Info: missing.png used on input line 195.
 (pdftex.def)             Requested size: 182.09485pt x 105.81512pt.
 File: missing.png Graphic file (type png)
 
 <use missing.png>
-Package pdftex.def Info: missing.png used on input line 245.
+Package pdftex.def Info: missing.png used on input line 244.
+(pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
+File: missing.png Graphic file (type png)
+ <use missing.png>
+Package pdftex.def Info: missing.png used on input line 253.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
  <use missing.png>
@@ -646,56 +650,51 @@ Package pdftex.def Info: missing.png used on input line 254.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
  <use missing.png>
-Package pdftex.def Info: missing.png used on input line 255.
-(pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
-File: missing.png Graphic file (type png)
- <use missing.png>
-Package pdftex.def Info: missing.png used on input line 268.
+Package pdftex.def Info: missing.png used on input line 267.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
 
 <use missing.png>
+Package pdftex.def Info: missing.png used on input line 274.
+(pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
+File: missing.png Graphic file (type png)
+ <use missing.png>
 Package pdftex.def Info: missing.png used on input line 275.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
+ [5 <./missing.png>] [6]
 File: missing.png Graphic file (type png)
  <use missing.png>
-Package pdftex.def Info: missing.png used on input line 276.
-(pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
- [5 <./missing.png>]
-File: missing.png Graphic file (type png)
- <use missing.png>
-Package pdftex.def Info: missing.png used on input line 306.
+Package pdftex.def Info: missing.png used on input line 305.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 
-[6]
 
-LaTeX Warning: Reference `eq_pPb_DrecEff' on page 7 undefined on input line 360
+LaTeX Warning: Reference `eq_pPb_DrecEff' on page 7 undefined on input line 359
 .
 
 File: missing.png Graphic file (type png)
 <use missing.png>
+Package pdftex.def Info: missing.png used on input line 365.
+(pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
+File: missing.png Graphic file (type png)
+ <use missing.png>
 Package pdftex.def Info: missing.png used on input line 366.
-(pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
-File: missing.png Graphic file (type png)
- <use missing.png>
-Package pdftex.def Info: missing.png used on input line 367.
-(pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
-File: missing.png Graphic file (type png)
- <use missing.png>
-Package pdftex.def Info: missing.png used on input line 377.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
  [7]
 File: missing.png Graphic file (type png)
  <use missing.png>
-Package pdftex.def Info: missing.png used on input line 461.
+Package pdftex.def Info: missing.png used on input line 376.
+(pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
+File: missing.png Graphic file (type png)
+ <use missing.png>
+Package pdftex.def Info: missing.png used on input line 460.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
 
 <use missing.png>
-Package pdftex.def Info: missing.png used on input line 462.
+Package pdftex.def Info: missing.png used on input line 461.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
  [8]
-Overfull \hbox (3.10487pt too wide) in paragraph at lines 525--529
+Overfull \hbox (3.10487pt too wide) in paragraph at lines 524--528
 []\OT1/ptm/m/n/10.95 We gen-er-ated 25 M $[]$ events for the base-line pa-ram-e
 -ters: $\OML/ztmcm/m/it/10.95 m[] \OT1/ztmcm/m/n/10.95 = 4\OML/ztmcm/m/it/10.95
  :\OT1/ztmcm/m/n/10.95 75$ $[]\OML/ztmcm/m/it/10.95 c[]$\OT1/ptm/m/n/10.95 , $\
@@ -705,7 +704,7 @@ OT1/ztmcm/m/n/10.95 = \OML/ztmcm/m/it/10.95 ^^V[] \OT1/ztmcm/m/n/10.95 = []$\OT
  []
 
 
-Overfull \hbox (21.89365pt too wide) detected at line 539
+Overfull \hbox (21.89365pt too wide) detected at line 538
 []\OML/ztmcm/m/it/10.95 N[]\OT1/ztmcm/m/n/10.95 (\OML/ztmcm/m/it/10.95 p[]\OT1/
 ztmcm/m/n/10.95 ) = \OML/ztmcm/m/it/10.95 N[]\OT1/ztmcm/m/n/10.95 (\OML/ztmcm/m
 /it/10.95 p[]\OT1/ztmcm/m/n/10.95 ) \OMS/ztmcm/m/n/10.95 ^^@ \OML/ztmcm/m/it/10
@@ -717,20 +716,24 @@ ztmcm/m/n/10.95 ) = \OML/ztmcm/m/it/10.95 N[]\OT1/ztmcm/m/n/10.95 (\OML/ztmcm/m
 
 File: missing.png Graphic file (type png)
 <use missing.png>
-Package pdftex.def Info: missing.png used on input line 558.
+Package pdftex.def Info: missing.png used on input line 557.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
  <use missing.png>
-Package pdftex.def Info: missing.png used on input line 559.
+Package pdftex.def Info: missing.png used on input line 558.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
  [9]
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `superscript' on input line 582.
+(hyperref)                removing `superscript' on input line 581.
 
 File: missing.png Graphic file (type png)
 <use missing.png>
-Package pdftex.def Info: missing.png used on input line 593.
+Package pdftex.def Info: missing.png used on input line 592.
+(pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
+File: missing.png Graphic file (type png)
+ <use missing.png>
+Package pdftex.def Info: missing.png used on input line 599.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
  <use missing.png>
@@ -738,55 +741,47 @@ Package pdftex.def Info: missing.png used on input line 600.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
  <use missing.png>
-Package pdftex.def Info: missing.png used on input line 601.
-(pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
-File: missing.png Graphic file (type png)
- <use missing.png>
-Package pdftex.def Info: missing.png used on input line 608.
+Package pdftex.def Info: missing.png used on input line 607.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
 
 <use missing.png>
-Package pdftex.def Info: missing.png used on input line 609.
+Package pdftex.def Info: missing.png used on input line 608.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
  <use missing.png>
-Package pdftex.def Info: missing.png used on input line 616.
+Package pdftex.def Info: missing.png used on input line 615.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
  [10]
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 626.
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 625.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 626.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 625.
  [11]
 File: missing.png Graphic file (type png)
 
 <use missing.png>
-Package pdftex.def Info: missing.png used on input line 658.
-(pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
-File: missing.png Graphic file (type png)
- <use missing.png>
 Package pdftex.def Info: missing.png used on input line 659.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
  <use missing.png>
-Package pdftex.def Info: missing.png used on input line 667.
-(pdftex.def)             Requested size: 145.68143pt x 84.65474pt.
+Package pdftex.def Info: missing.png used on input line 660.
+(pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
  <use missing.png>
 Package pdftex.def Info: missing.png used on input line 668.
 (pdftex.def)             Requested size: 145.68143pt x 84.65474pt.
 File: missing.png Graphic file (type png)
-
-<use missing.png>
+ <use missing.png>
 Package pdftex.def Info: missing.png used on input line 669.
 (pdftex.def)             Requested size: 145.68143pt x 84.65474pt.
 File: missing.png Graphic file (type png)
- <use missing.png>
+
+<use missing.png>
 Package pdftex.def Info: missing.png used on input line 670.
 (pdftex.def)             Requested size: 145.68143pt x 84.65474pt.
 File: missing.png Graphic file (type png)
@@ -798,34 +793,34 @@ File: missing.png Graphic file (type png)
 Package pdftex.def Info: missing.png used on input line 672.
 (pdftex.def)             Requested size: 145.68143pt x 84.65474pt.
 File: missing.png Graphic file (type png)
-
-<use missing.png>
+ <use missing.png>
 Package pdftex.def Info: missing.png used on input line 673.
 (pdftex.def)             Requested size: 145.68143pt x 84.65474pt.
 File: missing.png Graphic file (type png)
- <use missing.png>
+
+<use missing.png>
 Package pdftex.def Info: missing.png used on input line 674.
 (pdftex.def)             Requested size: 145.68143pt x 84.65474pt.
 File: missing.png Graphic file (type png)
  <use missing.png>
 Package pdftex.def Info: missing.png used on input line 675.
 (pdftex.def)             Requested size: 145.68143pt x 84.65474pt.
+File: missing.png Graphic file (type png)
+ <use missing.png>
+Package pdftex.def Info: missing.png used on input line 676.
+(pdftex.def)             Requested size: 145.68143pt x 84.65474pt.
 
 
-Package caption Warning: \label without proper reference on input line 685.
+Package caption Warning: \label without proper reference on input line 686.
 See the caption package documentation for explanation.
 
 
 LaTeX Warning: Reference `fig:MultiTrialRMS_pPB_Dzero' on page 12 undefined on 
-input line 681.
+input line 682.
 
 File: missing.png Graphic file (type png)
 <use missing.png>
-Package pdftex.def Info: missing.png used on input line 684.
-(pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
-File: missing.png Graphic file (type png)
- <use missing.png>
-Package pdftex.def Info: missing.png used on input line 697.
+Package pdftex.def Info: missing.png used on input line 685.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
  <use missing.png>
@@ -833,83 +828,83 @@ Package pdftex.def Info: missing.png used on input line 698.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
  <use missing.png>
-Package pdftex.def Info: missing.png used on input line 712.
+Package pdftex.def Info: missing.png used on input line 699.
+(pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
+File: missing.png Graphic file (type png)
+ <use missing.png>
+Package pdftex.def Info: missing.png used on input line 713.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
 
 <use missing.png>
-Package pdftex.def Info: missing.png used on input line 713.
+Package pdftex.def Info: missing.png used on input line 714.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
  [12] [13]
-File: missing.png Graphic file (type png)
- <use missing.png>
-Package pdftex.def Info: missing.png used on input line 731.
-(pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
  <use missing.png>
 Package pdftex.def Info: missing.png used on input line 732.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
-
-<use missing.png>
-Package pdftex.def Info: missing.png used on input line 740.
+ <use missing.png>
+Package pdftex.def Info: missing.png used on input line 733.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
- <use missing.png>
+
+<use missing.png>
 Package pdftex.def Info: missing.png used on input line 741.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
  <use missing.png>
-Package pdftex.def Info: missing.png used on input line 749.
+Package pdftex.def Info: missing.png used on input line 742.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
  <use missing.png>
 Package pdftex.def Info: missing.png used on input line 750.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
-
-<use missing.png>
-Package pdftex.def Info: missing.png used on input line 760.
+ <use missing.png>
+Package pdftex.def Info: missing.png used on input line 751.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
- <use missing.png>
-Package pdftex.def Info: missing.png used on input line 768.
+
+<use missing.png>
+Package pdftex.def Info: missing.png used on input line 761.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
  <use missing.png>
 Package pdftex.def Info: missing.png used on input line 769.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
+File: missing.png Graphic file (type png)
+ <use missing.png>
+Package pdftex.def Info: missing.png used on input line 770.
+(pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
  [14]
 File: missing.png Graphic file (type png)
  <use missing.png>
-Package pdftex.def Info: missing.png used on input line 815.
+Package pdftex.def Info: missing.png used on input line 816.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
 
 <use missing.png>
-Package pdftex.def Info: missing.png used on input line 816.
+Package pdftex.def Info: missing.png used on input line 817.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
  [15]
-File: missing.png Graphic file (type png)
- <use missing.png>
-Package pdftex.def Info: missing.png used on input line 826.
-(pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
  <use missing.png>
 Package pdftex.def Info: missing.png used on input line 827.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
  <use missing.png>
-Package pdftex.def Info: missing.png used on input line 847.
+Package pdftex.def Info: missing.png used on input line 828.
+(pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
+File: missing.png Graphic file (type png)
+ <use missing.png>
+Package pdftex.def Info: missing.png used on input line 848.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
 
 <use missing.png>
-Package pdftex.def Info: missing.png used on input line 848.
-(pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
-File: missing.png Graphic file (type png)
- <use missing.png>
-Package pdftex.def Info: missing.png used on input line 855.
+Package pdftex.def Info: missing.png used on input line 849.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
  <use missing.png>
@@ -917,32 +912,32 @@ Package pdftex.def Info: missing.png used on input line 856.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
  <use missing.png>
-Package pdftex.def Info: missing.png used on input line 867.
+Package pdftex.def Info: missing.png used on input line 857.
+(pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
+File: missing.png Graphic file (type png)
+ <use missing.png>
+Package pdftex.def Info: missing.png used on input line 868.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
 
 <use missing.png>
-Package pdftex.def Info: missing.png used on input line 868.
+Package pdftex.def Info: missing.png used on input line 869.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
  [16]
-File: missing.png Graphic file (type png)
- <use missing.png>
-Package pdftex.def Info: missing.png used on input line 875.
-(pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
  <use missing.png>
 Package pdftex.def Info: missing.png used on input line 876.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
  <use missing.png>
-Package pdftex.def Info: missing.png used on input line 884.
+Package pdftex.def Info: missing.png used on input line 877.
+(pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
+File: missing.png Graphic file (type png)
+ <use missing.png>
+Package pdftex.def Info: missing.png used on input line 885.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 
 [17]
-File: missing.png Graphic file (type png)
- <use missing.png>
-Package pdftex.def Info: missing.png used on input line 915.
-(pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
  <use missing.png>
 Package pdftex.def Info: missing.png used on input line 916.
@@ -956,12 +951,12 @@ File: missing.png Graphic file (type png)
 Package pdftex.def Info: missing.png used on input line 918.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
-
-<use missing.png>
+ <use missing.png>
 Package pdftex.def Info: missing.png used on input line 919.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
- <use missing.png>
+
+<use missing.png>
 Package pdftex.def Info: missing.png used on input line 920.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
@@ -970,42 +965,46 @@ Package pdftex.def Info: missing.png used on input line 921.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
  <use missing.png>
-Package pdftex.def Info: missing.png used on input line 928.
+Package pdftex.def Info: missing.png used on input line 922.
+(pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
+File: missing.png Graphic file (type png)
+ <use missing.png>
+Package pdftex.def Info: missing.png used on input line 929.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 
 [18]
-File: missing.png Graphic file (type png)
- <use missing.png>
-Package pdftex.def Info: missing.png used on input line 950.
-(pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
  <use missing.png>
 Package pdftex.def Info: missing.png used on input line 951.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
  <use missing.png>
-Package pdftex.def Info: missing.png used on input line 959.
+Package pdftex.def Info: missing.png used on input line 952.
+(pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
+File: missing.png Graphic file (type png)
+ <use missing.png>
+Package pdftex.def Info: missing.png used on input line 960.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `subscript' on input line 965.
+(hyperref)                removing `subscript' on input line 966.
 
 
 LaTeX Warning: Reference `tab:CorrFixSystUnc' on page 19 undefined on input lin
-e 1044.
+e 1045.
 
 File: missing.png Graphic file (type png)
 <use missing.png>
-Package pdftex.def Info: missing.png used on input line 1050.
+Package pdftex.def Info: missing.png used on input line 1051.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
  [19]
 File: missing.png Graphic file (type png)
  <use missing.png>
-Package pdftex.def Info: missing.png used on input line 1126.
+Package pdftex.def Info: missing.png used on input line 1127.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 
-Overfull \hbox (40.27403pt too wide) in paragraph at lines 1123--1130
+Overfull \hbox (40.27403pt too wide) in paragraph at lines 1124--1131
 []\OT1/ptm/m/n/10.95 The $\OML/ztmcm/m/it/10.95 D[]$\OT1/ptm/m/n/10.95 -tagged 
 jet $\OML/ztmcm/m/it/10.95 p[]$ \OT1/ptm/m/n/10.95 dif-fer-en-tial cross sec-ti
 on in pp col-li-sions at $[] \OT1/ztmcm/m/n/10.95 = 5\OML/ztmcm/m/it/10.95 :\OT
@@ -1014,7 +1013,7 @@ on in pp col-li-sions at $[] \OT1/ztmcm/m/n/10.95 = 5\OML/ztmcm/m/it/10.95 :\OT
 
 
 Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 1133.
+(hyperref)                than one, level fixed on input line 1134.
 
 
 Underfull \vbox (badness 1231) has occurred while \output is active []
@@ -1023,28 +1022,28 @@ Underfull \vbox (badness 1231) has occurred while \output is active []
 File: missing.png Graphic file (type png)
 
 <use missing.png>
-Package pdftex.def Info: missing.png used on input line 1160.
+Package pdftex.def Info: missing.png used on input line 1161.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 File: missing.png Graphic file (type png)
  <use missing.png>
-Package pdftex.def Info: missing.png used on input line 1161.
+Package pdftex.def Info: missing.png used on input line 1162.
 (pdftex.def)             Requested size: 136.5746pt x 79.36299pt.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1189.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1190.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1189.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1190.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 1189.
+(hyperref)                removing `math shift' on input line 1190.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `subscript' on input line 1189.
+(hyperref)                removing `subscript' on input line 1190.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 1189.
+(hyperref)                removing `math shift' on input line 1190.
 
 ) (./DJets_pPbrun2_ALICE_analysisNote.bbl [21])
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 85.
@@ -1056,7 +1055,7 @@ Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 85.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 85.
 Package rerunfilecheck Info: File `DJets_pPbrun2_ALICE_analysisNote.out' has no
 t changed.
-(rerunfilecheck)             Checksum: 63AD2B738E871ADFEAB68897DDAAAB45;2470.
+(rerunfilecheck)             Checksum: FD80A8BC0CBF47095FFAE8F7FEF07E9E;2549.
 
 
 LaTeX Warning: There were undefined references.
@@ -1067,10 +1066,10 @@ LaTeX Warning: There were multiply-defined labels.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 85.
  ) 
 Here is how much of TeX's memory you used:
- 9828 strings out of 494835
- 143468 string characters out of 6178235
- 249531 words of memory out of 5000000
- 12803 multiletter control sequences out of 15000+600000
+ 9830 strings out of 494835
+ 143510 string characters out of 6178235
+ 248528 words of memory out of 5000000
+ 12804 multiletter control sequences out of 15000+600000
  74606 words of font info for 163 fonts, out of 8000000 for 9000
  81 hyphenation exceptions out of 8191
  42i,17n,45p,844b,445s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1085,11 +1084,11 @@ usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texli
 ve/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/
 fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw
 /times/utmri8a.pfb>
-Output written on DJets_pPbrun2_ALICE_analysisNote.pdf (24 pages, 325942 bytes)
+Output written on DJets_pPbrun2_ALICE_analysisNote.pdf (24 pages, 326692 bytes)
 .
 PDF statistics:
- 499 PDF objects out of 1000 (max. 8388607)
- 451 compressed objects within 5 object streams
- 115 named destinations out of 1000 (max. 500000)
- 296 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 504 PDF objects out of 1000 (max. 8388607)
+ 456 compressed objects within 5 object streams
+ 116 named destinations out of 1000 (max. 500000)
+ 304 words of extra memory for PDF output out of 10000 (max. 10000000)
 
