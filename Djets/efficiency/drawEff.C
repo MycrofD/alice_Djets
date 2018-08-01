@@ -1,3 +1,8 @@
+//-----------------------------------------------------------------------
+//  Author B.Trzeciak
+//  Utrecht University
+//  barbara.antonina.trzeciak@cern.ch
+//-----------------------------------------------------------------------
 
 #include <string>
 #include <sstream>
@@ -16,6 +21,8 @@ double plotmin = 2, double plotmax = 36)
 
     gStyle->SetOptStat(000);
 
+    plotmin = fptbinsDA[0];
+
     TFile *inFilePrompt = new TFile(promptFile.Data(),"read");
     TFile *inFileFD = new TFile(nonpromptFile.Data(),"read");
 
@@ -30,13 +37,14 @@ double plotmin = 2, double plotmax = 36)
     hEffPrompt->GetXaxis()->SetTitle(Form("#it{p}_{T,%s} (GeV/#it{c})",fDmesonS.Data()));
     hEffPrompt->GetYaxis()->SetTitle("Acceptance #times Efficiency");
     hEffPrompt->GetXaxis()->SetLabelSize(0.04);
-    hEffPrompt->GetXaxis()->SetTitleSize(0.05);
+    hEffPrompt->GetXaxis()->SetTitleSize(0.04);
     hEffPrompt->GetXaxis()->SetTitleOffset(1.);
     hEffPrompt->GetYaxis()->SetLabelSize(0.045);
     hEffPrompt->GetYaxis()->SetTitleSize(0.05);
     hEffPrompt->GetXaxis()->SetRangeUser(plotmin,plotmax);
-    if(fSystem) hEffPrompt->SetMaximum(hEffPrompt->GetMaximum()*1.6);
-    else hEffPrompt->SetMaximum(hEffNonPrompt->GetMaximum()*1.6);
+    hEffPrompt->SetMaximum(hEffPrompt->GetMaximum()*1.6);
+    //if(fSystem) hEffPrompt->SetMaximum(hEffPrompt->GetMaximum()*1.6);
+    //else hEffPrompt->SetMaximum(hEffNonPrompt->GetMaximum()*1.6);
 
     hEffNonPrompt->SetTitle();
     hEffNonPrompt->SetMarkerColor(nonpromptColor);
@@ -77,7 +85,7 @@ double plotmin = 2, double plotmax = 36)
    // pvEn->AddText("PYTHIA6+HIJING, p-Pb, #sqrt{#it{s}_{NN}} = 5.02 TeV");
 
     double shift = 0.1;
-    TPaveText *pvD = new TPaveText(0.45,0.66-shift,0.9,0.7-shift,"brNDC");
+    TPaveText *pvD = new TPaveText(0.42,0.66-shift,0.9,0.7-shift,"brNDC");
     pvD->SetFillStyle(0);
     pvD->SetBorderSize(0);
     pvD->SetTextFont(42);
@@ -86,7 +94,7 @@ double plotmin = 2, double plotmax = 36)
     if(fDmesonSpecie) pvD->AddText("D^{*+} #rightarrow D^{0}#pi^{+} and charge conj.");
     else pvD->AddText("D^{0} #rightarrow K^{-}#pi^{+} and charge conj.");
 
-    TPaveText *pvJet = new TPaveText(0.45,0.61-shift,0.9,0.65-shift,"brNDC");
+    TPaveText *pvJet = new TPaveText(0.42,0.61-shift,0.9,0.65-shift,"brNDC");
     pvJet->SetFillStyle(0);
     pvJet->SetBorderSize(0);
     pvJet->SetTextFont(42);
@@ -94,7 +102,7 @@ double plotmin = 2, double plotmax = 36)
     pvJet->SetTextAlign(11);
     pvJet->AddText(Form("in Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.%d",Rpar));
 
-    TPaveText *pvEta = new TPaveText(0.45,0.56-shift,0.8,0.6-shift,"brNDC");
+    TPaveText *pvEta = new TPaveText(0.42,0.56-shift,0.8,0.6-shift,"brNDC");
     pvEta->SetFillStyle(0);
     pvEta->SetBorderSize(0);
     pvEta->SetTextFont(42);
@@ -102,7 +110,7 @@ double plotmin = 2, double plotmax = 36)
     pvEta->SetTextAlign(11);
     pvEta->AddText(Form("|#it{#eta}_{jet}| < 0.%d",9-Rpar));
 
-    TPaveText *pvJetPt = new TPaveText(0.45,0.48-shift,0.8,0.52-shift,"brNDC");
+    TPaveText *pvJetPt = new TPaveText(0.42,0.48-shift,0.8,0.52-shift,"brNDC");
     pvJetPt->SetFillStyle(0);
     pvJetPt->SetBorderSize(0);
     pvJetPt->SetTextFont(42);

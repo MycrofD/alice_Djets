@@ -1,4 +1,8 @@
-//#include "style.C"
+//-----------------------------------------------------------------------
+//  Author B.Trzeciak
+//  Utrecht University
+//  barbara.antonina.trzeciak@cern.ch
+//-----------------------------------------------------------------------
 
 void BkgMatrixRanCones(TString datafile = "fOutDzeroEvt.root", TString histName = "hDeltaPt_ptleadbin5_excluding",
 TString postfix = "Djet5Excl", double binmax = 15, TString outDir = "bkgRM03", int Rpar = 3 )

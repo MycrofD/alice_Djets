@@ -1,5 +1,10 @@
+//-----------------------------------------------------------------------
+//  Author B.Trzeciak
+//  Utrecht University
+//  barbara.antonina.trzeciak@cern.ch
+//-----------------------------------------------------------------------
 //combined detector and bkg fluctuations matrxi for p-Pb
-//Barbara Trzeciak
+
 
 #include "config.h"
 

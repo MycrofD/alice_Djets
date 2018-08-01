@@ -1,5 +1,8 @@
-//Charm-jet pT unfolding for p-Pb
-//Barbara Trzeciak
+//-----------------------------------------------------------------------
+//  Author B.Trzeciak
+//  Utrecht University
+//  barbara.antonina.trzeciak@cern.ch
+//-----------------------------------------------------------------------
 
 #include "config.h"
 
@@ -164,7 +167,6 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
 /***********************************
 ############# unfolding ##################
 ************************************/
-//	if (bayesUnfolding)
 		RooUnfoldBayes unfold (&response, fRawRebin, ivar+1);
 		fUnfoldedBayes[ivar] = (TH1D*)unfold.Hreco();
 		folded[ivar] = (TH1D*)response.ApplyToTruth(fUnfoldedBayes[ivar]);
@@ -194,14 +196,14 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
 	cUnfolded->SaveAs(Form("%s/plots/%s_unfSpectra.png",outDir.Data(),outName.Data()));
 
 	TCanvas *cPearson = new TCanvas("cPearson","cPearson",1800,1800);
-	cPearson->Divide(3,4);
-	for(Int_t ivar=1; ivar<NTrials+1; ivar++)
+	cPearson->Divide(3,3);
+	for(Int_t ivar=1; ivar<NTrials; ivar++)
 	{
 		cPearson->cd(ivar);
-		fPearsonCoeffs[ivar-1]->SetTitle(Form("k=%d",ivar));
-		fPearsonCoeffs[ivar-1]->SetMaximum(1);
-		fPearsonCoeffs[ivar-1]->SetMinimum(-1);
-		fPearsonCoeffs[ivar-1]->Draw("colz");
+		fPearsonCoeffs[ivar]->SetTitle(Form("k=%d",ivar+1));
+		fPearsonCoeffs[ivar]->SetMaximum(1);
+		fPearsonCoeffs[ivar]->SetMinimum(-1);
+		fPearsonCoeffs[ivar]->Draw("colz");
 	}
 
 	cPearson->SaveAs(Form("%s/plots/%s_Pearson.pdf",outDir.Data(),outName.Data()));
@@ -212,18 +214,20 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
     legRatio2->SetBorderSize(0);
 		TH1D* hBaseMeasure = (TH1D*)fRawRebin->Clone("hBaseSpectrum");
 
+		// =============== Refolded / Measured
+		THStack *hRatioS = new THStack("hRatioS","refolded/measured");
     for(Int_t ivar=0; ivar<NTrials; ivar++){
         hRatio[ivar] = (TH1D*) folded[ivar]->Clone(Form("hRatio%d",ivar));
         hRatio[ivar]->Divide(hBaseMeasure);
         hRatio[ivar]->GetYaxis()->SetTitle("refolded/measured");
-				hRatio[ivar]->SetTitle("refolded/measured");
+				hRatio[ivar]->SetTitle(Form("Reg=%d",ivar+1));
         //hRatio[ivar]->GetYaxis()->SetRangeUser(0,3.5);
         //hRatio[ivar]->SetTitle();
 
         hRatio[ivar]->SetMarkerStyle(fMarkers[ivar]);
-        hRatio[ivar]->SetMarkerColor(colortable[ivar]);//(colortable[ivar+1]);
+        hRatio[ivar]->SetMarkerColor(colortable[ivar]);
         hRatio[ivar]->SetMarkerSize(0);
-        hRatio[ivar]->SetLineColor(colortable[ivar]);//(colortable[ivar+1]);
+        hRatio[ivar]->SetLineColor(colortable[ivar]);
 				hRatio[ivar]->SetLineStyle(linesytle[ivar]);
 				hRatio[ivar]->SetLineWidth(2);
 
@@ -239,14 +243,20 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
 				if(ivar==0){ //hRatio[ivar]->GetXaxis()->SetRangeUser(plotmin,plotmax);
 						continue;
 				}
-				else if(ivar==1)  hRatio[ivar]->Draw("hist");
-				else hRatio[ivar]->Draw("samehist");
+				else hRatioS->Add(hRatio[ivar]);
+			//	else if(ivar==1)  hRatio[ivar]->Draw("hist");
+			//	else hRatio[ivar]->Draw("samehist");
 
-				legRatio2->AddEntry(hRatio[ivar],Form("Reg=%d",ivar+1),"l");
+			//	legRatio2->AddEntry(hRatio[ivar],Form("Reg=%d",ivar+1),"l");
 
     }
 
-    legRatio2->Draw("same");
+		hRatioS->SetMinimum(hRatioS->GetMinimum("nostack"));
+		hRatioS->Draw("nostackhist");
+		hRatioS->GetXaxis()->SetTitle("p_{T, ch.jet}");
+		gPad->BuildLegend(0.55,0.65,0.9,0.9,"");
+    //legRatio2->Draw("same");
+
     TLine *line = new TLine(fptbinsJetMeasA[0],1,fptbinsJetMeasA[fptbinsJetMeasN],1);
     line->SetLineStyle(2);
     line->SetLineWidth(2);
@@ -256,15 +266,16 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
     cRatio2->SaveAs(Form("%s/plots/%s_foldedRatio.pdf",outDir.Data(),outName.Data()));
 		cRatio2->SaveAs(Form("%s/plots/%s_foldedRatio.png",outDir.Data(),outName.Data()));
 
+		// =============== Unfolded
+		THStack *hRatioUnfS = new THStack("hRatioUnfS",Form("Unfolded RegX/Reg%d",regBayes));
 		TCanvas *cRatio = new TCanvas("cRatio","cRatio",800,600);
-    TLegend *legRatio =  new TLegend(0.45,0.55,0.55,0.85);
-    legRatio->SetBorderSize(0);
     TH1D *hBaseSpectrum = (TH1D*)fUnfoldedBayes[regBayes-1]->Clone("hBaseSpectrum");
 //    int iter = 0;
     for(Int_t ivar=0; ivar<NTrials; ivar++){
         hRatioSpectrum[ivar] = (TH1D*) fUnfoldedBayes[ivar]->Clone(Form("hRatioSpectrum%d",ivar));
         hRatioSpectrum[ivar]->Divide(hBaseSpectrum);
-        hRatioSpectrum[ivar]->GetYaxis()->SetTitle(Form("RegX/Reg%d",regBayes));
+				hRatioSpectrum[ivar]->GetYaxis()->SetTitle(Form("RegX/Reg%d",regBayes));
+        hRatioSpectrum[ivar]->SetTitle(Form("Reg=%d",ivar+1));
         hRatioSpectrum[ivar]->SetMarkerStyle(fMarkers[ivar]);//[iter]);
         hRatioSpectrum[ivar]->SetMarkerColor(colortable[ivar]);//[iter]);//(colortable[iter+1]);
         hRatioSpectrum[ivar]->SetMarkerSize(0);
@@ -273,20 +284,19 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
 				hRatioSpectrum[ivar]->SetLineWidth(2);
 
         if((ivar == 0)  || (ivar == regBayes-1)) continue;
-        //if((ivar == baseReg-1)) continue;
+        hRatioUnfS->Add(hRatioSpectrum[ivar]);
 
-        if(ivar==1) { hRatioSpectrum[ivar]->GetYaxis()->SetRangeUser(0.8,1.3); hRatioSpectrum[ivar]->Draw("hist"); }
-        else hRatioSpectrum[ivar]->Draw("samehist");
-        legRatio->AddEntry(hRatioSpectrum[ivar],Form("Reg=%d",ivar+1),"l");
-
-  //      iter++;
+        //if(ivar==1) { hRatioSpectrum[ivar]->GetYaxis()->SetRangeUser(0.8,1.3); hRatioSpectrum[ivar]->Draw("hist"); }
+        //else hRatioSpectrum[ivar]->Draw("samehist");
 
     }
-
-		legRatio->Draw("same");
+		hRatioUnfS->SetMinimum(hRatioUnfS->GetMinimum("nostack"));
+		//hRatioUnfS->SetMaximum(hRatioUnfS->GetMaximum("nostack")*0.8);
+		hRatioUnfS->Draw("nostackhist");
+		hRatioUnfS->GetXaxis()->SetTitle("p_{T, ch.jet}");
+		gPad->BuildLegend(0.55,0.65,0.9,0.9,"");
     line->Draw("same");
 
-		//cRatio->SaveAs(Form("%s/%s_unfRatio.png",outDir.Data(),outName.Data()));
 		cRatio->SaveAs(Form("%s/plots/%s_unfRatio.pdf",outDir.Data(),outName.Data()));
 		cRatio->SaveAs(Form("%s/plots/%s_unfRatio.png",outDir.Data(),outName.Data()));
 
@@ -318,6 +328,7 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
 								hUnfolded_Unc->SetBinError(j,0);
 		}
 
+		hUnfolded_Unc->SetTitle();
 		hUnfolded_Unc->SetMaximum(hUnfolded_Unc->GetMaximum()*1.2);
 		hUnfolded_Unc->SetMinimum(0);
 

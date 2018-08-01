@@ -12,10 +12,10 @@ double sigmajet[] = {0,0};
 const int ptbinsDN = 10;
 double ptDbins[ptbinsDN+1] = { 3,4,5,6,7,8,10,12,16,24,36 };
 
-double *sigmaD;
+double sigmaD[ptbinsDN] = {}; // set up sigma of the D signal from MC
 
-TString efffile = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning/efficiency/DjetEff_prompt_jetpt5_50.root";
-TString sigmaFile = "../../DsignalExtraction/MCsignal.root";
+TString efffile = "$HOME/effFile.root";
+//TString sigmaFile = "";
 
 void ExtractDJetRawYieldUncertainty(){
 
@@ -32,7 +32,7 @@ return;
 void EvaluateBinPerBinUncertainty(
    Int_t bin = 0,
    Int_t specie=AliDJetRawYieldUncertaintyLocal::kD0toKpi,  //D-meson decay channel
-  Int_t method=AliDJetRawYieldUncertaintyLocal::kSideband,  //yield extraction method
+   Int_t method=AliDJetRawYieldUncertaintyLocal::kSideband,  //yield extraction method
    Double_t zmin=-1.,   //lower z edge
    Double_t zmax=2.,   //upper z edge
    Bool_t refl=kFALSE
@@ -50,13 +50,13 @@ void EvaluateBinPerBinUncertainty(
   interface->SetZedges(zmin,zmax);
   interface->SetFitReflections(refl);
 
-  sigmaD = new double[ptbinsDN];
+  /*sigmaD = new double[ptbinsDN];
   TFile *FileSigma = new TFile(sigmaFile.Data(),"read");
 	TH1F *hSigma = (TH1F*)FileSigma->Get("hsigma");
 	for(int i=0;i<ptbinsDN;i++){
 		double pt = (ptDbins[i]+ptDbins[i+1]) / 2.;
 		sigmaD[i] = hSigma->GetBinContent(hSigma->GetXaxis()->FindBin(pt));
-	}
+	}*/
 
 
   double sigma = 0;
