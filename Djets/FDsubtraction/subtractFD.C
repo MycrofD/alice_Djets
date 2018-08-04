@@ -184,7 +184,7 @@ void subtractB_afterFolding(TString matrixFile,TH1D *hFD_central_binned,TH1D *hF
     //-------------- data to sim ratio - B feed-down fraction
     TH1D *hFD_ratio = (TH1D*)hFD_central_binned_fold->Clone("hFD_ratio");
     hFD_ratio->Divide(hData_binned);
-    hFD_ratio->GetYaxis()->SetTitle("data/FD raw sim");
+    hFD_ratio->GetYaxis()->SetTitle("FD raw sim/data");
     hFD_ratio->SetMinimum(0);
     setHistoDetails(hFD_ratio,8,20);
 
