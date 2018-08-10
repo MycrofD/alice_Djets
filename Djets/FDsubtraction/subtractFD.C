@@ -16,7 +16,9 @@ void setHistoDetails(TH1 *hh, Color_t color, Style_t Mstyle, double Msize = 1.1,
 void SaveCanvas(TCanvas *c, TString name = "tmp");
 
 
-void subtractFD(TString dataFile = "JetPtSpectra_SB_FASTwoSDD_eff_ptD3.root",
+void subtractFD(
+TString roounfoldpwd = "",
+TString dataFile = "JetPtSpectra_SB_FASTwoSDD_eff_ptD3.root",
 TString dataAnalysisFile = "",
 TString simDir = "../simulations/POWHEG/out/",
 TString comMatrixFile = "",
@@ -583,7 +585,7 @@ TH1* GetDownSys(TH1D **hFD, const int nFiles = 11, TH1D *hFD_down){
 
 TH1* foldB(TString matrixFile, TH1D *hFD, TH1D *folded ){
 
-    gSystem->Load("/home/basia/Work/alice/RooUnfold-1.1.1/libRooUnfold.so");
+    gSystem->Load(Form("%s",roounfoldpwd.Data()));
     gStyle->SetOptStat(0000); //Mean and RMS shown
 
 

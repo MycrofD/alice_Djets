@@ -7,6 +7,9 @@
 #//-----------------------------------------------------------------------
 #-- script to run D-jets analysis
 
+############## RooUnfold path
+roounfoldpwd=${34}
+
 ############### set up the output directory name (the whole analysis output will be saved there)
 currDir=`pwd`
 outdirBase=$1
@@ -289,7 +292,7 @@ if [ $isFDSub -eq 1 ]; then
   cd $currDir
 
   cd $FDDir
-  aliroot -l -b -q subtractFD.C'("'$signalFile'","'$analysisDataFile'","'$BFDSimDirOut'","'$combRMFDFile'","'$FDSubDirOut'")'
+  aliroot -l -b -q subtractFD.C'("'$roounfoldpwd'","'$signalFile'","'$analysisDataFile'","'$BFDSimDirOut'","'$combRMFDFile'","'$FDSubDirOut'")'
 
   cd $currDir
 fi
@@ -319,10 +322,10 @@ if [ $isUnfolding -eq 1 ]; then
 
   cd $unfoldingDir
       if [ $unfType -eq  0 ]; then
-          aliroot -l -b -q unfold_Bayes.C'("'$signalBCorrFile'","'$detRMFilePrompt'","'$bkgRMFile'","'$unfoldingDirOut'",'$regPar','$isPrior','$priorType','$isBkgRM','$isFDUpSys','$isFDDownSys')'
+          aliroot -l -b -q unfold_Bayes.C'("'$roounfoldpwd'","'$signalBCorrFile'","'$detRMFilePrompt'","'$bkgRMFile'","'$unfoldingDirOut'",'$regPar','$isPrior','$priorType','$isBkgRM','$isFDUpSys','$isFDDownSys')'
       fi
       if [ $unfType -eq  1 ]; then
-          aliroot -l -b -q unfold_SVD.C'("'$signalBCorrFile'","'$detRMFilePrompt'","'$bkgRMFile'","'$unfoldingDirOut'",'$regPar','$isPrior','$priorType','$isBkgRM','$isFDUpSys','$isFDDownSys')'
+          aliroot -l -b -q unfold_SVD.C'("'$roounfoldpwd'","'$signalBCorrFile'","'$detRMFilePrompt'","'$bkgRMFile'","'$unfoldingDirOut'",'$regPar','$isPrior','$priorType','$isBkgRM','$isFDUpSys','$isFDDownSys')'
       fi
 
   cd $currDir
