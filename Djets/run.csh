@@ -9,7 +9,6 @@
 
 ############## RooUnfold path
 roounfoldpwd=${34}
-
 ############### set up the output directory name (the whole analysis output will be saved there)
 currDir=`pwd`
 outdirBase=$1

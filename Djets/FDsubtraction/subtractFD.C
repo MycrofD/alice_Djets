@@ -28,6 +28,7 @@ bool fold = 1, TString outHistName = "ptSpectrumSim_",
 bool isSys = 1, bool rebinned = 1,  bool isEff = 1 )
 {
 
+    gSystem->Load(Form("%s",roounfoldpwd.Data()));
 
     gStyle->SetOptStat(0000);
 
@@ -585,7 +586,6 @@ TH1* GetDownSys(TH1D **hFD, const int nFiles = 11, TH1D *hFD_down){
 
 TH1* foldB(TString matrixFile, TH1D *hFD, TH1D *folded ){
 
-    gSystem->Load(Form("%s",roounfoldpwd.Data()));
     gStyle->SetOptStat(0000); //Mean and RMS shown
 
 
