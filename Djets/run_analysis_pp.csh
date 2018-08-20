@@ -52,7 +52,7 @@ isRefl=1
 isBkgRM=0
 
 ######## !!! POWHEG simulations config
-nSimFilesB=4                                    # have to correspond to number of files defined in the config file
+nSimFilesB=11                                    # have to correspond to number of files defined in the config file
 nSimFilesC=1                                    # have to correspond to number of files defined in the config file
 
 unfType=$1
