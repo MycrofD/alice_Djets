@@ -23,7 +23,7 @@ roounfoldpwd=$HOME/ALICE_HeavyFlavour/RooUnfold-1.1.1/libRooUnfold
 currDir=`pwd`
 outputdirectorybase=$HOME/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_
 outputdirectory=${outputdirectorybase}pPbCuts
-outputdirectory=${outputdirectorybase}cuts2
+#outputdirectory=${outputdirectorybase}cuts2
 outputdirectorySignal=Default
 
 # ========== input directories
@@ -46,7 +46,7 @@ ispostfix=0                                       # if container in the analysis
 postfix=cut2
 ispostfixFD=0                                     # if container in the analysis output file has different name than default you set here if and what is the postfix, for the FD part wagons are usually configured with additional "FD" string in the container name, you should adjust this to yours configuration
 postfixFD=FD
-postfixFD=FDcut2
+#postfixFD=FDcut2
 
 isRefl=1
 isBkgRM=0
