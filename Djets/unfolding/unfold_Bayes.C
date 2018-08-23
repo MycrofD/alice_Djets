@@ -3,6 +3,8 @@
 //  Utrecht University
 //  barbara.antonina.trzeciak@cern.ch
 //-----------------------------------------------------------------------
+//https://arxiv.org/pdf/1105.1160.pdf
+//http://hep.physics.utoronto.ca/~orr/wwwroot/Unfolding/d-agostini.pdf
 
 #include "config.h"
 
