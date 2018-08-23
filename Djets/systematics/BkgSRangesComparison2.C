@@ -51,13 +51,14 @@ TString desc[nFiles] = {
 //};
 
 double plotmin = 5, plotmax = 50;
-const int ptbinsN = 6;
+const int ptbinsN = 7;
 //double ptbinsA[ptbinsN+1] = { 5,6,8,10,14,20,30,50 };
-double ptbinsA[ptbinsN+1] = { 5,10,15,20,25,35,50 };
+//double ptbinsA[ptbinsN+1] = { 5,10,15,20,25,35,50 };
+double ptbinsA[ptbinsN+1] = {5,6,8,10,14,20,30,50 };
 
-int nJetBins2 = 6;
-//double ptJetbins2[] = {5,6,8,10,14,20,30,50};
-double ptJetbins2[] = { 5,10,15,20,25,35,50 };
+int nJetBins2 = 7;
+double ptJetbins2[] = {5,6,8,10,14,20,30,50};
+//double ptJetbins2[] = { 5,10,15,20,25,35,50 };
 
 void BkgSRangesComparison2(int reg=3,  TString inDirBase = "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet", TString inName = "systematics")
 {
