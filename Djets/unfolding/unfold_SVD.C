@@ -196,6 +196,7 @@ https://indico.cern.ch/event/107747/contributions/32650/attachments/24324/35008/
 https://indico.cern.ch/event/107747/contributions/32647/attachments/24320/35004/svd-vk.20.01.2011.pdf#search=svd%20unfolding
 https://indico.cern.ch/event/107747/contributions/32650/attachments/24325/35009/tackmann.pdf#search=svd%20unfolding
 */
+if (fptbinsJetMeasN==fptbinsJetTrueN){
 TH1D* bdat = (TH1D*) fRawRebin->Clone();
 TH1D* bini = (TH1D*) Matrix->ProjectionX()->Clone();
 TH1D* xini = (TH1D*) Matrix->ProjectionY()->Clone();
@@ -275,7 +276,8 @@ singVec->Draw();
 	
 	cSVD_singVal->SaveAs(Form("%s/plots/%s_SVD_singVector.pdf",outDir.Data(),outName.Data()));
 	cSVD_singVal->SaveAs(Form("%s/plots/%s_SVD_singVector.png",outDir.Data(),outName.Data()));
-	
+}
+else {cout<<"----- D vector cannot be found using TSVDUnfold if histograms do not have same dimensions!!! -----"<<endl; }	
 /*---- end of `finding D vector' ---*/
 
 	TCanvas *cPearson = new TCanvas("cPearson","cPearson",1800,1800);
