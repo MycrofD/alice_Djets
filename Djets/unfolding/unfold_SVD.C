@@ -26,6 +26,7 @@ int linesytle[] = {1,2,3,4,5,6,7,8,9,10,11,12,13};
 ************************************/
 void unfold_SVD
 (
+TString roounfoldpwd = "",
 TString datafile = "file.root",
 TString detRMfile = "detRM.root",
 TString bkgRMfile = "bkgRM.root",
@@ -44,7 +45,7 @@ bool debug = 0
 )
 {
 
-gSystem->Load("/home/basia/Work/alice/RooUnfold-1.1.1/libRooUnfold.so");
+gSystem->Load(Form("%s",roounfoldpwd.Data()));
 gStyle->SetOptStat(0000); //Mean and RMS shown
 gSystem->Exec(Form("mkdir  %s",outDir.Data()));
 gSystem->Exec(Form("mkdir  %s/plots",outDir.Data()));

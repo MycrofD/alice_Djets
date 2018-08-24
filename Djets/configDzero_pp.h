@@ -39,7 +39,7 @@ enum DMesonSpecies {kD0toKpi=0, kDStarD0pi};
     const double  fRpar = 0.3;           //-----! jet R parameter for your studies (the one that you use in your jet finder!)
     const int     Rpar = 3;
     const int     ND = 4;                //-----!  change these numbers based on how many D mesons you analyse in data !
-    const int     NDMC = 3;              //-----!  change these numbers based on how many D mesons you analyse in MC !
+    const int     NDMC = 2;              //-----!  change these numbers based on how many D mesons you analyse in MC !
 
     const double  sigma_in = 0.0512;       //-----! inelastic x-section in bars
     const double  nEvScale = 1.063;      //-----! scaling factor from the number of selected events to the number of events needed for the nomrmalization, taken from the D2H normalization counter
@@ -75,19 +75,48 @@ enum DMesonSpecies {kD0toKpi=0, kDStarD0pi};
 
     ///============== POWHEG simulations ============================
     //======= set up here names of your simulation files =======
-
+/*
     TString fRunB[] = {
       "AnalysisResults_FastSim_powheg+pythia6_beauty_150593961473",
       "AnalysisResults_FastSim_powheg+pythia6_beauty_1504284947",
       "AnalysisResults_FastSim_powheg+pythia6_beauty_1504259653",
       "AnalysisResults_FastSim_powheg+pythia6_beauty_1506803374"
     };
+*/
+    TString fRunB[] = {
+      "AnalysisResults_FastSim_powheg+pythia6_beauty_150593961473",	//central
+      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504284947",	//R1F05
+      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504259653",	//R05F1
+      "AnalysisResults_FastSim_powheg+pythia6_beauty_1506803374",	//R2F1
+      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504296768",	//R1F2
+      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504212024",	//R05F05
+      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504318569",	//R2F2
+      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504202511",	//mb5
+      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504197966",	//mb4.5
+      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504197460",	//pdf 21200
+      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504199953"	//pdf 10800
+    };
 
+/*
     TString fDescB[] = {
       "central",
       "muR=1,muF=0.5" ,
       "muR=0.5,muF=1",
       "muR=2,muF=1"
+    };
+*/
+    TString fDescB[] = {
+      "central",
+      "muR=1,muF=0.5" ,
+      "muR=0.5,muF=1",
+      "muR=2,muF=1",
+      "muR=1,muF=2",
+      "muR=0.5,muF=0.5",
+      "muR=2,muF=2",
+      "m_{b}=5",
+      "m_{b}=4.5",
+      "PDF 21200",
+      "PDF 10800"
     };
 
     TString fRunC[] = {

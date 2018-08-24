@@ -16,7 +16,9 @@ void setHistoDetails(TH1 *hh, Color_t color, Style_t Mstyle, double Msize = 1.1,
 void SaveCanvas(TCanvas *c, TString name = "tmp");
 
 
-void subtractFD(TString dataFile = "JetPtSpectra_SB_FASTwoSDD_eff_ptD3.root",
+void subtractFD(
+TString roounfoldpwd = "",
+TString dataFile = "JetPtSpectra_SB_FASTwoSDD_eff_ptD3.root",
 TString dataAnalysisFile = "",
 TString simDir = "../simulations/POWHEG/out/",
 TString comMatrixFile = "",
@@ -26,6 +28,7 @@ bool fold = 1, TString outHistName = "ptSpectrumSim_",
 bool isSys = 1, bool rebinned = 1,  bool isEff = 1 )
 {
 
+    gSystem->Load(Form("%s",roounfoldpwd.Data()));
 
     gStyle->SetOptStat(0000);
 
@@ -184,7 +187,7 @@ void subtractB_afterFolding(TString matrixFile,TH1D *hFD_central_binned,TH1D *hF
     //-------------- data to sim ratio - B feed-down fraction
     TH1D *hFD_ratio = (TH1D*)hFD_central_binned_fold->Clone("hFD_ratio");
     hFD_ratio->Divide(hData_binned);
-    hFD_ratio->GetYaxis()->SetTitle("data/FD raw sim");
+    hFD_ratio->GetYaxis()->SetTitle("FD raw sim/data");
     hFD_ratio->SetMinimum(0);
     setHistoDetails(hFD_ratio,8,20);
 
@@ -583,7 +586,6 @@ TH1* GetDownSys(TH1D **hFD, const int nFiles = 11, TH1D *hFD_down){
 
 TH1* foldB(TString matrixFile, TH1D *hFD, TH1D *folded ){
 
-    gSystem->Load("/home/basia/Work/alice/RooUnfold-1.1.1/libRooUnfold.so");
     gStyle->SetOptStat(0000); //Mean and RMS shown
 
 
