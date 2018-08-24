@@ -473,10 +473,12 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
 
         //------- subtract background from signal jet
         hjetptsub[i] = (TH1F*)hjetpt[i]->Clone(Form("hjetptsub_%d",i));
-        hjetptsub[i]->Add(hjetpt_sb[i],-1);
+       // hjetptsub[i]->Add(hjetpt_sb[i],-1);
         if(fUseRefl && fDmesonSpecie == 0) {
           hjetptsub[i]->Scale(scalingS);
         }
+	hjetptsub[i]->Add(hjetpt_sb[i],-1);
+
         if(fsigmaSignal==2) hjetptsub[i] = hjetptsub[i]->Scale(1./0.9545);
         hjetptsub[i]->SetMarkerColor(kGreen+3);
         hjetptsub[i]->SetLineColor(kGreen+3);
