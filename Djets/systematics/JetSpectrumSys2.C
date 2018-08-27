@@ -7,7 +7,7 @@
 #include "config.h"
 
 
-void JetSpectrumSys2(int reg=4,  TString inDirBase ="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_doJESSys", TString input = "DzeroR03_pPbCuts/Default", bool isChain = 1, TString int measmin=3, int measmax=50, int truemin=5, int truemax=50)
+void JetSpectrumSys2(int reg=4,  TString inDirBase ="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts", TString input = "systematics/doJESSys", bool isChain = 1, TString int measmin=3, int measmax=50, int truemin=5, int truemax=50)
 {
 
   if(!isChain) {
@@ -41,7 +41,7 @@ void JetSpectrumSys2(int reg=4,  TString inDirBase ="/home/jackbauer/Work/alice/
 //  inDir += "/";
 //  inDir += input;
   //gSystem->Exec(Form("mkdir %s/systematics",inDir.Data()));
-  gSystem->Exec(Form("mkdir %s/systematics",inDir.Data()));
+  gSystem->Exec(Form("mkdir %s/%s",inDir.Data(),input.Data()));
 
 
 //  FDsys(reg,inDir);
@@ -58,37 +58,34 @@ void compareJES(int reg = , TString inDir = "", TString input = "")
 {
 
         gStyle->SetOptStat(0000); //Mean and RMS shown
-        gSystem->Exec(Form("mkdir %s/systematics",inDir.Data()));
+        gSystem->Exec(Form("mkdir %s/%s",inDir.Data(),input.Data()));
 
-        TFile *outFile = new TFile(Form("%s/systematics/JES_reg%d.root",inDir.Data(),reg),"RECREATE");
+        TFile *outFile = new TFile(Form("%s/%s/JES_reg%d.root",inDir.Data(),input.Data(),reg),"RECREATE");
 
-        const int nFiles = 3;
-        TString tab[nFiles-1] = { "96", "95"};
+        const int nFiles = 4;
+        TString tab[nFiles-1] = { "96", "95", "90"};
         TString dirName[nFiles];
         dirName[0] = inDir;
-        dirName[0] += "/"+input;
-        dirName[0] += "";
+        dirName[0] += "/Default_JES";
         dirName[0] += "/unfolding_Bayes_";
         dirName[0] += reg;
 
         dirName[1] = inDir;
-        dirName[1] += "/"+input;
-        dirName[1] += "96";
+        dirName[1] += "/Default_JES96";
         dirName[1] += "/unfolding_Bayes_";
         dirName[1] += reg;
 
         dirName[2] = inDir;
-        dirName[2] += "/"+input;
-        dirName[2] += "95";
+        dirName[2] += "/Default_JES95";
         dirName[2] += "/unfolding_Bayes_";
         dirName[2] += reg;
 
-//        dirName[3] = inDir;
-//        dirName[3] += "_JES90";
-//        dirName[3] += "/unfolding_Bayes_";
-//        dirName[3] += reg;
+        dirName[3] = inDir;
+        dirName[3] += "/Default_JES90";
+        dirName[3] += "/unfolding_Bayes_";
+        dirName[3] += reg;
 
-        TString desc[nFiles] = {"central","inefficiency 4%","inefficiency 5%"};//,"inefficiency 10%"
+        TString desc[nFiles] = {"central","inefficiency 4%","inefficiency 5%","inefficiency 10%"};
 
         double plotmin = ptJetbins[0], plotmax = ptJetbins[nJetBins];
         //  double plotmin = 5;
@@ -118,8 +115,8 @@ void compareJES(int reg = , TString inDir = "", TString input = "")
         }
         leg->Draw("same");
 
-      cspec->SaveAs(Form("%s/systematics/JES_reg%d.pdf",inDir.Data(),reg));
-      cspec->SaveAs(Form("%s/systematics/JES_reg%d.png",inDir.Data(),reg));
+      cspec->SaveAs(Form("%s/%s/JES_reg%d.pdf",inDir.Data(),input.Data(),reg));
+      cspec->SaveAs(Form("%s/%s/JES_reg%d.png",inDir.Data(),input.Data(),reg));
 
 
         TH1F *hratio[nFiles-1];
@@ -152,7 +149,7 @@ void compareJES(int reg = , TString inDir = "", TString input = "")
 
         }
 
-        TLegend *leg2 = new TLegend(0.6,0.65,0.85,0.85);
+        TLegend *leg2 = new TLegend(0.2,0.65,0.45,0.85);
         leg2->SetBorderSize(0);
         TCanvas *cspec2 = new TCanvas("cspec2","cspec2",800,400);
         for(int i=0; i<nFiles-1; i++){
@@ -171,8 +168,8 @@ void compareJES(int reg = , TString inDir = "", TString input = "")
         line->SetLineWidth(2);
         line->Draw("same");
 
-        cspec2->SaveAs(Form("%s/systematics/JES_reg%d_ratio.pdf",inDir.Data(),reg));
-        cspec2->SaveAs(Form("%s/systematics/JES_reg%d_ratio.png",inDir.Data(),reg));
+        cspec2->SaveAs(Form("%s/%s/JES_reg%d_ratio.pdf",inDir.Data(),input.Data(),reg));
+        cspec2->SaveAs(Form("%s/%s/JES_reg%d_ratio.png",inDir.Data(),input.Data(),reg));
 
         outFile->cd();
         hratiof[0]->Write();
@@ -193,8 +190,8 @@ void compareJES(int reg = , TString inDir = "", TString input = "")
         cout << "bin: " << j+1 << "\t\t 4% value in: " << hratiof[0]->GetBinCenter(j+1) << ":\t\t" << hratiof[0]->GetBinContent(j+1) << endl;
     }
 
-    cspecf2->SaveAs(Form("%s/systematics/JES_reg%d_unc.pdf",inDir.Data(),reg));
-    cspecf2->SaveAs(Form("%s/systematics/JES_reg%d_unc.png",inDir.Data(),reg));
+    cspecf2->SaveAs(Form("%s/%s/JES_reg%d_unc.pdf",inDir.Data(),input.Data(),reg));
+    cspecf2->SaveAs(Form("%s/%s/JES_reg%d_unc.png",inDir.Data(),input.Data(),reg));
 
     outFile->cd();
   //  hratiof[0]->Write();
