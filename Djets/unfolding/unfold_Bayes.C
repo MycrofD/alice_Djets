@@ -3,6 +3,8 @@
 //  Utrecht University
 //  barbara.antonina.trzeciak@cern.ch
 //-----------------------------------------------------------------------
+//https://arxiv.org/pdf/1105.1160.pdf
+//http://hep.physics.utoronto.ca/~orr/wwwroot/Unfolding/d-agostini.pdf
 
 #include "config.h"
 
@@ -961,14 +963,14 @@ TF1* getPriorFunction(int prior, TH1D* spect, int priorType = 0, TH1D* rawspectr
     PriorFunction = new TF1("PriorFunction","[0]* pow(x,-[1]) * exp(-[1]*[2]/x)",fitlo,fithi);
 
 		PriorFunction->SetParLimits(1,2,8);
-    if(priorType == 0)  		{ PriorFunction->FixParameter(1,4.6); PriorFunction->FixParameter(2,4);}
+    		if(priorType == 0) 	{ PriorFunction->FixParameter(1,4.6); PriorFunction->FixParameter(2,4);}
 		else if(priorType == 1) { PriorFunction->FixParameter(1,3);   PriorFunction->FixParameter(2,4);}
-  	else if(priorType == 2) { PriorFunction->FixParameter(1,4);   PriorFunction->FixParameter(2,4);}
+	  	else if(priorType == 2) { PriorFunction->FixParameter(1,4);   PriorFunction->FixParameter(2,4);}
 		else if(priorType == 3) { PriorFunction->FixParameter(1,5);   PriorFunction->FixParameter(2,4);}
 		else if(priorType == 4) { PriorFunction->FixParameter(1,6);   PriorFunction->FixParameter(2,4);}
 		else if(priorType == 5) { PriorFunction->FixParameter(1,7);   PriorFunction->FixParameter(2,4);}
-		else if(priorType == 6) { PriorFunction->FixParameter(1,4.5); PriorFunction->FixParameter(2,3); }
-		else if(priorType == 7) { PriorFunction->FixParameter(1,4.5); PriorFunction->FixParameter(2,5); }
+		else if(priorType == 6) { PriorFunction->FixParameter(1,4.5); PriorFunction->FixParameter(2,3);}
+		else if(priorType == 7) { PriorFunction->FixParameter(1,4.5); PriorFunction->FixParameter(2,5);}
 		else if(priorType == 8) { PriorFunction->SetParLimits(1,2,8); PriorFunction->SetParLimits(2,2,8); fitlo = fptbinsJetMeasA[0]; }
 		if(priorType == 8) { rawspectrum->Fit(PriorFunction, fitopt,"",fitlo,fithi); }
 		else spect->Fit(PriorFunction, fitopt,"",fitlo,fithi);

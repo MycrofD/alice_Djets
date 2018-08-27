@@ -83,7 +83,7 @@ simFilesDir=${24}
 unfType=${25}       # 0:bayes, 1:SVD
 regPar=${26}        # regularization parameter for unfolding
 isPrior=${27}       # if prior different than MC true is needed
-priorType=${29}     # then provide also the prior type, based on what is implemented in the unfolding macro
+priorType=${28}     # then provide also the prior type, based on what is implemented in the unfolding macro
 
 ############### analysis steps
 isFDUpSys=${29}

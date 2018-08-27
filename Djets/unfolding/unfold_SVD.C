@@ -175,7 +175,7 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
 		fUnfoldedSVD[ivar]->SetLineWidth(2);
 		fUnfoldedSVD[ivar]->GetXaxis()->SetTitle("p_{T,jet}^{ch} (GeV/#it{c})");
 		fUnfoldedSVD[ivar]->GetYaxis()->SetTitle("dN/dp_{T}");
-		fUnfoldedSVD[ivar]->SetTitle("Bayes unfolding");
+		fUnfoldedSVD[ivar]->SetTitle("SVD unfolding");
 		fUnfoldedSVD[ivar]->GetXaxis()->SetRangeUser(plotmin,plotmax);
 
 		if(ivar == 0) { fUnfoldedSVD[ivar]->Draw(); }
@@ -187,6 +187,98 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
 
 	cUnfolded->SaveAs(Form("%s/plots/%s_unfSpectra.pdf",outDir.Data(),outName.Data()));
 	cUnfolded->SaveAs(Form("%s/plots/%s_unfSpectra.png",outDir.Data(),outName.Data()));
+/**************************************
+###### SVD unfolding: D vector ########
+**************************************/
+/*
+https://arxiv.org/abs/1112.2226
+https://indico.cern.ch/event/107747/contributions/32650/attachments/24324/35008/svd_kerstin2.pdf#search=svd%20unfolding
+https://indico.cern.ch/event/107747/contributions/32647/attachments/24320/35004/svd-vk.20.01.2011.pdf#search=svd%20unfolding
+https://indico.cern.ch/event/107747/contributions/32650/attachments/24325/35009/tackmann.pdf#search=svd%20unfolding
+*/
+if (fptbinsJetMeasN==fptbinsJetTrueN){
+TH1D* bdat = (TH1D*) fRawRebin->Clone();
+TH1D* bini = (TH1D*) Matrix->ProjectionX()->Clone();
+TH1D* xini = (TH1D*) Matrix->ProjectionY()->Clone();
+TH2D* Adet = (TH2D*) Matrix->Clone();
+int kreg = regSVD;
+//TSVDUnfold* tsvdunf = new TSVDUnfold(bdat, Bcov, bini, xini, Adet);
+TSVDUnfold* tsvdunf = new TSVDUnfold(bdat=bdat, bini=bini, xini=xini, Adet=Adet);
+TH1D* unfresult = tsvdunf->Unfold(kreg);
+TH1D* singVec = tsvdunf->GetSV();
+
+    TCanvas* cUnfoldedD = new TCanvas("cUnfoldedD","cUnfoldedD",1000,1000);
+    cUnfoldedD->SetLogy();
+    TLegend* leg2 =  new TLegend(0.6,0.4,0.85,0.85);
+    leg2->SetBorderSize(0);
+
+TH1D* fUnfoldedClone = (TH1D*)fUnfoldedSVD[regSVD-1]->Clone();
+TH1D* fDvector = (TH1D*)(tsvdunf->GetD())->Clone();
+unfresult->Scale(1,"width");
+bdat->Scale(1,"width");
+unfresult->SetLineColor(kBlue);
+bdat->SetLineColor(kGreen+2);
+
+fUnfoldedClone->Scale(1,"width");
+fUnfoldedClone->Draw();//unfolded
+leg2->AddEntry(fUnfoldedClone,"fUnfoldedSVD");
+unfresult->Draw("same");//unfolded
+leg2->AddEntry(unfresult,"unfresult");
+bdat->Draw("same");//data
+leg2->AddEntry(bdat,"bdat");
+leg2->Draw("same");
+
+//    TH1D* fRegSVD = new TH1D("RegSVD","RegSVD",fDvector->GetNbinsX(),0,fDvector->GetNbinsX());
+//    fRegSVD->SetBinContent(kreg,1);
+//    fRegSVD->SetLineColor(2);
+TCanvas* cSVD_Dvector = new TCanvas("Dvector","Dvector",1000,1000);
+TLegend* legDvec =  new TLegend(0.6,0.4,0.85,0.85);
+legDvec->SetBorderSize(0);
+
+cSVD_Dvector->SetLogy();
+fDvector->Draw();
+
+TCanvas* cSVD_singVal = new TCanvas("singVal","singVal",1000,1000);
+TLegend* legsingVal =  new TLegend(0.6,0.4,0.85,0.85);
+legsingVal->SetBorderSize(0);
+
+cSVD_singVal->SetLogy();
+singVec->Draw();
+
+//fRegSVD->Draw("same");
+//legDvec->AddEntry(fRegSVD,Form("Reg=%d",kreg),"l");
+//legDvec->Draw("same");
+///////////----can't remember the idea behind determining `regCount'----////////////////////////////
+//int regCount = 0;
+//double oldN = 1; double newN = 0;
+//int nbinsy=fptbinsJetTrueN;
+//for (int i =0; i<NTrials-1; i++){ //for every unfolded histo to the penultimate histo
+//        int secCount = 0;
+//        for (int ll =0; ll<nbinsy; ll++){
+//                oldN=fUnfoldedSVD[i]->GetBinContent(ll);
+//                newN=fUnfoldedSVD[i+1]->GetBinContent(ll);
+//cout<<"------------oldN and newN are: "<<oldN<<" and "<<newN<<endl;
+//
+//                if(fabs((oldN - newN))>0.1*oldN) break;
+//                else secCount += 1;
+//        }
+//cout<<"------------secCount is: "<<secCount<<endl;
+//        if (secCount == nbinsy) {regCount = i;break;}
+//}
+//cout<<"-------------regCount is: "<<regCount<<endl;
+////////////////////////////////////////
+
+	cUnfoldedD->SaveAs(Form("%s/plots/%s_unfoldedD.pdf",outDir.Data(),outName.Data()));
+	cUnfoldedD->SaveAs(Form("%s/plots/%s_unfoldedD.png",outDir.Data(),outName.Data()));
+
+	cSVD_Dvector->SaveAs(Form("%s/plots/%s_SVD_Dvector.pdf",outDir.Data(),outName.Data()));
+	cSVD_Dvector->SaveAs(Form("%s/plots/%s_SVD_Dvector.png",outDir.Data(),outName.Data()));
+	
+	cSVD_singVal->SaveAs(Form("%s/plots/%s_SVD_singVector.pdf",outDir.Data(),outName.Data()));
+	cSVD_singVal->SaveAs(Form("%s/plots/%s_SVD_singVector.png",outDir.Data(),outName.Data()));
+}
+else {cout<<"----- D vector cannot be found using TSVDUnfold if histograms do not have same dimensions!!! -----"<<endl; }	
+/*---- end of `finding D vector' ---*/
 
 	TCanvas *cPearson = new TCanvas("cPearson","cPearson",1800,1800);
 	cPearson->Divide(3,3);
