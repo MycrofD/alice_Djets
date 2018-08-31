@@ -60,6 +60,7 @@
     TH1F *hjetptspectrum;
     TH1F *hrawjetptspectrum;
     TH1F *hjetptspectrumReb;
+    TH1F *hjetptspectrumRebScaled;
     TH1F *hjetptspectrumRebUnc;
 
     TH1F *hmean;

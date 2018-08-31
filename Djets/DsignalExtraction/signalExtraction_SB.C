@@ -143,6 +143,7 @@ void signalExtraction_SB(
 
     hjetptspectrum->Write();
     hjetptspectrumReb->Write();
+    hjetptspectrumRebScaled->Write();
     hjetptspectrumRebUnc->Write();
 
     for(int i=0; i<fptbinsDN; i++){
@@ -478,7 +479,7 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
           hjetptsub[i]->Scale(scalingS);
         }
 	//hjetptsub[i]->Add(hjetpt_sb[i],-1);
-        
+
 	if(fsigmaSignal==2) hjetptsub[i] = hjetptsub[i]->Scale(1./0.9545);
         hjetptsub[i]->SetMarkerColor(kGreen+3);
         hjetptsub[i]->SetLineColor(kGreen+3);
@@ -682,14 +683,14 @@ void  saveSpectraPlots(TString outdir,TString prod){
 
       TH1F *hjetptspectrumReb_tmp = (TH1F*)hjetptspectrum->Clone("hjetptspectrumReb_tmp");
       hjetptspectrumReb = (TH1F*)hjetptspectrumReb_tmp->Rebin(fptbinsJetMeasN,"hjetptspectrumReb",fptbinsJetMeasA);
-      TH1F* hjetptspectrumReb2 = (TH1F*)hjetptspectrumReb_tmp->Rebin(fptbinsJetMeasN,"hjetptspectrumReb",fptbinsJetMeasA);
+      hjetptspectrumRebScaled = (TH1F*)hjetptspectrumReb_tmp->Rebin(fptbinsJetMeasN,"hjetptspectrumRebScaled",fptbinsJetMeasA);
       setHistoDetails(hjetptspectrumReb,0,kBlue,20,1.2); // with bin width scaling
-      setHistoDetails(hjetptspectrumReb2,1,kBlue,20,1.2); // with bin width scaling
+      setHistoDetails(hjetptspectrumRebScaled,1,kBlue,20,1.2); // with bin width scaling
       hjetptspectrumReb->GetXaxis()->SetTitle("p_{T,ch jet} (GeV/c)");
-      hjetptspectrumReb2->GetXaxis()->SetTitle("p_{T,ch jet} (GeV/c)");
+      hjetptspectrumRebScaled->GetXaxis()->SetTitle("p_{T,ch jet} (GeV/c)");
       TCanvas *cSpectrumRebin = new TCanvas("cSpectrumRebin","cSpectrumRebin",800,600);
       cSpectrumRebin->SetLogy();
-      hjetptspectrumReb2->Draw();
+      hjetptspectrumRebScaled->Draw();
       pvEn->Draw("same");
       pvD->Draw("same");
       pvJet->Draw("same");
