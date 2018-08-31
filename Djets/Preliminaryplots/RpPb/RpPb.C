@@ -13,7 +13,7 @@ const int nFiles = 2;
 TString inDirData[nFiles] = {
   "pp5TeV/D0jet/results/DzeroR03_pPbCuts/Default/unfolding_Bayes_4/finalSpectra/",
   //"pp5TeV/D0jet/results/DzeroR03_cuts2/Default/unfolding_Bayes_4/finalSpectra/",
-  "pPb_run2/D0jet/PreliminaryOut/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning_MAIN/unfolding_Bayes_3/finalSpectra/"
+  "pPb_run2/D0jet/PreliminaryOut/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning_MAIN/unfolding_Bayes_3_MAIN/finalSpectra/"
 }
 
 TString dataFile[nFiles] = {
@@ -102,7 +102,7 @@ void compareData(TString inName, TString inDirBase, TString outHistName)
                 specReb[i]->SetMarkerColor(colors2[i]);
                 specReb[i]->SetMarkerStyle(markers2[i]);
                 if(!i) specReb[i]->Scale(208);
-                specReb[i]->GetXaxis()->SetRangeUser(plotmin,plotmax);
+                //specReb[i]->GetXaxis()->SetRangeUser(plotmin,plotmax);
                 Double_t ptval[ptbinsN];
                 Double_t ptvalunc[ptbinsN];
                 for(int j=0; j<specReb[i]->GetNbinsX(); j++){
@@ -133,7 +133,7 @@ void compareData(TString inName, TString inDirBase, TString outHistName)
             graSys_pPb->SetLineColor(colors2[3]);
 
 
-            TH1F *Graph_central_syst_unc1 = new TH1F("Graph_central_syst_unc1","",100,2.5,52.5);
+            TH1F *Graph_central_syst_unc1 = new TH1F("Graph_central_syst_unc1","",100,4.8,50.2);
             Graph_central_syst_unc1->SetMinimum(2.e-04);
             Graph_central_syst_unc1->SetMaximum(10);
             Graph_central_syst_unc1->SetDirectory(0);
@@ -184,7 +184,7 @@ void compareData(TString inName, TString inDirBase, TString outHistName)
                 hratio->SetLineColor(colors2[4]);
                 hratio->SetMarkerColor(colors2[4]);
                 hratio->SetLineWidth(2);
-                hratio->GetYaxis()->SetRangeUser(0.,2);
+                //hratio->GetYaxis()->SetRangeUser(0.,2);
                 hratio->GetYaxis()->SetTitle("R_{pPb}");
 
                 for(int j=0; j<hratio->GetNbinsX(); j++){
@@ -199,7 +199,7 @@ void compareData(TString inName, TString inDirBase, TString outHistName)
                 TGraphAsymmErrors *graSys  = new TGraphAsymmErrors(ptbinsN,ptval,sysUnc,ptvalunc,ptvalunc,sysUncErr,sysUncErr);
                 graSys->SetFillColor(colors2[5]);
                 graSys->SetLineColor(colors2[5]);
-                TH1F *Graph_central_syst_unc = new TH1F("Graph_central_syst_unc","",100,2.5,52.5);
+                TH1F *Graph_central_syst_unc = new TH1F("Graph_central_syst_unc","",100,4.8,50.2);
                 Graph_central_syst_unc->SetMinimum(0);
                 Graph_central_syst_unc->SetMaximum(2.6);
                 Graph_central_syst_unc->SetDirectory(0);
