@@ -12,9 +12,9 @@ double sigmajet[] = {0,0};
 const int ptbinsDN = 10;
 double ptDbins[ptbinsDN+1] = { 3,4,5,6,7,8,10,12,16,24,36 };
 
-double sigmaD[ptbinsDN] = {}; // set up sigma of the D signal from MC
+double sigmaD[ptbinsDN] = {0.009975,0.01086,0.01171,0.01262,0.01299,0.01371,0.01461,0.01612, 0.01745,0.0185367 }; // set up sigma of the D signal from MC
 
-TString efffile = "$HOME/effFile.root";
+TString efffile = "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts/Default_249/efficiency/DjetEff_prompt_jetpt5_50.root";
 //TString sigmaFile = "";
 
 void ExtractDJetRawYieldUncertainty(){
@@ -93,7 +93,7 @@ void EvaluateBinPerBinUncertainty(
 void ExtractDJetRawYieldUncertaintyFull(
   Int_t specie=AliDJetRawYieldUncertaintyLocal::kD0toKpi,  //D-meson decay channel
  Int_t method=AliDJetRawYieldUncertaintyLocal::kSideband,  //yield extraction method
-   Int_t nTrials=50,  	     //only for SB method: number of random trials for each pT(D) bin to build pT(jet) spectrum variations
+   Int_t nTrials=40,  	     //only for SB method: number of random trials for each pT(D) bin to build pT(jet) spectrum variations
    Bool_t allowRepet=kFALSE  //only for SB method: allow repetitions in the extraction of trials in a give pT(D) bin
    )
 {
@@ -159,11 +159,11 @@ void SetInputParametersDzero(AliDJetRawYieldUncertaintyLocal *interface){
   Int_t nDbins = 10;
   Double_t ptDbins[11] = {3,4,5,6,7,8,10,12,16,24,36};
 
-//  Int_t nJetbins = 9;
-//  Double_t ptJetbins[10] = {3,4,5,6,8,10,14,20,30,50};
+  Int_t nJetbins = 9;
+  Double_t ptJetbins[10] = {3,4,5,6,8,10,14,20,30,50};
 // Pb-Pb binning
-  Int_t nJetbins = 7;
-  Double_t ptJetbins[8] = {3,5,10,15,20,25,35,50};
+//  Int_t nJetbins = 7;
+//  Double_t ptJetbins[8] = {3,5,10,15,20,25,35,50};
 
   Double_t DMesonEff[ptbinsDN];
   TFile *FileEff = new TFile(efffile.Data(),"read");
@@ -208,7 +208,7 @@ void SetInputParametersDzero(AliDJetRawYieldUncertaintyLocal *interface){
     			1,1, 1};  // fixed mean, fixed sigma
 
 
-  interface->SetInputFilename("/home/basia/Work/alice/analysis/pPb_run2/D0jet/outData/AnalysisResults_LHC16R03.root");
+  interface->SetInputFilename("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/AnalysisResults_LHC17pq_FASTwoSDD.root");
   interface->SetInputDirname("DmesonsForJetCorrelations");
   interface->SetInputListname("histosD0MBN");
   interface->SetInputObjectname("hsDphiz");
@@ -223,7 +223,7 @@ void SetInputParametersDzero(AliDJetRawYieldUncertaintyLocal *interface){
 
   interface->SetRebinSpectrumIfSBApproach(kTRUE); //kTRUE=rebin the jet spectrum with ptJetbins[] vals, otherwise use the binning from THnSparse projection
 
-  interface->SetSigmaForSignalRegion(3.); //only for SB method: sigma range of signal region (usually 3 sigma, also 2 is fine if low S/B)
+  interface->SetSigmaForSignalRegion(2.); //only for SB method: sigma range of signal region (usually 3 sigma, also 2 is fine if low S/B)
   //interface->SetSigmaToFix(sigmafixed); // TODO check this
   interface->SetChi2Cut(chi2cut);
   interface->SetMeanSigmaVariations(meansigmaVar);

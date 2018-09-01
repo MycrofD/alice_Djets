@@ -10,14 +10,14 @@ Int_t colors2[] = {1,2,kGreen+3,kMagenta+2,4,6,kCyan+1,8,kOrange-1,kGray+1,kViol
 Int_t markers2[] = {20,21,22,23,24,25,26,27,28,29,30,32,33,34};
 Int_t linestyle2[] = {1,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
 
-const int nFiles = 9;
+const int nFiles = 8;
 TString inDir[nFiles] = {
 	"0",
 	"1",
 	"2",
 	"3",
 	"4",
-	"5",
+//	"5",
 	"6",
 	"7",
 	"8"
@@ -29,7 +29,7 @@ TString desc[nFiles] = {
 	"prior=2",
 	"prior=3",
 	"prior=4",
-	"prior=5",
+//	"prior=5",
 	"prior=6",
 	"prior=7",
 	"prior meas fit"
@@ -143,7 +143,7 @@ void compareRanges(TString inName, TString inDirBase, int measmin, int measmax, 
                 hratio[i]->SetLineStyle(linestyle2[i]);
                 hratio[i]->SetLineWidth(2);
                 hratio[i]->GetXaxis()->SetRangeUser(ptbinsA[0],ptbinsA[ptbinsN]);
-                hratio[i]->GetYaxis()->SetRangeUser(0.9,1.03);
+                hratio[i]->GetYaxis()->SetRangeUser(0.97,1.03);
                 hratio[i]->GetYaxis()->SetTitle(Form("ratio to central (%s)",desc[0].Data()));
                 if(!i) hratio[i]->Draw("hist");
                 else hratio[i]->Draw("samehist");
@@ -163,7 +163,7 @@ void compareRanges(TString inName, TString inDirBase, int measmin, int measmax, 
             TH1F *hmean = (TH1F*)hsys->Clone("hmean");
             getRMS(nFiles,hratio,hmean,hsys);
 
-            hsys->GetYaxis()->SetRangeUser(0,5);
+            hsys->GetYaxis()->SetRangeUser(0,2);
             hsys->SetLineColor(kViolet+2);
             TCanvas *cspecRMS = new TCanvas("cspecRMS","cspecRMS",800,400);
             hsys->Draw("hist");

@@ -24,7 +24,7 @@ currDir=`pwd`
 outputdirectorybase=$HOME/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_
 outputdirectory=${outputdirectorybase}pPbCuts
 #outputdirectory=${outputdirectorybase}cuts2
-outputdirectorySignal=Default
+outputdirectorySignal=Default_JES95
 
 # ========== input directories
 anaoutfiledir=$HOME/Work/alice/analysis/pp5TeV/D0jet/outData
@@ -38,13 +38,15 @@ analysisdatafile=AnalysisResults_LHC17pq_FASTwoSDD.root
 isMoreFiles=0                                     # 1 if there are more input files to be read
 prod=kl                                           # if there are more input files to be read
 reflfile=reflectionTemplates_pPb.root
-MCfile=AnalysisResults_fast_R03_D0MC_def.root
-efficiencyfile=$MCfile
+effMCfile=AnalysisResults_fast_R03_D0MC_def.root
+#MCfile=AnalysisResults_fast_R03_D0MC_def.root
+MCfile=AnalysisResults_fast_R03_D0MCPythia_JES96_1.root
+efficiencyfile=$effMCfile
 detRMpromptfile=$MCfile
 detRMnonpromptfile=$MCfile
-ispostfix=0                                       # if container in the analysis output file has different name than default you set here if and what is the postfix, this is set up in the signal, efficiency and RM extraction macros
+ispostfix=1                                       # if container in the analysis output file has different name than default you set here if and what is the postfix, this is set up in the signal, efficiency and RM extraction macros
 postfix=cut2
-ispostfixFD=0                                     # if container in the analysis output file has different name than default you set here if and what is the postfix, for the FD part wagons are usually configured with additional "FD" string in the container name, you should adjust this to yours configuration
+ispostfixFD=1                                     # if container in the analysis output file has different name than default you set here if and what is the postfix, for the FD part wagons are usually configured with additional "FD" string in the container name, you should adjust this to yours configuration
 #postfixFD=FD
 postfixFD=FDcut2
 
@@ -98,25 +100,26 @@ fi
 if [ $doJESSys -eq 1 ]; then
 
     detRMpromptfile1=AnalysisResults_fast_R03_D0MCPythia_JES96_1.root
-  	detRMnonpromptfile1=AnalysisResults_fast_R03_D0MCPythia_JES96_1.root
-  	eff=96
+ # 	detRMnonpromptfile1=AnalysisResults_fast_R03_D0MCPythia_JES96_1.root
+detRMnonpromptfile1=AnalysisResults_fast_R03_D0MC_def.root
+  	eff=95
   	outputdirectorySignal1=$outputdirectorySignal$eff
 
     ./run.csh $outputdirectory $outputdirectorySignal1 $conffile $Dmeson $anaoutfiledir $analysisdatafile $refoutfiledir $reflfile $isRefl $isMoreFiles $prod $ispostfix $postfix $ispostfixFD $postfixFD $MCoutfiledir $efficiencyfile $detRMpromptfile1 $detRMnonpromptfile1 $isBkgRM $bkgRMtype $bkgRMDir $bkgRMfileName $simFilesDir $unfType $regPar $isPrior $priorType 0 0 0 $nSimFilesB $nSimFilesC $roounfoldpwd
 
-    detRMpromptfile1=AnalysisResults_fast_R03_D0MCPythia_JES95_1.root
-    detRMnonpromptfile1=AnalysisResults_fast_R03_D0MCPythia_JES95_1.root
-    eff=95
-    outputdirectorySignal1=$outputdirectorySignal$eff
-
-    ./run.csh $outputdirectory $outputdirectorySignal1 $conffile $Dmeson $anaoutfiledir $analysisdatafile $refoutfiledir $reflfile $isRefl $isMoreFiles $prod $ispostfix $postfix $ispostfixFD $postfixFD $MCoutfiledir $efficiencyfile $detRMpromptfile1 $detRMnonpromptfile1 $isBkgRM $bkgRMtype $bkgRMDir $bkgRMfileName $simFilesDir $unfType $regPar $isPrior $priorType 0 0 0 $nSimFilesB $nSimFilesC $roounfoldpwd
-
-    detRMpromptfile1=AnalysisResults_fast_R03_D0MCPythia_JES90_1.root
-    detRMnonpromptfile1=AnalysisResults_fast_R03_D0MCPythia_JES90_1.root
-    eff=90
-    outputdirectorySignal1=$outputdirectorySignal$eff
-
-    ./run.csh $outputdirectory $outputdirectorySignal1 $conffile $Dmeson $anaoutfiledir $analysisdatafile $refoutfiledir $reflfile $isRefl $isMoreFiles $prod $ispostfix $postfix $ispostfixFD $postfixFD $MCoutfiledir $efficiencyfile $detRMpromptfile1 $detRMnonpromptfile1 $isBkgRM $bkgRMtype $bkgRMDir $bkgRMfileName $simFilesDir $unfType $regPar $isPrior $priorType 0 0 0 $nSimFilesB $nSimFilesC $roounfoldpwd
+#    detRMpromptfile1=AnalysisResults_fast_R03_D0MCPythia_JES95_1.root
+#    detRMnonpromptfile1=AnalysisResults_fast_R03_D0MCPythia_JES95_1.root
+#    eff=95
+#    outputdirectorySignal1=$outputdirectorySignal$eff
+#
+#    ./run.csh $outputdirectory $outputdirectorySignal1 $conffile $Dmeson $anaoutfiledir $analysisdatafile $refoutfiledir $reflfile $isRefl $isMoreFiles $prod $ispostfix $postfix $ispostfixFD $postfixFD $MCoutfiledir $efficiencyfile $detRMpromptfile1 $detRMnonpromptfile1 $isBkgRM $bkgRMtype $bkgRMDir $bkgRMfileName $simFilesDir $unfType $regPar $isPrior $priorType 0 0 0 $nSimFilesB $nSimFilesC $roounfoldpwd
+#
+#    detRMpromptfile1=AnalysisResults_fast_R03_D0MCPythia_JES90_1.root
+#    detRMnonpromptfile1=AnalysisResults_fast_R03_D0MCPythia_JES90_1.root
+#    eff=90
+#    outputdirectorySignal1=$outputdirectorySignal$eff
+#
+#    ./run.csh $outputdirectory $outputdirectorySignal1 $conffile $Dmeson $anaoutfiledir $analysisdatafile $refoutfiledir $reflfile $isRefl $isMoreFiles $prod $ispostfix $postfix $ispostfixFD $postfixFD $MCoutfiledir $efficiencyfile $detRMpromptfile1 $detRMnonpromptfile1 $isBkgRM $bkgRMtype $bkgRMDir $bkgRMfileName $simFilesDir $unfType $regPar $isPrior $priorType 0 0 0 $nSimFilesB $nSimFilesC $roounfoldpwd
 
 fi
 

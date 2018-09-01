@@ -62,8 +62,8 @@ void compareJES(int reg = , TString inDir = "", TString input = "")
 
         TFile *outFile = new TFile(Form("%s/%s/JES_reg%d.root",inDir.Data(),input.Data(),reg),"RECREATE");
 
-        const int nFiles = 4;
-        TString tab[nFiles-1] = { "96", "95", "90"};
+        const int nFiles = 3;
+        TString tab[nFiles-1] = { "96", "95"};//, "90"};
         TString dirName[nFiles];
         dirName[0] = inDir;
         dirName[0] += "/Default_JES";
@@ -77,15 +77,16 @@ void compareJES(int reg = , TString inDir = "", TString input = "")
 
         dirName[2] = inDir;
         dirName[2] += "/Default_JES95";
+        //dirName[2] += "/Default95";
         dirName[2] += "/unfolding_Bayes_";
         dirName[2] += reg;
 
-        dirName[3] = inDir;
-        dirName[3] += "/Default_JES90";
-        dirName[3] += "/unfolding_Bayes_";
-        dirName[3] += reg;
+//        dirName[3] = inDir;
+//        dirName[3] += "/Default_JES90";
+//        dirName[3] += "/unfolding_Bayes_";
+//        dirName[3] += reg;
 
-        TString desc[nFiles] = {"central","inefficiency 4%","inefficiency 5%","inefficiency 10%"};
+        TString desc[nFiles] = {"central","inefficiency 4%","inefficiency 5%"};//,"inefficiency 10%"};
 
         double plotmin = ptJetbins[0], plotmax = ptJetbins[nJetBins];
         //  double plotmin = 5;
@@ -127,23 +128,23 @@ void compareJES(int reg = , TString inDir = "", TString input = "")
           	hratio[i] -> Divide(spec[i+1],spec[0],1,1,"b");
             hratio[i]->SetLineStyle(linestyle[i]);
             hratio[i]->GetXaxis()->SetRangeUser(plotmin,plotmax);
-            hratio[i]->GetYaxis()->SetRangeUser(0.82,1.1);
+            hratio[i]->GetYaxis()->SetRangeUser(0.95,1.15);
             hratio[i]->GetYaxis()->SetTitle(Form("ratio to central (%s)",desc[0].Data()));
 
             fr[i] = new TF1(Form("fr_%d",i),"[0]*x+[1]",4,plotmax);
             fr[i]->SetLineStyle(1);
             fr[i]->SetLineWidth(2);
             fr[i]->SetLineColor(colors[i+1]);
-            hratio[i]->Fit(fr[i],"EM0","",6,plotmax);
+            hratio[i]->Fit(fr[i],"EM0","",5,plotmax);
 
             double value = 0;
             hratiof[i] = (TH1F*)hratio[i]->Clone(Form("hratiof_%d",i));
             for(int j=0; j<hratio[i]->GetNbinsX();j++){
-                value = (1 - fr[i]->Eval(hratio[i]->GetBinCenter(j+1))) *100;
+                value = TMath::Abs((1 - fr[i]->Eval(hratio[i]->GetBinCenter(j+1)))) *100;
                 hratiof[i]->SetBinContent(j+1,value);
-                //if(!i)cout << "bin: " << j+1 << "\t\t 4% value in: " << hratio[i]->GetBinCenter(j+1) << ":\t\t" << value << endl;
+                if(!i)cout << "bin: " << j+1 << "\t\t 4% value in: " << hratio[i]->GetBinCenter(j+1) << ":\t\t" << value << endl;
             }
-            hratiof[i]->GetYaxis()->SetRangeUser(0,20);
+            hratiof[i]->GetYaxis()->SetRangeUser(0,12);
             hratiof[i]->GetYaxis()->SetTitle("unc.from fit [%]");
           //  hratiof[i]->Write();
 
@@ -154,7 +155,7 @@ void compareJES(int reg = , TString inDir = "", TString input = "")
         TCanvas *cspec2 = new TCanvas("cspec2","cspec2",800,400);
         for(int i=0; i<nFiles-1; i++){
             hratio[i]->GetXaxis()->SetRangeUser(5,plotmax);
-            hratio[i]->GetYaxis()->SetRangeUser(0.82,1.1);
+            hratio[i]->GetYaxis()->SetRangeUser(0.95,1.2);
 
             if(!i) hratio[i]->Draw();
             else hratio[i]->Draw("same");
@@ -177,7 +178,7 @@ void compareJES(int reg = , TString inDir = "", TString input = "")
     //    hratiof[2]->Write();
     TCanvas *cspecf2 = new TCanvas("cspecf2","cspecf2",800,400);
     for(int i=0; i<nFiles-1; i++){
-        hratiof[i]->GetYaxis()->SetRangeUser(0,20);
+        hratiof[i]->GetYaxis()->SetRangeUser(0,12);
         hratiof[i]->GetXaxis()->SetRangeUser(5,plotmax);
         hratiof[i]->GetYaxis()->SetTitle("unc.from fit [%]");
         cspecf2->cd();
@@ -258,7 +259,7 @@ void compareReg(TString inDir = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR
 
           cspec->SaveAs(Form("%s/systematics/RegComparison_reg.pdf",inDir.Data()));
           cspec->SaveAs(Form("%s/systematics/RegComparison_reg.png",inDir.Data()));
-          TLegend *leg2 = new TLegend(0.55,0.75,0.9,0.85);
+          TLegend *leg2 = new TLegend(0.55,0.15,0.9,0.45);
 
             leg2->SetBorderSize(0);
             TCanvas *cspec2 = new TCanvas("cspec2","cspec2",800,400);
@@ -268,7 +269,7 @@ void compareReg(TString inDir = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR
                 hratio[i]->Divide(spec[0]);
                 hratio[i]->SetLineStyle(linestyle[i]);
                 hratio[i]->GetXaxis()->SetRangeUser(plotmin,plotmax);
-                hratio[i]->GetYaxis()->SetRangeUser(0.8,1.15);
+                hratio[i]->GetYaxis()->SetRangeUser(0.95,1.2);
                 hratio[i]->GetYaxis()->SetTitle(Form("ratio to central (%s)",desc[0].Data()));
                 if(!i) hratio[i]->Draw("hist");
                 else hratio[i]->Draw("histsame");
@@ -353,7 +354,7 @@ void comparePriors(int reg = 4 , TString inDir = "/home/basia/Work/alice/analysi
       cspec->SaveAs(Form("%s/systematics/PriorComparison_reg%d.pdf",inDir.Data(),reg));
       cspec->SaveAs(Form("%s/systematics/PriorComparison_reg%d.png",inDir.Data(),reg));
 
-        TLegend *leg2 = new TLegend(0.55,0.5,0.9,0.88);
+        TLegend *leg2 = new TLegend(0.55,0.15,0.9,0.45);
         leg2->SetBorderSize(0);
         TCanvas *cspec2 = new TCanvas("cspec2","cspec2",800,400);
         TH1F *hratio[nFiles-1];
@@ -362,7 +363,7 @@ void comparePriors(int reg = 4 , TString inDir = "/home/basia/Work/alice/analysi
             hratio[i]->Divide(spec[0]);
             hratio[i]->SetLineStyle(linestyle[i]);
             hratio[i]->GetXaxis()->SetRangeUser(plotmin,plotmax);
-            hratio[i]->GetYaxis()->SetRangeUser(0.8,1.5);
+            hratio[i]->GetYaxis()->SetRangeUser(0.95,1.3);
             hratio[i]->GetYaxis()->SetTitle(Form("ratio to central (%s)",desc[0].Data()));
             if(!i) hratio[i]->Draw("hist");
             else hratio[i]->Draw("histsame");

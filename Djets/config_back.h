@@ -63,7 +63,7 @@ enum DMesonSpecies {kD0toKpi=0, kDStarD0pi};
     //====== signal extraction config ======
     Bool_t        fUseRefl = 1;                      //-----! if to use reflections (for D0, you must have reflections files ready)
     Int_t         fbkgtype = 0;                      //-----! kExpo=0, kLin=1, kPol2=2, kNoBk=3, kPow=4, kPowEx=5
-    Float_t       fsigmaSignal = 2;                  //-----! sigma for the signal region
+    Float_t       fsigmaSignal = 3;                  //-----! sigma for the signal region
     Float_t       fsigmaBkg[] = {-9,-4,4,9};         //-----! sigma for the SB region (both left and right side from the fit)
     Float_t       fDmass = 1.864, fDsigma = 0.010;   //-----! initial values for D mass and sigma
     Float_t       minf = 1.71, maxf = 2.1;           //-----! min/mass of the inv. mass distributions
@@ -75,50 +75,19 @@ enum DMesonSpecies {kD0toKpi=0, kDStarD0pi};
 
     ///============== POWHEG simulations ============================
     //======= set up here names of your simulation files =======
-/*
+
     TString fRunB[] = {
       "AnalysisResults_FastSim_powheg+pythia6_beauty_150593961473",
       "AnalysisResults_FastSim_powheg+pythia6_beauty_1504284947",
       "AnalysisResults_FastSim_powheg+pythia6_beauty_1504259653",
       "AnalysisResults_FastSim_powheg+pythia6_beauty_1506803374"
     };
-*/
-    TString fRunB[] = {
-      "AnalysisResults_FastSim_powheg+pythia6_beauty_150593961473",	//central
-      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504284947",	//R1F05
-      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504259653",	//R05F1
-      "AnalysisResults_FastSim_powheg+pythia6_beauty_1506803374",	//R2F1
-      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504296768",	//R1F2
-      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504212024",	//R05F05
-      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504318569",	//R2F2
-      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504202511",	//mb5
-      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504197966",	//mb4.5
-      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504197460",	//pdf 21200
-      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504199953"	//pdf 10800
-    //  "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1535215735"//evtgen
-    };
 
-/*
     TString fDescB[] = {
       "central",
       "muR=1,muF=0.5" ,
       "muR=0.5,muF=1",
       "muR=2,muF=1"
-    };
-*/
-    TString fDescB[] = {
-      "central",
-      "muR=1,muF=0.5" ,
-      "muR=0.5,muF=1",
-      "muR=2,muF=1",
-      "muR=1,muF=2",
-      "muR=0.5,muF=0.5",
-      "muR=2,muF=2",
-      "m_{b}=5",
-      "m_{b}=4.5",
-      "PDF 21200",
-      "PDF 10800"
-     // "Evt gen"
     };
 
     TString fRunC[] = {
@@ -135,6 +104,6 @@ enum DMesonSpecies {kD0toKpi=0, kDStarD0pi};
       "muR=1,muF=0.5",
       "muR=0.5,muF=1"
     };
-const Int_t fBsimN = 11;
-const Int_t fCsimN = 1;
-TString OUTDIRECTORY="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts";
+const Int_t fBsimN = ;
+const Int_t fCsimN = ;
+TString OUTDIRECTORY="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_cuts2";

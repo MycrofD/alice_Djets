@@ -167,11 +167,13 @@ fi
 ################################################
 cd $effDir
 if [ $isEffPrompt -eq 1 ]; then
-    aliroot -l -b -q DjetEfficiency.C'(1,"'$efffile'","'$effDirOut'",'$jetpteffmin','$jetpteffmax','$recoPt','$ispostfix',"'$postfix'")'
+    #aliroot -l -b -q DjetEfficiency.C'(1,"'$efffile'","'$effDirOut'",'$jetpteffmin','$jetpteffmax','$recoPt','$ispostfix',"'$postfix'")'
+    aliroot -l -b -q DjetEfficiency.C'(1,"'$efffile'","'$effDirOut'",'$jetpteffmin','$jetpteffmax','$recoPt',0,"")'  # for 95%
 fi
 
 if [ $isEffNonPrompt -eq 1 ]; then
-    aliroot -l -b -q DjetEfficiency.C'(0,"'$efffile'","'$effDirOut'",'$jetpteffmin','$jetpteffmax','$recoPt','$ispostfixFD',"'$postfixFD'")'
+    #aliroot -l -b -q DjetEfficiency.C'(0,"'$efffile'","'$effDirOut'",'$jetpteffmin','$jetpteffmax','$recoPt','$ispostfixFD',"'$postfixFD'")'
+    aliroot -l -b -q DjetEfficiency.C'(0,"'$efffile'","'$effDirOut'",'$jetpteffmin','$jetpteffmax','$recoPt',0,"")'
 fi
 
 effFilePrompt=$effDirOut/DjetEff_prompt_jetpt$jetpteffmin\_$jetpteffmax.root
@@ -197,7 +199,8 @@ if [ $isEffPrompt -eq 1 ]; then
 fi
 
 cd $signalDir
-./getYields.csh $analysisDataFile $isEffPrompt $effFilePrompt $isRefl $reflTemplatesFile $ispostfix $postfix $signalDirOut $isMoreFiles $production
+#./getYields.csh $analysisDataFile $isEffPrompt $effFilePrompt $isRefl $reflTemplatesFile $ispostfix $postfix $signalDirOut $isMoreFiles $production
+./getYields.csh $analysisDataFile $isEffPrompt $effFilePrompt $isRefl $reflTemplatesFile 0 $postfix $signalDirOut $isMoreFiles $production
 
 if [ $isEffPrompt -eq 0 ]; then
   signalFile=$signalDirOut/JetPtSpectra_SB_noEff.root
