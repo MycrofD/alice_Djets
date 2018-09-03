@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<alien>
+  <collection name="FastSim_Merging_powheg+pythia6_charm_stage_1.xml">
+    <event name="1">
+      <file name="AnalysisResults_FastSim_powheg+pythia6_charm.root" aclId="" broken="0" ctime="2018-08-26 13:08:05" dir="233490941" entryId="233490950" expiretime="" gowner="amohanty" guid="49A8268E-A920-11E8-A01B-670ECFD6ADCA" guidtime="11E8A920" jobid="1238989213" lfn="/alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/001/AnalysisResults_FastSim_powheg+pythia6_charm.root" md5="54aac23640ea8397af0be1d10cb3bdf1" owner="amohanty" perm="755" replicated="0" size="15809060" turl="alien:///alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/001/AnalysisResults_FastSim_powheg+pythia6_charm.root" type="f" />
+    </event>
+    <event name="10">
+      <file name="AnalysisResults_FastSim_powheg+pythia6_charm.root" aclId="" broken="0" ctime="2018-08-26 13:07:23" dir="233490935" entryId="233490940" expiretime="" gowner="amohanty" guid="278E2864-A920-11E8-8B6B-17949BD0A60E" guidtime="11E8A920" jobid="1238989222" lfn="/alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/010/AnalysisResults_FastSim_powheg+pythia6_charm.root" md5="8f7809e4d3b1c6a61db4eb7d6270bfb9" owner="amohanty" perm="755" replicated="0" size="15903532" turl="alien:///alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/010/AnalysisResults_FastSim_powheg+pythia6_charm.root" type="f" />
+    </event>
+    <event name="11">
+      <file name="AnalysisResults_FastSim_powheg+pythia6_charm.root" aclId="" broken="0" ctime="2018-08-26 13:16:41" dir="233491041" entryId="233491051" expiretime="" gowner="amohanty" guid="6A8AAC0E-A921-11E8-90EB-6300C17D214E" guidtime="11E8A921" jobid="1238989223" lfn="/alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/011/AnalysisResults_FastSim_powheg+pythia6_charm.root" md5="bf2d3619ced06d43d077d941000cf023" owner="amohanty" perm="755" replicated="0" size="15808323" turl="alien:///alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/011/AnalysisResults_FastSim_powheg+pythia6_charm.root" type="f" />
+    </event>
+    <event name="12">
+      <file name="AnalysisResults_FastSim_powheg+pythia6_charm.root" aclId="" broken="0" ctime="2018-08-26 13:09:15" dir="233490976" entryId="233490983" expiretime="" gowner="amohanty" guid="70A7B11E-A920-11E8-ADFC-C3EE3091EC91" guidtime="11E8A920" jobid="1238989224" lfn="/alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/012/AnalysisResults_FastSim_powheg+pythia6_charm.root" md5="99a7857dc5f36c106bf38535d90e837f" owner="amohanty" perm="755" replicated="0" size="15891139" turl="alien:///alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/012/AnalysisResults_FastSim_powheg+pythia6_charm.root" type="f" />
+    </event>
+    <event name="13">
+      <file name="AnalysisResults_FastSim_powheg+pythia6_charm.root" aclId="" broken="0" ctime="2018-08-26 13:09:25" dir="233490974" entryId="233491000" expiretime="" gowner="amohanty" guid="6F3AD8C4-A920-11E8-A7E7-DB90F4E853FC" guidtime="11E8A920" jobid="1238989225" lfn="/alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/013/AnalysisResults_FastSim_powheg+pythia6_charm.root" md5="3aad6bc7369d0da329efa2e5421deea4" owner="amohanty" perm="755" replicated="0" size="15803103" turl="alien:///alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/013/AnalysisResults_FastSim_powheg+pythia6_charm.root" type="f" />
+    </event>
+    <event name="14">
+      <file name="AnalysisResults_FastSim_powheg+pythia6_charm.root" aclId="" broken="0" ctime="2018-08-26 13:12:09" dir="233491017" entryId="233491027" expiretime="" gowner="amohanty" guid="BFA1D146-A920-11E8-B316-0781F4165F25" guidtime="11E8A920" jobid="1238989226" lfn="/alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/014/AnalysisResults_FastSim_powheg+pythia6_charm.root" md5="8c4c319480da3402abde800ac12fdff6" owner="amohanty" perm="755" replicated="0" size="15787505" turl="alien:///alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/014/AnalysisResults_FastSim_powheg+pythia6_charm.root" type="f" />
+    </event>
+    <event name="15">
+      <file name="AnalysisResults_FastSim_powheg+pythia6_charm.root" aclId="" broken="0" ctime="2018-08-26 13:15:02" dir="233491029" entryId="233491039" expiretime="" gowner="amohanty" guid="33248D66-A921-11E8-AA47-D70DE599B84F" guidtime="11E8A921" jobid="1238989227" lfn="/alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/015/AnalysisResults_FastSim_powheg+pythia6_charm.root" md5="337f231cdb3c6cc9615b1b663c5e66c6" owner="amohanty" perm="755" replicated="0" size="15809200" turl="alien:///alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/015/AnalysisResults_FastSim_powheg+pythia6_charm.root" type="f" />
+    </event>
+    <event name="16">
+      <file name="AnalysisResults_FastSim_powheg+pythia6_charm.root" aclId="" broken="0" ctime="2018-08-26 13:09:54" dir="233491001" entryId="233491015" expiretime="" gowner="amohanty" guid="8328CA94-A920-11E8-AEC6-7722027FDC52" guidtime="11E8A920" jobid="1238989228" lfn="/alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/016/AnalysisResults_FastSim_powheg+pythia6_charm.root" md5="fad3b82f1cf29f374108f788debf85e1" owner="amohanty" perm="755" replicated="0" size="15767821" turl="alien:///alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/016/AnalysisResults_FastSim_powheg+pythia6_charm.root" type="f" />
+    </event>
+    <event name="17">
+      <file name="AnalysisResults_FastSim_powheg+pythia6_charm.root" aclId="" broken="0" ctime="2018-08-26 13:09:23" dir="233490977" entryId="233490988" expiretime="" gowner="amohanty" guid="70EDFB1A-A920-11E8-9D44-93DD12A9044C" guidtime="11E8A920" jobid="1238989229" lfn="/alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/017/AnalysisResults_FastSim_powheg+pythia6_charm.root" md5="5aa7bfae05927dc7339e3877e3dff322" owner="amohanty" perm="755" replicated="0" size="9714152" turl="alien:///alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/017/AnalysisResults_FastSim_powheg+pythia6_charm.root" type="f" />
+    </event>
+    <event name="18">
+      <file name="AnalysisResults_FastSim_powheg+pythia6_charm.root" aclId="" broken="0" ctime="2018-08-26 13:09:23" dir="233490973" entryId="233490992" expiretime="" gowner="amohanty" guid="6D76D218-A920-11E8-AED9-7FD2A6E7DF64" guidtime="11E8A920" jobid="1238989230" lfn="/alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/018/AnalysisResults_FastSim_powheg+pythia6_charm.root" md5="6c84a7c888b17a80be0d44f19f6997a8" owner="amohanty" perm="755" replicated="0" size="15834655" turl="alien:///alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/018/AnalysisResults_FastSim_powheg+pythia6_charm.root" type="f" />
+    </event>
+    <event name="19">
+      <file name="AnalysisResults_FastSim_powheg+pythia6_charm.root" aclId="" broken="0" ctime="2018-08-26 13:08:23" dir="233490943" entryId="233490959" expiretime="" gowner="amohanty" guid="4CEF448A-A920-11E8-94FA-7F05C5718254" guidtime="11E8A920" jobid="1238989231" lfn="/alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/019/AnalysisResults_FastSim_powheg+pythia6_charm.root" md5="e6aefffc5b0a6f4908ac8ab9dbbfbaad" owner="amohanty" perm="755" replicated="0" size="15928906" turl="alien:///alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/019/AnalysisResults_FastSim_powheg+pythia6_charm.root" type="f" />
+    </event>
+    <event name="2">
+      <file name="AnalysisResults_FastSim_powheg+pythia6_charm.root" aclId="" broken="0" ctime="2018-08-26 13:09:33" dir="233490979" entryId="233491006" expiretime="" gowner="amohanty" guid="742C4926-A920-11E8-A60B-1301CF33D397" guidtime="11E8A920" jobid="1238989214" lfn="/alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/002/AnalysisResults_FastSim_powheg+pythia6_charm.root" md5="747061498ea99f985a18ca31006d57d6" owner="amohanty" perm="755" replicated="0" size="15780456" turl="alien:///alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/002/AnalysisResults_FastSim_powheg+pythia6_charm.root" type="f" />
+    </event>
+    <event name="20">
+      <file name="AnalysisResults_FastSim_powheg+pythia6_charm.root" aclId="" broken="0" ctime="2018-08-26 13:16:00" dir="233491040" entryId="233491046" expiretime="" gowner="amohanty" guid="53F5D3A6-A921-11E8-A211-7F1D8CFF9699" guidtime="11E8A921" jobid="1238989232" lfn="/alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/020/AnalysisResults_FastSim_powheg+pythia6_charm.root" md5="2ba521fa21f0de0586905ff9fc18fb5f" owner="amohanty" perm="755" replicated="0" size="15747567" turl="alien:///alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/020/AnalysisResults_FastSim_powheg+pythia6_charm.root" type="f" />
+    </event>
+    <event name="3">
+      <file name="AnalysisResults_FastSim_powheg+pythia6_charm.root" aclId="" broken="0" ctime="2018-08-26 13:08:05" dir="233490942" entryId="233490954" expiretime="" gowner="amohanty" guid="4B097F14-A920-11E8-A89A-77F0CEDDF7C0" guidtime="11E8A920" jobid="1238989215" lfn="/alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/003/AnalysisResults_FastSim_powheg+pythia6_charm.root" md5="6b45336092e57668421826fba085626c" owner="amohanty" perm="755" replicated="0" size="15804597" turl="alien:///alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/003/AnalysisResults_FastSim_powheg+pythia6_charm.root" type="f" />
+    </event>
+    <event name="4">
+      <file name="AnalysisResults_FastSim_powheg+pythia6_charm.root" aclId="" broken="0" ctime="2018-08-26 13:09:34" dir="233490978" entryId="233491010" expiretime="" gowner="amohanty" guid="738A90AE-A920-11E8-B122-EF1B0815888C" guidtime="11E8A920" jobid="1238989216" lfn="/alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/004/AnalysisResults_FastSim_powheg+pythia6_charm.root" md5="99cfc33e9c87e7c357c0eb2a5cf7ff56" owner="amohanty" perm="755" replicated="0" size="15904585" turl="alien:///alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/004/AnalysisResults_FastSim_powheg+pythia6_charm.root" type="f" />
+    </event>
+    <event name="5">
+      <file name="AnalysisResults_FastSim_powheg+pythia6_charm.root" aclId="" broken="0" ctime="2018-08-26 13:15:02" dir="233491028" entryId="233491034" expiretime="" gowner="amohanty" guid="2FC4F084-A921-11E8-AFE3-77CDA4374080" guidtime="11E8A921" jobid="1238989217" lfn="/alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/005/AnalysisResults_FastSim_powheg+pythia6_charm.root" md5="7166d382512e0ccb05bb1d2f3c944e6c" owner="amohanty" perm="755" replicated="0" size="15780071" turl="alien:///alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/005/AnalysisResults_FastSim_powheg+pythia6_charm.root" type="f" />
+    </event>
+    <event name="6">
+      <file name="AnalysisResults_FastSim_powheg+pythia6_charm.root" aclId="" broken="0" ctime="2018-08-26 13:09:24" dir="233490975" entryId="233490996" expiretime="" gowner="amohanty" guid="70AE21CA-A920-11E8-A7E9-B3F901AC3674" guidtime="11E8A920" jobid="1238989218" lfn="/alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/006/AnalysisResults_FastSim_powheg+pythia6_charm.root" md5="c8cd854b673547df85611860d62dcbda" owner="amohanty" perm="755" replicated="0" size="15845396" turl="alien:///alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/006/AnalysisResults_FastSim_powheg+pythia6_charm.root" type="f" />
+    </event>
+    <event name="7">
+      <file name="AnalysisResults_FastSim_powheg+pythia6_charm.root" aclId="" broken="0" ctime="2018-08-26 13:08:34" dir="233490944" entryId="233490972" expiretime="" gowner="amohanty" guid="4DA142D4-A920-11E8-A1FE-8B6B31383E9D" guidtime="11E8A920" jobid="1238989219" lfn="/alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/007/AnalysisResults_FastSim_powheg+pythia6_charm.root" md5="a46ef0feeda83c057595729d38d0b90d" owner="amohanty" perm="755" replicated="0" size="10426191" turl="alien:///alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/007/AnalysisResults_FastSim_powheg+pythia6_charm.root" type="f" />
+    </event>
+    <event name="8">
+      <file name="AnalysisResults_FastSim_powheg+pythia6_charm.root" aclId="" broken="0" ctime="2018-08-26 13:08:33" dir="233490945" entryId="233490963" expiretime="" gowner="amohanty" guid="4E0A2B82-A920-11E8-ADB2-6F5B6D8F7353" guidtime="11E8A920" jobid="1238989220" lfn="/alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/008/AnalysisResults_FastSim_powheg+pythia6_charm.root" md5="a9bb6f064772ab2c452109af7192ab34" owner="amohanty" perm="755" replicated="0" size="15828728" turl="alien:///alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/008/AnalysisResults_FastSim_powheg+pythia6_charm.root" type="f" />
+    </event>
+    <event name="9">
+      <file name="AnalysisResults_FastSim_powheg+pythia6_charm.root" aclId="" broken="0" ctime="2018-08-26 13:08:33" dir="233490955" entryId="233490967" expiretime="" gowner="amohanty" guid="4EEC6B28-A920-11E8-A9B5-C7DADC96163B" guidtime="11E8A920" jobid="1238989221" lfn="/alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/009/AnalysisResults_FastSim_powheg+pythia6_charm.root" md5="9500b276cd9438ab9fb02e43138f4243" owner="amohanty" perm="755" replicated="0" size="15821854" turl="alien:///alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output/009/AnalysisResults_FastSim_powheg+pythia6_charm.root" type="f" />
+    </event>
+    <info command="[/alice/cern.ch/user/s/sathakur/myWorkingDir_MC_truth1/]: find -z -x FastSim_Merging_powheg+pythia6_charm_stage_1.xml /alice/cern.ch/user/a/amohanty/FastSim_powheg+pythia6_charm_1535211651/stage_0/output */AnalysisResults*.root" creator="admin" date="Sun Aug 26 13:22:40 CEST 2018" timestamp="1535282560" />
+  </collection>
+</alien>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
