@@ -30,7 +30,7 @@ TH1F* hratioC[DC]; // number of ratio histos
 //-------------------------------------------------------------------------------
 for (int j=0; j<SE;j++){        //j=0-> Sideband, j=1-> EffScaled
         for (int i=0; i<DC; i++){
-                rootfile=Form("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_%s/DzeroR03_pPbCuts/Default/unfolding_Bayes_4/unfoldedSpectrum_unfoldedJetSpectrum.root",dir[i].Data());
+                rootfile=Form("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts/Default_%s/unfolding_Bayes_4/unfoldedSpectrum_unfoldedJetSpectrum.root",dir[i].Data());
                 File[j][i] = new TFile(rootfile,"read");
                 hh[j][i] = (TH1F*)File[j][i]->Get(histoName.Data());
                 hhs[j][i] = (TH1F*)hh[j][i]->Clone();
