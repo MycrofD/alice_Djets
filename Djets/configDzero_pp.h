@@ -84,18 +84,18 @@ enum DMesonSpecies {kD0toKpi=0, kDStarD0pi};
     };
 */
     TString fRunB[] = {
-      "AnalysisResults_FastSim_powheg+pythia6_beauty_150593961473",	//central
-      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504284947",	//R1F05
-      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504259653",	//R05F1
-      "AnalysisResults_FastSim_powheg+pythia6_beauty_1506803374",	//R2F1
-      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504296768",	//R1F2
-      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504212024",	//R05F05
-      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504318569",	//R2F2
-      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504202511",	//mb5
-      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504197966",	//mb4.5
-      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504197460",	//pdf 21200
-      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504199953"	//pdf 10800
-    //  "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1535215735"//evtgen
+      "AnalysisResults_FastSim_powheg+pythia6_beauty_150593961473"	//central
+,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504284947"	//R1F05
+,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504259653"	//R05F1
+,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1506803374"	//R2F1
+,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504296768"	//R1F2
+,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504212024"	//R05F05
+,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504318569"	//R2F2
+,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504202511"	//mb5
+,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504197966"	//mb4.5
+,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504197460"	//pdf 21200
+,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504199953"	//pdf 10800
+//,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1535289932"//evtgen
     };
 
 /*
@@ -107,31 +107,39 @@ enum DMesonSpecies {kD0toKpi=0, kDStarD0pi};
     };
 */
     TString fDescB[] = {
-      "central",
-      "muR=1,muF=0.5" ,
-      "muR=0.5,muF=1",
-      "muR=2,muF=1",
-      "muR=1,muF=2",
-      "muR=0.5,muF=0.5",
-      "muR=2,muF=2",
-      "m_{b}=5",
-      "m_{b}=4.5",
-      "PDF 21200",
-      "PDF 10800"
-     // "Evt gen"
+      "central"
+,      "muR=1,muF=0.5" 
+,      "muR=0.5,muF=1"
+,      "muR=2,muF=1"
+,      "muR=1,muF=2"
+,      "muR=0.5,muF=0.5"
+,      "muR=2,muF=2"
+,      "m_{b}=5"
+,      "m_{b}=4.5"
+,      "PDF 21200"
+,      "PDF 10800"
+//,      "Evt gen"
     };
 
     TString fRunC[] = {
       "RAW_CHARM_POWHEG"
+//,"AnalysisResults_FastSim_powheg+pythia6_charm_m13_1535875341"
+//,"AnalysisResults_FastSim_powheg+pythia6_charm_m17_1535906671"
+//,"AnalysisResults_FastSim_powheg+pythia6_charm_F2R2_1535895146"
+//,"AnalysisResults_FastSim_powheg+pythia6_charm_F1R2_1535808531"
+//,"AnalysisResults_FastSim_powheg+pythia6_charm_F2R1_1535916012"
+//,"AnalysisResults_FastSim_powheg+pythia6_charm_F05R05_1535894261"
+//,"AnalysisResults_FastSim_powheg+pythia6_charm_F1R05_1536139111"
+//,"AnalysisResults_FastSim_powheg+pythia6_charm_F05R1_1535270513"
     };
     TString fDescC[] = {
-      "central",
-      "m_{c}=1.3",
-      "m_{c}=1.7",
-      "muR=2,muF=2",
-      "muR=1,muF=2",
-      "muR=2,muF=1",
-      "muR=0.5,muF=0.5",
-      "muR=1,muF=0.5",
-      "muR=0.5,muF=1"
+      "central"
+//,      "m_{c}=1.3"
+//,      "m_{c}=1.7"
+//,      "muR=2,muF=2"
+//,      "muR=1,muF=2"
+//,      "muR=2,muF=1"
+//,      "muR=0.5,muF=0.5"
+//,      "muR=1,muF=0.5"
+//,      "muR=0.5,muF=1"
     };

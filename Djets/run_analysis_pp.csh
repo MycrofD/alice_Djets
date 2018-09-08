@@ -22,7 +22,7 @@ roounfoldpwd=$HOME/ALICE_HeavyFlavour/RooUnfold-1.1.1/libRooUnfold
 
 currDir=`pwd`
 outputdirectorybase=$HOME/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_
-outputdirectory=${outputdirectorybase}pPbCuts_simFold_
+outputdirectory=${outputdirectorybase}pPbCuts #_simFold_
 #outputdirectory=${outputdirectorybase}cuts2
 outputdirectorySignal=Default
 
@@ -39,8 +39,8 @@ isMoreFiles=0                                     # 1 if there are more input fi
 prod=kl                                           # if there are more input files to be read
 reflfile=reflectionTemplates_pPb.root
 effMCfile=AnalysisResults_fast_R03_D0MC_def.root
-#MCfile=AnalysisResults_fast_R03_D0MC_def.root
-MCfile=AnalysisResults_fast_R03_D0MCPythia_JES96_1.root
+MCfile=AnalysisResults_fast_R03_D0MC_def.root
+#MCfile=AnalysisResults_fast_R03_D0MCPythia_JES96_1.root
 efficiencyfile=$effMCfile
 detRMpromptfile=$MCfile
 detRMnonpromptfile=$MCfile
