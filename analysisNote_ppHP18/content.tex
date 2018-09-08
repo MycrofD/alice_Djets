@@ -861,29 +861,29 @@ Influence of the change of the upper range of the $p_{T,jet}^{gen}$ was also che
 %\end{figure}
 
 
-Figure~\ref{fig:UnfSpec_pPb_Dzero_reg4} (left) shows unfolded jet \pt spectrum using Bayesian unfolding with {\color{red} XX} iterations (left) and unfolded spectra with next iterations compared to the default spectrum obtained after 4 iterations (right).
-Unfolded spectrum with SVD method using {\color{red} XX} iteration is presented in Fig.~\ref{fig:UnfSpec_pPb_Dzero_SVD} (left) togehter with ratio of the re-folded spectra to the measured one (right).
+Figure~\ref{fig:UnfSpec_pPb_Dzero_reg4} (left) shows unfolded jet \pt\ spectrum using Bayesian unfolding with 4 iterations (left) and unfolded spectra with next iterations compared to the default spectrum obtained after 4 iterations (right).
+Unfolded spectrum with SVD method using 6 iterations is presented in Fig.~\ref{fig:UnfSpec_pPb_Dzero_SVD} (left) together with ratio of the unfolded spectra with different regularization parameters to the default unfolded spectrum with {\it reg}=6 (right).
 
 \begin{figure}[bth]
 \centering
-\includegraphics[width=0.3\textwidth]{missing}
-\includegraphics[width=0.3\textwidth]{missing}
-\caption{Left: Corrected jet \pt spectrum before (blue) and after (red) the unfolding procedure (Bayesian method with {\color{red} XX} iterations). Right: Ratio of the default unfolded spectrum with 4 iteration to the unfolded spectra for up to 10 iterations in the Bayesian unfolding. The considered jet \pt\ range is above 5 GeV/$c$.}
+\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/unfolding/unfoldedSpectrum_UnfSpectrum_Bayes}
+\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/unfolding/unfoldedSpectrum_unfRatio_Bayes}
+\caption{Left: Corrected jet \pt\ spectrum before (blue) and after (red) the unfolding procedure (Bayesian method with 4 iterations). Right: Ratio with the default unfolded spectrum with 4 iteration of the unfolded spectra for up to 10 iterations in the Bayesian unfolding. The considered jet \pt\ range is above 5 GeV/$c$.}
 \label{fig:UnfSpec_pPb_Dzero_reg4}
 \end{figure}
 
 \begin{figure}[bth]
 \centering
-\includegraphics[width=0.3\textwidth]{missing}
-\includegraphics[width=0.3\textwidth]{missing}
-\caption{Left: Corrected jet \pt spectrum before (blue) and after (red) the unfolding procedure (SVD method with {\color{red} XX} iterations). Right: ratio of the measured spectrum to the refolded for up to 10 iterations in the SVD unfolding. The considered jet \pt\ range is above 5 GeV/$c$.}
+\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/unfolding/unfoldedSpectrum_UnfSpectrum_Bayes}
+\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/unfolding/unfoldedSpectrum_unfRatio_Bayes}
+\caption{Left: Corrected jet \pt\ spectrum before (blue) and after (red) the unfolding procedure (SVD method with 6 iterations). Right: ratio of the measured spectrum to the refolded for up to 10 iterations in the SVD unfolding. The considered jet \pt\ range is above 5 GeV/$c$.}
 \label{fig:UnfSpec_pPb_Dzero_SVD}
 \end{figure}
 
 
 \begin{figure}[bth]
 \centering
-\includegraphics[width=0.3\textwidth]{missing}
+\includegraphics[width=0.8\textwidth]{pPbcuts_2sig/unfolding/unfoldedSpectrum_Pearson_SVD}
 \caption{Pearson coefficients for SVD unfolding.}
 \label{fig:unfPearson_pPb_Dzero_SVD}
 \end{figure}
@@ -895,7 +895,7 @@ For the variations, the priors were obtained from a modified power-law function:
 f(\ptjet) = \ptjet^{-a}e^{-\frac{ab}{\ptjet}},
 \end{equation}
 where $a$ is the power-law index and $b$ is the position of the local maximum of the distribution. The exponential factor $e^{-\frac{ab}{\ptjet}}$ was added to avoid infinities at zero and have a more realistic spectrum (the physical cross-section goes to zero for $\ptjet \to 0$).
-Used variations are: {\color{red} THE BEST FIT FUNCTION AND THEN VARIATIONS TO BE DEFINED FOR THIS ANALYSIS -- THE NUMBERS BELOW ARE FROM P-PB ANALYSIS !!!!
+Used variations are: 
 \begin{itemize}
 \item prior0: $a=4.6$ $b=4$~\GeVc\ 
 \item prior1: $a=3$ $b=4$~\GeVc\
@@ -907,7 +907,7 @@ Used variations are: {\color{red} THE BEST FIT FUNCTION AND THEN VARIATIONS TO B
 \item prior7: $a=4.5$ $b=5$~\GeVc\
 \item prior8: fit to the measured spectrum
 \end{itemize}
-}
+
 
 Example of priors compared to the PYTHIA \Dzero-jet \pt\ spectra at the generator level are shown on Fig.~\ref{fig:UnfSpec_pPb_Dzero_priors_all}.
 Ratios of the unfolded \Dzero-jet \pt\ spectra with variation of the functions used as priors to the central \Dzero-jet \pt\ spectrum using the Bayesian unfolding with 4 iterations are shown in Fig.~\ref{fig:UnfSpec_pPb_Dzero_priors}. 
