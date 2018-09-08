@@ -24,7 +24,7 @@ currDir=`pwd`
 outputdirectorybase=$HOME/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_
 outputdirectory=${outputdirectorybase}pPbCuts
 #outputdirectory=${outputdirectorybase}cuts2
-outputdirectorySignal=Default_JES95
+outputdirectorySignal=Default
 
 # ========== input directories
 anaoutfiledir=$HOME/Work/alice/analysis/pp5TeV/D0jet/outData
@@ -44,9 +44,9 @@ MCfile=AnalysisResults_fast_R03_D0MCPythia_JES96_1.root
 efficiencyfile=$effMCfile
 detRMpromptfile=$MCfile
 detRMnonpromptfile=$MCfile
-ispostfix=1                                       # if container in the analysis output file has different name than default you set here if and what is the postfix, this is set up in the signal, efficiency and RM extraction macros
+ispostfix=0                                       # if container in the analysis output file has different name than default you set here if and what is the postfix, this is set up in the signal, efficiency and RM extraction macros
 postfix=cut2
-ispostfixFD=1                                     # if container in the analysis output file has different name than default you set here if and what is the postfix, for the FD part wagons are usually configured with additional "FD" string in the container name, you should adjust this to yours configuration
+ispostfixFD=0                                     # if container in the analysis output file has different name than default you set here if and what is the postfix, for the FD part wagons are usually configured with additional "FD" string in the container name, you should adjust this to yours configuration
 #postfixFD=FD
 postfixFD=FDcut2
 
