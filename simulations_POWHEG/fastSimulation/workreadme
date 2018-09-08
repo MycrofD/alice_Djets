@@ -2,13 +2,13 @@
 
 quark	variation	time stamp
 -----	---------	----------
-beauty	evtgen cent	1535215735 1535289932
-charm	central		1535211651
-charm 	F1R05		1535266874
-charm 	F05R1		1535270513
-charm 	F05R05		
-charm 	F2R2		
-charm 	F2R1		
-charm 	F1R2		1535808531
-charm 	m 1.3		1535875341
-charm 	m 1.7		1535906671
+beauty	evtgen cent	1535215735 1535289932	downloaded
+charm	central		1535211651 		downloaded
+charm 	F1R05		1535266874 1536139111	downloaded
+charm 	F05R1		1535270513		downloaded
+charm 	F05R05		1535894261		downloaded
+charm 	F2R2		1535895146		downloaded
+charm 	F2R1		1535916012		downloaded
+charm 	F1R2		1535808531		downloaded
+charm 	m 1.3		1535875341		downloaded
+charm 	m 1.7		1535906671		downloaded
