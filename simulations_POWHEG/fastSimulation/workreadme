@@ -3,6 +3,7 @@
 quark	variation	time stamp
 -----	---------	----------
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 beauty	evtgen cent	1535215735 1535289932	downloaded
 charm	central		1535211651 		downloaded
 charm 	F1R05		1535266874 1536139111	downloaded
@@ -18,9 +19,21 @@ beauty	evtgen cent	1535215735 1535289932
 charm	central		1535211651
 charm 	F1R05		1535266874
 charm 	F05R1		1535270513
+||||||| merged common ancestors
+beauty	evtgen cent	1535215735 1535289932
+charm	central		1535211651
+charm 	F1R05		1535266874
+charm 	F05R1		1535270513
+=======
+beauty	evtgen cent	1535215735 	done 1245570158
+charm	central		1535211651	done 1245584844
+charm 	F1R05		1535266874	d	1245585073
+charm 	F05R1		1535270513	do	1245585155, 1245984905
+>>>>>>> Stashed changes
 charm 	F05R05		
 charm 	F2R2		
 charm 	F2R1		
+<<<<<<< Updated upstream
 charm 	F1R2		1535808531
 charm 	m 1.3		1535875341
 charm 	m 1.7		1535906671
@@ -32,6 +45,15 @@ charm 	F05R1		1535270513	do	1245585155, 1245984905
 charm 	F05R05		
 charm 	F2R2		
 charm 	F2R1		
+charm 	F1R2		1535808531	done	1245587400, 1246132312
+charm 	m 1.3		1535875341	done	1245591065, 1246137295
+charm 	m 1.7		1535906671	done	1245591166, 1246162478
+>>>>>>> Stashed changes
+||||||| merged common ancestors
+charm 	F1R2		1535808531
+charm 	m 1.3		1535875341
+charm 	m 1.7		1535906671
+=======
 charm 	F1R2		1535808531	done	1245587400, 1246132312
 charm 	m 1.3		1535875341	done	1245591065, 1246137295
 charm 	m 1.7		1535906671	done	1245591166, 1246162478
