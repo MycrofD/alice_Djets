@@ -29,7 +29,7 @@ isFDSub=1           # if to subtract feed-down
 isFinalSpectra=1    # if to extract the final x-section
 
 isCsim=1            # switch this flag on if you haven't prepared output of the simulations yet, it takes time -- if the simulation output directory is empty the simulations will be run anyway
-isBsim=0            # switch this flag on if you haven't prepared output of the simulations yet with a current efficiencies, it takes time -- if the simulation output directory is empty the simulations will be run anyway
+isBsim=1            # switch this flag on if you haven't prepared output of the simulations yet with a current efficiencies, it takes time -- if the simulation output directory is empty the simulations will be run anyway
 isBsimNoEff=0       # switch one if you want non-prompt simulations without scaling for non-prompt/prompt efficiency (shouldn't be used in a standard analysis chain)
 
 
@@ -167,13 +167,13 @@ fi
 ################################################
 cd $effDir
 if [ $isEffPrompt -eq 1 ]; then
-    #aliroot -l -b -q DjetEfficiency.C'(1,"'$efffile'","'$effDirOut'",'$jetpteffmin','$jetpteffmax','$recoPt','$ispostfix',"'$postfix'")'
-    aliroot -l -b -q DjetEfficiency.C'(1,"'$efffile'","'$effDirOut'",'$jetpteffmin','$jetpteffmax','$recoPt',0,"")'  # for 95%
+    aliroot -l -b -q DjetEfficiency.C'(1,"'$efffile'","'$effDirOut'",'$jetpteffmin','$jetpteffmax','$recoPt','$ispostfix',"'$postfix'")'
+    #aliroot -l -b -q DjetEfficiency.C'(1,"'$efffile'","'$effDirOut'",'$jetpteffmin','$jetpteffmax','$recoPt',0,"")'  # for 95%
 fi
 
 if [ $isEffNonPrompt -eq 1 ]; then
-    #aliroot -l -b -q DjetEfficiency.C'(0,"'$efffile'","'$effDirOut'",'$jetpteffmin','$jetpteffmax','$recoPt','$ispostfixFD',"'$postfixFD'")'
-    aliroot -l -b -q DjetEfficiency.C'(0,"'$efffile'","'$effDirOut'",'$jetpteffmin','$jetpteffmax','$recoPt',0,"")'
+    aliroot -l -b -q DjetEfficiency.C'(0,"'$efffile'","'$effDirOut'",'$jetpteffmin','$jetpteffmax','$recoPt','$ispostfixFD',"'$postfixFD'")'
+    #aliroot -l -b -q DjetEfficiency.C'(0,"'$efffile'","'$effDirOut'",'$jetpteffmin','$jetpteffmax','$recoPt',0,"")'
 fi
 
 effFilePrompt=$effDirOut/DjetEff_prompt_jetpt$jetpteffmin\_$jetpteffmax.root
