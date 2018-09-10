@@ -57,7 +57,7 @@ Events were further filtered using the Physics Selection, and selection provided
 \end{itemize}
 
 The total number of events is 906.308  M  out of  analysed (after all the selections outlined below).
-Results shown in this Note come from the LEGO train HFCJ\_pp 365 (META dataset {\color{red} XX} including: LHC17p\_pass1\_FAST, LHC17p\_pass1\_CENT\_woSDD, LHC17q\_pass1\_FAST, LHC17q\_pass1\_CENT\_woSDD) and LEGO train 405 for the cut variation studies.
+Results shown in this Note come from the LEGO train HFCJ\_pp 365 (including: LHC17p\_pass1\_FAST, LHC17p\_pass1\_CENT\_woSDD, LHC17q\_pass1\_FAST, LHC17q\_pass1\_CENT\_woSDD) and LEGO train 405 for the cut variation studies.
 
 \subsection{Monte Carlo productions}
 
@@ -71,7 +71,8 @@ This MC production is used to compute the D-meson efficiency with jets, acceptan
 \subsubsection{\Dzero-tagged jets}
 Results shown in this Note come from the LEGO trains HFCJ\_pp\_MC:  
 \\Reconstruction efficiency and response matrices: LEGO train {414}
-\\Cuts variation studies: LEGO train {443}
+\\Cuts variation studies: LEGO train {443, 440, 438, 431} 
+\\  ~~~ [and for HFCJ\_pp: {405, 401, 399, 393} respectively]
 \\Jet Energy Scale systematic studies: LEGO trains 474.
 
 
@@ -723,14 +724,14 @@ The uncertainties are added in quadratures in order to obtain the final systemat
 \subsection{D-Meson Selection Cuts}
 Uncertainties of the D-meson cut selection is estimated by varying applied in the analysis D-meson selection criteria, as reported in~\ref{sec:DmesonSel}. 
 
-Eight variations of cut selections are considered, {\color{red} XX} looser sets and {\color{red} XX} tighter sets of cuts. The variations are choosen so that they vary \Dzero reconstruction efficiency to high enough extent so that a possible imperfection in MC simulation can be probed. Though at high \ptd\ the selection criteria are already rather loose.
+Eight variations of cut selections are considered, {} looser sets and {} tighter sets of cuts. The variations are choosen so that they vary \Dzero reconstruction efficiency to high enough extent so that a possible imperfection in MC simulation can be probed. Though at high \ptd\ the selection criteria are already rather loose.
 Raw \Dzero-jet \pt\ distributions with these different cut sets and corresponding \Dzero-jet efficiencies are shown in Fig.~\ref{fig:JetPtRawSys_Dzero}, and ratios to the default set of cuts in Fig.~\ref{fig:JetPtRawSysRatio_Dzero}.
 Figure~\ref{fig:JetcutVarFD_Dzero} shows non-prompt \Dzero-jet reconstruction efficiencies for all the cut variations, and the variations of the FD fraction in the inclusive \Dzero-jet spectrum.
 
 \begin{figure}[bth]
 \begin{center}
-\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/cutSys/cutSys_jetptSpectra}
-\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/cutSys/cutSys_prompt}
+\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/cutSys2/cutSys_spectra_D3}
+\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/cutSys2/cutSys_prompt}
 \caption{Left: \Dzero-jet \pt\ distributions with different cut sets for systematic uncertainties estimation. Right: corresponding prompt \Dzero-jet efficiencies.} 
 \label{fig:JetPtRawSys_Dzero}
 \end{center}
@@ -738,17 +739,19 @@ Figure~\ref{fig:JetcutVarFD_Dzero} shows non-prompt \Dzero-jet reconstruction ef
 
 \begin{figure}[bth]
 \begin{center}
-\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/cutSys/cutSys_jetptSpectra_ratio}
-\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/cutSys/cutSys_prompt_ratio}
-\caption{Left: Ratios of \Dzero-jet \pt\ distributions with different cut sets for systematic uncertainties estimation. Right: ratios of the corresponding \Dzero-jet efficiencies.} 
+%\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/cutSys/cutSys_jetptSpectra_ratio}
+\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/cutSys2/cutSys_prompt_ratio}
+\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/cutSys2/c2_rp}
+\caption{Left: Ratios of the prompt efficienices for different cut sets for systematic uncertainties estimation. Right: ratios of the corresponding \Dzero-jet efficiencies zoomed in as necessary.} 
+%\caption{Left: Ratios of \Dzero-jet \pt\ distributions with different cut sets for systematic uncertainties estimation. Right: ratios of the corresponding \Dzero-jet efficiencies.} 
 \label{fig:JetPtRawSysRatio_Dzero}
 \end{center}
 \end{figure}
 
 \begin{figure}[bth]
 \begin{center}
-\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/cutSys/cutSys_nonprompt}
-\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/cutSys/cutSys_FDr_D3}
+\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/cutSys2/cutSys_nonprompt}
+\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/cutSys2/cutSys_FDr_D3}
 \caption{Ratios of \Dzero-jet non-prompt reconstruction efficiencies (left) and FD fractions (right) with different cut sets for systematic uncertainties estimation.} 
 \label{fig:JetcutVarFD_Dzero}
 \end{center}
@@ -766,8 +769,8 @@ Corrected for the corresponding efficiency \Dzero-jet \ptchjet\ distributions ar
 
 \begin{figure}[bth]
 \begin{center}
-\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/cutSys/cutSys_jetptSpectra_ratio}
-\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/cutSys/cutSys_rms_D3}
+\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/cutSys2/cutSys_spectraRatio_D3}
+\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/cutSys2/cutSys_rms_D3}
 \caption{Left: Ratio of the efficiency-corrected \Dzero-jet \pt\ distributions with different cut sets for systematic uncertainties estimation. Right: RMS - systematic uncertainties.} 
 \label{fig:JetPtSys_Dzero}
 \end{center}
@@ -1090,9 +1093,9 @@ Unfolding: ranges, SVD & 6& 3 & 3& 3& 3& 3& 8\\
 $p_T$ shape of MC ({\it from D-Meson}) & 0& 0& 0& 0& 0& 0& 0\\
 Tracking Eff. ({\it from D-Meson}) & 3& 3& 3& 3& 3& 3& 3\\
 Tracking Eff. (Jet Energy Scale) & 1& 1& 1& 2& 3& 4& 7\\
-Selection Cuts & 2 & 2 & 2 & 1 & 10 & 9 & 25 \\
+Selection Cuts & 1 & 2 & 2 & 2 & 6 & 6 & 11 \\
 \hline
-Total Systematic Uncertainty &10 &10 &11.5 &11.5 &15 &18 &21  \\
+Total Systematic Uncertainty &10 & 9 &10.5 &10.5 &15.5 &18 &23  \\
 \hline
 Normalization Uncertainty & \multicolumn{7}{c}{ 5 (Lum); 0.04 (BR)} \\
 \hline
