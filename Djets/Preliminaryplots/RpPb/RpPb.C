@@ -39,7 +39,8 @@ double        plotmin = 5, plotmax = 50;
 double        sysUnc_pPb[ptbinsN];
 double        sysUncErr_pPb[ptbinsN] = {0.3571682, 0.1144968, 0.04982845, 0.01508283, 0.003925845, 0.001088327, 0.0001712551};
 double        sysUnc_pp[ptbinsN];
-double        sysUncErr_pp[ptbinsN] = {0.15,0.15,0.15,0.15,0.15,0.15,0.15};
+//double        sysUncErr_pp[ptbinsN] = {0.15,0.15,0.15,0.15,0.15,0.15,0.15};
+double        sysUncErr_pp[ptbinsN] = {0.10,0.09,0.105,0.105,0.155,0.18,0.23};
 double        sysUnc[ptbinsN];
 double        sysUncErr[ptbinsN];
 
