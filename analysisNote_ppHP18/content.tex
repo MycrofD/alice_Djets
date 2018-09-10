@@ -748,7 +748,7 @@ Figure~\ref{fig:JetcutVarFD_Dzero} shows non-prompt \Dzero-jet reconstruction ef
 \begin{figure}[bth]
 \begin{center}
 \includegraphics[width=0.45\textwidth]{pPbcuts_2sig/cutSys/cutSys_nonprompt}
-\includegraphics[width=0.3\textwidth]{missing}
+\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/cutSys/cutSys_FDr_D3}
 \caption{Ratios of \Dzero-jet non-prompt reconstruction efficiencies (left) and FD fractions (right) with different cut sets for systematic uncertainties estimation.} 
 \label{fig:JetcutVarFD_Dzero}
 \end{center}
@@ -756,19 +756,19 @@ Figure~\ref{fig:JetcutVarFD_Dzero} shows non-prompt \Dzero-jet reconstruction ef
 
 Corrected for the corresponding efficiency \Dzero-jet \ptchjet\ distributions are presented in Fig.~\ref{fig:JetPtSys_Dzero}. Systematic uncertainties are estimated by taking ratio of the efficiency-corrected, FD subtracted and unfolded \Dzero-jet \ptchjet\ distributions with different cut variations to the \Dzero-jet \pt\ spectrum obtained with the default cut set and taking RMS of them, as shown in Fig.~\ref{fig:JetPtSys_Dzero}.
 
-\begin{figure}[bth]
-\begin{center}
-\includegraphics[width=0.3\textwidth]{missing}
-\caption{\Dzero-jet. Efficiency-corrected, FD subtracted and unfolded \Dzero-jet \pt\ distributions with different cut sets for systematic uncertainties estimation.} 
-\label{fig:JetPtSys_Dzero}
-\end{center}
-\end{figure}
+%\begin{figure}[bth]
+%\begin{center}
+%\includegraphics[width=0.3\textwidth]{missing}
+%\caption{\Dzero-jet. Efficiency-corrected, FD subtracted and unfolded \Dzero-jet \pt\ distributions with different cut sets for systematic uncertainties estimation.} 
+%\label{fig:JetPtSys_Dzero}
+%\end{center}
+%\end{figure}
 
 \begin{figure}[bth]
 \begin{center}
-\includegraphics[width=0.3\textwidth]{missing}
-\includegraphics[width=0.3\textwidth]{missing}
-\caption{Left: Ratio of the efficiency-corrected \Dstar-jet \pt\ distributions with different cut sets for systematic uncertainties estimation. Right: RMS - systematic uncertainties.} 
+\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/cutSys/cutSys_jetptSpectra_ratio}
+\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/cutSys/cutSys_rms_D3}
+\caption{Left: Ratio of the efficiency-corrected \Dzero-jet \pt\ distributions with different cut sets for systematic uncertainties estimation. Right: RMS - systematic uncertainties.} 
 \label{fig:JetPtSys_Dzero}
 \end{center}
 \end{figure}
@@ -1090,7 +1090,7 @@ Unfolding: ranges, SVD & 6& 3 & 3& 3& 3& 3& 8\\
 $p_T$ shape of MC ({\it from D-Meson}) & 0& 0& 0& 0& 0& 0& 0\\
 Tracking Eff. ({\it from D-Meson}) & 3& 3& 3& 3& 3& 3& 3\\
 Tracking Eff. (Jet Energy Scale) & 1& 1& 1& 2& 3& 4& 7\\
-Selection Cuts &  &  &  &  &  &  &  \\
+Selection Cuts & 2 & 2 & 2 & 1 & 10 & 9 & 25 \\
 \hline
 Total Systematic Uncertainty &10 &10 &11.5 &11.5 &15 &18 &21  \\
 \hline
@@ -1190,5 +1190,23 @@ The systematic uncertainties are obtained by taking the largest upward and downw
 \section{Preliminary Figures}
 
 
+\begin{figure}[bth]
+\begin{center}
+\includegraphics[width=.45\textwidth]{pPbcuts_2sig/prelim/JetPtSpectra_final_249}
+\includegraphics[width=.45\textwidth]{pPbcuts_2sig/prelim/RpPb_pPbcuts}
+\caption{\Dzero-jet cross section in \pp\ at $\s=5.02$~TeV as a function of \ptchjet, compared agains POWHEG+PYTHIA6 simulations (left) and compared with \Dzero-jet cross section in \pPb\ at $\s=5.02$~TeV.} 
+\label{fig:PromptD0JetsPrediction_JetPtSpectrum_GeneratorLevel}
+\end{center}
+\end{figure}
+
+
 
 \section{Nuclear Modification Factor ($R_{pPb}$)}
+
+\begin{figure}[bth]
+\centering
+\includegraphics[width=.45\textwidth]{pPbcuts_2sig/prelim/RpPb_pPbcuts_ratio}
+\caption{\Dzero-jet\ $R_{pPb}$}
+\label{fig:SysUnce_Dzero}
+\end{figure}
+
