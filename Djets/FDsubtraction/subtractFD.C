@@ -38,18 +38,19 @@ bool isSys = 1, bool rebinned = 1,  bool isEff = 1 )
     gSystem->Exec(Form("mkdir %s",outPlotDir.Data()));
 
     TFile *File = new TFile(dataAnalysisFile,"read");
-    TDirectoryFile* dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
+    TDirectoryFile* dir=(TDirectoryFile*)File->Get("PWG3_D2H_DmesonsForJetCorrelationsMBN0");
+    AliNormalizationCounter *c = (AliNormalizationCounter*)dir->Get("NormalizationCounter");
+       //nEventsForNorm = nEventsForNorm+c->GetNEventsForNorm();
+    double nEv = c->GetNEventsForNorm();
+
+    /*TDirectoryFile* dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
     TList *histList;
     if(fDmesonSpecie) histList =  (TList*)dir->Get("histosDStarMBN0");
     else histList =  (TList*)dir->Get("histosD0MBN0");
     TH1F* hEvents = (TH1F*)histList->FindObject("hstat");
-    double nEvSel = hEvents->GetBinContent(2);
-    double nEvAna = hEvents->GetBinContent(1);
-    double nEv = nEvScale*nEvSel;
-  //  if(fSystem) nEv = nEvScale*nEvSel;
-  //  else nEv = nEvScale*nEvAna;
-
-  //  cout << "==== Number of events: " << nEvSel << endl;
+    //double nEvSel = hEvents->GetBinContent(2);
+    //double nEvAna = hEvents->GetBinContent(1);
+    //double nEv = nEvScale*nEvSel;*/
 
     double dataLum = nEv/(sigma_in*1000) ;//Luminosity in mbar
     double simScaling;

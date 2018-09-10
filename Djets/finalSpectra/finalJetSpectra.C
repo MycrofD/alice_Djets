@@ -63,14 +63,11 @@ TString histBase = "unfoldedSpectrum"
     for(int k=0; k<fptbinsJetFinalN; k++) sysCutVar[k] = 0.05;
 
     TFile *File = new TFile(dataAnalysisFile,"read");
-    TDirectoryFile* dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
-    TList *histList;
-    if(fDmesonSpecie) histList = (TList*)dir->Get("histosDStarMBN0");
-    else histList = (TList*)dir->Get("histosD0MBN0");
-    TH1F* hEvents = (TH1F*)histList->FindObject("hstat");
-    double nEvSel = hEvents->GetBinContent(2);
-    double nEvAna = hEvents->GetBinContent(1);
-    double nEv = nEvScale*nEvSel;
+    TDirectoryFile* dir=(TDirectoryFile*)File->Get("PWG3_D2H_DmesonsForJetCorrelationsMBN0");
+    AliNormalizationCounter *c = (AliNormalizationCounter*)dir->Get("NormalizationCounter");
+       //nEventsForNorm = nEventsForNorm+c->GetNEventsForNorm();
+    double nEv = c->GetNEventsForNorm();
+
     double dataLum = nEv/(sigma_in*1000) ;//Luminosity in mbar
     double simScaling = 1;
     if(fSystem) simScaling = APb/2.;
