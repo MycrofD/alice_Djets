@@ -60,7 +60,7 @@ TString histBase = "unfoldedSpectrum"
     systuncP = new double[fptbinsJetFinalN];
 //    for(int k=0; k<fptbinsJetFinalN; k++) systuncP[k] = 0.15;
 systuncP[0] = 0.10; 
-systuncP[1] = 0.9; 
+systuncP[1] = 0.09; 
 systuncP[2] = 0.105; 
 systuncP[3] = 0.105; 
 systuncP[4] = 0.155; 
