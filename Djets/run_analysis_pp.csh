@@ -22,7 +22,7 @@ roounfoldpwd=$HOME/ALICE_HeavyFlavour/RooUnfold-1.1.1/libRooUnfold
 
 currDir=`pwd`
 outputdirectorybase=$HOME/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_
-outputdirectory=${outputdirectorybase}pPbCuts #_simFold_
+outputdirectory=${outputdirectorybase}pPbCutstrial____
 #outputdirectory=${outputdirectorybase}cuts2
 outputdirectorySignal=Default
 
@@ -54,7 +54,7 @@ isRefl=1
 isBkgRM=0
 
 ######## !!! POWHEG simulations config
-nSimFilesB=1                                    # have to correspond to number of files defined in the config file
+nSimFilesB=12                                    # have to correspond to number of files defined in the config file
 nSimFilesC=9                                    # have to correspond to number of files defined in the config file
 
 unfType=$1

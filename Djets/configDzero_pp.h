@@ -95,7 +95,7 @@ enum DMesonSpecies {kD0toKpi=0, kDStarD0pi};
 ,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504197966"	//mb4.5
 ,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504197460"	//pdf 21200
 ,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504199953"	//pdf 10800
-//,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1535289932"//evtgen
+,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1535289932"//evtgen
     };
 
 /*
@@ -118,7 +118,7 @@ enum DMesonSpecies {kD0toKpi=0, kDStarD0pi};
 ,      "m_{b}=4.5"
 ,      "PDF 21200"
 ,      "PDF 10800"
-//,      "Evt gen"
+,      "Evt gen"
     };
 
     TString fRunC[] = {
