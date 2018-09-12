@@ -43,7 +43,8 @@ TString sysDir = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3Pythi
 bool issys = 1,
 bool issim = 1,
 bool simsys = 1,
-TString histBase = "unfoldedSpectrum"
+TString histBase = "unfoldedSpectrum",
+bool oldCounter = 1
 )
 {
     isSimSys = simsys;
@@ -58,26 +59,30 @@ TString histBase = "unfoldedSpectrum"
     xAxis = new double[fptbinsJetFinalN+1];
     for(int k=0; k<fptbinsJetFinalN+1; k++) xAxis[k] = fptbinsJetFinalA[k];
     systuncP = new double[fptbinsJetFinalN];
-//    for(int k=0; k<fptbinsJetFinalN; k++) systuncP[k] = 0.15;
-systuncP[0] = 0.10; 
-systuncP[1] = 0.09; 
-systuncP[2] = 0.105; 
-systuncP[3] = 0.105; 
-systuncP[4] = 0.155; 
-systuncP[5] = 0.18; 
-systuncP[6] = 0.23;
+    for(int k=0; k<fptbinsJetFinalN; k++) systuncP[k] = 0.15;
     sysCutVar = new double[fptbinsJetFinalN];
     for(int k=0; k<fptbinsJetFinalN; k++) sysCutVar[k] = 0.05;
 
     TFile *File = new TFile(dataAnalysisFile,"read");
-    TDirectoryFile* dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
+    TDirectoryFile* dir;
     TList *histList;
-    if(fDmesonSpecie) histList = (TList*)dir->Get("histosDStarMBN0");
-    else histList = (TList*)dir->Get("histosD0MBN0");
-    TH1F* hEvents = (TH1F*)histList->FindObject("hstat");
-    double nEvSel = hEvents->GetBinContent(2);
-    double nEvAna = hEvents->GetBinContent(1);
-    double nEv = nEvScale*nEvSel;
+    double nEv;
+
+    if(oldCounter) {
+      dir = (TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
+      if(fDmesonSpecie) histList = (TList*)dir->Get("histosDStarMBN0");
+      else histList = (TList*)dir->Get("histosD0MBN0");
+      TH1F* hEvents = (TH1F*)histList->FindObject("hstat");
+      double nEvSel = hEvents->GetBinContent(2);
+      double nEvAna = hEvents->GetBinContent(1);
+      nEv = nEvScale*nEvSel;
+    }
+    else {
+      dir = (TDirectoryFile*)File->Get("PWG3_D2H_DmesonsForJetCorrelationsMBN0");
+      AliNormalizationCounter *c = (AliNormalizationCounter*)dir->Get("NormalizationCounter");
+      nEv = c->GetNEventsForNorm();
+    }
+
     double dataLum = nEv/(sigma_in*1000) ;//Luminosity in mbar
     double simScaling = 1;
     if(fSystem) simScaling = APb/2.;
