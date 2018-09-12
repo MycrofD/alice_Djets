@@ -95,7 +95,7 @@ enum DMesonSpecies {kD0toKpi=0, kDStarD0pi};
 ,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504197966"	//mb4.5
 ,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504197460"	//pdf 21200
 ,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504199953"	//pdf 10800
-//,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1535289932"//evtgen
+,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty"//evtgen
     };
 
 /*
@@ -118,11 +118,12 @@ enum DMesonSpecies {kD0toKpi=0, kDStarD0pi};
 ,      "m_{b}=4.5"
 ,      "PDF 21200"
 ,      "PDF 10800"
-//,      "Evt gen"
+,      "Evt gen"
     };
 
     TString fRunC[] = {
-      "RAW_CHARM_POWHEG"
+//      "RAW_CHARM_POWHEG"
+      "AnalysisResults_FastSim_powheg+pythia6_charm_central"
 //,"AnalysisResults_FastSim_powheg+pythia6_charm_m13_1535875341"
 //,"AnalysisResults_FastSim_powheg+pythia6_charm_m17_1535906671"
 //,"AnalysisResults_FastSim_powheg+pythia6_charm_F2R2_1535895146"
