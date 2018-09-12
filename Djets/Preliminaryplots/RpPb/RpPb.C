@@ -11,7 +11,7 @@ Int_t linestyle2[] = {1,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
 
 const int nFiles = 2;
 TString inDirData[nFiles] = {
-  "$HOME/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts/Default/unfolding_Bayes_4/finalSpectra/", // pp final pT spectrum
+  "$HOME/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts_normcount/Default/unfolding_Bayes_4/finalSpectra/", // pp final pT spectrum
   "../" //p-Pb final pT spectrum
   //"$HOME/Work/alice/analysis/pPb_run2/D0jet/PreliminaryOut/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning_MAIN/unfolding_Bayes_3_MAIN/finalSpectra/" //p-Pb final pT spectrum
 }
@@ -39,13 +39,13 @@ double        plotmin = 5, plotmax = 50;
 double        sysUnc_pPb[ptbinsN];
 double        sysUncErr_pPb[ptbinsN] = {0.3571682, 0.1144968, 0.04982845, 0.01508283, 0.003925845, 0.001088327, 0.0001712551};
 double        sysUnc_pp[ptbinsN];
-double        sysUncErr_pp[ptbinsN] = {0.15,0.15,0.15,0.15,0.15,0.15,0.15};
+double        sysUncErr_pp[ptbinsN] = {0.10, 0.09, 0.105, 0.105, 0.155, 0.18, 0.23};
 double        sysUnc[ptbinsN];
 double        sysUncErr[ptbinsN];
 
 //double        sysUnc_pPb[ptbinsN] = {1.949626, 1.018353, 0.4938436, 0.1498547, 0.03191447, 0.005496932, 0.0007480437};
 
-void RpPb(TString outName = "$HOME/Work/alice/analysis/RpPb")
+void RpPb(TString outName = "$HOME/Work/alice/analysis/RpPbNew")
 {
 
   gSystem->Exec(Form("mkdir %s",outName.Data()));
