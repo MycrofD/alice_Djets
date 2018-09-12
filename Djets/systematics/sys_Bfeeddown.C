@@ -37,7 +37,7 @@ double ptbinsA[ptbinsN+1] = { 3,4,5,6,8,10,14,20,30,50 };
 int nJetBins2 = 7;
 double ptJetbins2[] = { 5,6,8,10,14,20,30,50 };
 
-void sys_Bfeeddown(int reg=4,  TString inDirBase = "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts", TString inName = "systematics/doFDSys", bool isChain = 0,  int measmin=3, int measmax=50, int truemin=5, int truemax=50)
+void sys_Bfeeddown(int reg=4,  TString inDirBase = "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts_0", TString inName = "systematics/doFDSys", bool isChain = 0,  int measmin=3, int measmax=50, int truemin=5, int truemax=50)
 //void rawYield_reflections(int reg=3,  TString inDirBase = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts", TString inName = "Default_jetMeas3_50_jetTrue3_50_PbPbbinning/systematics", bool isChain = 0,  int measmin=3, int measmax=50, int truemin=5, int truemax=50)
 {
 
@@ -171,7 +171,7 @@ cout<<dirName[0].Data()<<endl;
                     double unc = 0;
                     if(unc1>unc2) unc = unc1;
                     else unc = unc2;
-			cout<<"==========="<<unc<<"==="<<unc1<<"==="<<unc2<<endl;
+			cout<<"==========="<<100*unc/spec[0]->GetBinContent(j)<<"==="<<100*unc1/spec[0]->GetBinContent(j)<<"==="<<100*unc2/spec[0]->GetBinContent(j)<<endl;
                     unc /= spec[0]->GetBinContent(j);
                     hsys->SetBinContent(j,unc*100);
                     hsys->SetBinError(j,0);
