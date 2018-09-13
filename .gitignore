@@ -6,10 +6,6 @@
 *.d
 *.root
 *.zip
-*.xml
-*.jdl
-*.pyc
-*.input
 confCommands
 Djets/runGrid/*
 Djets/DsignalExtraction/signalExtraction_MC.C
@@ -31,4 +27,3 @@ code/upgrade/AnalysisTrainCorrJetsLocalMCpPb.C
 code/upgrade/Mult_pPbMC.C
 simulations_POWHEG/plotSimSpectra_2.C
 
-fastSimulations/userConf.yaml
