@@ -23,7 +23,7 @@ Djets/systematics/unfRangesComparison_max30.C
 Djets/todo
 Djets/xsections
 Djets/config.h
-Djets/fastSimulations/apm/*
+Djets/fastSimulations/apm/
 analysisNote_pPbQM18/
 code/upgrade/AddTaskMult.C
 code/upgrade/AddTasksMult.C
