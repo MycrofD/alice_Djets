@@ -6,6 +6,10 @@
 *.d
 *.root
 *.zip
+*.toc
+*.log
+*.aux
+.gitignore
 confCommands
 Djets/runGrid/*
 Djets/DsignalExtraction/signalExtraction_MC.C
@@ -18,6 +22,7 @@ Djets/run_analysis_pp_direct.csh
 Djets/systematics/unfRangesComparison_max30.C
 Djets/todo
 Djets/xsections
+Djets/config.h
 analysisNote_pPbQM18/
 code/upgrade/AddTaskMult.C
 code/upgrade/AddTasksMult.C
