@@ -10,7 +10,6 @@
 *.log
 *.aux
 *.pyc
-.gitignore
 confCommands
 Djets/runGrid/*
 Djets/DsignalExtraction/signalExtraction_MC.C
