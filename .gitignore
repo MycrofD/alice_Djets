@@ -6,10 +6,6 @@
 *.d
 *.root
 *.zip
-*.xml
-*.jdl
-*.pyc
-*.input
 confCommands
 Djets/runGrid/*
 Djets/DsignalExtraction/signalExtraction_MC.C
@@ -18,6 +14,7 @@ Djets/cuts_pp/Dzero/makeTFile4CutsD0Jet_pp5TeV_BasepPb_noTopo.C
 Djets/fastSimulation_April19MyCode/
 Djets/run_Dstar.csh
 Djets/run_analysis_pp.csh
+Djets/run_analysis_pp_direct.csh
 Djets/systematics/unfRangesComparison_max30.C
 Djets/todo
 Djets/xsections
@@ -30,5 +27,4 @@ code/upgrade/AnalysisTrainCorrJetsLocalMCMultpPb.C
 code/upgrade/AnalysisTrainCorrJetsLocalMCpPb.C
 code/upgrade/Mult_pPbMC.C
 simulations_POWHEG/plotSimSpectra_2.C
-
-fastSimulations/userConf.yaml
+fastSimulations/fastsimulations/FastSim_*
