@@ -28,7 +28,7 @@ isUnfolding=1       # if to perform unfolding
 isFDSub=1           # if to subtract feed-down
 isFinalSpectra=1    # if to extract the final x-section
 
-isCsim=1            # switch this flag on if you haven't prepared output of the simulations yet, it takes time -- if the simulation output directory is empty the simulations will be run anyway
+isCsim=0            # switch this flag on if you haven't prepared output of the simulations yet, it takes time -- if the simulation output directory is empty the simulations will be run anyway
 isBsim=0            # switch this flag on if you haven't prepared output of the simulations yet with a current efficiencies, it takes time -- if the simulation output directory is empty the simulations will be run anyway
 isBsimNoEff=0       # switch one if you want non-prompt simulations without scaling for non-prompt/prompt efficiency (shouldn't be used in a standard analysis chain)
 
@@ -347,7 +347,7 @@ fi
 ############### prompt D-jet simulations
 ################################################
 
-if [ ! -d "$PromptSimDirOut" ] && [ $isCsim -eq 1 ]; then
+if [ ! -d "$PromptSimDirOut" ] || [ $isCsim -eq 1 ]; then
 cd $SimDir
   ./doGetSimOut.csh $nSimFilesC $simFilesDir 0 1 1 0 $effFilePrompt $effFileNonPrompt $PromptSimDirOut
   #plot all the variations
@@ -362,7 +362,7 @@ fi
 if [ $isFinalSpectra -eq 1 ]; then
 sysDir=$outdirBase/$outdir/systematics
   cd $finalDir
-  aliroot -l -b -q finalJetSpectra.C'("'$signalUnfoldedFile'","'$analysisDataFile'","'$PromptSimDirOut'","'$finalDirOut'","'$sysDir'",1,1,0)'
+  aliroot -l -b -q finalJetSpectra.C'("'$signalUnfoldedFile'","'$analysisDataFile'","'$PromptSimDirOut'","'$finalDirOut'","'$sysDir'",1,1,1)'
   cd $currDir
 fi
 

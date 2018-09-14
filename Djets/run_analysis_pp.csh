@@ -22,7 +22,7 @@ roounfoldpwd=$HOME/ALICE_HeavyFlavour/RooUnfold-1.1.1/libRooUnfold
 
 currDir=`pwd`
 outputdirectorybase=$HOME/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_
-outputdirectory=${outputdirectorybase}pPbCuts_final #_simFold_
+outputdirectory=${outputdirectorybase}pPbCuts_0final #_simFold_
 #outputdirectory=${outputdirectorybase}cuts2
 outputdirectorySignal=Default
 
