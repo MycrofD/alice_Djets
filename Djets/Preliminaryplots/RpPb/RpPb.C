@@ -11,14 +11,14 @@ Int_t linestyle2[] = {1,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
 
 const int nFiles = 2;
 TString inDirData[nFiles] = {
-  "pp5TeV/D0jet/results/DzeroR03_pPbCuts/Default/unfolding_Bayes_4/finalSpectra/",
-  //"pp5TeV/D0jet/results/DzeroR03_cuts2/Default/unfolding_Bayes_4/finalSpectra/",
-  "pPb_run2/D0jet/PreliminaryOut/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning_MAIN/unfolding_Bayes_3/finalSpectra/"
+  "$HOME/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts/Default/unfolding_Bayes_4/finalSpectra/", // pp final pT spectrum
+  "../" //p-Pb final pT spectrum
+  //"$HOME/Work/alice/analysis/pPb_run2/D0jet/PreliminaryOut/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning_MAIN/unfolding_Bayes_3_MAIN/finalSpectra/" //p-Pb final pT spectrum
 }
 
 TString dataFile[nFiles] = {
   "JetPtSpectrum_final.root",
-  "JetPtSpectrum_final.root"
+  "JetPtSpectrum_final_pPb.root"
 }
 
 TString histName[nFiles] = {
@@ -36,37 +36,39 @@ const int     ptbinsN = 7;
 double        ptbinsA[ptbinsN+1] = { 5,6,8,10,14,20,30,50 };
 double        plotmin = 5, plotmax = 50;
 
-double        sysUnc_pPb[ptbinsN] = {1.949626, 1.018353, 0.4938436, 0.1498547, 0.03191447, 0.005496932, 0.0007480437};
+double        sysUnc_pPb[ptbinsN];
 double        sysUncErr_pPb[ptbinsN] = {0.3571682, 0.1144968, 0.04982845, 0.01508283, 0.003925845, 0.001088327, 0.0001712551};
 double        sysUnc_pp[ptbinsN];
-double        sysUncErr_pp[ptbinsN];
+double        sysUncErr_pp[ptbinsN] = {0.15,0.15,0.15,0.15,0.15,0.15,0.15};
 double        sysUnc[ptbinsN];
 double        sysUncErr[ptbinsN];
 
-void RpPb(TString inDirBase = "$HOME/Work/alice/analysis/", TString outName = "$HOME/Work/alice/analysis/RpPb")
+//double        sysUnc_pPb[ptbinsN] = {1.949626, 1.018353, 0.4938436, 0.1498547, 0.03191447, 0.005496932, 0.0007480437};
+
+void RpPb(TString outName = "$HOME/Work/alice/analysis/RpPb")
 {
 
   gSystem->Exec(Form("mkdir %s",outName.Data()));
   plotmin = ptbinsA[0], plotmax = ptbinsA[ptbinsN];
 
-  compareData(outName,inDirBase,"RpPb_pPbcuts");
+  compareData(outName,"RpPb_pPbcuts");
 
 return;
 
 }
 
-void compareData(TString inName, TString inDirBase, TString outHistName)
+void compareData(TString inName, TString outHistName)
 {
 
-            TString out = inName; //= inDirBase;
+            TString out = inName;
             gStyle->SetOptStat(0000); //Mean and RMS shown
             gSystem->Exec(Form("mkdir %s",out.Data()));
 
             TString dirName[nFiles];
             for (int i=0; i<nFiles; i++){
-                dirName[i] = inDirBase;
-                dirName[i] += "/";
-                dirName[i] += inDirData[i];
+              //  dirName[i] = inDirBase;
+              //  dirName[i] += "/";
+                dirName[i] = inDirData[i];
             }
 
             TFile *fproj[nFiles];
@@ -102,22 +104,23 @@ void compareData(TString inName, TString inDirBase, TString outHistName)
                 specReb[i]->SetMarkerColor(colors2[i]);
                 specReb[i]->SetMarkerStyle(markers2[i]);
                 if(!i) specReb[i]->Scale(208);
-                specReb[i]->GetXaxis()->SetRangeUser(plotmin,plotmax);
+                //specReb[i]->GetXaxis()->SetRangeUser(plotmin,plotmax);
                 Double_t ptval[ptbinsN];
                 Double_t ptvalunc[ptbinsN];
                 for(int j=0; j<specReb[i]->GetNbinsX(); j++){
                   ptval[j] = (ptbinsA[j]+ptbinsA[j+1]) / 2.;
                   ptvalunc[j] = (ptbinsA[j+1]-ptbinsA[j]) / 2.;
-
                   double error = specReb[i]->GetBinError(j+1);
                   double value = specReb[i]->GetBinContent(j+1);
                   double relError = error/value;
-                  //cout << "rel error " << relError << endl;
                   double totalError = TMath::Sqrt(relError*relError);
                   specReb[i]->SetBinError(j+1,totalError*value);
                   if(!i) {
                     sysUnc_pp[j] = specReb[i]->GetBinContent(j+1);
-                    sysUncErr_pp[j] = specReb[i]->GetBinContent(j+1)*0.15;
+                    sysUncErr_pp[j] = specReb[i]->GetBinContent(j+1)*sysUncErr_pp[j];
+                  }
+                  else{
+                    sysUnc_pPb[j] = specReb[i]->GetBinContent(j+1);
                   }
 
                 }
@@ -133,7 +136,7 @@ void compareData(TString inName, TString inDirBase, TString outHistName)
             graSys_pPb->SetLineColor(colors2[3]);
 
 
-            TH1F *Graph_central_syst_unc1 = new TH1F("Graph_central_syst_unc1","",100,2.5,52.5);
+            TH1F *Graph_central_syst_unc1 = new TH1F("Graph_central_syst_unc1","",100,4.8,50.2);
             Graph_central_syst_unc1->SetMinimum(2.e-04);
             Graph_central_syst_unc1->SetMaximum(10);
             Graph_central_syst_unc1->SetDirectory(0);
@@ -184,7 +187,7 @@ void compareData(TString inName, TString inDirBase, TString outHistName)
                 hratio->SetLineColor(colors2[4]);
                 hratio->SetMarkerColor(colors2[4]);
                 hratio->SetLineWidth(2);
-                hratio->GetYaxis()->SetRangeUser(0.,2);
+                //hratio->GetYaxis()->SetRangeUser(0.,2);
                 hratio->GetYaxis()->SetTitle("R_{pPb}");
 
                 for(int j=0; j<hratio->GetNbinsX(); j++){
@@ -199,7 +202,7 @@ void compareData(TString inName, TString inDirBase, TString outHistName)
                 TGraphAsymmErrors *graSys  = new TGraphAsymmErrors(ptbinsN,ptval,sysUnc,ptvalunc,ptvalunc,sysUncErr,sysUncErr);
                 graSys->SetFillColor(colors2[5]);
                 graSys->SetLineColor(colors2[5]);
-                TH1F *Graph_central_syst_unc = new TH1F("Graph_central_syst_unc","",100,2.5,52.5);
+                TH1F *Graph_central_syst_unc = new TH1F("Graph_central_syst_unc","",100,4.8,50.2);
                 Graph_central_syst_unc->SetMinimum(0);
                 Graph_central_syst_unc->SetMaximum(2.6);
                 Graph_central_syst_unc->SetDirectory(0);
