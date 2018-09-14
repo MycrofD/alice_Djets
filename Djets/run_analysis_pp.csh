@@ -24,7 +24,7 @@ currDir=`pwd`
 outputdirectorybase=$HOME/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_
 outputdirectory=${outputdirectorybase}pPbCuts_0final #_simFold_
 #outputdirectory=${outputdirectorybase}cuts2
-outputdirectorySignal=Default
+outputdirectorySignal=Default_fixedSig_cutsys
 
 # ========== input directories
 anaoutfiledir=$HOME/Work/alice/analysis/pp5TeV/D0jet/outData
