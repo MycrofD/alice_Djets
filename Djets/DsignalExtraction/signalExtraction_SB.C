@@ -30,13 +30,17 @@ double refScale = 1.5;
 
 void signalExtraction_SB(
   TString data = "$HOME/Work/alice/analysis/out/AnalysisResults.root",
-  bool isEff = 0, TString efffile = "../efficiency/DjetEff_prompt.root",
-  bool isRef = 0, TString refFile = "test.root",
-  bool postfix = 0, TString listName = "Cut",
+  bool isEff = 0, 
+  TString efffile = "../efficiency/DjetEff_prompt.root",
+  bool isRef = 0, 
+  TString refFile = "test.root",
+  bool postfix = 0, 
+  TString listName = "Cut",
   TString out = "signalExtraction",
   bool save = 1,
   bool isMoreFiles = 0,
-  TString prod = "kl"   // for more than 1 file, for one file leave it empty)
+  TString prod = "kl",   // for more than 1 file, for one file leave it empty)
+  bool isprefix=0
 )
 {
 
@@ -55,8 +59,14 @@ void signalExtraction_SB(
     int nFiles = (int)prod.Length();
 
     TString histName;
-    if(fDmesonSpecie) histName = "histosDStarMBN";
-    else histName = "histosD0MBN";
+		if(!isprefix){
+		    if(fDmesonSpecie) histName = "histosDStarMBN";
+		    else histName = "histosD0MBN";
+		}
+		else{
+		    if(fDmesonSpecie) histName = "histosDStarMBN";
+		    else histName = "histosD0";
+		}
     // get analysis output file
     TString datafile;
     TFile *File;
@@ -71,8 +81,13 @@ void signalExtraction_SB(
       dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
 
       for(int i=0;i<ND; i++){
-          if(postfix) histList =  (TList*)dir->Get(Form("%s%d%s",histName.Data(),i,listName.Data()));
-          else histList =  (TList*)dir->Get(Form("%s%d",histName.Data(),i));
+		if(!isprefix){
+		          if(postfix) histList =  (TList*)dir->Get(Form("%s%d%s",histName.Data(),i,listName.Data()));
+		          else histList =  (TList*)dir->Get(Form("%s%d",histName.Data(),i));
+		}
+		else{    if(postfix){ histList =  (TList*)dir->Get(Form("%s%sMBN%d",histName.Data(),listName.Data(),i));}
+		          else {cout<<postfix<<"----dude! something's wrong, postfix has to be true if prefix is, check again-----"<<endl; return;}
+		}
           sparse = (THnSparseF*)histList->FindObject("hsDphiz");
           sparse->GetAxis(0)->SetRangeUser(zmin,zmax);
           sparse->GetAxis(1)->SetRangeUser(jetmin,jetmax);
@@ -91,8 +106,12 @@ void signalExtraction_SB(
           dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
 
           for(int i=0;i<ND; i++){
-              if(postfix) histList =  (TList*)dir->Get(Form("%s%d%s",histName.Data(),i,listName.Data()));
-              else histList =  (TList*)dir->Get(Form("%s%d",histName.Data(),i));
+if(!isprefix){          if(postfix) histList =  (TList*)dir->Get(Form("%s%d%s",histName.Data(),i,listName.Data()));
+          else histList =  (TList*)dir->Get(Form("%s%d",histName.Data(),i));
+}
+else {          if(postfix) histList =  (TList*)dir->Get(Form("%s%sMBN%d",histName.Data(),listName.Data(),i));
+		          else {cout<<postfix<<"----dude! something's wrong,again! postfix has to be true if prefix is, check again-----"<<endl; return;}
+}
               sparse = (THnSparseF*)histList->FindObject("hsDphiz");
               sparse->GetAxis(0)->SetRangeUser(zmin,zmax);
               sparse->GetAxis(1)->SetRangeUser(jetmin,jetmax);
@@ -371,12 +390,12 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         if(soberr*100. > 35.) twodigits=kFALSE;
         //if(twodigits) pv->AddText(Form("S/B (3#sigma) = (%.2f #pm %.2f)", sob,soberr));
         //else pv->AddText(Form("S/B (3#sigma) = (%.1f #pm %.1f)", sob,soberr));
-        if(twodigits) pvSig->AddText(Form("S (3#sigma) = %.2f #pm %.2f", s,serr));
-        else pvSig->AddText(Form("S (3#sigma) = %.1f #pm %.1f", s,serr));
-        if(twodigits) pvSig->AddText(Form("B (3#sigma) = %.2f #pm %.2f", bkg,bkgerr));
-        else pvSig->AddText(Form("B (3#sigma) = %.1f #pm %.1f", bkg,bkgerr));
-        pvSig->AddText(Form("Signif.(3#sigma) = %.1f #pm %.1f", signf,signferr));
-        pvSig->AddText(Form("S/B(3#sigma) = %.2f #pm %.2f", sob,soberr));
+        if(twodigits) pvSig->AddText(Form("S (2#sigma) = %.2f #pm %.2f", s,serr));
+        else pvSig->AddText(Form("S (2#sigma) = %.1f #pm %.1f", s,serr));
+        if(twodigits) pvSig->AddText(Form("B (2#sigma) = %.2f #pm %.2f", bkg,bkgerr));
+        else pvSig->AddText(Form("B (2#sigma) = %.1f #pm %.1f", bkg,bkgerr));
+        pvSig->AddText(Form("Signif.(2#sigma) = %.1f #pm %.1f", signf,signferr));
+        pvSig->AddText(Form("S/B(2#sigma) = %.2f #pm %.2f", sob,soberr));
         if(fUseRefl && fDmesonSpecie == 0) pvSig->AddText(Form("R/S = %.2f", RS));
         pvSig->Draw("same");
         //if(isdetails) pvProd->Draw("same");

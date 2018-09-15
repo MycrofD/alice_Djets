@@ -11,7 +11,7 @@ Int_t linestyle2[] = {1,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
 
 const int nFiles = 2;
 TString inDirData[nFiles] = {
-  "$HOME/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts/Default/unfolding_Bayes_4/finalSpectra/", // pp final pT spectrum
+  "$HOME/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts_0final/Default/unfolding_Bayes_4/finalSpectra", // pp final pT spectrum
   "../" //p-Pb final pT spectrum
   //"$HOME/Work/alice/analysis/pPb_run2/D0jet/PreliminaryOut/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning_MAIN/unfolding_Bayes_3_MAIN/finalSpectra/" //p-Pb final pT spectrum
 }
@@ -98,7 +98,8 @@ void compareData(TString inName, TString outHistName)
                 spec[i]->SetMarkerStyle(markers2[i]);
                 spec[i]->SetMinimum(0.001);
 
-                specReb[i] = (TH1F*)spec[i]->Rebin(ptbinsN,Form("specReb_%d",i),ptbinsA);
+                //specReb[i] = (TH1F*)spec[i]->Rebin(ptbinsN,Form("specReb_%d",i),ptbinsA);
+                specReb[i] = (TH1F*)spec[i]->Clone(Form("specReb_%d",i));
                 specReb[i]->SetTitle();
                 specReb[i]->SetLineColor(colors2[i]);
                 specReb[i]->SetMarkerColor(colors2[i]);

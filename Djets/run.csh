@@ -59,6 +59,7 @@ ispostfix=${12}
 postfix=${13}
 ispostfixFD=${14}
 postfixFD=${15}
+isprefix=${35}
 
 ########## efficiency config
 MCoutfiledir=${16}
@@ -167,12 +168,12 @@ fi
 ################################################
 cd $effDir
 if [ $isEffPrompt -eq 1 ]; then
-    aliroot -l -b -q DjetEfficiency.C'(1,"'$efffile'","'$effDirOut'",'$jetpteffmin','$jetpteffmax','$recoPt','$ispostfix',"'$postfix'")'
+    aliroot -l -b -q DjetEfficiency.C'(1,"'$efffile'","'$effDirOut'",'$jetpteffmin','$jetpteffmax','$recoPt','$ispostfix',"'$postfix'",'$isprefix')'
     #aliroot -l -b -q DjetEfficiency.C'(1,"'$efffile'","'$effDirOut'",'$jetpteffmin','$jetpteffmax','$recoPt',0,"")'  # for 95%
 fi
 
 if [ $isEffNonPrompt -eq 1 ]; then
-    aliroot -l -b -q DjetEfficiency.C'(0,"'$efffile'","'$effDirOut'",'$jetpteffmin','$jetpteffmax','$recoPt','$ispostfixFD',"'$postfixFD'")'
+    aliroot -l -b -q DjetEfficiency.C'(0,"'$efffile'","'$effDirOut'",'$jetpteffmin','$jetpteffmax','$recoPt','$ispostfixFD',"'$postfixFD'",'$isprefix')'
     #aliroot -l -b -q DjetEfficiency.C'(0,"'$efffile'","'$effDirOut'",'$jetpteffmin','$jetpteffmax','$recoPt',0,"")'
 fi
 
@@ -199,8 +200,8 @@ if [ $isEffPrompt -eq 1 ]; then
 fi
 
 cd $signalDir
-#./getYields.csh $analysisDataFile $isEffPrompt $effFilePrompt $isRefl $reflTemplatesFile $ispostfix $postfix $signalDirOut $isMoreFiles $production
-./getYields.csh $analysisDataFile $isEffPrompt $effFilePrompt $isRefl $reflTemplatesFile 0 $postfix $signalDirOut $isMoreFiles $production
+./getYields.csh $analysisDataFile $isEffPrompt $effFilePrompt $isRefl $reflTemplatesFile $ispostfix $postfix $signalDirOut $isMoreFiles $production $isprefix
+#./getYields.csh $analysisDataFile $isEffPrompt $effFilePrompt $isRefl $reflTemplatesFile 0 $postfix $signalDirOut $isMoreFiles $production $isprefix
 
 if [ $isEffPrompt -eq 0 ]; then
   signalFile=$signalDirOut/JetPtSpectra_SB_noEff.root
@@ -226,11 +227,11 @@ fi
 cd $RMDir
 
 if [ $isDetRMPrompt -eq 1 ]; then
-    aliroot -l -b -q DetRM.C'(1,"'$detRMPrompt'","'$RMDirOut'",'$ispostfix',"'$postfix'")'
+    aliroot -l -b -q DetRM.C'(1,"'$detRMPrompt'","'$RMDirOut'",'$ispostfix',"'$postfix'",'$isprefix')'
 fi
 
 if [ $isDetRMNonPrompt -eq 1 ]; then
-  aliroot -l -b -q DetRM.C'(0,"'$detRMNonPrompt'","'$RMDirOut'",'$ispostfixFD',"'$postfixFD'")'
+  aliroot -l -b -q DetRM.C'(0,"'$detRMNonPrompt'","'$RMDirOut'",'$ispostfixFD',"'$postfixFD'",'$isprefix')'
 fi
 
 detRMFilePrompt=$RMDirOut/DetMatrix_prompt.root
@@ -294,7 +295,12 @@ if [ $isFDSub -eq 1 ]; then
   cd $currDir
 
   cd $FDDir
-  aliroot -l -b -q subtractFD.C'("'$roounfoldpwd'","'$signalFile'","'$analysisDataFile'","'$BFDSimDirOut'","'$combRMFDFile'","'$FDSubDirOut'")'
+  if [ $isprefix -eq 0 ]; then
+    aliroot -l -b -q subtractFD.C'("'$roounfoldpwd'","'$signalFile'","'$analysisDataFile'","'$BFDSimDirOut'","'$combRMFDFile'","'$FDSubDirOut'")'
+#  fi
+  elif [ $isprefix -eq 1 ]; then
+    aliroot -l -b -q subtractFD.C'("'$roounfoldpwd'","'$signalFile'","'$analysisDataFile'","'$BFDSimDirOut'","'$combRMFDFile'","'$FDSubDirOut'","'$postfix'")'
+  fi
 
   cd $currDir
 fi
@@ -362,7 +368,8 @@ fi
 if [ $isFinalSpectra -eq 1 ]; then
 sysDir=$outdirBase/$outdir/systematics
   cd $finalDir
-  aliroot -l -b -q finalJetSpectra.C'("'$signalUnfoldedFile'","'$analysisDataFile'","'$PromptSimDirOut'","'$finalDirOut'","'$sysDir'",1,1,1)'
+  #aliroot -l -b -q finalJetSpectra.C'("'$signalUnfoldedFile'","'$analysisDataFile'","'$PromptSimDirOut'","'$finalDirOut'","'$sysDir'",1,1,1)'
+  aliroot -l -b -q finalJetSpectra.C'("'$signalUnfoldedFile'","'$analysisDataFile'","'$PromptSimDirOut'","'$finalDirOut'","'$sysDir'",1,1,1,"'$postfix'")'
   cd $currDir
 fi
 

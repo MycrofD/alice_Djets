@@ -23,10 +23,11 @@ TString dataAnalysisFile = "",
 TString simDir = "../simulations/POWHEG/out/",
 TString comMatrixFile = "",
 TString outSpectraDir = "out_FDPythia",
+TString listName = "",
 bool isDptcut = 1,
 bool fold = 1, TString outHistName = "ptSpectrumSim_",
 bool isSys = 1, bool rebinned = 1,  bool isEff = 1,
-bool oldCounter = 1 )
+bool oldCounter = 0)
 {
 
     gSystem->Load(Form("%s",roounfoldpwd.Data()));
@@ -53,7 +54,8 @@ bool oldCounter = 1 )
       nEv = nEvScale*nEvSel;
     }
     else {
-      dir = (TDirectoryFile*)File->Get("PWG3_D2H_DmesonsForJetCorrelationsMBN0");
+      //dir = (TDirectoryFile*)File->Get("PWG3_D2H_DmesonsForJetCorrelationsHP1MBN0");
+      dir = (TDirectoryFile*)File->Get(Form("PWG3_D2H_DmesonsForJetCorrelations%sMBN0",listName.Data()));
       AliNormalizationCounter *c = (AliNormalizationCounter*)dir->Get("NormalizationCounter");
       nEv = c->GetNEventsForNorm();
     }
