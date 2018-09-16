@@ -21,9 +21,9 @@ fi
 roounfoldpwd=$HOME/ALICE_HeavyFlavour/RooUnfold-1.1.1/libRooUnfold
 
 currDir=`pwd`
-outputdirectorybase=$HOME/Work/alice/analysis/pp5TeV/D0jet/results_cutTight/DzeroR03_
-#outputdirectory=${outputdirectorybase}pPbCuts #_simFold_
-outputdirectory=${outputdirectorybase}def_437 #_simFold_
+outputdirectorybase=$HOME/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_
+outputdirectory=${outputdirectorybase}pPbCuts_simFold_evtgen
+#outputdirectory=${outputdirectorybase}def_437 #_simFold_
 #outputdirectory=${outputdirectorybase}cuts2
 outputdirectorySignal=Default
 
@@ -35,9 +35,9 @@ simFilesDir=$HOME/Work/alice/analysis/pp5TeV/D0jet/outMC/POWHEGSimulations/fastS
 bkgRMDir=$currDir/ResponseMatrix/BkgRM03
 
 # ========== file names
-#analysisdatafile=AnalysisResults_LHC17pq_FASTwoSDD.root
+analysisdatafile=AnalysisResults_LHC17pq_FASTwoSDD.root
 #analysisdatafile=AnalysisResults_439_cutTight.root
-analysisdatafile=AnalysisResults_437.root
+#analysisdatafile=AnalysisResults_437.root
 #analysisdatafile=AnalysisResults_418.root
 isMoreFiles=0                                     # 1 if there are more input files to be read
 prod=kl                                           # if there are more input files to be read
@@ -60,7 +60,7 @@ isRefl=1
 isBkgRM=0
 
 ######## !!! POWHEG simulations config
-nSimFilesB=12                                    # have to correspond to number of files defined in the config file
+nSimFilesB=1                                    # have to correspond to number of files defined in the config file
 nSimFilesC=9                                    # have to correspond to number of files defined in the config file
 
 unfType=$1

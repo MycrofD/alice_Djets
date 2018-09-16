@@ -27,7 +27,7 @@ TString listName = "",
 bool isDptcut = 1,
 bool fold = 1, TString outHistName = "ptSpectrumSim_",
 bool isSys = 1, bool rebinned = 1,  bool isEff = 1,
-bool oldCounter = 0)
+bool oldCounter = 1)
 {
 
     gSystem->Load(Form("%s",roounfoldpwd.Data()));

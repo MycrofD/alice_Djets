@@ -44,7 +44,7 @@ bool issys = 1,
 bool issim = 1,
 bool simsys = 1,
 TString listName = "",
-bool oldCounter = 0,
+bool oldCounter = 1,
 TString histBase = "unfoldedSpectrum"
 )
 {
