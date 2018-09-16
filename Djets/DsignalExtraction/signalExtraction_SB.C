@@ -285,7 +285,8 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
        // AliHFMassFitter* fitterp=new AliHFMassFitter((TH1F*)hmassfit,hmin,hmax,1,fbkgtype,0);
         AliHFInvMassFitter* fitterp = new AliHFInvMassFitter((TH1F*)hmassfit,hmin,hmax,fbkgtype,0);
         fitterp->SetInitialGaussianMean(fDmass);
-        fitterp->SetInitialGaussianSigma(fDsigma);
+        //fitterp->SetInitialGaussianSigma(fDsigma);
+        fitterp->SetFixGaussianSigma(fDsigmafix[i]);
 
         if(fUseRefl && fDmesonSpecie == 0) {
           if(fSystem) SetReflection(fitterp,hmin,hmax,RS,i+firstPtBin); // older way from Fabio's templates for p-Pb
