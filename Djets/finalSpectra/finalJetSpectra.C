@@ -80,7 +80,8 @@ TString histBase = "unfoldedSpectrum"
     }
     else {
       //dir = (TDirectoryFile*)File->Get("PWG3_D2H_DmesonsForJetCorrelationsHP1MBN0");
-      dir = (TDirectoryFile*)File->Get(Form("PWG3_D2H_DmesonsForJetCorrelations%sMBN0",listName.Data()));
+      //dir = (TDirectoryFile*)File->Get(Form("PWG3_D2H_DmesonsForJetCorrelations%sMBN0",listName.Data()));
+      dir = (TDirectoryFile*)File->Get("PWG3_D2H_DmesonsForJetCorrelationsMBN0");
       AliNormalizationCounter *c = (AliNormalizationCounter*)dir->Get("NormalizationCounter");
       nEv = c->GetNEventsForNorm();
     }

@@ -11,7 +11,7 @@ Int_t linestyle2[] = {1,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
 
 const int nFiles = 2;
 TString inDirData[nFiles] = {
-//  "$HOME/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts_0final/Default/unfolding_Bayes_4/finalSpectra", // pp final pT spectrum
+ // "$HOME/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts_0final/Default/unfolding_Bayes_4/finalSpectra", // pp final pT spectrum
 "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_cutTight/DzeroR03_def_437/Default/unfolding_Bayes_4/finalSpectra",
   "../" //p-Pb final pT spectrum
   //"$HOME/Work/alice/analysis/pPb_run2/D0jet/PreliminaryOut/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning_MAIN/unfolding_Bayes_3_MAIN/finalSpectra/" //p-Pb final pT spectrum
@@ -38,16 +38,24 @@ double        ptbinsA[ptbinsN+1] = { 5,6,8,10,14,20,30,50 };
 double        plotmin = 5, plotmax = 50;
 
 double        sysUnc_pPb[ptbinsN];
-double        sysUncErr_pPb[ptbinsN] = {0.3571682, 0.1144968, 0.04982845, 0.01508283, 0.003925845, 0.001088327, 0.0001712551};
+//double        sysUncErr_pPb[ptbinsN] = {0.18, 0.11, 0.10, 0.10, 0.12, 0.20, 0.23};
+//double        sysUncErr_pPbSq[ptbinsN] = {0.0324, 0.0121, 0.0100, 0.0100, 0.0144, 0.0400, 0.0529};//with fd
+double        sysUncErr_pPbSq[ptbinsN] = {0.0261, 0.0067, 0.0057, 0.0044, 0.0062, 0.0188, 0.0282};//current, w/o fd
+double        sysUncErr_pPb[ptbinsN];
 double        sysUnc_pp[ptbinsN];
-double        sysUncErr_pp[ptbinsN] = {0.10,0.09,0.11,0.11,0.16,0.18,0.20};
-//{0.0105,0.007425,0.01265,0.01205,0.024825,0.03205,0.0394}
+//double        sysUncErr_ppSq[ptbinsN] = {0.0225,0.0225,0.0225,0.0225,0.0225,0.0225,0.0225};
+//double        sysUncErr_ppSq[ptbinsN] = {0.0105,0.007425,0.01265,0.01205,0.024825,0.03205,0.0394};//x-section
+double        sysUncErr_ppSq[ptbinsN] = {0.0069,0.003825,0.005425,0.004825,0.010425,0.013825,0.0198};
+double        sysUncErr_pp[ptbinsN];
 double        sysUnc[ptbinsN];
-double        sysUncErr[ptbinsN];
+double        sysUncErr_do[ptbinsN];
+double        sysUncErr_up[ptbinsN];
+double	      relFDUnc_do[ptbinsN] = {0.02,0.01,0.01,0.01,0.01,0.01,0.03};
+double	      relFDUnc_up[ptbinsN] = {0.02,0.01,0.03,0.02,0.03,0.01,0.02};
 
 //double        sysUnc_pPb[ptbinsN] = {1.949626, 1.018353, 0.4938436, 0.1498547, 0.03191447, 0.005496932, 0.0007480437};
 
-void RpPb(TString outName = "$HOME/Work/alice/analysis/RpPb/xsec")
+void RpPbnew(TString outName = "$HOME/Work/alice/analysis/RpPb/ratio")
 {
 
   gSystem->Exec(Form("mkdir %s",outName.Data()));
@@ -90,6 +98,13 @@ void compareData(TString inName, TString outHistName)
 
             TH1F *specSim[nFiles];
             TH1F *specSimReb[nFiles];
+                  
+for(int i=0; i<ptbinsN; i++){
+	sysUncErr_pPb[i]= TMath::Sqrt(sysUncErr_pPbSq[i]);
+}
+for(int i=0; i<ptbinsN; i++){
+	sysUncErr_pp[i]= TMath::Sqrt(sysUncErr_ppSq[i]);
+}
 
             for(int i=0; i<nFiles; i++) {
                 spec[i] = (TH1F*)fproj[i]->Get(Form("%s",histName[i].Data()));
@@ -124,6 +139,7 @@ void compareData(TString inName, TString outHistName)
                   }
                   else{
                     sysUnc_pPb[j] = specReb[i]->GetBinContent(j+1);
+                    sysUncErr_pPb[j] = specReb[i]->GetBinContent(j+1)*sysUncErr_pPb[j];
                   }
 
                 }
@@ -198,11 +214,12 @@ void compareData(TString inName, TString outHistName)
                     double relUncpPb = sysUncErr_pPb[j] / sysUnc_pPb[j];
 
                     sysUnc[j] = hratio->GetBinContent(j+1);
-                    sysUncErr[j] = sqrt(relUncpp*relUncpp+relUncpPb*relUncpPb) * sysUnc[j];
+                    sysUncErr_do[j] = sqrt(relUncpp*relUncpp+relUncpPb*relUncpPb+relFDUnc_do[j]*relFDUnc_do[j]) * sysUnc[j];
+                    sysUncErr_up[j] = sqrt(relUncpp*relUncpp+relUncpPb*relUncpPb+relFDUnc_up[j]*relFDUnc_up[j]) * sysUnc[j];
 
                 }
 
-                TGraphAsymmErrors *graSys  = new TGraphAsymmErrors(ptbinsN,ptval,sysUnc,ptvalunc,ptvalunc,sysUncErr,sysUncErr);
+                TGraphAsymmErrors *graSys  = new TGraphAsymmErrors(ptbinsN,ptval,sysUnc,ptvalunc,ptvalunc,sysUncErr_do,sysUncErr_up);
                 graSys->SetFillColor(colors2[5]);
                 graSys->SetLineColor(colors2[5]);
                 TH1F *Graph_central_syst_unc = new TH1F("Graph_central_syst_unc","",100,4.8,50.2);

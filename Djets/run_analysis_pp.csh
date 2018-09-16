@@ -22,8 +22,8 @@ roounfoldpwd=$HOME/ALICE_HeavyFlavour/RooUnfold-1.1.1/libRooUnfold
 
 currDir=`pwd`
 outputdirectorybase=$HOME/Work/alice/analysis/pp5TeV/D0jet/results_cutTight/DzeroR03_
-outputdirectory=${outputdirectorybase}pPbCuts #_simFold_
-#outputdirectory=${outputdirectorybase}def #_simFold_
+#outputdirectory=${outputdirectorybase}pPbCuts #_simFold_
+outputdirectory=${outputdirectorybase}def_437 #_simFold_
 #outputdirectory=${outputdirectorybase}cuts2
 outputdirectorySignal=Default
 
@@ -36,24 +36,25 @@ bkgRMDir=$currDir/ResponseMatrix/BkgRM03
 
 # ========== file names
 #analysisdatafile=AnalysisResults_LHC17pq_FASTwoSDD.root
-analysisdatafile=AnalysisResults_439_cutTight.root
+#analysisdatafile=AnalysisResults_439_cutTight.root
+analysisdatafile=AnalysisResults_437.root
 #analysisdatafile=AnalysisResults_418.root
 isMoreFiles=0                                     # 1 if there are more input files to be read
 prod=kl                                           # if there are more input files to be read
 reflfile=reflectionTemplates_pPb.root
-#effMCfile=AnalysisResults_fast_R03_D0MC_def.root
-effMCfile=AnalysisResults_479_cutTight.root
+effMCfile=AnalysisResults_fast_R03_D0MC_def.root
+#effMCfile=AnalysisResults_479_cutTight.root
 MCfile=$effMCfile 
 #MCfile=AnalysisResults_fast_R03_D0MCPythia_JES96_1.root
 efficiencyfile=$effMCfile
 detRMpromptfile=$MCfile
 detRMnonpromptfile=$MCfile
-isprefix=1                                       #  if prefix is one, postfix must be one.
-ispostfix=1                                       # if container in the analysis output file has different name than default you set here if and what is the postfix, this is set up in the signal, efficiency and RM extraction macros
-postfix=HP4 #cut2
-ispostfixFD=1                                     # if container in the analysis output file has different name than default you set here if and what is the postfix, for the FD part wagons are usually configured with additional "FD" string in the container name, you should adjust this to yours configuration
+isprefix=0                                       #  if prefix is one, postfix must be one.
+ispostfix=0                                       # if container in the analysis output file has different name than default you set here if and what is the postfix, this is set up in the signal, efficiency and RM extraction macros
+postfix=HP1 #cut2
+ispostfixFD=0                                     # if container in the analysis output file has different name than default you set here if and what is the postfix, for the FD part wagons are usually configured with additional "FD" string in the container name, you should adjust this to yours configuration
 #postfixFD=FD
-postfixFD=HP4 #FDcut2
+postfixFD=HP1 #FDcut2
 
 isRefl=1
 isBkgRM=0
