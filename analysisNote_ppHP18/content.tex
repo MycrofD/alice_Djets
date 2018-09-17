@@ -57,7 +57,9 @@ Events were further filtered using the Physics Selection, and selection provided
 \end{itemize}
 
 The total number of events is 906.308  M  out of  analysed (after all the selections outlined below).
-Results shown in this Note come from the LEGO train HFCJ\_pp 365 (including: LHC17p\_pass1\_FAST, LHC17p\_pass1\_CENT\_woSDD, LHC17q\_pass1\_FAST, LHC17q\_pass1\_CENT\_woSDD) and LEGO train 405 for the cut variation studies.
+Results shown in this Note come from the LEGO train HFCJ\_pp 439 (including: LHC17p\_pass1\_FAST, LHC17p\_pass1\_CENT\_woSDD, LHC17q\_pass1\_FAST, LHC17q\_pass1\_CENT\_woSDD) 
+also including the cut variation studies.
+%and LEGO train 405 for the cut variation studies.
 
 \subsection{Monte Carlo productions}
 
@@ -71,8 +73,8 @@ This MC production is used to compute the D-meson efficiency with jets, acceptan
 \subsubsection{\Dzero-tagged jets}
 Results shown in this Note come from the LEGO trains HFCJ\_pp\_MC:  
 \\Reconstruction efficiency and response matrices: LEGO train {414}
-\\Cuts variation studies: LEGO train {443, 440, 438, 431} 
-\\  ~~~ [and for HFCJ\_pp: {405, 401, 399, 393} respectively]
+\\Cuts variation studies: LEGO train {414, 443, 440, 438, 431, 479} 
+\\  ~~~ [and for HFCJ\_pp: {365, 405, 401, 399, 393, 439} respectively]
 \\Jet Energy Scale systematic studies: LEGO trains 474.
 
 
@@ -87,7 +89,7 @@ Results shown in this Note come from the LEGO trains HFCJ\_pp\_MC:
 
 The D mesons were reconstructed through their hadronic decay channels~\cite{PDG:2018}:
 \begin{eqnarray*}
-\Dzero (\bar{\Dzero}) &\to& {\rm K}^{\pm} + \pi^{\mp}  , {\text{ BR}} = 3.93\pm {0.04} \%\\
+\Dzero (\bar{\Dzero}) &\to& {\rm K}^{\pm} + \pi^{\mp}  , {\text{ BR}} = 3.89\pm {0.04} \%\\
 \end{eqnarray*}
 
 The selection strategy is based on the topological displacement of the secondary vertex from the primary vertex due to their relatively large lifetime.
@@ -553,8 +555,8 @@ Figure~\ref{fig:pPbFD_corr_Dzero} compares the measured \Dzero-jet \pt\ spectrum
 
 \begin{figure}[bth]
 \centering
-\includegraphics[width=.45\textwidth]{pPbcuts_2sig/JetPtSpectra_FDsub}
-\includegraphics[width=.45\textwidth]{pPbcuts_2sig/FDratio}
+\includegraphics[width=.47\textwidth]{pPbcuts_2sig/JetPtSpectra_FDsub}
+\includegraphics[width=.522\textwidth]{pPbcuts_2sig/FDratio}
 \caption{Left: Efficiency-corrected measured \Dzero-jet spectrum in \pp\ collisions at $\s=5.02$~TeV before FD correction (green) and after FD correction (red). The FD spectrum is also plotted (blue) with its uncertainties. Right plot shows ratio of non-prompt to inclusive \Dzero-jet spectrum.}
 \label{fig:pPbFD_corr_Dzero}
 \end{figure}
@@ -595,8 +597,8 @@ Comparison of unfolded spectra with the SVD method, different \pt\ ranges for th
 
 \begin{figure}[bth]
 \centering
-\includegraphics[width=0.55\textwidth]{pPbcuts_2sig/unfoldedSpectrum_UnfSpectrum}
-\includegraphics[width=0.4\textwidth]{pPbcuts_2sig/unfoldedSpectrum_UnfSpectrum_unc}
+\includegraphics[width=0.53\textwidth]{pPbcuts_2sig/unfoldedSpectrum_UnfSpectrum}
+\includegraphics[width=0.46\textwidth]{pPbcuts_2sig/unfoldedSpectrum_UnfSpectrum_unc}
 \caption{Left: Corrected jet \pt spectrum before (blue) and after (red) the unfolding procedure (Bayesian method with 4 iterations), \pp\ events at $\s=5.02$~TeV. Right: Relative statistical uncertainties on the \Dzero-tagged jet \pt\ spectrum after unfolding.}
 \label{fig:UnfSpec_pPb_Dzero}
 \end{figure}
@@ -696,8 +698,8 @@ Figure~\ref{fig:JetPtSys_Dzero_SBvariaton} shows ratios of efficiency and B feed
 
 \begin{figure}[bth]
 \begin{center}
-\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/rawyield/SBRangesComparison_ratio}
-\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/rawyield/SBRangesComparison_rms}
+\includegraphics[width=0.545\textwidth]{pPbcuts_2sig/rawyield/SBRangesComparison_ratio}
+\includegraphics[width=0.445\textwidth]{pPbcuts_2sig/rawyield/SBRangesComparison_rms}
 \caption{Left:Systematic unceratnties from the variation of definitions of the signal and side-band regions. Right: Systematic uncertanty: RMS.} 
 \label{fig:JetPtSys_Dzero_SBvariaton}
 \end{center}
@@ -740,8 +742,10 @@ Figure~\ref{fig:JetcutVarFD_Dzero} shows non-prompt \Dzero-jet reconstruction ef
 \begin{figure}[bth]
 \begin{center}
 %\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/cutSys/cutSys_jetptSpectra_ratio}
-\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/cutSys2/cutSys_prompt_ratio}
-\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/cutSys2/c2_rp}
+%\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/cutSys2/cutSys_prompt_ratio}
+\includegraphics[width=0.45\textwidth]{cutsys/cutSys_spectra_fixSig}
+%\includegraphics[width=0.45\textwidth]{pPbcuts_2sig/cutSys2/c2_rp}
+\includegraphics[width=0.45\textwidth]{cutsys/cutSys_prompt_fixSig}
 \caption{Left: Ratios of the prompt efficienices for different cut sets for systematic uncertainties estimation. Right: ratios of the corresponding \Dzero-jet efficiencies zoomed in as necessary.} 
 %\caption{Left: Ratios of \Dzero-jet \pt\ distributions with different cut sets for systematic uncertainties estimation. Right: ratios of the corresponding \Dzero-jet efficiencies.} 
 \label{fig:JetPtRawSysRatio_Dzero}
