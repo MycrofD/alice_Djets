@@ -1064,46 +1064,74 @@ The summary of all uncertainties, including statistical uncertainties are listed
 %\end{figure}
 
 
-\begin{table}[bth]
-\caption{\Dzero-jet: Normalization systematic uncertainties.}
-     \label{tab:CorrFixSystUnc_Dzero}
-\begin{center}
-    \begin{tabular}{lr}
-    \hline
-Source & Uncertainty (\%) \\ \hline
-Branching Ratio &  \\
-Luminosity &  \\
-\hline
-Total &  \\
-\hline
-    \end{tabular}
-    \end{center}
-    \end{table}
+%\begin{table}[bth]
+%\caption{\Dzero-jet: Normalization systematic uncertainties.}
+%     \label{tab:CorrFixSystUnc_Dzero}
+%\begin{center}
+%    \begin{tabular}{lr}
+%    \hline
+%Source & Uncertainty (\%) \\ \hline
+%Branching Ratio &  \\
+%Luminosity &  \\
+%\hline
+%Total &  \\
+%\hline
+%    \end{tabular}
+%    \end{center}
+%    \end{table}
     
     \begin{table}[bth]
 \caption{\Dzero-jet: Summary of all uncertainties.}
      \label{tab:UncSum_Dzero}
 \begin{center}
+%    \begin{tabular}{lrrrrrrr}
+%    \hline
+%Source & \multicolumn{6}{c}{Uncertainty (\%)} \\ \hline
+%\ptchjet\ (\GeVc) & 5 - 6 & 6 - 8 & 8 - 10 & 10 - 14 & 14 - 20 & 20 - 30 & 30 - 50 \\ \hline
+%Raw Yield Extraction & 3 & 2 & 2.5 & 2.5 & 3 & 6 & 7 \\
+%Reflections & 2 & 3 & 2 & 2 & 2 & 3 & 3 \\
+%Side-Band and Signal ranges & 2 & 2 & 2 & 2 & 4.5 & 5.5 & 6 \\
+%B Feed-Down & 6 & 6 & 8.5 & 8.5 & 12 & 13.5 & 14 \\
+%Unfolding: priors & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
+%Unfolding: ranges, SVD & 6& 3 & 3& 3& 3& 3& 8\\
+%$p_T$ shape of MC ({\it from D-Meson}) & 0& 0& 0& 0& 0& 0& 0\\
+%Tracking Eff. ({\it from D-Meson}) & 3& 3& 3& 3& 3& 3& 3\\
+%Tracking Eff. (Jet Energy Scale) & 1& 1& 1& 2& 3& 4& 7\\
+%Selection Cuts & 1 & 2 & 2 & 2 & 6 & 6 & 11 \\
+%\hline
+%Total Systematic Uncertainty &10 & 9 &10.5 &10.5 &15.5 &18 &23  \\
+%\hline
+%Normalization Uncertainty & \multicolumn{7}{c}{ 5 (Lum); 0.04 (BR)} \\
+%\hline
+%Statistical & 4 & 3 & 5 & 5 & 8 & 15 & 27 \\
+%\hline
+%    \end{tabular}
+%    \end{center}
+%    \end{table}
     \begin{tabular}{lrrrrrrr}
     \hline
 Source & \multicolumn{6}{c}{Uncertainty (\%)} \\ \hline
-\ptchjet\ (\GeVc) & 5 - 6 & 6 - 8 & 8 - 10 & 10 - 14 & 14 - 20 & 20 - 30 & 30 - 50 \\ \hline
-Raw Yield Extraction & 3 & 2 & 2.5 & 2.5 & 3 & 6 & 7 \\
-Reflections & 2 & 3 & 2 & 2 & 2 & 3 & 3 \\
-Side-Band and Signal ranges & 2 & 2 & 2 & 2 & 4.5 & 5.5 & 6 \\
-B Feed-Down & 6 & 6 & 8.5 & 8.5 & 12 & 13.5 & 14 \\
-Unfolding: priors & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
-Unfolding: ranges, SVD & 6& 3 & 3& 3& 3& 3& 8\\
-$p_T$ shape of MC ({\it from D-Meson}) & 0& 0& 0& 0& 0& 0& 0\\
-Tracking Eff. ({\it from D-Meson}) & 3& 3& 3& 3& 3& 3& 3\\
-Tracking Eff. (Jet Energy Scale) & 1& 1& 1& 2& 3& 4& 7\\
-Selection Cuts & 1 & 2 & 2 & 2 & 6 & 6 & 11 \\
+\ptchjet\ (\GeVc) & 5 - 6 & 6 - 8 & 8 - 10 & 10 - 14 & 14 - 20 & 20 - 30& 30 - 50\\ \hline
+Raw Yield Extraction (Multi-trial)& 3 & 2 & 2.5 & 2.5 & 3 & 6 & 7 \\
+Reflections & 2 & 3 & 2 & 2 & 2 & 3 & 3\\
+B Feed-Down (x-section) & 6 & 6 & 8.5 & 8.5 & 12 & 13.5 & 14\\
+B Feed-Down ($R_{pPb})$ & $\pm$ 2 & $\pm$1 & +3, -1 & +2,-1 & +3,-1 & $\pm$1 & +2,-3\\
+Side-Band and Signal ranges & 2 & 2 & 2 & 2 & 4.5 & 5.5 & 6\\
+%{Unfolding: Bayes, SVD, few var} & 6 & 3 & 3 & 3 & 3 & 3 & 8\\
+Unfolding: Bayes & 2 & 0 & 0 & 0 & 0 & 0 & 0\\
+Unfolding: SVD & 6 & 2.5 & 5 & 4 & 4 & 1 & 9\\
+Unfolding: priors & 1 & 1 & 1 & 1 & 1 & 1 & 1\\
+$p_T$ shape of MC ({\it taken from D-Meson}) & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+Tracking Eff. ({\it taken from D-Meson}) & 3 & 3 & 3 & 3 & 3 & 3 & 3 \\
+%Tracking Eff. (Jet Energy Scale) & 0.5  & 0.77 & 1.13 & 1.67 & 2.6 & 4& 7\\
+Tracking Eff. (Jet Energy Scale) & 1  & 1 & 1 & 2 & 3 & 4& 7\\
+Selection Cuts & 1 & 2 & 2 & 2 & 6 & 6 & 6 \\
 \hline
-Total Systematic Uncertainty &10 & 9 &10.5 &10.5 &15.5 &18 &23  \\
+Total Systematic Uncertainty  & 10 & 9 & 11 & 11 & 16 & 18 & 20   \\
 \hline
-Normalization Uncertainty & \multicolumn{7}{c}{ 5 (Lum); 0.04 (BR)} \\
-\hline
-Statistical & 4 & 3 & 5 & 5 & 8 & 15 & 27 \\
+Normalization Uncertainty & \multicolumn{6}{c}{  5 (Lum) to be updated; 0.04 (BR) } \\
+\hline %9.84392e+08
+Statistical & 4 & 3 & 5 & 5 & 8  & 15 & 27\\
 \hline
     \end{tabular}
     \end{center}
@@ -1127,15 +1155,19 @@ The cross-section is calculated according to the following formula:
 \begin{equation}
 \frac{{\rm d}^2\sigma}{{\rm d}\eta {\rm d}\pt}=\frac{1}{L_{\rm int}f_{\rm BR}} \frac{1}{\epsilon \times A}  \frac{ \frac{1}{2} N_{\rm D-jets}(\ptjet)}{ \Delta\ptjet\Delta\eta},
 \end{equation}
-where $L_{\rm int}=N_{\rm evt}/\sigma_{\rm inel}$ is the integrated luminosity ($\sigma_{\rm pp, inel} = 51.2$~mb {\color{red}NUMBER TO BE CHECKED}), $f_{\rm BR}$ is the branching
+where $L_{\rm int}=N_{\rm evt}/\sigma_{\rm inel}$ is the integrated luminosity ($\sigma_{\rm pp, inel} = 51.2$~mb 
+%{\color{red}NUMBER TO BE CHECKED})
+, $f_{\rm BR}$ is the branching
 ratio of the D-meson decay channel used in the analysis, $N_{\rm D-jets}(\ptjet)$ is the measured number of D-jets in a given \ptjet\ bin (with all corrections applied).
 
 
 
-The $D^{0}$-tagged jet \pt\ differential cross section in \pp\ collisions at $\s=5.02$~TeV compared to PYTHIA+POWHEG prediction is shown in Fig~\ref{fig:pPbJetPt_final_D0}. {\color{red} WE NEED POWHEG+PYTHIA6 SIMULATION WITH VARIATIONS}
+The $D^{0}$-tagged jet \pt\ differential cross section in \pp\ collisions at $\s=5.02$~TeV compared to PYTHIA+POWHEG prediction is shown in Fig~\ref{fig:pPbJetPt_final_D0}. 
+%{\color{red} WE NEED POWHEG+PYTHIA6 SIMULATION WITH VARIATIONS}
 \begin{figure}[bth]
 \centering
-\includegraphics[width=.6\textwidth]{pPbcuts_2sig/prelim/finalSpectra/plots/JetPtSpectra_final}
+%\includegraphics[width=.6\textwidth]{pPbcuts_2sig/prelim/finalSpectra/plots/JetPtSpectra_final}
+\includegraphics[width=.6\textwidth]{PF_approval/JetPtSpectra_final}
 \caption{Unfolded \Dzero-jet\ spectrum in \pp\ collisions at $\s=5.02$~TeV compared to PYTHIA+POWHEG simulations, with the simulation uncertainty.}
 \label{fig:pPbJetPt_final_D0}
 \end{figure}
@@ -1199,7 +1231,8 @@ The systematic uncertainties are obtained by taking the largest upward and downw
 
 \begin{figure}[bth]
 \begin{center}
-\includegraphics[width=.6\textwidth]{pPbcuts_2sig/prelim/RpPb_pPbcuts}
+%\includegraphics[width=.6\textwidth]{pPbcuts_2sig/prelim/RpPb_pPbcuts}
+\includegraphics[width=.6\textwidth]{PF_approval/RpPb_pPbcuts}
 \caption{\Dzero-jet cross section in \pp\ at $\s=5.02$~TeV as a function of \ptchjet\ compared with \Dzero-jet cross section in \pPb\ at $\s=5.02$~TeV.} 
 \label{fig:PromptD0JetPtSpectrum_pp_pPb}
 \end{center}
@@ -1211,7 +1244,8 @@ The systematic uncertainties are obtained by taking the largest upward and downw
 
 \begin{figure}[bth]
 \centering
-\includegraphics[width=.6\textwidth]{pPbcuts_2sig/prelim/RpPb_pPbcuts_ratio}
+%\includegraphics[width=.6\textwidth]{pPbcuts_2sig/prelim/RpPb_pPbcuts_ratio}
+\includegraphics[width=.6\textwidth]{PF_approval/RpPb_pPbcuts_ratio}
 \caption{\Dzero-jet\ $R_{pPb}$}
 \label{fig:SysUnce_Dzero}
 \end{figure}
