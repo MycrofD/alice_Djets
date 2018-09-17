@@ -7,6 +7,10 @@
 % Bibliography created with iopart-num v2.1
 % /biblio/bibtex/contrib/iopart-num
 
+\bibitem{Tanabashi:2018oca}
+Tanabashi M {\em et~al.\/} (ParticleDataGroup) 2018 {\em Phys. Rev.\/} {\bf
+  D98} 030001
+
 \bibitem{Cacciari:2012}
 Cacciari M, Salam G~P and Soyez G 2012 {\em Eur.Phys.J.\/} {\bf C72} 1896
   (\textit{Preprint} \eprint{1111.6097})
@@ -18,9 +22,9 @@ Cacciari M, Salam G and Soyez G 2008 {\em JHEP\/} {\bf 04} 063
 Cacciari M, Greco M and Nason P 1998 {\em JHEP\/} {\bf 9805} 007
   (\textit{Preprint} \eprint{9803400})
 
-\bibitem{ALICE:2012d}
-Abelev B {\em et~al.\/} (ALICE) 2012 {\em JHEP\/} {\bf 2012} 1--30 ISSN
-  1029-8479 (\textit{Preprint} \eprint{1111.1553})
+\bibitem{ALICE:2011aa}
+Abelev B {\em et~al.\/} (ALICE) 2012 {\em JHEP\/} {\bf 01} 128
+  (\textit{Preprint} \eprint{1111.1553})
 
 \bibitem{ALICE:2014d}
 Abelev B {\em et~al.\/} (ALICE) 2014 {\em Phys. Rev. Lett.\/} {\bf 113}(23)
