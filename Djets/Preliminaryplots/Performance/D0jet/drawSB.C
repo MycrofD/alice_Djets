@@ -37,7 +37,9 @@ stringstream sst;
 sst.clear(); sst.str("");
 
    //TFile *inFile = new TFile("JetPtSpectra_SB_FASTwoSDD_eff_ptD3_rebin.root","read");
-   TFile *inFile = new TFile("/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning/signalExtraction/JetPtSpectra_SB_eff.root","read");
+   TFile *inFile = new TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_cutTight/DzeroR03_def_437_old0/Default/signalExtraction/JetPtSpectra_SB_eff.root"
+// "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning/signalExtraction/JetPtSpectra_SB_eff.root"
+,"read");
 
      int bin1 = 1, bin2 = 5, bin3 = 7;
 
@@ -67,8 +69,9 @@ sst.clear(); sst.str("");
             hmass[i]->SetMarkerStyle(20);
             hmass[i]->SetMarkerSize(1.2);
             hmass[i]->GetXaxis()->SetRangeUser(1.72,2.0);
-            hmass[i]->GetXaxis()->SetTitle("#it{M}(K#pi) (GeV/#it{c^{2}})");
-            hmass[i]->GetYaxis()->SetTitle(Form("Entries/%.0f MeV/#it{c^{2}}",hmass[i]->GetBinWidth(1)*1000));
+            //hmass[i]->GetXaxis()->SetTitle("#it{M}(K#pi) (GeV/#it{c^{2}})");
+            hmass[i]->GetXaxis()->SetTitle("#it{M}(K#pi) (GeV/#it{c}^{2})");
+            hmass[i]->GetYaxis()->SetTitle(Form("Entries/%.0f MeV/#it{c}^{2}",hmass[i]->GetBinWidth(1)*1000));
             hmass[i]->GetXaxis()->SetLabelSize(0.045);
             hmass[i]->GetXaxis()->SetTitleSize(0.055);
             hmass[i]->GetYaxis()->SetLabelSize(0.045);
@@ -119,7 +122,7 @@ sst.clear(); sst.str("");
     hmass[bin2]->SetMaximum(hmass[bin2]->GetMaximum()*1.12);
     hmass[bin3]->SetMaximum(hmass[bin3]->GetMaximum()*1.25);
 
-    hmass[bin1]->GetYaxis()->SetTitleOffset(1.5);
+    hmass[bin1]->GetYaxis()->SetTitleOffset(1.4);
     hmass[bin2]->GetYaxis()->SetTitleOffset(1.4);
     hmass[bin3]->GetYaxis()->SetTitleOffset(1.4);
 
@@ -128,12 +131,14 @@ sst.clear(); sst.str("");
     hmass[bin3]->GetXaxis()->SetTitleOffset(1.1);
 
     TLegend *legBands = new TLegend(0.18,0.86,0.8,0.95);
+    TLegend *legBands = new TLegend(0.181,0.86,0.8,0.95);
     legBands->SetTextSize(0.04);
     legBands->AddEntry(hmass_c[0],"Signal region","f");
     legBands->AddEntry(hmass_l[0],"Side Bands","f");
 
 
-    TPaveText *pvALICE = new TPaveText(0.2,0.90,0.6,0.94,"brNDC");
+    //TPaveText *pvALICE = new TPaveText(0.1995,0.90,0.6,0.94,"brNDC");
+    TPaveText *pvALICE = new TPaveText(0.18,0.90,0.6,0.94,"brNDC");
     pvALICE->SetFillStyle(0);
     pvALICE->SetBorderSize(0);
     pvALICE->SetTextFont(42);
@@ -142,15 +147,19 @@ sst.clear(); sst.str("");
     pvALICE->AddText("ALICE Preliminary");
 
     TPaveText *pvEn = new TPaveText(0.2,0.90,0.8,0.94,"brNDC");
+    TPaveText *pvEn = new TPaveText(0.168,0.90,0.8,0.94,"brNDC");
     pvEn->SetFillStyle(0);
     pvEn->SetBorderSize(0);
     pvEn->SetTextFont(42);
     pvEn->SetTextSize(0.045);
     pvEn->SetTextAlign(11);
     //pvEn->AddText("p-Pb, #sqrt{#it{s}_{NN}} = 5.02 TeV, 603M events");
-    pvEn->AddText("p-Pb, #sqrt{#it{s}_{NN}} = 5.02 TeV");
+    //pvEn->AddText("p-Pb, #sqrt{#it{s}_{NN}} = 5.02 TeV");
+    pvEn->AddText("pp, #sqrt{#it{s}} = 5.02 TeV");
 
-    TPaveText *pvD = new TPaveText(0.2,0.85,0.55,0.89,"brNDC");
+    //TPaveText *pvD = new TPaveText(0.2,0.85,0.55,0.89,"brNDC");
+    //TPaveText *pvD = new TPaveText(0.1795,0.85,0.55,0.89,"brNDC");
+    TPaveText *pvD = new TPaveText(0.18,0.85,0.55,0.89,"brNDC");
     pvD->SetFillStyle(0);
     pvD->SetBorderSize(0);
     pvD->SetTextFont(42);
@@ -158,7 +167,9 @@ sst.clear(); sst.str("");
     pvD->SetTextAlign(11);
     pvD->AddText("D^{0} #rightarrow K^{-}#pi^{+} and charge conj.");
 
-    TPaveText *pvJet = new TPaveText(0.2,0.80,0.55,0.84,"brNDC");
+    //TPaveText *pvJet = new TPaveText(0.2035,0.80,0.55,0.84,"brNDC");
+    //TPaveText *pvJet = new TPaveText(0.1815,0.80,0.55,0.84,"brNDC");
+    TPaveText *pvJet = new TPaveText(0.181,0.80,0.55,0.84,"brNDC");
     pvJet->SetFillStyle(0);
     pvJet->SetBorderSize(0);
     pvJet->SetTextFont(42);
@@ -166,7 +177,10 @@ sst.clear(); sst.str("");
     pvJet->SetTextAlign(11);
     pvJet->AddText("in Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.3");
 
-    TPaveText *pvEta = new TPaveText(0.2,0.75,0.4,0.79,"brNDC");
+    //TPaveText *pvEta = new TPaveText(0.2,0.75,0.4,0.79,"brNDC");
+    //TPaveText *pvEta = new TPaveText(0.21,0.75,0.4,0.79,"brNDC");
+    //TPaveText *pvEta = new TPaveText(0.188,0.75,0.4,0.79,"brNDC");
+    TPaveText *pvEta = new TPaveText(0.1881,0.75,0.4,0.79,"brNDC");
     pvEta->SetFillStyle(0);
     pvEta->SetBorderSize(0);
     pvEta->SetTextFont(42);
@@ -201,93 +215,113 @@ sst.clear(); sst.str("");
     pvsig1->SetBorderSize(0);
     pvsig1->SetTextFont(42);
     pvsig1->SetTextSize(0.04);
-    pvsig1->AddText(Form("S (3#sigma) = %.1f #pm %.1f",hsign->GetBinContent(hsign->FindBin((ptDbins[bin1]+ptDbins[bin1+1])/2.)),hsign->GetBinError(hsign->FindBin((ptDbins[bin1]+ptDbins[bin1+1])/2.))));
+    //pvsig1->AddText(Form("S (3#sigma) = %.1f #pm %.1f",hsign->GetBinContent(hsign->FindBin((ptDbins[bin1]+ptDbins[bin1+1])/2.)),hsign->GetBinError(hsign->FindBin((ptDbins[bin1]+ptDbins[bin1+1])/2.))));
+    pvsig1->AddText(Form("S (2#sigma) = %.1f #pm %.1f",hsign->GetBinContent(hsign->FindBin((ptDbins[bin1]+ptDbins[bin1+1])/2.)),hsign->GetBinError(hsign->FindBin((ptDbins[bin1]+ptDbins[bin1+1])/2.))));
 
-    TPaveText *pvsb1 = new TPaveText(0.18,0.45,0.5,0.49,"brNDC");
+    //TPaveText *pvsb1 = new TPaveText(0.18,0.45,0.5,0.49,"brNDC");
+    //TPaveText *pvsb1 = new TPaveText(0.13,0.45,0.5,0.49,"brNDC");
+    TPaveText *pvsb1 = new TPaveText(0.123,0.45,0.5,0.49,"brNDC");
     pvsb1->SetFillStyle(0);
     pvsb1->SetBorderSize(0);
     pvsb1->SetTextFont(42);
     pvsb1->SetTextSize(0.04);
-    pvsb1->AddText(Form("S/B (3#sigma) = %.2f",hsb->GetBinContent(hsb->FindBin((ptDbins[bin1]+ptDbins[bin1+1])/2. ))));
+    //pvsb1->AddText(Form("S/B (3#sigma) = %.2f",hsb->GetBinContent(hsb->FindBin((ptDbins[bin1]+ptDbins[bin1+1])/2. ))));
+    pvsb1->AddText(Form("S/B (2#sigma) = %.2f",hsb->GetBinContent(hsb->FindBin((ptDbins[bin1]+ptDbins[bin1+1])/2. ))));
 
-    TPaveText *pvmean1 = new TPaveText(0.18,0.67,0.62,0.71,"brNDC");
+    //TPaveText *pvmean1 = new TPaveText(0.18,0.67,0.62,0.71,"brNDC");
+    //TPaveText *pvmean1 = new TPaveText(0.178,0.67,0.62,0.71,"brNDC");
+    TPaveText *pvmean1 = new TPaveText(0.178,0.67,0.62,0.71,"brNDC");
     pvmean1->SetFillStyle(0);
     pvmean1->SetBorderSize(0);
     pvmean1->SetTextFont(42);
     pvmean1->SetTextSize(0.04);
     pvmean1->SetTextAlign(11);
-    //pvmean1->AddText(Form("#mu = %.3f #pm %f MeV/#it{c^{2}}",hmean->GetBinContent(hmean->FindBin((ptDbins[bin1]+ptDbins[bin1+1])/2. )),hmean->GetBinError(hmean->FindBin((ptDbins[bin1]+ptDbins[bin1+1])/2. ))));
-    pvmean1->AddText(Form("#mu = %.3f #pm 0.001 MeV/#it{c^{2}}",hmean->GetBinContent(hmean->FindBin((ptDbins[bin1]+ptDbins[bin1+1])/2. )),hmean->GetBinError(hmean->FindBin((ptDbins[bin1]+ptDbins[bin1+1])/2. ))));
+    pvmean1->AddText(Form("#mu = %.3f #pm %f MeV/#it{c}^{2}",hmean->GetBinContent(hmean->FindBin((ptDbins[bin1]+ptDbins[bin1+1])/2. )),hmean->GetBinError(hmean->FindBin((ptDbins[bin1]+ptDbins[bin1+1])/2. ))));
+//    pvmean1->AddText(Form("#mu = %.3f #pm 0.001 MeV/#it{c^{2}}",hmean->GetBinContent(hmean->FindBin((ptDbins[bin1]+ptDbins[bin1+1])/2. )),hmean->GetBinError(hmean->FindBin((ptDbins[bin1]+ptDbins[bin1+1])/2. ))));
 
-    TPaveText *pvsigma1 = new TPaveText(0.18,0.63,0.62,0.67,"brNDC");
+    //TPaveText *pvsigma1 = new TPaveText(0.18,0.63,0.62,0.67,"brNDC");
+    TPaveText *pvsigma1 = new TPaveText(0.179,0.63,0.62,0.67,"brNDC");
     pvsigma1->SetFillStyle(0);
     pvsigma1->SetBorderSize(0);
     pvsigma1->SetTextFont(42);
     pvsigma1->SetTextSize(0.04);
     pvsigma1->SetTextAlign(11);
-    pvsigma1->AddText(Form("#sigma = %.1f #pm %.1f MeV/#it{c^{2}}",hsigma->GetBinContent(hsigma->FindBin((ptDbins[bin1]+ptDbins[bin1+1])/2. )),hsigma->GetBinError(hsigma->FindBin((ptDbins[bin1]+ptDbins[bin1+1])/2. ))));
+    pvsigma1->AddText(Form("#sigma = %.1f #pm %.1f MeV/#it{c}^{2}",hsigma->GetBinContent(hsigma->FindBin((ptDbins[bin1]+ptDbins[bin1+1])/2. )),hsigma->GetBinError(hsigma->FindBin((ptDbins[bin1]+ptDbins[bin1+1])/2. ))));
 
     TPaveText *pvsig2 = new TPaveText(0.57,0.73,0.9,0.78,"brNDC");
     pvsig2->SetFillStyle(0);
     pvsig2->SetBorderSize(0);
     pvsig2->SetTextFont(42);
     pvsig2->SetTextSize(0.04);
-    pvsig2->AddText(Form("S (3#sigma) = %.1f #pm %.1f",hsign->GetBinContent(hsign->FindBin((ptDbins[bin2]+ptDbins[bin2+1])/2.)),hsign->GetBinError(hsign->FindBin((ptDbins[bin2]+ptDbins[bin2+1])/2.))));
+    //pvsig2->AddText(Form("S (3#sigma) = %.1f #pm %.1f",hsign->GetBinContent(hsign->FindBin((ptDbins[bin2]+ptDbins[bin2+1])/2.)),hsign->GetBinError(hsign->FindBin((ptDbins[bin2]+ptDbins[bin2+1])/2.))));
+    pvsig2->AddText(Form("S (2#sigma) = %.1f #pm %.1f",hsign->GetBinContent(hsign->FindBin((ptDbins[bin2]+ptDbins[bin2+1])/2.)),hsign->GetBinError(hsign->FindBin((ptDbins[bin2]+ptDbins[bin2+1])/2.))));
 
-    TPaveText *pvsb2 = new TPaveText(0.18,0.45,0.5,0.49,"brNDC");
+//    TPaveText *pvsb2 = new TPaveText(0.18,0.45,0.5,0.49,"brNDC");
+    TPaveText *pvsb2 = new TPaveText(0.123,0.45,0.5,0.49,"brNDC");
+    TPaveText *pvsb2 = new TPaveText(0.130,0.45,0.5,0.49,"brNDC");
     pvsb2->SetFillStyle(0);
     pvsb2->SetBorderSize(0);
     pvsb2->SetTextFont(42);
     pvsb2->SetTextSize(0.04);
-    pvsb2->AddText(Form("S/B (3#sigma) = %.2f",hsb->GetBinContent(hsb->FindBin((ptDbins[bin2]+ptDbins[bin2+1])/2. ))));
+    //pvsb2->AddText(Form("S/B (3#sigma) = %.2f",hsb->GetBinContent(hsb->FindBin((ptDbins[bin2]+ptDbins[bin2+1])/2. ))));
+    pvsb2->AddText(Form("S/B (2#sigma) = %.2f",hsb->GetBinContent(hsb->FindBin((ptDbins[bin2]+ptDbins[bin2+1])/2. ))));
 
 
-    TPaveText *pvmean2 = new TPaveText(0.18,0.77,0.62,0.81,"brNDC");
+    //TPaveText *pvmean2 = new TPaveText(0.18,0.77,0.62,0.81,"brNDC");
+    TPaveText *pvmean2 = new TPaveText(0.178,0.77,0.62,0.81,"brNDC");
     pvmean2->SetFillStyle(0);
     pvmean2->SetBorderSize(0);
     pvmean2->SetTextFont(42);
     pvmean2->SetTextSize(0.04);
     pvmean2->SetTextAlign(11);
     //pvmean2->AddText(Form("#mu = %.2f #pm %.2f MeV/#it{c^{2}}",hmean->GetBinContent(hmean->FindBin((ptDbins[bin2]+ptDbins[bin2+1])/2. )),hmean->GetBinError(hmean->FindBin((ptDbins[bin2]+ptDbins[bin2+1])/2. ))));
-    pvmean2->AddText(Form("#mu = %.3f #pm 0.001 MeV/#it{c^{2}}",hmean->GetBinContent(hmean->FindBin((ptDbins[bin2]+ptDbins[bin2+1])/2. ))));
+    //pvmean2->AddText(Form("#mu = %.3f #pm 0.001 MeV/#it{c^{2}}",hmean->GetBinContent(hmean->FindBin((ptDbins[bin2]+ptDbins[bin2+1])/2. ))));
+    pvmean2->AddText(Form("#mu = %.3f #pm %f MeV/#it{c}^{2}",hmean->GetBinContent(hmean->FindBin((ptDbins[bin2]+ptDbins[bin2+1])/2. )),hmean->GetBinError(hmean->FindBin((ptDbins[bin2]+ptDbins[bin2+1])/2. ))));
 
-    TPaveText *pvsigma2 = new TPaveText(0.18,0.73,0.62,0.77,"brNDC");
+    //TPaveText *pvsigma2 = new TPaveText(0.18,0.73,0.62,0.77,"brNDC");
+    TPaveText *pvsigma2 = new TPaveText(0.1797,0.73,0.62,0.77,"brNDC");
     pvsigma2->SetFillStyle(0);
     pvsigma2->SetBorderSize(0);
     pvsigma2->SetTextFont(42);
     pvsigma2->SetTextSize(0.04);
     pvsigma2->SetTextAlign(11);
-    pvsigma2->AddText(Form("#sigma = %.1f #pm %.1f MeV/#it{c^{2}}",hsigma->GetBinContent(hsigma->FindBin((ptDbins[bin2]+ptDbins[bin2+1])/2. )),hsigma->GetBinError(hsigma->FindBin((ptDbins[bin2]+ptDbins[bin2+1])/2. ))));
+    pvsigma2->AddText(Form("#sigma = %.1f #pm %.1f MeV/#it{c}^{2}",hsigma->GetBinContent(hsigma->FindBin((ptDbins[bin2]+ptDbins[bin2+1])/2. )),hsigma->GetBinError(hsigma->FindBin((ptDbins[bin2]+ptDbins[bin2+1])/2. ))));
 
     TPaveText *pvsig3 = new TPaveText(0.17,0.82,0.9,0.87,"brNDC");
     pvsig3->SetFillStyle(0);
     pvsig3->SetBorderSize(0);
     pvsig3->SetTextFont(42);
     pvsig3->SetTextSize(0.04);
-    pvsig3->AddText(Form("S (3#sigma) = %.1f #pm %.1f",hsign->GetBinContent(hsign->FindBin((ptDbins[bin3]+ptDbins[bin3+1])/2.)),hsign->GetBinError(hsign->FindBin((ptDbins[bin3]+ptDbins[bin3+1])/2.))));
+    //pvsig3->AddText(Form("S (3#sigma) = %.1f #pm %.1f",hsign->GetBinContent(hsign->FindBin((ptDbins[bin3]+ptDbins[bin3+1])/2.)),hsign->GetBinError(hsign->FindBin((ptDbins[bin3]+ptDbins[bin3+1])/2.))));
+    pvsig3->AddText(Form("S (2#sigma) = %.1f #pm %.1f",hsign->GetBinContent(hsign->FindBin((ptDbins[bin3]+ptDbins[bin3+1])/2.)),hsign->GetBinError(hsign->FindBin((ptDbins[bin3]+ptDbins[bin3+1])/2.))));
 
     TPaveText *pvsb3 = new TPaveText(0.18,0.45,0.5,0.49,"brNDC");
+    TPaveText *pvsb3 = new TPaveText(0.132,0.45,0.5,0.49,"brNDC");
     pvsb3->SetFillStyle(0);
     pvsb3->SetBorderSize(0);
     pvsb3->SetTextFont(42);
     pvsb3->SetTextSize(0.04);
-    pvsb3->AddText(Form("S/B (3#sigma) = %.2f",hsb->GetBinContent(hsb->FindBin((ptDbins[bin3]+ptDbins[bin3+1])/2. ))));
+    //pvsb3->AddText(Form("S/B (3#sigma) = %.2f",hsb->GetBinContent(hsb->FindBin((ptDbins[bin3]+ptDbins[bin3+1])/2. ))));
+    pvsb3->AddText(Form("S/B (2#sigma) = %.2f",hsb->GetBinContent(hsb->FindBin((ptDbins[bin3]+ptDbins[bin3+1])/2. ))));
 
     TPaveText *pvmean3 = new TPaveText(0.18,0.72,0.62,0.76,"brNDC");
+    TPaveText *pvmean3 = new TPaveText(0.178,0.72,0.62,0.76,"brNDC");
     pvmean3->SetFillStyle(0);
     pvmean3->SetBorderSize(0);
     pvmean3->SetTextFont(42);
     pvmean3->SetTextSize(0.04);
     pvmean3->SetTextAlign(11);
-    pvmean3->AddText(Form("#mu = %.3f #pm %.3f MeV/#it{c^{2}}",hmean->GetBinContent(hmean->FindBin((ptDbins[bin3]+ptDbins[bin3+1])/2. )),hmean->GetBinError(hmean->FindBin((ptDbins[bin3]+ptDbins[bin3+1])/2. ))));
+    //pvmean3->AddText(Form("#mu = %.3f #pm %.3f MeV/#it{c^{2}}",hmean->GetBinContent(hmean->FindBin((ptDbins[bin3]+ptDbins[bin3+1])/2. )),hmean->GetBinError(hmean->FindBin((ptDbins[bin3]+ptDbins[bin3+1])/2. ))));
+    pvmean3->AddText(Form("#mu = %.3f #pm %f MeV/#it{c}^{2}",hmean->GetBinContent(hmean->FindBin((ptDbins[bin3]+ptDbins[bin3+1])/2. )),hmean->GetBinError(hmean->FindBin((ptDbins[bin3]+ptDbins[bin3+1])/2. ))));
 
     TPaveText *pvsigma3 = new TPaveText(0.18,0.68,0.62,0.72,"brNDC");
+    TPaveText *pvsigma3 = new TPaveText(0.1797,0.68,0.62,0.72,"brNDC");
     pvsigma3->SetFillStyle(0);
     pvsigma3->SetBorderSize(0);
     pvsigma3->SetTextFont(42);
     pvsigma3->SetTextSize(0.04);
     pvsigma3->SetTextAlign(11);
-    pvsigma3->AddText(Form("#sigma = %.1f #pm %.1f MeV/#it{c^{2}}",hsigma->GetBinContent(hsigma->FindBin((ptDbins[bin3]+ptDbins[bin3+1])/2. )),hsigma->GetBinError(hsigma->FindBin((ptDbins[bin3]+ptDbins[bin3+1])/2. ))));
+    pvsigma3->AddText(Form("#sigma = %.1f #pm %.1f MeV/#it{c}^{2}",hsigma->GetBinContent(hsigma->FindBin((ptDbins[bin3]+ptDbins[bin3+1])/2. )),hsigma->GetBinError(hsigma->FindBin((ptDbins[bin3]+ptDbins[bin3+1])/2. ))));
 
     TCanvas *cMass = new TCanvas("cMass","cMass",3000,900);
     //TCanvas *cMass = new TCanvas("cMass","cMass",3000,1000);

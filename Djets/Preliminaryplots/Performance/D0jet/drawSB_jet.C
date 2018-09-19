@@ -6,9 +6,9 @@
 
 setHistoDetails(TH1 *h, Color_t color, Style_t Mstyle, Width_t width);
 
- double zmin = 0, zmax = 2.;
-    double jetmin = 0, jetmax = 50;
-    double plotmin = 0, plotmax = 50;
+ //double zmin = 0, zmax = 2.;
+    //double jetmin = 0, jetmax = 50;
+    //double plotmin = 0, plotmax = 50;
 
     const int ptbinsDN = 10;
     float ptDbins[ptbinsDN+1] = { 3,4,5,6,7,8,10,12,16,24,36 };
@@ -47,7 +47,9 @@ sst.clear(); sst.str("");
 
    //TFile *inFile = new TFile("JetPtSpectra_SB_FASTwoSDD_eff_ptD3_rebin.root","read");
   // TFile *inFile = new TFile("JetPtSpectra_SB_eff.root","read");
-    TFile *inFile = new TFile("/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning/signalExtraction/JetPtSpectra_SB_eff.root","read");
+    TFile *inFile = new TFile(
+//"/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning/signalExtraction/JetPtSpectra_SB_eff.root"
+"/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_cutTight/DzeroR03_def_437_old0/Default/signalExtraction/JetPtSpectra_SB_eff.root","read");
 
     int bin1 = 1, bin2 = 5, bin3 = 7;
 
@@ -131,7 +133,8 @@ sst.clear(); sst.str("");
     legBands1->SetTextSize(ltextsize);
     legBands1->SetFillStyle(0);
     legBands1->SetTextAlign(13);
-    legBands1->AddEntry(hjetpt[0],"#splitline{Signal region}{|#it{M}(K#pi)|<3#sigma}","p");
+    //legBands1->AddEntry(hjetpt[0],"#splitline{Signal region}{|#it{M}(K#pi)|<3#sigma}","p");
+    legBands1->AddEntry(hjetpt[0],"#splitline{Signal region}{|#it{M}(K#pi)|<2#sigma}","p");
 
     TLegend *legBands2 = new TLegend(0.15,0.65,0.7,0.75);
     legBands2->SetTextSize(ltextsize);
@@ -159,6 +162,8 @@ sst.clear(); sst.str("");
     legBands3->AddEntry(hjetptsub[0],"Signal - SB","p");
 
     TPaveText *pvALICE = new TPaveText(0.25,0.88,0.6,0.92,"brNDC");
+    TPaveText *pvALICE = new TPaveText(0.247,0.88,0.6,0.92,"brNDC");
+    TPaveText *pvALICE = new TPaveText(0.187,0.88,0.6,0.92,"brNDC");
     pvALICE->SetFillStyle(0);
     pvALICE->SetBorderSize(0);
     pvALICE->SetTextFont(42);
@@ -173,9 +178,11 @@ sst.clear(); sst.str("");
     pvEn->SetTextSize(0.045);
     pvEn->SetTextAlign(11);
     //pvEn->AddText("p-Pb, #sqrt{#it{s}_{NN}} = 5.02 TeV, 603M events");
-    pvEn->AddText("p-Pb, #sqrt{#it{s}_{NN}} = 5.02 TeV");
+    pvEn->AddText("pp, #sqrt{#it{s}} = 5.02 TeV");
 
     TPaveText *pvD = new TPaveText(0.25,0.82,0.55,0.87,"brNDC");
+    TPaveText *pvD = new TPaveText(0.247,0.82,0.55,0.87,"brNDC");
+    TPaveText *pvD = new TPaveText(0.187,0.82,0.55,0.87,"brNDC");
     pvD->SetFillStyle(0);
     pvD->SetBorderSize(0);
     pvD->SetTextFont(42);
@@ -184,6 +191,7 @@ sst.clear(); sst.str("");
     pvD->AddText("D^{0} #rightarrow K^{-}#pi^{+} and charge conj.");
 
     TPaveText *pvJet = new TPaveText(0.25,0.77,0.55,0.82,"brNDC");
+    TPaveText *pvJet = new TPaveText(0.189,0.77,0.55,0.82,"brNDC");
     pvJet->SetFillStyle(0);
     pvJet->SetBorderSize(0);
     pvJet->SetTextFont(42);
@@ -192,6 +200,8 @@ sst.clear(); sst.str("");
     pvJet->AddText("in Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.3");
 
     TPaveText *pvEta = new TPaveText(0.25,0.72,0.6,0.77,"brNDC");
+    TPaveText *pvEta = new TPaveText(0.247,0.72,0.6,0.77,"brNDC");
+    TPaveText *pvEta = new TPaveText(0.187,0.72,0.6,0.77,"brNDC");
     pvEta->SetFillStyle(0);
     pvEta->SetBorderSize(0);
     pvEta->SetTextFont(42);
@@ -217,6 +227,7 @@ sst.clear(); sst.str("");
 
 
     TPaveText *pvpt3 = new TPaveText(0.35,0.88,0.65,0.92,"brNDC");
+    TPaveText *pvpt3 = new TPaveText(0.31,0.88,0.65,0.92,"brNDC");
     //TPaveText *pvpt3 = new TPaveText(0.6,0.8,0.83,0.85,"brNDC");
     pvpt3->SetFillStyle(0);
     pvpt3->SetBorderSize(0);
@@ -226,11 +237,16 @@ sst.clear(); sst.str("");
 
 
 
-    TCanvas *cMass = new TCanvas("cMass","cMass",3000,900);
+    //TCanvas *cMass = new TCanvas("cMass","cMass",3000,900);
+    //TCanvas *cMass = new TCanvas("cMass","cMass",3000,1800);
+    //TCanvas *cMass = new TCanvas("cMass","cMass",3000,1400);
+    TCanvas *cMass = new TCanvas("cMass","cMass",1800,840);
+//    TCanvas *cMass = new TCanvas("cMass","cMass",2100,980);
     //TCanvas *cMass = new TCanvas("cMass","cMass",1800,600);
     //TCanvas *cMass = new TCanvas("cMass","cMass",900,300);
     //TCanvas *cMass = new TCanvas("cMass","cMass");
     //cMass->SetBatch();
+    TCanvas *cMass = new TCanvas("cMass","cMass",2160,1008);
     cMass->Divide(3,1);
     cMass->cd(1);
     gPad->SetLogy(islog);
@@ -308,7 +324,7 @@ void setHistoDetails(TH1 *h, Color_t color, Style_t Mstyle, Size_t size = 0.9, W
     h->SetLineColor(color);
     h->SetLineWidth(width);
     h->SetTitle(0);
-    h->GetXaxis()->SetTitle("p_{T}^{D*}(GeV/c)");
+    h->GetXaxis()->SetTitle("p_{T}^{#D^0}(GeV/c)");
 
     return;
 

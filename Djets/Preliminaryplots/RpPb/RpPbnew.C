@@ -1,4 +1,4 @@
-
+// For RpPb, not x-section
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -12,7 +12,7 @@ Int_t linestyle2[] = {1,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
 const int nFiles = 2;
 TString inDirData[nFiles] = {
  // "$HOME/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts_0final/Default/unfolding_Bayes_4/finalSpectra", // pp final pT spectrum
-"/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_cutTight/DzeroR03_def_437/Default/unfolding_Bayes_4/finalSpectra",
+"/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_cutTight/DzeroR03_def_437_old0/Default/unfolding_Bayes_4/finalSpectra",
   "../" //p-Pb final pT spectrum
   //"$HOME/Work/alice/analysis/pPb_run2/D0jet/PreliminaryOut/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning_MAIN/unfolding_Bayes_3_MAIN/finalSpectra/" //p-Pb final pT spectrum
 }
@@ -189,6 +189,7 @@ for(int i=0; i<ptbinsN; i++){
             pt->SetTextFont(43);
             pt->SetTextSize(22);
             TText *text = new TText;
+            text = pt->AddText("ALICE Preliminary");
             text = pt->AddText("pp, p-Pb #sqrt{#it{s}_{NN}} = 5.02 TeV");
             text = pt->AddText(Form("Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.%d, |#it{#eta}_{lab}^{jet}| < 0.%d",3,6));
             text = pt->AddText(Form ("with D^{0}, %d < #it{p}_{T,D} < %d GeV/#it{c}",3,36));
