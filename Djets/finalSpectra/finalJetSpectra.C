@@ -44,7 +44,7 @@ bool issys = 1,
 bool issim = 1,
 bool simsys = 1,
 TString listName = "",
-bool oldCounter = 1,
+bool oldCounter = 0,
 TString histBase = "unfoldedSpectrum"
 )
 {
@@ -751,6 +751,7 @@ if(isSim){
    pt->SetTextSize(22);
    //TText *text = pt->AddText("ALICE Preliminary");
    TText *text = new TText;
+//   text = pt->AddText("ALICE Preliminary");
    if(fSystem) text = pt->AddText("p-Pb, #sqrt{#it{s}_{NN}} = 5.02 TeV");
    else text = pt->AddText("pp, #sqrt{#it{s}} = 5.02 TeV");
    text = pt->AddText(Form("Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.%d, |#it{#eta}_{lab}^{jet}| < 0.%d",Rpar,9-Rpar));

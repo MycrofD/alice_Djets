@@ -85,18 +85,18 @@ enum DMesonSpecies {kD0toKpi=0, kDStarD0pi};
     };
 */
     TString fRunB[] = {
-//      "AnalysisResults_FastSim_powheg+pythia6_beauty_150593961473"	//central
-//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504284947"	//R1F05
-//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504259653"	//R05F1
-//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1506803374"	//R2F1
-//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504296768"	//R1F2
-//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504212024"	//R05F05
-//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504318569"	//R2F2
-//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504202511"	//mb5
-//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504197966"	//mb4.5
-//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504197460"	//pdf 21200
-//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504199953"	//pdf 10800
-//,
+      "AnalysisResults_FastSim_powheg+pythia6_beauty_150593961473"	//central
+,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504284947"	//R1F05
+,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504259653"	//R05F1
+,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1506803374"	//R2F1
+,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504296768"	//R1F2
+,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504212024"	//R05F05
+,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504318569"	//R2F2
+,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504202511"	//mb5
+,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504197966"	//mb4.5
+,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504197460"	//pdf 21200
+,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504199953"	//pdf 10800
+,
       "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1536649348"//evtgen
     };
 
@@ -109,18 +109,18 @@ enum DMesonSpecies {kD0toKpi=0, kDStarD0pi};
     };
 */
     TString fDescB[] = {
-//      "central"
-//,      "muR=1,muF=0.5" 
-//,      "muR=0.5,muF=1"
-//,      "muR=2,muF=1"
-//,      "muR=1,muF=2"
-//,      "muR=0.5,muF=0.5"
-//,      "muR=2,muF=2"
-//,      "m_{b}=5"
-//,      "m_{b}=4.5"
-//,      "PDF 21200"
-//,      "PDF 10800"
-//,
+      "central"
+,      "muR=1,muF=0.5" 
+,      "muR=0.5,muF=1"
+,      "muR=2,muF=1"
+,      "muR=1,muF=2"
+,      "muR=0.5,muF=0.5"
+,      "muR=2,muF=2"
+,      "m_{b}=5"
+,      "m_{b}=4.5"
+,      "PDF 21200"
+,      "PDF 10800"
+,
       "Evt gen"
     };
 

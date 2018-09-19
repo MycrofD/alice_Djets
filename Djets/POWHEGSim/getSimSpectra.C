@@ -114,8 +114,8 @@ TH1* GetInputSimHistJet(TString inFile, TH1 *hPt, bool isEff, TString effFilePro
     if(!isNPrompt)	hxsection = (TH1D*)dir->FindObject("fHistXsection");
     else { 
           if(SimNr == 11)  hxsection = (TH1D*)dir->FindObject("fHistXsection");
-          //else hxsection = (TH1D*)dir->FindObject("fHistXsectionVsPtHard");
-          else hxsection = (TH1D*)dir->FindObject("fHistXsection");
+          else hxsection = (TH1D*)dir->FindObject("fHistXsectionVsPtHard");
+          //else hxsection = (TH1D*)dir->FindObject("fHistXsection");
     }   
  
     if(!hxsection) {
