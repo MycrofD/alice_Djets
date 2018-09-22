@@ -15,17 +15,17 @@ TString inDirData[nFiles] = {
 "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_cutTight/DzeroR03_def_437_old0/Default/unfolding_Bayes_4/finalSpectra",
   "../" //p-Pb final pT spectrum
   //"$HOME/Work/alice/analysis/pPb_run2/D0jet/PreliminaryOut/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning_MAIN/unfolding_Bayes_3_MAIN/finalSpectra/" //p-Pb final pT spectrum
-}
+};
 
 TString dataFile[nFiles] = {
   "JetPtSpectrum_final.root",
   "JetPtSpectrum_final_pPb.root"
-}
+};
 
 TString histName[nFiles] = {
   "hData_binned",
   "hData_binned"
-}
+};
 
 
 TString desc[nFiles] = {
@@ -45,8 +45,12 @@ double        sysUncErr_pp[ptbinsN] = {0.10,0.09,0.11,0.11,0.16,0.18,0.20};
 double        sysUnc[ptbinsN];
 double        sysUncErr[ptbinsN];
 
-//double        sysUnc_pPb[ptbinsN] = {1.949626, 1.018353, 0.4938436, 0.1498547, 0.03191447, 0.005496932, 0.0007480437};
 
+//double        sysUnc_pPb[ptbinsN] = {1.949626, 1.018353, 0.4938436, 0.1498547, 0.03191447, 0.005496932, 0.0007480437};
+double ptval[ptbinsN];
+double ptvalunc[ptbinsN];
+
+void compareData(TString inName, TString outHistName);
 void RpPb(TString outName = "$HOME/Work/alice/analysis/RpPb/xsec")
 {
 
@@ -94,7 +98,7 @@ void compareData(TString inName, TString outHistName)
             for(int i=0; i<nFiles; i++) {
                 spec[i] = (TH1F*)fproj[i]->Get(Form("%s",histName[i].Data()));
                 spec[i]->Sumw2();
-                spec[i]->SetTitle();
+                spec[i]->SetTitle("");
                 spec[i]->SetLineColor(colors2[i]);
                 spec[i]->SetMarkerColor(colors2[i]);
                 spec[i]->SetMarkerStyle(markers2[i]);
@@ -102,14 +106,14 @@ void compareData(TString inName, TString outHistName)
 
                 //specReb[i] = (TH1F*)spec[i]->Rebin(ptbinsN,Form("specReb_%d",i),ptbinsA);
                 specReb[i] = (TH1F*)spec[i]->Clone(Form("specReb_%d",i));
-                specReb[i]->SetTitle();
+                specReb[i]->SetTitle("");
                 specReb[i]->SetLineColor(colors2[i]);
                 specReb[i]->SetMarkerColor(colors2[i]);
                 specReb[i]->SetMarkerStyle(markers2[i]);
                 if(!i) specReb[i]->Scale(208);
                 //specReb[i]->GetXaxis()->SetRangeUser(plotmin,plotmax);
-                Double_t ptval[ptbinsN];
-                Double_t ptvalunc[ptbinsN];
+            //    double ptval[ptbinsN];
+//                Double_t ptvalunc[ptbinsN];
                 for(int j=0; j<specReb[i]->GetNbinsX(); j++){
                   ptval[j] = (ptbinsA[j]+ptbinsA[j+1]) / 2.;
                   ptvalunc[j] = (ptbinsA[j+1]-ptbinsA[j]) / 2.;
@@ -175,7 +179,7 @@ void compareData(TString inName, TString outHistName)
             TText *text = new TText;
             text = pt->AddText("ALICE Preliminary");
             text = pt->AddText("pp, p-Pb #sqrt{#it{s}_{NN}} = 5.02 TeV");
-            text = pt->AddText(Form("Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.%d, |#it{#eta}_{lab}^{jet}| < 0.%d",3,6));
+            text = pt->AddText(Form("charged Jets, anti-#it{k}_{T}, #it{R} = 0.%d, |#it{#eta}_{lab}^{jet}| < 0.%d",3,6));
             text = pt->AddText(Form ("with D^{0}, %d < #it{p}_{T,D} < %d GeV/#it{c}",3,36));
             pt->Draw();
 
@@ -185,7 +189,7 @@ void compareData(TString inName, TString outHistName)
 
             TCanvas *cspec2 = new TCanvas("cspec2","cspec2",1000,600);
 
-                TH1F *hratio = (TH1F*)specReb[1]->Clone( Form("hratio_%d",i));
+                TH1F *hratio = (TH1F*)specReb[1]->Clone( Form("hratio_%d",0));
                 hratio->Divide(specReb[0]);
                 hratio->SetLineStyle(linestyle2[1]);
                 hratio->SetLineColor(colors2[4]);
@@ -240,6 +244,6 @@ void compareData(TString inName, TString outHistName)
             cspec2->SaveAs(Form("%s/%s_ratio.pdf",out.Data(),outHistName.Data()));
             cspec2->SaveAs(Form("%s/%s_ratio.png",out.Data(),outHistName.Data()));
 
-            return;
+            return 0;
 
 }

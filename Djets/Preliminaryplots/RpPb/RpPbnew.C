@@ -15,17 +15,17 @@ TString inDirData[nFiles] = {
 "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_cutTight/DzeroR03_def_437_old0/Default/unfolding_Bayes_4/finalSpectra",
   "../" //p-Pb final pT spectrum
   //"$HOME/Work/alice/analysis/pPb_run2/D0jet/PreliminaryOut/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning_MAIN/unfolding_Bayes_3_MAIN/finalSpectra/" //p-Pb final pT spectrum
-}
+};
 
 TString dataFile[nFiles] = {
   "JetPtSpectrum_final.root",
   "JetPtSpectrum_final_pPb.root"
-}
+};
 
 TString histName[nFiles] = {
   "hData_binned",
   "hData_binned"
-}
+};
 
 
 TString desc[nFiles] = {
@@ -54,7 +54,13 @@ double	      relFDUnc_do[ptbinsN] = {0.02,0.01,0.01,0.01,0.01,0.01,0.03};
 double	      relFDUnc_up[ptbinsN] = {0.02,0.01,0.03,0.02,0.03,0.01,0.02};
 
 //double        sysUnc_pPb[ptbinsN] = {1.949626, 1.018353, 0.4938436, 0.1498547, 0.03191447, 0.005496932, 0.0007480437};
+double ptval[ptbinsN];
+double ptvalunc[ptbinsN];
+double ptvalun[ptbinsN];
 
+
+
+void compareData(TString inName, TString outHistName);
 void RpPbnew(TString outName = "$HOME/Work/alice/analysis/RpPb/ratio")
 {
 
@@ -109,7 +115,7 @@ for(int i=0; i<ptbinsN; i++){
             for(int i=0; i<nFiles; i++) {
                 spec[i] = (TH1F*)fproj[i]->Get(Form("%s",histName[i].Data()));
                 spec[i]->Sumw2();
-                spec[i]->SetTitle();
+                spec[i]->SetTitle("");
                 spec[i]->SetLineColor(colors2[i]);
                 spec[i]->SetMarkerColor(colors2[i]);
                 spec[i]->SetMarkerStyle(markers2[i]);
@@ -117,7 +123,7 @@ for(int i=0; i<ptbinsN; i++){
 
                 //specReb[i] = (TH1F*)spec[i]->Rebin(ptbinsN,Form("specReb_%d",i),ptbinsA);
                 specReb[i] = (TH1F*)spec[i]->Clone(Form("specReb_%d",i));
-                specReb[i]->SetTitle();
+                specReb[i]->SetTitle("");
                 specReb[i]->SetLineColor(colors2[i]);
                 specReb[i]->SetMarkerColor(colors2[i]);
                 specReb[i]->SetMarkerStyle(markers2[i]);
@@ -125,9 +131,11 @@ for(int i=0; i<ptbinsN; i++){
                 //specReb[i]->GetXaxis()->SetRangeUser(plotmin,plotmax);
                 Double_t ptval[ptbinsN];
                 Double_t ptvalunc[ptbinsN];
+                Double_t ptvalun[ptbinsN];
                 for(int j=0; j<specReb[i]->GetNbinsX(); j++){
                   ptval[j] = (ptbinsA[j]+ptbinsA[j+1]) / 2.;
                   ptvalunc[j] = (ptbinsA[j+1]-ptbinsA[j]) / 2.;
+                  ptvalun[j] = (ptbinsA[j+1]-ptbinsA[j]) / 6.;
                   double error = specReb[i]->GetBinError(j+1);
                   double value = specReb[i]->GetBinContent(j+1);
                   double relError = error/value;
@@ -182,7 +190,7 @@ for(int i=0; i<ptbinsN; i++){
             specReb[0]->Draw("same");
             leg->Draw("same");
 
-            TPaveText *pt = new TPaveText(0.4,0.7,0.85,0.9,"NB NDC");
+            TPaveText *pt = new TPaveText(0.125,0.7,0.525,0.9,"NB NDC");
             pt->SetBorderSize(0);
             pt->SetFillStyle(0);
             pt->SetTextAlign(13);
@@ -191,7 +199,7 @@ for(int i=0; i<ptbinsN; i++){
             TText *text = new TText;
             text = pt->AddText("ALICE Preliminary");
             text = pt->AddText("pp, p-Pb #sqrt{#it{s}_{NN}} = 5.02 TeV");
-            text = pt->AddText(Form("Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.%d, |#it{#eta}_{lab}^{jet}| < 0.%d",3,6));
+            text = pt->AddText(Form("charged jets, anti-#it{k}_{T}, #it{R} = 0.%d, |#it{#eta}_{lab}^{jet}| < 0.%d",3,6));
             text = pt->AddText(Form ("with D^{0}, %d < #it{p}_{T,D} < %d GeV/#it{c}",3,36));
             pt->Draw();
 
@@ -199,15 +207,18 @@ for(int i=0; i<ptbinsN; i++){
           cspec->SaveAs(Form("%s/%s.png",out.Data(),outHistName.Data()));
 
 
-            TCanvas *cspec2 = new TCanvas("cspec2","cspec2",1000,600);
+           // TCanvas *cspec2 = new TCanvas("cspec2","cspec2",1000,600);
+            TCanvas *cspec2 = new TCanvas("cspec2","cspec2",1000,900);
+cspec2->SetLogx();
 
-                TH1F *hratio = (TH1F*)specReb[1]->Clone( Form("hratio_%d",i));
+                TH1F *hratio = (TH1F*)specReb[1]->Clone( Form("hratio_%d",0));
                 hratio->Divide(specReb[0]);
                 hratio->SetLineStyle(linestyle2[1]);
                 hratio->SetLineColor(colors2[4]);
                 hratio->SetMarkerColor(colors2[4]);
-                hratio->SetLineWidth(2);
+                hratio->SetLineWidth(3);
                 //hratio->GetYaxis()->SetRangeUser(0.,2);
+                //hratio->GetXaxis()->SetRangeUser(0.1,100);
                 hratio->GetYaxis()->SetTitle("R_{pPb}");
 
                 for(int j=0; j<hratio->GetNbinsX(); j++){
@@ -220,12 +231,14 @@ for(int i=0; i<ptbinsN; i++){
 
                 }
 
-                TGraphAsymmErrors *graSys  = new TGraphAsymmErrors(ptbinsN,ptval,sysUnc,ptvalunc,ptvalunc,sysUncErr_do,sysUncErr_up);
-                graSys->SetFillColor(colors2[5]);
-                graSys->SetLineColor(colors2[5]);
+//                TGraphAsymmErrors *graSys  = new TGraphAsymmErrors(ptbinsN,ptval,sysUnc,ptvalunc,ptvalunc,sysUncErr_do,sysUncErr_up);
+                TGraphAsymmErrors *graSys  = new TGraphAsymmErrors(ptbinsN,ptval,sysUnc,ptvalun,ptvalun,sysUncErr_do,sysUncErr_up);
+                //TGraphAsymmErrors *graSys  = new TGraphAsymmErrors(ptbinsN=no of ptbins, ptval=central values of the ptbins, sysUnc=,ptvalunc,ptvalunc,sysUncErr_do,sysUncErr_up);
+                graSys->SetFillColor(kWhite);//colors2[2]);
+                graSys->SetLineColor(colors2[4]);
                 TH1F *Graph_central_syst_unc = new TH1F("Graph_central_syst_unc","",100,4.8,50.2);
                 Graph_central_syst_unc->SetMinimum(0);
-                Graph_central_syst_unc->SetMaximum(2.6);
+                Graph_central_syst_unc->SetMaximum(2.0);
                 Graph_central_syst_unc->SetDirectory(0);
                 Graph_central_syst_unc->SetStats(0);
                 Graph_central_syst_unc->GetXaxis()->SetTitle("#it{p}_{T,ch jet} (GeV/#it{c})");
@@ -236,7 +249,7 @@ for(int i=0; i<ptbinsN; i++){
                 Graph_central_syst_unc->GetYaxis()->SetTitle("R_{pPb}");
                 Graph_central_syst_unc->GetYaxis()->SetLabelFont(42);
                 Graph_central_syst_unc->GetYaxis()->SetLabelSize(0.035);
-                Graph_central_syst_unc->GetYaxis()->SetTitleSize(0.035);
+                Graph_central_syst_unc->GetYaxis()->SetTitleSize(0.045);
                 Graph_central_syst_unc->GetYaxis()->SetTitleFont(42);
                 Graph_central_syst_unc->GetZaxis()->SetLabelFont(42);
                 Graph_central_syst_unc->GetZaxis()->SetLabelSize(0.035);
@@ -244,13 +257,14 @@ for(int i=0; i<ptbinsN; i++){
                 Graph_central_syst_unc->GetZaxis()->SetTitleFont(42);
                 graSys->SetHistogram(Graph_central_syst_unc);
 
-                graSys->Draw("2A");
+                //graSys->Draw("2A");
+                graSys->Draw("5A");
                 hratio->Draw("same");
                 pt->Draw();
 
             TLine *line = new TLine(ptbinsA[0],1,ptbinsA[ptbinsN],1);
             line->SetLineStyle(2);
-            line->SetLineWidth(2);
+            line->SetLineWidth(0);
             line->Draw("same");
 
 
