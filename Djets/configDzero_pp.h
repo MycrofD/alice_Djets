@@ -41,7 +41,8 @@ enum DMesonSpecies {kD0toKpi=0, kDStarD0pi};
     const int     ND = 4;                //-----!  change these numbers based on how many D mesons you analyse in data !
     const int     NDMC = 2;              //-----!  change these numbers based on how many D mesons you analyse in MC !
 
-    const double  sigma_in = 0.0512;       //-----! inelastic x-section in bars
+    //const double  sigma_in = 0.0512;       //-----! inelastic x-section in bars
+    const double  sigma_in = 0.05077;       //-----! inelastic x-section in bars
     const double  nEvScale = 1.063;      //-----! scaling factor from the number of selected events to the number of events needed for the nomrmalization, taken from the D2H normalization counter
     const double  BRDstar = 0.0257;
     const double  BRDzero = 0.0389;
