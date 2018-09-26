@@ -60,7 +60,15 @@ TString histBase = "unfoldedSpectrum"
     xAxis = new double[fptbinsJetFinalN+1];
     for(int k=0; k<fptbinsJetFinalN+1; k++) xAxis[k] = fptbinsJetFinalA[k];
     systuncP = new double[fptbinsJetFinalN];
-    for(int k=0; k<fptbinsJetFinalN; k++) systuncP[k] = 0.15;
+//    for(int k=0; k<fptbinsJetFinalN; k++) systuncP[k] = 0.15;
+//    systuncErr_pp[ptbinsN] = {0.104599235179,0.0886904729946,0.114415907985,0.111763142404,0.15895282319,0.180252600536,0.199602104197};
+systuncP[0]=0.104599235179;
+systuncP[1]=0.0886904729946;
+systuncP[2]=0.114415907985;
+systuncP[3]=0.111763142404;
+systuncP[4]=0.15895282319;
+systuncP[5]=0.180252600536;
+systuncP[6]=0.199602104197;
     sysCutVar = new double[fptbinsJetFinalN];
     for(int k=0; k<fptbinsJetFinalN; k++) sysCutVar[k] = 0.05;
 
@@ -539,7 +547,8 @@ void drawFinal(TString outPlotDir){
    CentralPointsStatisticalUncertainty__1->GetXaxis()->SetLabelSize(0.035);
    CentralPointsStatisticalUncertainty__1->GetXaxis()->SetTitleSize(0.035);
    CentralPointsStatisticalUncertainty__1->GetXaxis()->SetTitleFont(42);
-   CentralPointsStatisticalUncertainty__1->GetYaxis()->SetTitle("#frac{d^{2}#sigma}{d#it{p}_{T}d#it{#eta}} [mb (GeV/#it{c})^{-1}]");
+   //CentralPointsStatisticalUncertainty__1->GetYaxis()->SetTitle("#frac{d^{2}#sigma}{d#it{p}_{T}d#it{#eta}} [mb (GeV/#it{c})^{-1}]");
+   CentralPointsStatisticalUncertainty__1->GetYaxis()->SetTitle("#frac{d^{2}#sigma}{d#it{p}_{T}d#it{#eta}} mb (GeV/#it{c})^{-1}");
    CentralPointsStatisticalUncertainty__1->GetYaxis()->SetLabelFont(43);
    CentralPointsStatisticalUncertainty__1->GetYaxis()->SetLabelSize(22);
    CentralPointsStatisticalUncertainty__1->GetYaxis()->SetTitleSize(26);
@@ -704,7 +713,7 @@ if(isSim){
 
    if(isSys){
 
-     entry=leg->AddEntry("CentralPointsSystematicUncertainty_copy","Syst. Unc. (data)","f");
+     entry=leg->AddEntry("CentralPointsSystematicUncertainty_copy","Syst. unc. (data)","f");
      ci = TColor::GetColor("#cccccc");
      entry->SetFillColor(ci);
      entry->SetFillStyle(1001);
@@ -730,7 +739,7 @@ if(isSim){
      entry->SetMarkerSize(1.2);
      entry->SetTextFont(43);
      if(isSimSys) {
-       entry=leg->AddEntry("theorySyst_copy","Syst. Unc. (theory)","f");
+       entry=leg->AddEntry("theorySyst_copy","Syst. unc. (theory)","f");
        entry->SetFillColor(1);
        entry->SetLineColor(ci);
        entry->SetLineStyle(1);
@@ -751,11 +760,11 @@ if(isSim){
    pt->SetTextSize(22);
    //TText *text = pt->AddText("ALICE Preliminary");
    TText *text = new TText;
-//   text = pt->AddText("ALICE Preliminary");
+   text = pt->AddText("ALICE Preliminary");
    if(fSystem) text = pt->AddText("p-Pb, #sqrt{#it{s}_{NN}} = 5.02 TeV");
    else text = pt->AddText("pp, #sqrt{#it{s}} = 5.02 TeV");
-   text = pt->AddText(Form("Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.%d, |#it{#eta}_{lab}^{jet}| < 0.%d",Rpar,9-Rpar));
-   text = pt->AddText(Form ("with D^{0}, %d < #it{p}_{T,D} < %d GeV/#it{c}",(int)fptbinsDA[0],(int)fptbinsDA[fptbinsDN]));
+   text = pt->AddText(Form("charged jets, anti-#it{k}_{T}, #it{R} = 0.%d, |#it{#eta}_{lab}^{jet}| < 0.%d",Rpar,9-Rpar));
+   text = pt->AddText(Form ("with D^{0}, %d < #it{p}_{T,D^{0}} < %d GeV/#it{c}",(int)fptbinsDA[0],(int)fptbinsDA[fptbinsDN]));
    pt->Draw();
 
    // does nothing
