@@ -30,7 +30,7 @@ TString histName[nFiles] = {
 
 TString desc[nFiles] = {
   "pp, #sqrt{#it{s}} = 5.02 TeV (scaled by A)",
-  "p-Pb, #sqrt{#it{s}_{NN}} = 5.02 TeV,  y_{#rm{cms NN}} = 0.465"
+  "p-Pb, #sqrt{#it{s}_{NN}} = 5.02 TeV,  y_{NN} = 0.465"
 };
 
 const int     ptbinsN = 7;
@@ -44,7 +44,8 @@ double        sysUnc_pp[ptbinsN];
 //{0.0105,0.007425,0.01265,0.01205,0.024825,0.03205,0.0394}
 //double        sysUncErr_pp[ptbinsN] = {0.114,0.10,0.11,0.12,0.17,0.19,0.20};
 ////{0.0130,0.009925,0.01315,0.01455,0.027325,0.03455,0.0419}
-double        sysUncErr_pp[ptbinsN] = {0.104599235179,0.0886904729946,0.114415907985,0.111763142404,0.15895282319,0.180252600536,0.199602104197};
+//double        sysUncErr_pp[ptbinsN] = {0.104599235179,0.0886904729946,0.114415907985,0.111763142404,0.15895282319,0.180252600536,0.199602104197};//norm Lum included
+double        sysUncErr_pp[ptbinsN] = {0.104599395179,0.0886906329946,0.114416067985,0.111763302404,0.15895298319,0.180252760536,0.199602264197};//with BR 0.04% incl
 //{0.010941,0.007866,0.013091,0.012491,0.025266,0.032491,0.039841}
 double        sysUnc[ptbinsN];
 double        sysUncErr[ptbinsN];
@@ -100,7 +101,7 @@ void compareData(TString inName, TString outHistName)
    cspec->SetTicky(1);
 
 
-            TLegend *leg = new TLegend(0.35,0.58,0.82,0.68);
+            TLegend *leg = new TLegend(0.33,0.58,0.82,0.68);
             leg->SetBorderSize(0);
 
             TH1F *spec[nFiles];
@@ -187,7 +188,7 @@ leg->SetTextSize(0.035);
             specReb[0]->Draw("same");
             leg->Draw("same");
 
-            TPaveText *pt = new TPaveText(0.35,0.72,0.82,0.88,"NB NDC");
+            TPaveText *pt = new TPaveText(0.33,0.72,0.82,0.88,"NB NDC");
             pt->SetBorderSize(0);
             pt->SetFillStyle(0);
             pt->SetTextAlign(13);
