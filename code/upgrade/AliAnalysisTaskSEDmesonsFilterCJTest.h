@@ -1,5 +1,5 @@
-#ifndef ALIANALYSISTASKSEDMESONSFILTERCJTEST_H
-#define ALIANALYSISTASKSEDMESONSFILTERCJTEST_H
+#ifndef AliAnalysisTaskSEDmesonsFilterCJTest_H
+#define AliAnalysisTaskSEDmesonsFilterCJTest_H
 /**************************************************************************
  * Copyright(c) 1998-2009, ALICE Experiment at CERN, All rights reserved. *
  *                                                                        *
@@ -36,9 +36,9 @@ class AliAODRecoCascadeHF;
 class AliAODRecoDecayHF2Prong;
 class AliAODRecoDecay;
 class AliStack;
-class AliGenEventHeader;
+class AliNormalizationCounter;
 
-class AliAnalysisTaskSEDmesonsFilterCJTest : public AliAnalysisTaskEmcal
+class AliAnalysisTaskSEDmesonsFilterCJTest : public AliAnalysisTaskEmcal 
 {
 
  public:
@@ -46,7 +46,7 @@ class AliAnalysisTaskSEDmesonsFilterCJTest : public AliAnalysisTaskEmcal
   enum ECandidateType{ kD0toKpi, kDstartoKpipi };
   enum EParticleOrigin { kQuarkNotFound, kFromCharm, kFromBottom };
   enum EDecayChannel { kDecayOther, kDecayD0toKpi, kDecayDStartoKpipi };
-
+  
   AliAnalysisTaskSEDmesonsFilterCJTest();
   AliAnalysisTaskSEDmesonsFilterCJTest(const Char_t* name,AliRDHFCuts* cuts,ECandidateType candtype);
   virtual ~AliAnalysisTaskSEDmesonsFilterCJTest();
@@ -66,9 +66,18 @@ class AliAnalysisTaskSEDmesonsFilterCJTest : public AliAnalysisTaskEmcal
   // set MC RM or eff
   void   SetBuildRMEff(Bool_t theRM)   { fBuildRMEff = theRM 	; }
   Bool_t GetBuildRMEff() const         { return fBuildRMEff    	; }
-
+  
   void   SetUsePythia(Bool_t theUsePythia) 	{ fUsePythia = theUsePythia	; }
   Bool_t GetUsePythia() const 			{ return fUsePythia		; }
+  
+  void   SetUseMultPythia(Bool_t theUseMultPythia) 	{ fMultPythiaHeader = theUseMultPythia	; }
+  Bool_t GetUseMultPythia() const 			{ return fMultPythiaHeader		; }
+  
+  void SetUsePythiaWithBkg(Bool_t theUsePythiaWithBkg)	{ fUsePythiaWithBkg = theUsePythiaWithBkg; }
+  Bool_t GetUsePythiaWithBkg() const					{ return fUsePythiaWithBkg; }
+  
+  void SetUseHijing(Bool_t theUseHijing)	{ fUseHijing = theUseHijing; }
+  Bool_t GetUseHijing() const				{ return fUseHijing;	 }
 
   // set track fraction rejection for JES systematics
   void SetJESsys(Bool_t c) 		{ fUseRejTracks = c	; }
@@ -88,6 +97,9 @@ class AliAnalysisTaskSEDmesonsFilterCJTest : public AliAnalysisTaskEmcal
 
   void   SetAnalysedCandidate(Int_t c)     { fAnalyseCand = c             ; }
   Int_t  GetAnalysedCandidate() const      { return fAnalyseCand          ; }
+  
+  void SetPythiaEvent(Int_t c)				{ fPythiaEvent = c				;}
+  Int_t GetPythiaEvent() const				{ return fPythiaEvent			;}
 
   void   SetRejectQuarkNotFound(Bool_t c)  { fRejectQuarkNotFound = c     ; }
   Bool_t GetRejectQuarkNotFound() const    { return fRejectQuarkNotFound  ; }
@@ -97,13 +109,13 @@ class AliAnalysisTaskSEDmesonsFilterCJTest : public AliAnalysisTaskEmcal
 
   void   SetKeepOnlyDfromB(Bool_t c)       { fKeepOnlyDfromB = c          ; }
   Bool_t GetKeepOnlyDfromB() const         { return fKeepOnlyDfromB       ; }
-
+ 
   void SetMassLimits(Double_t range, Int_t pdg);
   void SetMassLimits(Double_t lowlimit, Double_t uplimit);
 
   // Array of D0 width for the Dstar
   Bool_t SetD0WidthForDStar(Int_t nptbins, Float_t *width);
-
+  
   Float_t DeltaR(AliVParticle *p1, AliVParticle *p2) const;
 
   static Double_t AddDaughters(AliAODRecoDecay* cand, TObjArray& daughters);
@@ -113,16 +125,15 @@ class AliAnalysisTaskSEDmesonsFilterCJTest : public AliAnalysisTaskEmcal
   static Int_t CheckOrigin(AliAODMCParticle* part, TClonesArray* mcArray); // AOD
   static Int_t CheckOrigin(AliAODRecoDecay* cand, AliStack* stack); // ESD
   static Int_t CheckOrigin(Int_t ipart, AliStack* stack); // ESD
-
+  
   static Int_t CheckDecayChannel(AliAODMCParticle* part, TClonesArray* mcArray); // AOD
   static Int_t CheckDecayChannel(Int_t ipart, AliStack* stack); // ESD
-
+  
   void GetTrackPrimaryGenerator(AliAODTrack *track,AliAODMCHeader *header,TClonesArray *arrayMC,TString &nameGen);
-  AliGenEventHeader* GetMCTrackPrimaryGenerator(AliAODMCParticle *track,AliAODMCHeader *header,TClonesArray *arrayMC,TString &nameGen);
-  AliGenEventHeader* GetHeader(Int_t label, AliAODMCHeader* header);
+  void GetMCTrackPrimaryGenerator(AliAODMCParticle *track,AliAODMCHeader *header,TClonesArray *arrayMC,TString &nameGen);
   Bool_t IsTrackInjected(AliAODTrack *track,AliAODMCHeader *header,TClonesArray *arrayMC);
   Bool_t IsMCTrackInjected(AliAODMCParticle *track,AliAODMCHeader *header,TClonesArray *arrayMC);
-
+  Bool_t IsCandidateInjected(AliAODRecoDecayHF *cand, AliAODMCHeader *header,TClonesArray *arrayMC);
 
  protected:
   void ExecOnce();
@@ -133,33 +144,38 @@ class AliAnalysisTaskSEDmesonsFilterCJTest : public AliAnalysisTaskEmcal
   void FillDstarSideBands(AliAODRecoCascadeHF* dstar);
   void AddEventTracks(TClonesArray* coll, AliParticleContainer* tracks);
   void AddMCEventTracks(TClonesArray* coll, AliParticleContainer* mctracks);
+  
 
-
-  Bool_t          fUseMCInfo;              //  Use MC info
-  Bool_t 	  fBuildRMEff;		   //  MC RM or efficiency studies
-  Bool_t 	  fUsePythia;		   //  Use Pythia info only for MC
-  Bool_t	  fUseRejTracks;	   //  Reject tracks for JES systematics
-  Double_t	  fTrackIneff;		   //  Tracking inefficiency for JES systematics
+  Bool_t          	fUseMCInfo;              //  Use MC info
+  Bool_t 	  		fBuildRMEff;		   	//  MC RM or efficiency studies
+  Bool_t 	  		fUsePythia;		   		//  Use Pythia info only for MC
+  Bool_t			fMultPythiaHeader;		// Use Pythia info only, with multiple Pythia events per one MB event
+  Bool_t			fUsePythiaWithBkg;		// Use Pythia part of the sim, but with D bkg
+  Bool_t			fUseHijing;				// Use only Hijing info for MC
+  Bool_t	  		fUseRejTracks;	   		//  Reject tracks for JES systematics
+  Double_t	  		fTrackIneff;		   //  Tracking inefficiency for JES systematics
   Bool_t          fUseReco;                //  use reconstructed tracks when running on MC
   UInt_t          fCandidateType;          //  Dstar or D0
   TString         fCandidateName;          //  Dstar or D0
   Int_t           fPDGmother;              //  PDG code of D meson
-  Int_t           fNProngs;                //  number of prong of the decay channel
+  Int_t           fNProngs;                //  number of prong of the decay channel  
   Int_t           fPDGdaughters[4];        //  PDG codes of daughters
   Float_t         fSigmaD0[30];            //  D0 sigma for Dstar
   TString         fBranchName;             //  AOD branch name
-  AliRDHFCuts    *fCuts;                   //  cuts
+  AliRDHFCuts    *fCuts;                   //  cuts 
   Double_t        fMinMass;                //  mass lower limit histogram
   Double_t        fMaxMass;                //  mass upper limit histogram
   Bool_t          fInhibitTask;            //
   Bool_t          fCombineDmesons;         //  create an additional collection with D meson candidates and the rest of the tracks (for jet finding)
   Bool_t          fMultCand;               //  In case of multiple candidates per event
   Int_t           fAnalyseCand;            //  Number of the candidate to be analysed
+  Int_t 			fPythiaEvent;			// Pythia event to be analysed, for MC with more than one Pythia event
   Bool_t          fRejectQuarkNotFound;    //  reject D mesons for which the original charm or bottom quark could not be found (MC)
   Bool_t          fRejectDfromB;           //  reject D mesons coming from a B meson decay (MC)
   Bool_t          fKeepOnlyDfromB;         //  only accept D mesons coming from a B meson decay (MC)
   AliAODEvent    *fAodEvent;               //!
   AliAODMCHeader *fMCHeader;		   //!
+  AliNormalizationCounter *fCounter;       //! AliNormalizationCounter
   TRandom3	 *fRan;			   //! Random number generator
   TClonesArray   *fArrayDStartoD0pi;       //!
   TClonesArray   *fMCarray;                //!
@@ -168,6 +184,7 @@ class AliAnalysisTaskSEDmesonsFilterCJTest : public AliAnalysisTaskEmcal
   TClonesArray   *fCombinedDmesons;        //! contains candidates selected by AliRDHFCuts and the rest of the event tracks
   TClonesArray   *fCombinedDmesonsBkg;     //! contains bkg candidates selected by AliRDHFCuts and the rest of the event tracks
   TClonesArray   *fMCCombinedDmesons;      //! contains MC D0 and MC event particles
+  TString			fGenName;				//! MC generator name for D
   Int_t           fNCand;                  //! number of selected D candidates already added to fCandidateArray
   Int_t           fNSBCand;                //! number of selected side-band D candidates already added to fSideBandArray
   TH1            *fHistStat;               //!
@@ -200,16 +217,11 @@ class AliAnalysisTaskSEDmesonsFilterCJTest : public AliAnalysisTaskEmcal
   TH2            *fHistDeltaRDpiR;         //!
   TH2            *fHistDeltaRDKR;          //!
 
-  TH2 *fHistEtaPt;  //!
-  TH1 *fHistNtrk;   //!
-  TH1 *fHistNtrkHijing; //!
-  TH1 *fHistNtrkPythia; //!
-
 
  private:
-
+  
   AliAnalysisTaskSEDmesonsFilterCJTest(const AliAnalysisTaskSEDmesonsFilterCJTest &source);
-  AliAnalysisTaskSEDmesonsFilterCJTest& operator=(const AliAnalysisTaskSEDmesonsFilterCJTest& source);
+  AliAnalysisTaskSEDmesonsFilterCJTest& operator=(const AliAnalysisTaskSEDmesonsFilterCJTest& source); 
 
   ClassDef(AliAnalysisTaskSEDmesonsFilterCJTest, 7); // task for selecting D mesons to be used as an input for D-Jet correlations
 };
