@@ -118,8 +118,6 @@ void AddTasksFlavourJetMyMCHijing(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...
     //gROOT->LoadMacro("$ALICE_PHYSICS/PWGJE/EMCALJetTasks/macros/AddTaskRhoSparse.C");
     //gROOT->LoadMacro("$ALICE_PHYSICS/PWGJE/EMCALJetTasks/macros/AddTaskLocalRho.C");
 
-
-    //In Pb-Pb there are no events with more than 5 candidates. For pp or p-Pb this number is probably smaller
     for(Int_t i=0; i<15  ; i++)
     {
 
