@@ -29,56 +29,73 @@
 #include "RooUnfoldBinByBin.h"*/
 
 
-    TH1D *fHEff_prompt, *fHEff_nprompt;
-    TH1D *fHPowhegDPrompt, *fHPowhegDNonPrompt;
-    TH1D *fHPowhegPrompt, *fHPowhegNonPrompt;
+    TString OUTDIRECTORY="/home/basia/Work/alice/analysis/upgradeProjections/results/";
+    TString OUTDIRECTORYPLOTS="/home/basia/Work/alice/analysis/upgradeProjections/results/plots/";
+
+    TString fFileSignal_prompt = "/home/basia/Work/alice/analysis/upgradeProjections/out/AnalysisResults_charm";
+    TString fFileSignalBkg_prompt = "/home/basia/Work/alice/analysis/upgradeProjections/out/AnalysisResults_charmBkg";
+    TString fFileBkg = "/home/basia/Work/alice/analysis/upgradeProjections/out/AnalysisResults_Hijing.root";
 
     TString fFileEff_prompt = "/home/basia/Work/alice/analysis/upgradeProjections/out/AnalysisResults_charm";
     TString fFileEff_nprompt = "/home/basia/Work/alice/analysis/upgradeProjections/out/AnalysisResults_beauty";
 
-    TString fFileSignal_prompt = "/home/basia/Work/alice/analysis/upgradeProjections/out/AnalysisResults_charm";
-    TString fFileBkg = "/home/basia/Work/alice/analysis/upgradeProjections/out/AnalysisResults_hijingbis1.root";
-
-    TString fSMBBin = "_1.root";
-
     TString fFilePowhegPrompt = "/home/basia/Work/alice/analysis/upgradeProjections/out/POWHEG_charm_central.root";
     TString fFilePowhegNonPrompt = "/home/basia/Work/alice/analysis/upgradeProjections/out/POWHEG_beautyEvGen_central.root";
+
+    TString         fSMBBin = "_1.root";
+    Bool_t            fIsHBEffWeighting = 1;
+    Double_t        fHBrejection = 2;
+    TString         fOutNamePostfix = "testW6";
+    Int_t             findex = 2;
+
 
     //TString fFilePowhegPrompt = "/media/basia/Disk2/Work/Djets/POWHEGSimulations/fastSim_pp5TeV/RAW_CHARM_POWHEG.root";
     //TString fFilePowhegNonPrompt = "/media/basia/Disk2/Work/Djets/POWHEGSimulations/fastSim_pp5TeV/AnalysisResults_FastSim_powheg+pythia6_beauty_150593961473.root";
 
+    TH1D *fHEff_prompt, *fHEff_nprompt;
+    TH1D *fHPowhegDPrompt, *fHPowhegDNonPrompt;
+    TH1D *fHPowhegPrompt, *fHPowhegNonPrompt;
+    TH1D *fHJetPtSpecrum;
+    TH1D *fHSB;
+    TF1 *fSBfun;
 
-    TString OUTDIRECTORY="/home/basia/Work/alice/analysis//home/basia/Work/alice/analysis/upgradeProjections";
-
-    double fHBWeightsC[6], fHBWeightsB[6];
-    bool fIsHBins;
-
-    const double    fDataLum = 10E9;      // Luminosity 10nb-1
+    const double    fDataLum = 10e9;      // Luminosity 10nb-1
     const double    fSigmaIn = 0.7750;       // Sigma inelastic in bars (7.775b), for 10% centrality
     double          fDataEv = fDataLum*fSigmaIn;         // Number of events
     const double    BRDstar = 0.0257;
     const double    BRDzero = 0.0389;
     const int       APb = 208;
-    const double    Taa = 23.2; // in mb-1
-    double          *fRaac, *fRaaB;
+    const double    Taa = 23.2; // in mb-1, for 0-10%
     double          fSimScalingC = BRDzero*Taa;
     double          fSimScalingB = BRDzero*Taa;
+    double          *fRaaC, *fRaaB;
+    double          *fSB;
+
+    const int       fHardBinsN = 6;
+    double          fHBWeightsC[5], fHBWeightsB[5];
+    int             fHardBinsMin[5] = {5,11,21,36,57};
+    int             fHardBinsMax[5] = {11,21,36,57,200};
+    bool            fIsHBins;
 
     //====== D pT bins ---- set up your D pT bins ======
-    const int     fPtbinsDN = 13;
-    double        fPtbinsDA[fPtbinsDN+1] = { 1,2,3,4,5,6,7,8,10,12,16,24,36,50 };
+    const int       fPtbinsDN = 12;
+    double          fPtbinsDA[fPtbinsDN+1] = { 1,2,3,4,5,6,8,10,12,16,24,36,50 };
+    //const int       fPtbinsDN = 9;
+    //double          fPtbinsDA[fPtbinsDN+1] = { 4,5,6,8,10,12,16,24,36,50 };
+    //const int       fPtbinsDN = 20;
+    //double          fPtbinsDA[fPtbinsDN+1] = { 1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,18,20,24,30,36,50 };
   //  const int     fPtbinsDN = 9;
 //    double        fPtbinsDA[fPtbinsDN+1] = { 1,2,3,4,5,6,7,8,10,24};
     //====== jet pT bins ---- set up your jet pT bins ======
-    const int     fPtbinsJetTrueN = 9;
-    double        fPtbinsJetTrueA[fPtbinsJetTrueN+1] = { 3,4,5,6,8,10,14,20,30,50 };
-    const int     fPtbinsJetMeasN = 9;
-    double        fPtbinsJetMeasA[fPtbinsJetMeasN+1] = { 3,4,5,6,8,10,14,20,30,50 };
-    const int     fPtbinsJetFinalN = 9;
-    double        fPtbinsJetFinalA[fPtbinsJetFinalN+1] = { 3,4,5,6,8,10,14,20,30,50 };
+    const int       fPtbinsJetTrueN = 9;
+    double          fPtbinsJetTrueA[fPtbinsJetTrueN+1] = { 3,4,5,6,8,10,14,20,30,50 };
+    const int       fPtbinsJetMeasN = 11;
+    double          fPtbinsJetMeasA[fPtbinsJetMeasN+1] = { 3,4,5,6,8,10,14,20,30,50,70,100 };
+    const int       fPtbinsJetFinalN = 9;
+    double          fPtbinsJetFinalA[fPtbinsJetFinalN+1] = { 3,4,5,6,8,10,14,20,30,50 };
     //====== z range ---- set up your min, max z ======
-    double        fZmin = -2, fZmax = 2.; // for D-jet pT spectrum
-    double        fJetptmin = 0, fJetptmax = 100;
+    double          fZmin = -2, fZmax = 2.; // for D-jet pT spectrum
+    double          fJetptmin = 0, fJetptmax = 100;
 
     // ============ Prepare your config ==============
     int           fSystem = 0;            //-----! 0: pp, 1: p-Pb, Pb-Pb -- set up system
@@ -99,7 +116,13 @@
     Float_t       minf = 1.71, maxf = 2.1;           //-----! min/mass of the inv. mass distributions
     Int_t         fRebinMass = 2;                    //-----! rebining of the inv. mass distributions
 
-    Int_t fColors[] = {1,2,8,4,kOrange-1,6,kGray+1,kCyan+1,kMagenta+2,kGreen+3,kViolet+5,kYellow+2};
+
+	Int_t colors2[] = {kBlue+1,kGreen+2,kOrange+1,kViolet+1,kGray+2,kMagenta+2,kYellow+2,kCyan+1,4,6,8};
+	Int_t markers2[] = {20,21,22,23,24,25,26,27,28,29,30,32,33,34};
+	Int_t linestyle2[] = {1,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+
+
+    Int_t fColors[] = {1,2,kViolet+5,kGreen+2,kBlue+2,kOrange-1,6,kGray+1,kCyan+1,kMagenta+2,kGreen-1,kYellow+2};
     Int_t fMarkers[] = {20,21,22,23,24,25,26,27,28,29,30,32,33,34};
 
 
