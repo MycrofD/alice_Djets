@@ -117,8 +117,6 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
     //gROOT->LoadMacro("$ALICE_PHYSICS/PWGJE/EMCALJetTasks/macros/AddTaskRhoSparse.C");
     //gROOT->LoadMacro("$ALICE_PHYSICS/PWGJE/EMCALJetTasks/macros/AddTaskLocalRho.C");
 
-
-    //In Pb-Pb there are no events with more than 5 candidates. For pp or p-Pb this number is probably smaller
     for(Int_t i=0; i<15  ; i++)
     {
 
@@ -131,14 +129,16 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
         filter->SetMultipleCandidates(kTRUE); //Analyse one candidate per event
         filter->SetAnalysedCandidate(i); //Number of the candidate that will be analysed (0 = first candidate)
 
-        if(isPrompt){
+        if(bPythia) {
+			if(isPrompt){
                 filter->SetRejectDfromB(kTRUE);
                 filter->SetKeepOnlyDfromB(kFALSE);
-        }
-        else{
+			}
+			else{
                 filter->SetRejectDfromB(kFALSE);
                 filter->SetKeepOnlyDfromB(kTRUE);
-        }
+			}
+		}
 
         filter->SetBuildRMEff(bRMEff);
         filter->SetUsePythia(bPythia);
@@ -196,11 +196,11 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
         TString AKTJet = "AKTJet";
         AKTJet += TaskText;
 
-        AliEmcalJetTask *taskFJDandTracks = AddTaskEmcalJet(DcandAndTracks,"",1,aRadius[0],AliJetContainer::kChargedJet,0.15,0.30,0.005,1,AKTJet,0.,kFALSE,kFALSE);
+        AliEmcalJetTask *taskFJDandTracks = AddTaskEmcalJet(DcandAndTracks,"",1,aRadius[0],AliJetContainer::kFullJet,0.15,0.30,0.005,1,AKTJet,0.,kFALSE,kFALSE);
         //taskFJDandTracks->SelectCollisionCandidates(uTriggerMask);
 
         //Generated level jets. No pT>0.15 GeV/c cut should be applied here!
-		AliEmcalJetTask *taskFJMCDandTracks = AddTaskEmcalJet(MCDcandAndTracks,"",1,aRadius[0],AliJetContainer::kChargedJet,0.0,0.0,0.005,1,AKTJet,0.,kFALSE,kFALSE);
+		AliEmcalJetTask *taskFJMCDandTracks = AddTaskEmcalJet(MCDcandAndTracks,"",1,aRadius[0],AliJetContainer::kFullJet,0.0,0.0,0.005,1,AKTJet,0.,kFALSE,kFALSE);
         //taskFJMCDandTracks->SelectCollisionCandidates(uTriggerMask);
 
 	/*
