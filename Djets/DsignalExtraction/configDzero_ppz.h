@@ -28,12 +28,12 @@
 #include "RooUnfoldSvd.h"
 #include "RooUnfoldBinByBin.h"*/
 
-enum DMesonSpecies {kD0toKpi=0, kDStarD0pi};
+enum DMesonSpecies {kD0toKpi, kDStarD0pi};
 
     // ========================== Prepare your config ============================================
     int           fSystem = 0;            //-----! 0: pp, 1: p-Pb, Pb-Pb -- set up system
     TString       fSystemS = "pp, #sqrt{#it{s}} = 5.02 TeV";
-    DMesonSpecies fDmesonSpecie = 0;
+    DMesonSpecies fDmesonSpecie = kD0toKpi;
     TString       fDmesonDsc = "Dzero";
     TString       fDmesonS = "D^{0}";
     const double  fRpar = 0.3;           //-----! jet R parameter for your studies (the one that you use in your jet finder!)
