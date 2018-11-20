@@ -1,4 +1,4 @@
-void AddTasksFlavourJetMyMCHijing(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
+void AddTasksFlavourJetMyMCHijingRC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
    const TString sCutFile = "cutsHF/D0toKpiCutsppRecVtxNoPileupRejNoEMCAL.root",
    const Double_t dJetPtCut   = 0.,
    const Double_t dJetAreaCut = 0.,
@@ -16,6 +16,7 @@ void AddTasksFlavourJetMyMCHijing(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...
    const Bool_t bPythiaBkg = kFALSE,
    const Bool_t bHijing = kFALSE,
    const Bool_t isPrompt = kTRUE,
+   const Bool_t bLeadHFJet = kFALSE,
    TString sText="",/*completes the name of the candidate task lists*/
    Bool_t doBkg = kFALSE
    )
@@ -109,7 +110,7 @@ void AddTasksFlavourJetMyMCHijing(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...
     //D meson filtering task
     gROOT->LoadMacro("AddTaskSEDmesonsFilterCJ.C");
     //D-jet correlation task
-    gROOT->LoadMacro("AddTaskDFilterAndCorrelations.C");
+    gROOT->LoadMacro("AddTaskDFilterAndCorrelationsRC.C");
 
     //Jet task
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGJE/EMCALJetTasks/macros/AddTaskEmcalJet.C");
@@ -118,7 +119,7 @@ void AddTasksFlavourJetMyMCHijing(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...
     //gROOT->LoadMacro("$ALICE_PHYSICS/PWGJE/EMCALJetTasks/macros/AddTaskRhoSparse.C");
     //gROOT->LoadMacro("$ALICE_PHYSICS/PWGJE/EMCALJetTasks/macros/AddTaskLocalRho.C");
 
-    for(Int_t i=0; i<15  ; i++)
+    for(Int_t i=0; i<1  ; i++)
     {
 
         TString TaskText = sText;
@@ -220,7 +221,7 @@ void AddTasksFlavourJetMyMCHijing(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...
         rhotask->SetVzRange(-10,10);
 
         //For Data. Comment this part if you run on Monte Carlo
-        AliAnalysisTaskFlavourJetCorrelationsTest *CorrTask = AddTaskDFilterAndCorrelations(
+        AliAnalysisTaskFlavourJetCorrelationsRC *CorrTask = AddTaskDFilterAndCorrelationsRC(
                                                                                          iCandType,
                                                                                          sCutFile,
                                                                                          bIsMC,
@@ -238,12 +239,14 @@ void AddTasksFlavourJetMyMCHijing(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...
                                                                                          dJetPtCut,
                                                                                          acctype,
                                                                                          dJetAreaCut,
-                                                                                         AliAnalysisTaskFlavourJetCorrelationsTest::kConstituent);
+                                                                                         AliAnalysisTaskFlavourJetCorrelationsRC::kConstituent);
         //Flag to build the Response Matrix
         CorrTask->SetBuildResponseMatrix(bRM);
         CorrTask->SetBuildResponseMatrixEff(bRMEff);
         //if to use only Pythia tracks for MC
         CorrTask->SetUsePythia(bPythia);
+        CorrTask->SetUseHFJet(kTRUE);
+		CorrTask->SetHFLeadJet(bLeadHFJet);
 
         //Container with generated level particles and D meson instead of the daughters
         AliMCParticleContainer *MCpartCont  = CorrTask->AddMCParticleContainer(MCDcandAndTracks);
