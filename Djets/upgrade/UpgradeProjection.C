@@ -12,10 +12,14 @@ int fraabin = 0;
 
 void Init() {
 
+
+  fOutFile = new TFile(Form("%s/D0jets.root",OUTDIRECTORY.Data()),"RECREATE");
   fIsHBins = true;
   fIsHBEffWeighting = true; //this is for efficiencies
   fHBrejection = 1.;
   findex = 2; // reject the 2 HB for the eff calculation (introduces flucutations)
+  
+  fBRaaSys = 0;
 
   fJetptmin = 0;
   fJetptmax = 100;
@@ -25,62 +29,24 @@ void Init() {
   fSB = new double[fPtbinsDN];
   for(int i=0;i<fPtbinsDN;i++) fSB[i] = sigBkg[i];
 
-/* Raa_C
-1.600710299340438, 0.9361111111111113
-2.5680703534584826, 0.8472222222222225
-3.5214780991036694, 0.5750000000000004
-4.542322002367664, 0.38888888888888906
-5.445416878065279, 0.255555555555556
-6.478521900896329, 0.23055555555555607
-7.3913411128023, 0.2250000000000001
-8.973025536952477, 0.20833333333333393
-11.043252156265854, 0.21111111111111125
-14.149543378995428, 0.22777777777777786
-20.058346017250123, 0.2694444444444448
-29.98752748181971, 0.33888888888888924
-43.14265178420428, 0.39722222222222237
-*/
-/*
-1.490693739424704, 1.0557873253440786
-2.4720812182741128, 1.0929844575854308
-3.506627185561195, 1.042076159575767
-4.494829855235947, 0.9115762787749808
-5.5171084790374145, 0.7845157313889322
-7.050526414739613, 0.6111070408940522
-8.992855799962399, 0.5133346125444087
-11.003337093438615, 0.46539617748472195
-14.002021056589586, 0.44675167605723876
-20.20384470765181, 0.4713357870927599
-29.745111863132166, 0.5151051569650134
-39.86567023876668, 0.5898517859530994
-*/
 
+	double raaC[] = { 0.936, 0.847, 0.575, 0.389, 0.256, 0.250, 0.208, 0.211, 0.228, 0.270, 0.339, 0.397 };
+	//double raaB[] = { 1.0557873253440786, 1.0929844575854308, 1.042076159575767, 0.9115762787749808, 0.7845157313889322, 0.6111070408940522, 0.5133346125444087, 0.46539617748472195, 0.44675167605723876, 0.4713357870927599, 0.5151051569650134, 0.5898517859530994 };
+	double raaB[] = { 1.05579, 1.09298, 0.80102, 0.50297, 0.40265, 0.33480, 0.30200, 0.30200, 0.30163, 0.32003, 0.37617, 0.397 };
+	double raaBSys[] = { 1.05579, 1.09298, 0.92563, 0.56527, 0.45412, 0.36730, 0.32909, 0.32909, 0.32330, 0.34711, 0.40867, 0.4295 };
 
-double raaC[] = { 0.936, 0.847, 0.575, 0.389, 0.256, 0.250, 0.208, 0.211, 0.228, 0.270, 0.339, 0.397 };
-double raaB[] = { 1.0557873253440786,
-1.0929844575854308,
-1.042076159575767,
-0.9115762787749808,
-0.7845157313889322,
-0.6111070408940522,
-0.5133346125444087,
-0.46539617748472195,
-0.44675167605723876,
-0.4713357870927599,
-0.5151051569650134,
-0.5898517859530994 };
-
-
- 
+	int raa = 2;
   fRaaC = new double[fPtbinsDN];
   fRaaB = new double[fPtbinsDN];
+  fRaaBSys = new double[fPtbinsDN];
   for(int i=0;i<fPtbinsDN;i++){
-    fRaaC[i] = raaC[i];
-    fRaaB[i] = raaB[i];
+    fRaaC[i] = raaC[i+raa];
+    fRaaB[i] = raaB[i+raa];
+    fRaaBSys[i] = raaBSys[i+raa];
   }
 
   double weightC[5] = { 6.67666666666666675E+00,4.26666666666666694E-01,3.57000000000000026E-02,3.90000000000000025E-03,6.32666666666666685E-04 };
-  double weightB[5] = { 6.68333333333333357E+00,4.26666666666666694E-01,3.56999999999999956E-02,3.89666666666666677E-03,6.27000000000000062E-04};
+  double weightB[5] = { 6.68333333333333357E+00,4.26666666666666694E-01,3.56999999999999956E-02,3.89666666666666677E-03,6.27000000000000062E-04 };
   for(int i=0; i<5; i++){
     fHBWeightsC[i] = weightC[i];
     fHBWeightsB[i] = weightB[i];
@@ -90,30 +56,36 @@ double raaB[] = { 1.0557873253440786,
 
 void UpgradeProjection() {
 
-  gStyle->SetOptStat(0000); //Mean and RMS shown
+    gStyle->SetOptStat(0000);
 	gSystem->Exec(Form("mkdir -p %s/plots",OUTDIRECTORY.Data()));
 
     Init();
+    
+   // getRM(fFileEff_prompt);
+   // return;
+    
+	getRaa();
+	getSB();
+	getEfficiencies();
+	getPowhegDmesonSpectra();
+	getPowhegDJetSpectra();
+	 
+	fHJetPtSpectrum = (TH1D*)extractSignal(); // rebined spectrum
+    // subtract B FD contribution
+	//subtractFD();
+	FDsys_POWHEG();
+	
+	//unfold();
+	
+	//unfoldBkgFluc();
+	
+  if(fIsHBins) getMCJetPt(fFileSignal_prompt);
 
+  
+	fOutFile->Close();
   //runAllEff();
   //return;
 
-	getRaa();
-	getSB();
-  
-	getEfficiencies();
-  
-	getPowhegDmesonSpectra();
-	fHJetPtSpecrum = (TH1D*)extractSignal();
-
-  if(fIsHBins) getMCJetPt(fFileSignal_prompt);
-
-return;
-
-  // get POWHEG D-jet x-sections
-  fHPowhegPrompt = getPowhegJetSpectra(fFilePowhegPrompt);
-  fHPowhegNonPrompt = getPowhegJetSpectra(fFilePowhegNonPrompt,0);
-  TH1D *hPowhegNonPromptScaled = getPowhegJetSpectra(fFilePowhegNonPrompt,0,1);
 
 return;
 }
@@ -121,7 +93,7 @@ return;
 TH1* extractSignal() {
 
 
-	 TFile *ofile = new TFile(Form("%s/D0jets.root",OUTDIRECTORY.Data()),"RECREATE");
+  
 
   TCanvas *cmass = new TCanvas("cmass","cmass",1800,1800);
   cmass->Divide(4,3);
@@ -160,11 +132,14 @@ TH1* extractSignal() {
   TH1D *h_tmp = new TH1D("h_tmp","h_tmp",fPtbinsDN,fPtbinsDA);
   h_tmp->SetLineColor(0);
   h_tmp->SetMarkerColor(0);
+  h_tmp->SetMarkerSize(0);
 
   setHistoDetails(hSB,kGreen+2,21,0.9);
 
   TString signalFile = fFileSignal_prompt;
   if(!fIsHBins) signalFile += fSMBBin;
+  TString signalFDFile = fFileSignal_nonprompt;
+  if(!fIsHBins) signalFDFile += fSMBBin;
   TString signalBkgFile = fFileSignalBkg_prompt;
   if(!fIsHBins) signalBkgFile += fSMBBin;
 
@@ -177,16 +152,17 @@ TH1* extractSignal() {
       double effNP = GetContent(fHEff_nprompt,pt);
       double sigP = GetContent(fHPowhegDPrompt,pt) * fSimScalingC * fRaaC[i+fraabin] * effP * fDataEv;
       double sigNP = GetContent(fHPowhegDNonPrompt,pt) * fSimScalingB * fRaaB[i+fraabin] * effNP * fDataEv;
-
+	  double signalScale = sigP+sigNP;
+	  //signalScale = sigP;
       // inv. mass
       TH1D *hhsignal = (TH1D*)getInvMass(signalFile,fPtbinsDA[i],fPtbinsDA[i+1],1);
       hhsignal->Rebin(fRebinMass);
       hhsignal->GetXaxis()->SetRangeUser(1.71,2.1);
+      hhsignal->Scale(1./hhsignal->Integral());
+      hhsignal->Scale(sigP);
+      
       setHistoDetails(hhsignal,kRed+2,20,0.6);
       hhsignal->SetTitle(Form("%.1lf < p_{T}^{%s} < %.1lf",fPtbinsDA[i],fDmesonS.Data(),fPtbinsDA[i+1]));
-      // scale to the POWHEG predictions (prompt + non-prompt expected yields)
-      hhsignal->Scale(1./hhsignal->Integral());
-      hhsignal->Scale(sigP+sigNP);
       for(int k=0; k<hhsignal->GetNbinsX();k++){
         hhsignal->SetBinError(k+1,TMath::Sqrt(hhsignal->GetBinContent(k+1)));
       }
@@ -220,14 +196,26 @@ TH1* extractSignal() {
       pad->SetLogy();
       hhPt->DrawCopy();
 
+	  hhPt->Scale(1./hhPt->Integral());
+      hhPt->Scale(sigP);
+      
+	  TH1D *hhPt_FD = (TH1D*) getJetPt(signalFDFile,fPtbinsDA[i],fPtbinsDA[i+1],massmin,massmax,1);
+      setHistoDetails(hhPt_FD,4,20,0.7);
+      hhPt_FD->GetXaxis()->SetRangeUser(0,100);
+      hhPt_FD->Scale(1./hhPt_FD->Integral());
+      hhPt_FD->Scale(sigNP);
+      
+      hhPt->Add(hhPt_FD);
       // scale to the expected yields
       TH1D *hPt = (TH1D*)hhPt->Clone("hPt");
       hPt->Sumw2();
+      
+      //hPt->Scale(1./hPt->Integral());
+      //hPt->Scale(signalScale);
+      
       setHistoDetails(hPt,2,25,0.7);
       hPt->SetTitle(Form("%.1lf < p_{T}^{%s} < %.1lf",fPtbinsDA[i],fDmesonS.Data(),fPtbinsDA[i+1]));
       hPt->GetYaxis()->SetTitle("dN");
-      hPt->Scale(1./hPt->Integral());
-      hPt->Scale(sigP+sigNP);
       hPt->SetMinimum(1);
       for(int k=1; k<=hPt->GetNbinsX();k++){
         hPt->SetBinError(k,TMath::Sqrt(hPt->GetBinContent(k)));
@@ -238,8 +226,8 @@ TH1* extractSignal() {
       double sb;
       if(pt>6) sb = fSBfun->Eval(pt);
       else sb = GetContent(fHSB,pt);
-      //bkg = (sigP+sigNP)/fSB[i];
-      bkg = (sigP+sigNP)/sb;
+      //bkg = signalScale/fSB[i];
+      bkg = signalScale/sb;
       // get bkg jet pT shape, scale to bkg under the signal
       TH1D *hBkgPt1 = (TH1D*)getJetPt(signalBkgFile,fPtbinsDA[i],fPtbinsDA[i+1],sbmin1,sbmax1,1);
       TH1D *hBkgPt2 = (TH1D*)getJetPt(signalBkgFile,fPtbinsDA[i],fPtbinsDA[i+1],sbmin2,sbmax2,1);
@@ -258,7 +246,7 @@ TH1* extractSignal() {
       for(int k=1; k<=hhPt->GetNbinsX();k++){
         hBkgPt->SetBinError(k,TMath::Sqrt(hBkgPt->GetBinContent(k+1)));
       }
-      hSB->SetBinContent(i+1,(sigP+sigNP)/bkg);
+      hSB->SetBinContent(i+1,signalScale/bkg);
 
       TH1D *hTotalPt = (TH1D*)hPt->Clone("hTotalPt");
       hTotalPt->Add(hBkgPt);
@@ -403,7 +391,7 @@ TH1* extractSignal() {
 
   cSB->cd();
   cSB->SetLogy();
-  hSB->GetXaxis()->SetTitle("p_{T, D^{0}}");
+  hSB->GetXaxis()->SetTitle("p_{T,D^{0}}");
   hSB->GetYaxis()->SetTitle("S/B");
   hSB->Draw();
 
@@ -412,29 +400,41 @@ TH1* extractSignal() {
   hJetPt->SetTitle();
   hJetPt->GetYaxis()->SetTitle("dN");
   hJetPt->Draw();
+  
+  TH1D* hPromptSim = (TH1D*)fHPowhegPromptRaa->Clone("hPromptSim");
+  hPromptSim->Sumw2();
+  hPromptSim->Scale(fDataEv*fSimScalingC);
+  setHistoDetails(hPromptSim,kGreen+1,26,1.2);
+  //hPromptSim->Draw("same");
 
   setHistoDetails(hJetPtRebin,2,21,1.2);
   hJetPtRebin->SetTitle();
   TH1D *hJetPtRebinScale = (TH1D*)hJetPtRebin->Clone("hJetPtRebinScale");
   hJetPtRebinScale->Scale(1,"width");
-  hJetPtRebinScale->SetMinimum(1);
+  //hJetPtRebinScale->SetMinimum(1);
   hJetPtRebinScale->GetYaxis()->SetTitle("dN/dp_{T}");
+
+	TH1D* hPromptSimScale = (TH1D*)hPromptSim->Rebin(fPtbinsJetMeasN,"hPromptSimScale",fPtbinsJetMeasA);
+	hPromptSimScale->Scale(1,"width");
 
   cJetPtReb->cd();
   cJetPtReb->SetLogy();
   hJetPtRebinScale->Draw();
+  //hPromptSimScale->DrawCopy("same");
   
    TH1D *hjetptspectrumRebUnc = (TH1D*)hJetPtRebin->Clone("hjetptspectrumRebUnc");
    hjetptspectrumRebUnc->GetYaxis()->SetTitle("Rel. unc.");
 
       for(int mm=1; mm<=hJetPtRebin->GetNbinsX();mm++){
                   double err;
-                  if(hJetPtRebinScale->GetBinContent(mm)) err = hJetPtRebin->GetBinError(mm)/hJetPtRebin->GetBinContent(mm);
+                  if(hJetPtRebin->GetBinContent(mm)) err = hJetPtRebin->GetBinError(mm)/hJetPtRebin->GetBinContent(mm);
                   else err = 0;
                   hjetptspectrumRebUnc->SetBinContent(mm,err);
                   hjetptspectrumRebUnc->SetBinError(mm,0);
       }
       
+      
+      fHJetPtSpectrumUnc = (TH1D*)hjetptspectrumRebUnc->Clone("fHJetPtSpectrumUnc");
       
     hjetptspectrumRebUnc->SetMarkerColor(kBlue+2);
     hjetptspectrumRebUnc->SetLineColor(kBlue+2);
@@ -447,34 +447,230 @@ TH1* extractSignal() {
     cJetPtRebUncLog->cd();
 	cJetPtRebUncLog->SetLogy();
 	hjetptspectrumRebUnc->DrawCopy();
-
-	ofile->cd();
-	hJetPtRebin->Write();
-	hJetPtRebinScale->Write();
-	hjetptspectrumRebUnc->Write();
-	ofile->Close();
+	
 
   SaveCanvas(cmass, Form("%s/invMass_signal",OUTDIRECTORYPLOTS.Data()));
   SaveCanvas(cmassbkg, Form("%s/invMass_bkg",OUTDIRECTORYPLOTS.Data()));
   SaveCanvas(cSB, Form("%s/SigOverBkg",OUTDIRECTORYPLOTS.Data()));
-  SaveCanvas(cJetPt, Form("%s/JetSpectra_eff",OUTDIRECTORYPLOTS.Data()));
-  SaveCanvas(cJetPtReb, Form("%s/JetSpectra",OUTDIRECTORYPLOTS.Data()));
-  SaveCanvas(cJetPtRebUnc, Form("%s/JetSpectraUnc",OUTDIRECTORYPLOTS.Data()));
-  SaveCanvas(cJetPtRebUncLog, Form("%s/JetSpectraUncLog",OUTDIRECTORYPLOTS.Data()));
+  SaveCanvas(cJetPt, Form("%s/JetSpectrum_eff",OUTDIRECTORYPLOTS.Data()));
+  SaveCanvas(cJetPtReb, Form("%s/JetSpectrum",OUTDIRECTORYPLOTS.Data()));
+  SaveCanvas(cJetPtRebUnc, Form("%s/JetSpectrumUnc",OUTDIRECTORYPLOTS.Data()));
+  SaveCanvas(cJetPtRebUncLog, Form("%s/JetSpectrumUncLog",OUTDIRECTORYPLOTS.Data()));
   TString canvasname[] = { "POWHEGspectrum", "jetSpectra_DptBins0", "jetSpectra_DptBins", "jetSpectraSignal_DptBins","jetSpectra_DptBins0_reb","jetSpectra_DptBins_reb","jetSpectra_DptBins_reb_eff","jetSpectraSignal_DptBins_reb_eff"}
   for(int i=0;i<ncanvas;i++) {
     SaveCanvas(cpt[i], Form("%s/%s",OUTDIRECTORYPLOTS.Data(),canvasname[i].Data()));
   }
 
+
+	fOutFile->cd();
+	hJetPtRebin->Write();
+	hJetPtRebinScale->Write();
+	hjetptspectrumRebUnc->Write();
+	
   return hJetPtRebin;
+}
+
+
+void subtractFD() {
+	
+
+	
+	TH1D* hFD = (TH1D*)fHPowhegNonPromptEffScaledRaa->Rebin(fPtbinsJetMeasN,"hFD",fPtbinsJetMeasA);
+	hFD->Sumw2();
+	hFD->Scale(fDataEv*fSimScalingB);
+	
+	TH1D* hPromptSim = (TH1D*)fHPowhegNonPromptRaa->Rebin(fPtbinsJetMeasN,"hPromptSim",fPtbinsJetMeasA);
+	hPromptSim->Sumw2();
+	hPromptSim->Scale(fDataEv*fSimScalingC);
+	TH1D *hPromptSimScale = (TH1D*)hPromptSim->Clone("hPromptSimScale");
+	hPromptSimScale->Scale(1,"width");
+	
+	fHJetPtSpectrumPrompt = (TH1D*)fHJetPtSpectrum->Clone("fHJetPtSpectrumPrompt");
+	fHJetPtSpectrumPrompt->Sumw2();
+	fHJetPtSpectrumPrompt->Add(hFD,-1);
+	
+	setHistoDetails(fHJetPtSpectrumPrompt,kRed+1,20,1.2);
+	
+	TH1D *hFDScaled = (TH1D*)hFD->Clone("hFD");
+	hFDScaled->Scale(1,"width");
+	TH1D *hPt = (TH1D*)fHJetPtSpectrum->Clone("hPt");
+	hPt->Scale(1,"width");
+	TH1D *hPtPrompt = (TH1D*)fHJetPtSpectrumPrompt->Clone("hPtPrompt");
+	hPtPrompt->Scale(1,"width");
+	
+	setHistoDetails(hFDScaled,kBlue+1,21,1.2);
+	setHistoDetails(hPromptSimScale,kGreen,26,1.2);
+	setHistoDetails(hPt,kGreen+2,25,1.2);
+	
+	TCanvas *cspectrum = new TCanvas("cspectrum","cspectrum",1200,800);
+	cspectrum->SetLogy();
+	hPt->DrawCopy();
+	hPtPrompt->DrawCopy("same");
+	hFDScaled->DrawCopy("same");
+	hPromptSimScale->DrawCopy("same");
+	
+	SaveCanvas(cspectrum, Form("%s/jetSpectrumPrompt",OUTDIRECTORYPLOTS.Data()));
+
+return;	
+}
+
+TH1* FDsys_POWHEG() {
+	
+  TLegend *leg2 = new TLegend(0.6,0.55,0.85,0.75,"POWHEG,eff-Raa scaled");
+  leg2->SetTextSize(0.045);
+  leg2->SetBorderSize(0);
+  leg2->AddEntry(fHPowhegPromptEffScaledRaa,"prompt","p");
+  leg2->AddEntry(fHPowhegNonPromptEffScaledRaa,"non-prompt","p");
+  TCanvas *cPow_scaled = new TCanvas("cPow_scaled","cPow_scaled",1200,800);
+  cPow_scaled->SetLogy();
+  fHPowhegPromptEffScaledRaa->DrawCopy();
+  fHPowhegNonPromptEffScaledRaa->DrawCopy("same");
+  leg2->Draw("same");
+  
+  SaveCanvas(cPow_scaled, Form("%s/POWHEG_Djet_effRaaScaled",OUTDIRECTORYPLOTS.Data()));
+  
+  TH1D *hPowheg = (TH1D*)fHPowhegPromptEffScaledRaa->Clone("hPowheg");
+  hPowheg->Sumw2();
+  hPowheg->Add(fHPowhegNonPromptEffScaledRaa);
+  TH1D *hFDratio = (TH1D*)fHPowhegNonPromptEffScaledRaa->Clone("hFDratio");
+  hFDratio->Sumw2();
+  hFDratio->Divide(hPowheg);
+  
+  hFDratio->GetYaxis()->SetRangeUser(0,0.5);
+  hFDratio->GetYaxis()->SetTitle("POWHEG, FD fraction");
+  setHistoDetails(hFDratio,kBlue-1,20,1.2);
+  
+  TCanvas *cRatio = new TCanvas("cRatio","cRatio",1200,800);
+  hFDratio->DrawCopy();
+  
+  SaveCanvas(cRatio, Form("%s/POWHEG_Djet_effRaaScaled_ratio",OUTDIRECTORYPLOTS.Data()));
+  
+  //rebin
+    
+  TH1D *hPowhegFD_reb = (TH1D*)fHPowhegNonPromptEffScaledRaa->Rebin(fPtbinsJetMeasN,"hPowhegFD_reb",fPtbinsJetMeasA);
+  hPowhegFD_reb->Sumw2();
+  TH1D *hPowheg_reb = (TH1D*)fHPowhegPromptEffScaledRaa->Rebin(fPtbinsJetMeasN,"hPowheg_reb",fPtbinsJetMeasA);
+  hPowheg_reb->Sumw2();
+  hPowheg_reb->Add(hPowhegFD_reb);
+  TH1D *hFDratio_reb = (TH1D*)hPowhegFD_reb->Clone("hFDratio_reb");
+  hFDratio_reb->Sumw2();
+  hFDratio_reb->Divide(hPowheg_reb);
+  
+  hFDratio_reb->GetYaxis()->SetRangeUser(0,0.5);
+  hFDratio_reb->GetYaxis()->SetTitle("POWHEG, FD fraction");
+  setHistoDetails(hFDratio_reb,kBlue+1,20,1.2);
+  
+  TCanvas *cRatio_reb = new TCanvas("cRatio_reb","cRatio_reb",1200,800);
+  hFDratio_reb->DrawCopy("H");
+  
+  
+   //systematics
+  
+  //fHPowhegNonPromptEffScaledRaa_powhegSys
+  //fHPowhegNonPromptEffScaledRaa_RaaSys
+  
+  TH1D *hPowhegFD_reb_powhegSys = (TH1D*)fHPowhegNonPromptEffScaledRaa_powhegSys->Rebin(fPtbinsJetMeasN,"hPowhegFD_reb_powhegSys",fPtbinsJetMeasA);
+  hPowhegFD_reb_powhegSys->Scale(1.4);
+  hPowhegFD_reb_powhegSys->Sumw2();
+  TH1D *hPowheg_reb_powhegSys = (TH1D*)fHPowhegPromptEffScaledRaa->Rebin(fPtbinsJetMeasN,"hPowheg_reb_powhegSys",fPtbinsJetMeasA);
+  hPowheg_reb_powhegSys->Sumw2();
+  hPowheg_reb_powhegSys->Add(hPowhegFD_reb_powhegSys);
+  TH1D *hFDratio_reb_powhegSys = (TH1D*)hPowhegFD_reb_powhegSys->Clone("hFDratio_reb_powhegSys");
+  hFDratio_reb_powhegSys->Sumw2();
+  hFDratio_reb_powhegSys->Divide(hPowheg_reb_powhegSys);
+  
+  hFDratio_reb_powhegSys->GetYaxis()->SetRangeUser(0,0.5);
+  hFDratio_reb_powhegSys->GetYaxis()->SetTitle("POWHEG, FD fraction");
+  setHistoDetails(hFDratio_reb_powhegSys,kBlue-1,20,1.2,2,3);
+  
+  hFDratio_reb_powhegSys->DrawCopy("Hsame");
+  
+  
+  //TH1D *hPowhegFD_reb_RaaSys = (TH1D*)fHPowhegNonPromptEffScaledRaa->Rebin(fPtbinsJetMeasN,"hPowhegFD_reb_RaaSys",fPtbinsJetMeasA);
+  //hPowhegFD_reb_RaaSys->Scale(1./3.);
+  TH1D *hPowhegFD_reb_RaaSys = (TH1D*)fHPowhegNonPromptEffScaledRaa_RaaSys->Rebin(fPtbinsJetMeasN,"hPowhegFD_reb_RaaSys",fPtbinsJetMeasA);
+  hPowhegFD_reb_RaaSys->Sumw2();
+  TH1D *hPowheg_reb_RaaSys = (TH1D*)fHPowhegPromptEffScaledRaa->Rebin(fPtbinsJetMeasN,"hPowheg_reb_RaaSys",fPtbinsJetMeasA);
+  hPowheg_reb_RaaSys->Sumw2();
+  hPowheg_reb_RaaSys->Add(hPowhegFD_reb_RaaSys);
+  TH1D *hFDratio_reb_RaaSys = (TH1D*)hPowhegFD_reb_RaaSys->Clone("hFDratio_reb_RaaSys");
+  hFDratio_reb_RaaSys->Sumw2();
+  hFDratio_reb_RaaSys->Divide(hPowheg_reb_RaaSys);
+  
+  hFDratio_reb_RaaSys->GetYaxis()->SetRangeUser(0,0.5);
+  hFDratio_reb_RaaSys->GetYaxis()->SetTitle("POWHEG, FD fraction");
+  setHistoDetails(hFDratio_reb_RaaSys,kBlue-1,20,1.2,3,3);
+  
+  hFDratio_reb_RaaSys->DrawCopy("Hsame");
+  
+  TLegend *leg = new TLegend(0.5,0.7,0.7,0.85,"POWHEG,FD fraction");
+  leg->SetTextSize(0.035);
+  leg->SetBorderSize(0);
+  leg->AddEntry(hFDratio_reb,"central","pl");
+  leg->AddEntry(hFDratio_reb_powhegSys,"POWHEG syst","pl");
+  leg->AddEntry(hFDratio_reb_RaaSys,"R_{AA}^{b}=R_{AA}^{c}","pl");
+  leg->Draw("same");
+  
+  SaveCanvas(cRatio_reb, Form("%s/POWHEG_Djet_effRaaScaled_ratio_reb",OUTDIRECTORYPLOTS.Data()));
+  
+  
+  // final systematics
+  
+  TH1D *hSys_powheg = (TH1D*)hFDratio_reb_powhegSys->Clone("hSys_powheg");
+  TH1D *hSys_Raa = (TH1D*)hFDratio_reb_RaaSys->Clone("hSys_powheg");
+  hSys_Raa->SetName("hSys_Raa");
+  hSys_powheg->SetName("hSys_powheg");
+  
+  for(int i=1; i<fPtbinsJetMeasN+1; i++) {
+	
+	hSys_powheg->SetBinContent(i,TMath::Abs(hFDratio_reb->GetBinContent(i) - hFDratio_reb_powhegSys->GetBinContent(i)) );
+	hSys_powheg->SetBinError(i,0);
+	
+	hSys_Raa->SetBinContent(i,TMath::Abs(hFDratio_reb->GetBinContent(i) - hFDratio_reb_RaaSys->GetBinContent(i)) );
+	hSys_Raa->SetBinError(i,0);
+  }
+  
+  hSys_powheg->Scale(100);
+  hSys_Raa->Scale(100);
+  
+  hSys_powheg->GetYaxis()->SetRangeUser(0,16);
+  hSys_powheg->GetYaxis()->SetTitle("B feed-down systematic (%)");
+  hSys_powheg->GetXaxis()->SetTitle("p_{T,ch. jet} (GeV/c)");
+  
+  TCanvas *cSys = new TCanvas("cSys","cSys",1200,800);
+  hSys_powheg->DrawCopy("H");
+  hSys_Raa->DrawCopy("Hsame");
+  
+  TLegend *legSys = new TLegend(0.35,0.7,0.65,0.85,"POWHEG,FD sys spectrum");
+  legSys->SetTextSize(0.035);
+  legSys->SetBorderSize(0);
+  legSys->AddEntry(hFDratio_reb,"central","pl");
+  legSys->AddEntry(hFDratio_reb_powhegSys,"POWHEG syst","pl");
+  legSys->AddEntry(hFDratio_reb_RaaSys,"R_{AA}^{b} unc","pl");
+  legSys->Draw("same");
+  
+  
+   SaveCanvas(cSys, Form("%s/POWHEG_Djet_sys",OUTDIRECTORYPLOTS.Data()));
+
+	fOutFile->cd();
+	hFDratio_reb->Write();
+	hFDratio_reb_powhegSys->Write();
+	hFDratio_reb_RaaSys->Write();
+	hSys_powheg->Write();
+	hSys_Raa->Write();
+	
+	
+	return hFDratio_reb;
 }
 
 void getPowhegDmesonSpectra() {
 
-  fHPowhegDPrompt = (TH1D*)getPowhegDSpectra(fFilePowhegPrompt);  // get D x-section from POWHEG
+  TH1D *hh_tmp = (TH1D*)getPowhegDSpectra(fFilePowhegPrompt,1);  // get D x-section from POWHEG
+  fHPowhegDPrompt = (TH1D*)hh_tmp->Rebin(fPtbinsDN,"fHPowhegDPrompt",fPtbinsDA);
   if(!fHPowhegDPrompt) { cout << "\n!!!Prompt D POWHEG spectrum not extracted !!!" << endl; return; }
   setHistoDetails(fHPowhegDPrompt,2,20,1.2);
-  fHPowhegDNonPrompt = (TH1D*)getPowhegDSpectra(fFilePowhegNonPrompt,0);  // get non-prompt D x-section from POWHEG
+  hh_tmp = (TH1D*)getPowhegDSpectra(fFilePowhegNonPrompt,0);  // get non-prompt D x-section from POWHEG
+  fHPowhegDNonPrompt = (TH1D*)hh_tmp->Rebin(fPtbinsDN,"fHPowhegDNonPrompt",fPtbinsDA);
   if(!fHPowhegDNonPrompt) { cout << "\n!!! Non-Prompt D POWHEG spectrum not extracted !!!" << endl; return; }
   setHistoDetails(fHPowhegDNonPrompt,4,25,1.2);
 
@@ -493,8 +689,74 @@ void getPowhegDmesonSpectra() {
   hPowhegRatio->GetYaxis()->SetRangeUser(0,0.5);
   TCanvas *cpr = new TCanvas();
   hPowhegRatio->Draw();
+  
 
 }
+
+void getPowhegDJetSpectra(){
+	
+  fHPowhegPrompt = (TH1D*)getPowhegJetSpectra(fFilePowhegPrompt,1,0,0,0);
+  fHPowhegPromptEffScaled = (TH1D*)getPowhegJetSpectra(fFilePowhegPrompt,1,1,0,0);
+  fHPowhegPromptEffScaledRaa = (TH1D*)getPowhegJetSpectra(fFilePowhegPrompt,1,1,0,1);
+  fHPowhegPromptRaa = (TH1D*)getPowhegJetSpectra(fFilePowhegPrompt,1,0,0,1);
+  
+  fHPowhegNonPrompt = (TH1D*)getPowhegJetSpectra(fFilePowhegNonPrompt,0,0,0,0);
+  fHPowhegNonPromptEffScaled = (TH1D*)getPowhegJetSpectra(fFilePowhegNonPrompt,0,1,0,0);
+  fHPowhegNonPromptEffScaledRaa = (TH1D*)getPowhegJetSpectra(fFilePowhegNonPrompt,0,1,0,1);
+  fHPowhegNonPromptEffRatioScaledRaa = (TH1D*)getPowhegJetSpectra(fFilePowhegNonPrompt,0,0,1,1);  
+  
+  fHPowhegNonPromptEffScaledRaa_powhegSys = (TH1D*)getPowhegJetSpectra(fFilePowhegPrompt_sys,0,1,0,1);
+  fHPowhegNonPromptEffScaledRaa_RaaSys = (TH1D*)getPowhegJetSpectra(fFilePowhegNonPrompt,0,1,0,1,1);
+  
+  
+  setHistoDetails(fHPowhegPrompt,kRed+1,20,1.2);
+  setHistoDetails(fHPowhegPromptEffScaledRaa,kRed+1,20,1.2);
+  setHistoDetails(fHPowhegNonPrompt,kBlue+1,21,1.2);
+  setHistoDetails(fHPowhegNonPromptEffScaled,kBlue+1,21,1.2);
+  setHistoDetails(fHPowhegNonPromptEffScaledRaa,kBlue+1,21,1.2);
+  
+  fHPowhegPrompt->GetXaxis()->SetTitle("p_{T,ch jet}");
+  fHPowhegPromptEffScaled->GetXaxis()->SetTitle("p_{T,ch jet}");
+  fHPowhegPromptEffScaledRaa->GetXaxis()->SetTitle("p_{T,ch jet}");
+  fHPowhegPromptRaa->GetXaxis()->SetTitle("p_{T,ch jet}");
+  fHPowhegNonPrompt->GetXaxis()->SetTitle("p_{T,ch jet}");
+  fHPowhegNonPromptEffScaled->GetXaxis()->SetTitle("p_{T,ch jet}");
+  fHPowhegNonPromptEffScaledRaa->GetXaxis()->SetTitle("p_{T,ch jet}");
+  fHPowhegNonPromptEffRatioScaledRaa->GetXaxis()->SetTitle("p_{T,ch jet}");
+  
+  
+  TLegend *leg = new TLegend(0.6,0.55,0.85,0.75);
+  leg->SetTextSize(0.045);
+  leg->SetBorderSize(0);
+  leg->AddEntry(fHPowhegPrompt,"prompt","p");
+  leg->AddEntry(fHPowhegNonPrompt,"non-prompt","p");
+  //leg->AddEntry(fHPowhegNonPromptEffScaled,"non-prompt, eff. scaled","p");
+  
+  TCanvas *cPow = new TCanvas("cPow","cPow",1200,800);
+  cPow->SetLogy();
+  fHPowhegPrompt->DrawCopy();
+  fHPowhegNonPrompt->DrawCopy("same");
+  //fHPowhegNonPromptEffScaled->DrawCopy("same");
+  //fHPowhegNonPromptEffScaledRaa->DrawCopy("same");
+  leg->Draw("same");
+  
+  SaveCanvas(cPow, Form("%s/POWHEG_Djet",OUTDIRECTORYPLOTS.Data()));
+  
+
+  TH1D *hPowheg = (TH1D*)fHPowhegPrompt->Clone("hPowheg");
+  hPowheg->Sumw2();
+  hPowheg->Add(fHPowhegNonPrompt);
+  TH1D *hFDratio = (TH1D*)fHPowhegNonPrompt->Clone("hFDratio");
+  hFDratio->Sumw2();
+  hFDratio->Divide(hPowheg);
+  hFDratio->GetYaxis()->SetRangeUser(0,1);
+  
+  TCanvas *cRatio = new TCanvas("cRatio","cRatio",1200,800);
+  hFDratio->DrawCopy();
+  
+  SaveCanvas(cRatio, Form("%s/POWHEG_Djet_FDratio",OUTDIRECTORYPLOTS.Data()));
+  
+ }
 
 TH1* getInvMass(TString data, double ptmin, double ptmax, int isSignal=1){
 
@@ -730,29 +992,7 @@ TH1* getEfficiency (TString file, TFile *ofile, bool isprompt=1) {
             else {
               hMC->Add(hhMC);
               hreco->Add(hhreco);
-            }
-          
-/*	
-            for(int k=1; k<hMC->GetNbinsX()+1;k++) {
-              //if(hMC->GetBinCenter(k)>fHardBinsMax[j-2]*4){
-              if(hMC->GetBinContent(k)<3){
-                if(hMC->GetBinContent(k)){
-                  hMC->SetBinContent(k,0);
-                  hMC->SetBinError(k,0);
-                }
-              }
-            }
-            for(int k=1; k<hreco->GetNbinsX()+1;k++) {
-              //if(hreco->GetBinCenter(k)>fHardBinsMax[j-2]*4){
-              if(hreco->GetBinContent(k)<3){
-                if(hreco->GetBinContent(k)){
-                  hreco->SetBinContent(k,0);
-                  hreco->SetBinError(k,0);
-                }
-              }
-            }
-*/
-				
+            }			
 		
 		
         }
@@ -930,6 +1170,418 @@ return hEff_reb;
 
 }
 
+
+void unfoldBkgFluc() {
+	
+	
+	gSystem->Load("$HOME/Work/alice/RooUnfold-1.1.1/libRooUnfold.so");
+	//int kreg = 10;
+	
+	TString histName = "histosD0UpgradeN";
+	TFile *File = new TFile(Form("%s",fFileBkg.Data()),"read");
+    if(!File) { cout << "==== WRONG FILE WITH DATA =====" << endl; return;}
+    TDirectoryFile* dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
+    TH1D *hh;
+    for(int i=0;i<5; i++){
+        TList *histList =  (TList*)dir->Get(Form("%s%dMCrec",histName.Data(),i));
+        THnSparseF *sparse = (THnSparseF*)histList->FindObject("hsDphiz");
+        //sparse->GetAxis(5)->SetRangeUser(fZmin,fZmax);
+        //sparse->GetAxis(2)->SetRangeUser(ptmin,ptmax);    // D meson pT range
+        if(i==0) hh=(TH1D*)sparse->Projection(1);
+        else hh->Add((TH1D*)sparse->Projection(1));
+      }
+	
+	TH1D*  hinput = (TH1D*) fHPowhegPrompt->Clone("hinput");
+	TH1D* priorhisto = (TH1D*) fHPowhegPrompt->Clone("priorhisto");
+	//priorhisto->Rebin(2);
+	TH1D* priorhisto_reco = (TH1D*) hh->Clone("priorhisto_reco");
+	
+	TF1 *PriorFunction = new TF1("PriorFunction","[0]* pow(x,-[1]) * exp(-[1]*[2]/x)",3,100);
+	priorhisto->Fit(PriorFunction, "MRN","",3,100);
+	PriorFunction->SetLineColor(2);
+
+	
+	RooUnfoldResponse response; // (120, -20.0, 100.0);
+	response.Setup (80, 0, 80, 100, -20, 80);
+	RooUnfoldResponse response_trans; // (120, -20.0, 100.0);
+	response_trans.Setup (100, -20, 80, 80, 0, 80);
+	
+	TH2D *hRM = new TH2D("hRM","hRM",120,-20,100,120,-20,100);
+	
+	Int_t sampling = 10000000;
+	for (Int_t i= 0; i<sampling; i++) {
+		//Double_t xt = gRandom->BreitWigner (0.3, 2.5);
+		Double_t xt = PriorFunction->GetRandom();
+		Double_t xsmear = gRandom->Gaus(0.664,7.6912);
+		Double_t x = xt + xsmear;
+		response_trans.Fill(x,xt);
+		response.Fill(xt,x);
+		hRM->Fill(xt,x);
+		
+	}
+	hRM->Scale(1./(sampling));
+	
+	TH1D *hmeas = (TH1D*)hRM->ProjectionX();
+	hmeas->SetMarkerColor(4);
+	hmeas->SetLineColor(4);
+	
+	TH1D *htrue = (TH1D*)hRM->ProjectionY();
+	htrue->SetMarkerColor(2);
+	htrue->SetLineColor(2);
+	
+	TCanvas *c = new TCanvas;
+	c->SetLogy();
+	//priorhisto->Draw();
+	htrue->Draw();
+	PriorFunction->Draw("same");
+	hmeas->Draw("same");
+	
+	TCanvas *c2 = new TCanvas;
+	c2->SetLogz();
+	hRM->Draw("colz2");
+	
+	
+	 RooUnfold::ErrorTreatment errorTreatment = RooUnfold::kCovariance;
+	 Int_t kReg = 5;
+	 
+	 //RooUnfoldBayes   unfold (&response, fHPowhegPrompt, kReg);
+	 RooUnfoldSvd   unfold (&response, fHPowhegPrompt, kReg);
+	 TH1D* hReco = (TH1D*) unfold.Hreco();
+	 hReco->SetMarkerColor(kGreen+1);
+	 hReco->SetLineColor(kGreen+1);
+	 
+	 TH1D *folded = (TH1D*)hReco->Clone("folded");
+	 //RooUnfoldBayes   refold (&response_trans, folded, kReg);
+	 RooUnfoldSvd   refold (&response_trans, folded, kReg);
+	 TH1D* hRefolded = (TH1D*) refold.Hreco();
+	 hRefolded->SetMarkerColor(kBlue+1);
+	 hRefolded->SetLineColor(kBlue+1);
+	 
+	
+	 
+	TH2D *fPearsonCoeffs = getPearsonCoeffs( unfold.Ereco(RooUnfold::kCovariance) );
+	fPearsonCoeffs->SetName(Form("PearsonCoeffs%d",kReg));
+	fPearsonCoeffs->GetZaxis()->SetRangeUser(-1,1);
+	
+	TH2D *fPearsonCoeffs_ref = getPearsonCoeffs( refold.Ereco(RooUnfold::kCovariance) );
+	fPearsonCoeffs_ref->SetName(Form("PearsonCoeffs%d",kReg));
+	fPearsonCoeffs_ref->GetZaxis()->SetRangeUser(-1,1);
+	
+	
+	
+	
+	TH1D *hUncTrue = (TH1D*)fHPowhegPrompt->Clone("hUncTrue");
+	hUncTrue->GetYaxis()->SetTitle("Rel. unc.");
+
+      for(int mm=1; mm<=hUncTrue->GetNbinsX();mm++){
+                  double err;
+                  if(fHPowhegPrompt->GetBinContent(mm)) err = fHPowhegPrompt->GetBinError(mm)/fHPowhegPrompt->GetBinContent(mm);
+                  else err = 0;
+                  hUncTrue->SetBinContent(mm,err);
+                  hUncTrue->SetBinError(mm,0);
+      }
+      
+      TH1D *hUncRef = (TH1D*)hRefolded->Clone("hUncTrue");
+	  hUncRef->GetYaxis()->SetTitle("Rel. unc.");
+
+      for(int mm=1; mm<=hUncRef->GetNbinsX();mm++){
+                  double err;
+                  if(hRefolded->GetBinContent(mm)) err = hRefolded->GetBinError(mm)/hRefolded->GetBinContent(mm);
+                  else err = 0;
+                  hUncRef->SetBinContent(mm,err);
+                  hUncRef->SetBinError(mm,0);
+      }
+      
+      TH1D *hUncFold = (TH1D*)hReco->Clone("hUncFold");
+	  hUncFold->GetYaxis()->SetTitle("Rel. unc.");
+
+      for(int mm=1; mm<=hUncFold->GetNbinsX();mm++){
+                  double err;
+                  if(hReco->GetBinContent(mm)) err = hReco->GetBinError(mm)/hReco->GetBinContent(mm);
+                  else err = 0;
+                  hUncFold->SetBinContent(mm,err);
+                  hUncFold->SetBinError(mm,0);
+      }
+      
+     
+       hReco->GetXaxis()->SetTitle("p_{T, ch. jet}");
+	 hReco->SetMaximum(fHPowhegPrompt->GetMaximum()*2);
+	 hinput->SetMarkerSize(0.8);
+	 
+	TLegend *leg = new TLegend(0.2,0.3,0.4,0.5);
+	leg->SetBorderSize(0);
+	leg->SetFillStyle(0);
+	leg->AddEntry(hinput, "input","l");
+	leg->AddEntry(hReco, "folded","l");
+	leg->AddEntry(hRefolded, "re-folded","l");
+	 
+       TCanvas *cun = new TCanvas();
+	 cun->SetLogy();
+	
+	 hReco->Draw();
+	 hinput->Draw("same");
+	 hRefolded->Draw("same");
+	 leg->Draw("same");
+	 
+	 TCanvas *c = new TCanvas;
+	fPearsonCoeffs->Draw("colz2");
+	
+	TCanvas *cref = new TCanvas;
+	fPearsonCoeffs_ref->Draw("colz2");
+	
+		hUncTrue->GetXaxis()->SetRangeUser(0,80);
+		hUncTrue->GetXaxis()->SetTitle("p_{T, ch. jet}");
+      TCanvas *cunc = new TCanvas;
+      hUncTrue->Draw();
+      hUncRef->Draw("same");
+      hUncFold->Draw("same");
+      leg->Draw("same");
+      
+      
+      SaveCanvas(cun, Form("%s/bkgUnfoldingSVD_%d",OUTDIRECTORYPLOTS.Data(),kReg));
+      SaveCanvas(cunc, Form("%s/bkgUnfoldingSVD_unc_%d",OUTDIRECTORYPLOTS.Data(),kReg));
+
+	
+	/*TString filename = "BkgFluctuationMtx.root";
+	TFile *File = new TFile(filename,"read");
+
+	TH2D *fMatrixDeltaPt = (TH2D*)File->Get("hBkgM");
+	TH2D *fMatrixDeltaPt_trans = (TH2D*)File->Get("hBkgM_trans");
+	if (!fMatrixDeltaPt) {
+		
+		return;
+	}
+	
+	TString histName = "histosD0UpgradeN";
+	TFile *File = new TFile(Form("%s",fFileBkg.Data()),"read");
+    if(!File) { cout << "==== WRONG FILE WITH DATA =====" << endl; return;}
+    TDirectoryFile* dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
+    TH1D *hh;
+    for(int i=0;i<5; i++){
+        TList *histList =  (TList*)dir->Get(Form("%s%dMCrec",histName.Data(),i));
+        THnSparseF *sparse = (THnSparseF*)histList->FindObject("hsDphiz");
+        //sparse->GetAxis(5)->SetRangeUser(fZmin,fZmax);
+        //sparse->GetAxis(2)->SetRangeUser(ptmin,ptmax);    // D meson pT range
+        if(i==0) hh=(TH1D*)sparse->Projection(1);
+        else hh->Add((TH1D*)sparse->Projection(1));
+      }
+	
+	TH1D* priorhisto = (TH1D*) fHPowhegPrompt->Clone("priorhisto");
+	TH1D* priorhisto_reco = (TH1D*) hh->Clone("priorhisto_reco");
+	
+	 TH1D* hNormY = (TH1D*)fMatrixDeltaPt->ProjectionY("hNormY");
+	 hNormY->Divide(priorhisto);
+	 //WeightMatrixY(fMatrixDeltaPt,hNormY,1);
+	 
+	 TH1D* hNormY_trans = (TH1D*)fMatrixDeltaPt_trans->ProjectionY("hNormY_trans");
+	 hNormY_trans->Divide(priorhisto_reco);
+	 //WeightMatrixY(fMatrixDeltaPt_trans,hNormY_trans,1);
+
+	
+	const int       PtbinsJetTrueN = 15;
+    double          PtbinsJetTrueA[PtbinsJetTrueN+1] = { 3,5,6,8,10,12,14,16,20,25,30,40,50,60,80,100 };
+    const int       PtbinsJetMeasN = 17;
+    double          PtbinsJetMeasA[PtbinsJetMeasN+1] = { -20,-10,-5,0,3,5,6,8,10,12,14,16,20,25,30,40,50,60 };
+    
+    
+	TH2D *fBkgMatrix = Rebin2D("fBkgMatrix", fMatrixDeltaPt, PtbinsJetMeasN, PtbinsJetMeasA, PtbinsJetTrueN, PtbinsJetTrueA,0);
+	TH2D *fBkgMatrix_trans = Rebin2D("fBkgMatrix_trans", fMatrixDeltaPt_trans, PtbinsJetTrueN, PtbinsJetTrueA, PtbinsJetMeasN, PtbinsJetMeasA,0);
+	
+	fBkgMatrix->Scale(1.,"width");
+	fBkgMatrix_trans->Scale(1.,"width");
+	
+	TH1D* hProjYeff = (TH1D*)fBkgMatrix->ProjectionY("hProjYeff");
+    TH1D* hProjXeff = (TH1D*)fBkgMatrix->ProjectionX("hProjXeff");
+    
+    TH1D* hProjYeff_trans = (TH1D*)fBkgMatrix_trans->ProjectionY("hProjYeff_trans");
+    TH1D* hProjXeff_trans = (TH1D*)fBkgMatrix_trans->ProjectionX("hProjXeff_trans");
+    
+    
+    TH1D* fRawRebin = (TH1D*)fHJetPtSpectrum->Clone("fRawRebin");
+    
+   
+	RooUnfold::ErrorTreatment errorTreatment = RooUnfold::kCovariance;
+    //RooUnfoldResponse response_trans(hProjYeff_trans,hProjXeff_trans, fBkgMatrix_trans, "response_trans","response_trans");
+    RooUnfoldResponse response_trans(0,0, fBkgMatrix_trans, "response_trans","response_trans");
+    response_trans.UseOverflow(1);
+    
+   
+    RooUnfoldBayes unfold_trans (&response_trans, fRawRebin, kreg);
+	TH1D *fUnfoldedBayes_trans = (TH1D*)unfold_trans.Hreco();
+	TH1D *folded = (TH1D*)fUnfoldedBayes_trans->Clone("folded");
+	
+    //RooUnfoldResponse response(hProjYeff,hProjXeff, fBkgMatrix, "response","response");
+    RooUnfoldResponse response(0,0, fBkgMatrix, "response","response");
+    response.UseOverflow(1);
+    
+   
+    RooUnfoldBayes unfold (&response, folded, kreg);
+	TH1D *fUnfoldedBayes = (TH1D*)unfold.Hreco();
+	//TH1D *folded = (TH1D*)response.ApplyToTruth(fUnfoldedBayes);
+	
+	*/
+	
+	
+	
+	return;
+	// ------------ Get Pearson coefficient ------------
+	TH2D *fPearsonCoeffs = getPearsonCoeffs( unfold.Ereco(RooUnfold::kCovariance) );
+	fPearsonCoeffs->SetName(Form("PearsonCoeffs%d",kreg));
+	fPearsonCoeffs->GetZaxis()->SetRangeUser(-1,1);
+	
+	fUnfoldedBayes->GetXaxis()->SetTitle("p_{T,ch. jet} (GeV/#it{c})");
+	fUnfoldedBayes->GetYaxis()->SetTitle("dN/dp_{T}");
+	//fUnfoldedBayes->SetTitle("Bayes unfolding");
+	fUnfoldedBayes->SetTitle();
+	
+	setHistoDetails(fUnfoldedBayes,kRed+2,20,0.8);
+	setHistoDetails(fRawRebin,kBlue+2,20,0.8);
+	setHistoDetails(folded,kGreen+1,20,0.8);
+
+	TH1D *hjetptspectrumRebUnc = (TH1D*)fUnfoldedBayes->Clone("hjetptspectrumRebUnc");
+	hjetptspectrumRebUnc->GetYaxis()->SetTitle("Rel. unc.");
+
+      for(int mm=1; mm<=fUnfoldedBayes->GetNbinsX();mm++){
+                  double err;
+                  if(fUnfoldedBayes->GetBinContent(mm)) err = fUnfoldedBayes->GetBinError(mm)/fUnfoldedBayes->GetBinContent(mm);
+                  else err = 0;
+                  hjetptspectrumRebUnc->SetBinContent(mm,err);
+                  hjetptspectrumRebUnc->SetBinError(mm,0);
+      }
+      
+    
+    hjetptspectrumRebUnc->SetMarkerColor(kGreen+2);
+    hjetptspectrumRebUnc->SetLineColor(kGreen+2);
+    TCanvas *cJetPtRebUnc = new TCanvas("cJetPtRebUnc","cJetPtRebUnc",1200,600);
+    cJetPtRebUnc->cd();
+    fHJetPtSpectrumUnc->DrawCopy();
+	hjetptspectrumRebUnc->DrawCopy("same");
+	
+	
+	fHJetPtSpectrumUncUnf = (TH1D*)hjetptspectrumRebUnc->Clone("fHJetPtSpectrumUncUnf");
+
+
+	TCanvas *cUnf = new TCanvas("cUnf","cUnf",1200,800);
+	cUnf->SetLogy();
+	fRawRebin->DrawCopy();
+	fUnfoldedBayes->DrawCopy("same");
+	folded->DrawCopy("same");
+	
+	TH1D *hUnfRatio = (TH1D*) fUnfoldedBayes->Clone("hUnfRatio");
+	hUnfRatio->Sumw2();
+	hUnfRatio->Divide(fRawRebin);
+	
+	TCanvas *cPear = new TCanvas("cPear","cPear",1200,800);
+	fPearsonCoeffs->Draw("colz2");
+	
+	TCanvas *cRatio = new TCanvas("cRatio","cRatio",1200,600);
+	hUnfRatio->Draw();
+
+
+	TCanvas *cBkgMtx_trans = new TCanvas("cBkgMtx_trans","cBkgMtx_trans",1200,600);
+	cBkgMtx_trans->SetLogz();
+	fBkgMatrix_trans->Draw("colz2");
+	
+	TCanvas *cBkgMtx = new TCanvas("cBkgMtx","cBkgMtx",1200,600);
+	cBkgMtx->SetLogz();
+	fBkgMatrix->Draw("colz2");
+	
+	
+	 SaveCanvas(cPear, Form("%s/PearsonCoef_bkgFluc",OUTDIRECTORYPLOTS.Data()));
+	 SaveCanvas(cUnf, Form("%s/JetSpectrumUnfolded_bkgFluc",OUTDIRECTORYPLOTS.Data()));
+	 SaveCanvas(cRatio, Form("%s/JetSpectrumUnfoldedRatio_bkgFluc",OUTDIRECTORYPLOTS.Data()));
+	 
+	 SaveCanvas(cJetPtRebUnc, Form("%s/JetSpectrumUncUnfolded_bkgFluc",OUTDIRECTORYPLOTS.Data()));
+	 
+	 SaveCanvas(cBkgMtx, Form("%s/RM_bkg",OUTDIRECTORYPLOTS.Data()));
+	 SaveCanvas(cBkgMtx_trans, Form("%s/RM_bkgtrans",OUTDIRECTORYPLOTS.Data()));
+	
+
+	
+}
+
+void unfold() {
+	
+	gSystem->Load("$HOME/Work/alice/RooUnfold-1.1.1/libRooUnfold.so");
+	
+	int kreg = 5; 
+	
+	fHDettMatrix = (TH2D*)getRM(fFileEff_prompt);
+	
+	TH1D* hProjYeff = (TH1D*)fHDettMatrix->ProjectionY("hProjYeff");
+    TH1D* hProjXeff = (TH1D*)fHDettMatrix->ProjectionX("hProjXeff");
+    TH1D* fRawRebin = (TH1D*)fHJetPtSpectrum->Clone("fRawRebin");
+    
+	RooUnfold::ErrorTreatment errorTreatment = RooUnfold::kCovariance;
+    RooUnfoldResponse response(hProjXeff,hProjYeff, fHDettMatrix, "response","response");
+    //RooUnfoldResponse response(0,0, fHDettMatrix, "response","response");
+    response.UseOverflow(1);
+    
+    RooUnfoldBayes unfold (&response, fRawRebin, kreg);
+	TH1D *fUnfoldedBayes = (TH1D*)unfold.Hreco();
+	TH1D *folded = (TH1D*)response.ApplyToTruth(fUnfoldedBayes);
+
+	// ------------ Get Pearson coefficient ------------
+	TH2D *fPearsonCoeffs = getPearsonCoeffs( unfold.Ereco(RooUnfold::kCovariance) );
+	fPearsonCoeffs->SetName(Form("PearsonCoeffs%d",kreg));
+	fPearsonCoeffs->GetZaxis()->SetRangeUser(-1,1);
+	
+	fUnfoldedBayes->GetXaxis()->SetTitle("p_{T,ch. jet} (GeV/#it{c})");
+	fUnfoldedBayes->GetYaxis()->SetTitle("dN/dp_{T}");
+	//fUnfoldedBayes->SetTitle("Bayes unfolding");
+	fUnfoldedBayes->SetTitle();
+	
+	setHistoDetails(fUnfoldedBayes,kRed+2,20,0.8);
+	setHistoDetails(fRawRebin,kBlue+2,20,0.8);
+	setHistoDetails(folded,kGreen+1,20,0.8);
+
+	TH1D *hjetptspectrumRebUnc = (TH1D*)fUnfoldedBayes->Clone("hjetptspectrumRebUnc");
+	hjetptspectrumRebUnc->GetYaxis()->SetTitle("Rel. unc.");
+
+      for(int mm=1; mm<=fUnfoldedBayes->GetNbinsX();mm++){
+                  double err;
+                  if(fUnfoldedBayes->GetBinContent(mm)) err = fUnfoldedBayes->GetBinError(mm)/fUnfoldedBayes->GetBinContent(mm);
+                  else err = 0;
+                  hjetptspectrumRebUnc->SetBinContent(mm,err);
+                  hjetptspectrumRebUnc->SetBinError(mm,0);
+      }
+      
+    
+    hjetptspectrumRebUnc->SetMarkerColor(kGreen+2);
+    hjetptspectrumRebUnc->SetLineColor(kGreen+2);
+    TCanvas *cJetPtRebUnc = new TCanvas("cJetPtRebUnc","cJetPtRebUnc",1200,600);
+    cJetPtRebUnc->cd();
+    fHJetPtSpectrumUnc->DrawCopy();
+	hjetptspectrumRebUnc->DrawCopy("same");
+	
+	
+	fHJetPtSpectrumUncUnf = (TH1D*)hjetptspectrumRebUnc->Clone("fHJetPtSpectrumUncUnf");
+
+
+	TCanvas *cUnf = new TCanvas("cUnf","cUnf",1200,800);
+	cUnf->SetLogy();
+	fRawRebin->DrawCopy();
+	fUnfoldedBayes->DrawCopy("same");
+	folded->DrawCopy("same");
+	
+	TH1D *hUnfRatio = (TH1D*) fUnfoldedBayes->Clone("hUnfRatio");
+	hUnfRatio->Sumw2();
+	hUnfRatio->Divide(fRawRebin);
+	
+	TCanvas *cPear = new TCanvas("cPear","cPear",1200,800);
+	fPearsonCoeffs->Draw("colz2");
+	
+	TCanvas *cRatio = new TCanvas("cRatio","cRatio",1200,600);
+	hUnfRatio->Draw();
+
+	 SaveCanvas(cPear, Form("%s/PearsonCoef",OUTDIRECTORYPLOTS.Data()));
+	 SaveCanvas(cUnf, Form("%s/JetSpectrumUnfolded",OUTDIRECTORYPLOTS.Data()));
+	 SaveCanvas(cRatio, Form("%s/JetSpectrumUnfoldedRatio",OUTDIRECTORYPLOTS.Data()));
+	 
+	 SaveCanvas(cJetPtRebUnc, Form("%s/JetSpectrumUncUnfolded",OUTDIRECTORYPLOTS.Data()));
+	
+}
+
 double getBackground(double massmin, double massmax, double ptmin, double ptmax, int iter, TCanvas *cmassbkg){
 
       double bkgscale = getBkgScaling();
@@ -1000,9 +1652,266 @@ double getBkgScaling(){
 
 }
 
-TH1* getPowhegJetSpectra(TString data, Bool_t isPrompt=1, Bool_t isEffScale=0){
 
-  TFile *fileInput = new TFile(data,"read");
+
+TH2* getRM(TString file, Bool_t isprompt=1) {
+	
+	const int NDMC = 15;
+	
+    TString histName = "histosD0UpgradeN";
+
+    float jetmin = 0, jetmax = 120;
+    float Dptmin = fPtbinsDA[0], Dptmax = 200; // = fPtbinsDA[fPtbinsDN];
+
+    TH2D *hPtJet2d, *hPtJet;
+    TH1D *hPtJetMC, *hPtJetreco, *hreco1d;
+
+	//findex = 5;
+	if(fIsHBins){
+    for(int j=findex; j<=fHardBinsN-1; j++) {
+        TFile *File = new TFile(Form("%s_%d.root",file.Data(),j),"read");
+        if(!File) { cout << "==== WRONG FILE WITH DATA =====" << endl; return;}
+        TDirectoryFile* dir = (TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
+        TH2D *hMC;
+        TH1D *hMC1d, *hreco1d;
+        // loop over D mesons
+        for(int i=0;i<NDMC; i++){
+
+            TList *histList =  (TList*)dir->Get(Form("%s%dMCrec",histName.Data(),i));
+            THnSparseF *sparseMC = (THnSparseF*)histList->FindObject("ResponseMatrix");
+
+            sparseMC->GetAxis(6)->SetRangeUser(jetmin,jetmax); // jet pT gen
+            sparseMC->GetAxis(7)->SetRangeUser(Dptmin,Dptmax); // jet pT gen
+
+			sparseMC->GetAxis(1)->SetRangeUser(jetmin,jetmax); // jet pT gen
+            sparseMC->GetAxis(2)->SetRangeUser(Dptmin,Dptmax); // jet pT gen
+
+			hPtJet = (TH2D*)sparseMC->Projection(6,1,"E");  
+			hPtJet->Sumw2();
+		
+			TH1D* hmc11 = (TH1D*)sparseMC->Projection(6);
+			TH1D* hreco11 = (TH1D*)sparseMC->Projection(1);
+		
+			//fHardBinsMax[j-2]*fHBrejection
+			
+                     
+            if (!i){
+              hMC = (TH2D*)hPtJet->Clone("hMC");
+              hMC->Sumw2();
+              
+              hMC1d = (TH1D*)hmc11->Clone("hMC1d");
+              hMC1d->Sumw2();
+              hreco1d = (TH1D*)hreco11->Clone("hreco1d");
+              hreco1d->Sumw2();
+            }
+            else {
+              hMC->Add(hPtJet);
+              
+              hMC1d->Add(hmc11);
+              hreco1d->Add(hreco11);
+            }			
+		
+		
+        }
+        // end of loop over D mesons
+        TDirectoryFile *dir2 = (TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
+        TList *histList2 = (TList*)dir2->Get("histosD0UpgradeN0MCrec");
+        TH1F* hEvents = (TH1F*)histList2->FindObject("hstat");
+        double nEvents = hEvents->GetBinContent(2); // number of analyzed events, 2: selected
+
+		for(int mm=1; mm<=hMC->GetNbinsX();mm++){
+				for(int nn=1; nn<=hMC->GetNbinsY();nn++){
+					double cont = hMC->GetBinContent(mm,nn);
+					//double cent = hMC->GetBinCenter(mm,nn);
+					//if(cent > fHardBinsMax[j-2]*fHBrejection) hMC->SetBinContent(mm,nn,0);
+					//if(cont < 5) hMC->SetBinContent(mm,nn,0);
+					//else hMC->SetBinContent(mm,nn,hMC->GetBinContent(mm,nn)*fHBWeightsC[j-2]);
+				}
+		}
+
+		/*for(int j=1; j<=Mtx->GetNbinsY()+1; j++) {
+
+			double value = Mtx->GetYaxis()->GetBinCenter(j);
+			double c = h->GetBinContent(h->GetXaxis()->FindBin(value));
+			if (divide && c)  c = 1./c;
+			//else c = 1.;
+			for(int i=1; i<=Mtx->GetNbinsX()+1; i++) {
+				Mtx->SetBinContent(i, j, Mtx->GetBinContent(i,j)*c);
+				//Mtx->SetBinError(i, j, Mtx->GetBinError(i,j)*c);
+			}
+		}*/
+
+		 hMC->Scale(100000./nEvents);
+         if(isprompt) hMC->Scale(fHBWeightsC[j-2]);
+	     else hMC->Scale(fHBWeightsB[j-2]);
+	     
+	     hMC1d->Scale(100000./nEvents);
+         if(isprompt) hMC1d->Scale(fHBWeightsC[j-2]);
+	     else hMC1d->Scale(fHBWeightsB[j-2]);
+	     
+	     hreco1d->Scale(100000./nEvents);
+         if(isprompt) hreco1d->Scale(fHBWeightsC[j-2]);
+	     else hreco1d->Scale(fHBWeightsB[j-2]);
+         
+        if(j==findex) {
+          hPtJet2d = (TH2D*)hMC->Clone("hPtJet2d");
+          hPtJet2d->Sumw2();
+          
+          hPtJetMC = (TH1D*)hMC1d->Clone("hPtJetMC");
+          hPtJetMC->Sumw2();
+          
+          hPtJetreco = (TH1D*)hreco1d->Clone("hPtJetreco");
+          hPtJetreco->Sumw2();
+         
+        }
+        else {
+          hPtJet2d->Add(hMC);
+          
+          hPtJetMC->Add(hMC1d);
+          hPtJetreco->Add(hreco1d);
+          
+        } 
+    }
+      
+  }
+  else {
+	
+   TString datafile = file + fSMBBin;
+    TFile *File = new TFile(datafile,"read");
+    TDirectoryFile* dir = (TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
+  	for(int i=0; i<NDMC; i++){
+    
+      TList *histList =   (TList*)dir->Get(Form("%s%dMCrec",histName.Data(),i));
+      THnSparseF *sparseMC = (THnSparseF*)histList->FindObject("ResponseMatrix");
+      
+			sparseMC->GetAxis(6)->SetRangeUser(fJetptmin,jetmax); // jet pT gen
+            sparseMC->GetAxis(7)->SetRangeUser(Dptmin,Dptmax); // jet pT gen
+
+			sparseMC->GetAxis(1)->SetRangeUser(fJetptmin,jetmax); // jet pT gen
+            sparseMC->GetAxis(2)->SetRangeUser(Dptmin,Dptmax); // jet pT gen
+
+			hPtJet = (TH2D*)sparseMC->Projection(6,1,"E");  
+			hPtJet->Sumw2();
+		
+                     
+            if (!i){
+              hPtJet2d = (TH2D*)hPtJet->Clone("hMC");
+              hPtJet2d->Sumw2();
+            }
+            else {
+              hPtJet2d->Add(hPtJet);
+            }
+
+  	}
+
+  }
+  
+    hPtJet2d->SetTitle();
+    hPtJet2d->SetName("hPtJet2d");
+    hPtJet2d->GetXaxis()->SetTitle("p_{T,ch jet}^{rec.} (GeV/#it{c})");
+    hPtJet2d->GetYaxis()->SetTitle("p_{T,ch jet}^{gen.} (GeV/#it{c})");
+	//hPtJet2d->SetMinimum(0.0001);
+
+    TCanvas *cjetPt2d = new TCanvas("cjetPt2d","cjetPt2d",1200,800);
+    cjetPt2d->SetLogz();
+    hPtJet2d->Draw("colz2");
+
+
+	SaveCanvas(cjetPt2d, Form("%s/ResMatrix",OUTDIRECTORYPLOTS.Data()));
+
+    //TFile *ofile = new TFile(Form("%s/DetMatrix_Dpt%d_%d.root",outDir, (int)Dptmin, (int)Dptmax),"RECREATE");
+  /*  TFile *ofile = new TFile(Form("%s/DetMatrix_%s.root",outDir.Data(), isPrompt ? "prompt" : "nonPrompt" ),"RECREATE");
+
+    hPtJetGen->Write();
+    hPtJetRec->Write();
+    hPtJet2d->Write();
+    ofile->Close();*/
+    
+    TH2D *detMatrix = (TH2D*)hPtJet2d->Clone("detMatrix");
+    detMatrix->SetName("detMatrix");
+    //detMatrix->SetMinimum(0.0001);
+    
+    for(int i=0; i<=detMatrix->GetNbinsX()+1;i++){
+        for(int j=0; j<=detMatrix->GetNbinsY()+1;j++){
+
+            double cont = detMatrix->GetBinContent(i,j);
+            if(i==0 && j==0)detMatrix->SetBinContent(i,j,0);
+            else if(i==detMatrix->GetNbinsX()+1 && j==detMatrix->GetNbinsY()+1)detMatrix->SetBinContent(i,j,0);
+            else detMatrix->SetBinContent(i,j,cont);
+
+        }
+    }
+    
+    
+	TH2D *fDetMatrix = Rebin2D("fDetMatrix", detMatrix, fPtbinsJetMeasN, fPtbinsJetMeasA, fPtbinsJetTrueN, fPtbinsJetTrueA,0);
+	fDetMatrix->SetMinimum(0.001);
+	fDetMatrix->SetTitle();
+    fDetMatrix->SetName("fDetMatrix");
+    fDetMatrix->GetXaxis()->SetTitle("p_{T,ch jet}^{rec.} (GeV/#it{c})");
+    fDetMatrix->GetYaxis()->SetTitle("p_{T,ch jet}^{gen.} (GeV/#it{c})");
+
+	TCanvas *cmatrix = new TCanvas("cmatrix","cmatrix",1200,800);
+    cmatrix->SetLogz();
+    fDetMatrix->Draw("colz2");
+
+
+	TH1D *hmeas = (TH1D*)detMatrix->ProjectionX("hmeas");
+	TH1D *htrue = (TH1D*)detMatrix->ProjectionY("htrue");
+
+	hmeas->SetLineColor(4);
+	htrue->SetLineColor(2);
+	
+	
+	hPtJetreco->SetLineColor(4);
+	hPtJetMC->SetLineColor(2);
+
+	TCanvas *cPt = new TCanvas("cPt","cPt",800,600);
+	cPt->SetLogy();
+	hPtJetreco->Draw();
+	hPtJetMC->Draw("same");
+	//hmeas->Draw();
+	//htrue->Draw("same");
+
+
+	TH1D* hratio = (TH1D*)hPtJetreco->Clone("hratio");
+	hratio->Divide(hPtJetMC);
+	TCanvas *cRatio = new TCanvas("cRatio","cRatio",1200,600);
+	hratio->Draw();
+
+	cout << "\n\n reco jets: " << hPtJetreco->Integral() << "\t MC jets: " << hPtJetMC->Integral() << endl;
+
+	SaveCanvas(cmatrix, Form("%s/ResDetMatrix_rebin",OUTDIRECTORYPLOTS.Data()));
+	SaveCanvas(cPt, Form("%s/ResDetMatrixProj",OUTDIRECTORYPLOTS.Data()));
+	SaveCanvas(cRatio, Form("%s/ResDetMatrixProjRatio",OUTDIRECTORYPLOTS.Data()));
+
+   return fDetMatrix;
+
+}
+
+
+TH1* getPowhegJetSpectra(TString data, Bool_t isPrompt=0, Bool_t isEffScale=0, Bool_t isEffRatioScale=0, Bool_t isHIScale=0, Bool_t isRaaSys=0, Bool_t recal=0){
+  
+  
+  TString outname = data;
+  outname += "_JetPt_DpT";
+  outname += fPtbinsDA[0];
+  if(isPrompt) outname += "_prompt";
+  else outname += "_nonprompt";
+  if(isEffScale) outname += "_effScaled";
+  else if(isEffRatioScale) outname += "_effRatioScaled";
+  if(isHIScale) outname += "_RaaScaled"; 
+  if(isRaaSys) outname += "_RaaSys";
+  outname += ".root";
+ 
+  if(!recal) {
+    TFile *file = new TFile(outname,"read");
+    if(!file->IsZombie()){
+      TH1D *hout = (TH1D*)file->Get("hPt");
+      return hout;
+    }
+  }
+  
+  TFile *fileInput = new TFile(Form("%s.root",data.Data()),"read");
   if(!fileInput){
     std::cout << "File " << fileInput << " cannot be opened! check your file path!" << std::endl; return kFALSE;
   }
@@ -1012,7 +1921,7 @@ TH1* getPowhegJetSpectra(TString data, Bool_t isPrompt=1, Bool_t isEffScale=0){
     return kFALSE;
   }
 
-  TH1D *hxsection = (TH1D*)dir->FindObject("fHistXsectionVsPtHard");
+  TH1D *hxsection = (TH1D*)dir->FindObject("fHistXsection");
    if(!hxsection) {
     std::cout << "Error in getting x-section hist! Exiting..." << std::endl;
     return kFALSE;
@@ -1028,14 +1937,14 @@ TH1* getPowhegJetSpectra(TString data, Bool_t isPrompt=1, Bool_t isEffScale=0){
   AliAnalysisTaskDmesonJets::AliJetInfoSummary *brJet = 0;
   tree->SetBranchAddress("DmesonJet",&brD);
   //tree->SetBranchAddress(Form("Jet_AKTChargedR0%d0_pt_scheme",Rpar),&brJet);
-  tree->SetBranchAddress(Form("Jet_AKTChargedR0%d0_pt_scheme",3),&brJet);
+  tree->SetBranchAddress("Jet_AKTChargedR030_pt_scheme",&brJet);
   if(!tree || !brD || !brJet) {
     std::cout << "Error in setting the tree/branch names! Exiting..." << std::endl;
     return NULL;
   }
 
   TH1D *hjetpt[fPtbinsDN];
-  for (int j=0; j<fptbinsDN; j++) {
+  for (int j=0; j<fPtbinsDN; j++) {
       hjetpt[j] = new TH1D(Form("hjetpt_%d",j),"hjetpt",100,0,100);
       hjetpt[j]->Sumw2();
   }
@@ -1049,31 +1958,57 @@ TH1* getPowhegJetSpectra(TString data, Bool_t isPrompt=1, Bool_t isEffScale=0){
     else if(brD->fPartonType != 4) continue;
     if(brD->fAncestorPDG == 2212) continue; // check if not coming from proton
 
-    for (int j=0; j<fptbinsDN; j++) {
-        if (brD->fPt < fptbinsDA[j] || brD->fPt >= fptbinsDA[j+1]) continue;
+    for (int j=0; j<fPtbinsDN; j++) {
+        if (brD->fPt < fPtbinsDA[j] || brD->fPt >= fPtbinsDA[j+1]) continue;
         hjetpt[j]->Fill(brJet->fPt);
     }//end of D-meson pT bin loop
 
   }
 
-  TH1D*  hPt = new TH1D("hPt","hjetpt",100,0,100);
-  for (int j=0; j<fptbinsDN; j++){
+  TH1D*  hPt = new TH1D("hPt","hPt",100,0,100);
+  for (int j=0; j<fPtbinsDN; j++){
     double effC=1, effB=1, eff=1;
-    double pt = (fptbinsDA[j]+fptbinsDA[j+1])/2.;
-    if(isEffScale)  {
-      effC = GetContent(fHEff_prompt,pt);
-      effB = GetContent(fHEff_nprompt,pt);
-      eff = effB/effC;
-    }
-    else eff = 1;
+    double raa = 1;
+    double pt = (fPtbinsDA[j]+fPtbinsDA[j+1])/2.;
+    effC = GetContent(fHEff_prompt,pt);
+    effB = GetContent(fHEff_nprompt,pt);
+    
+    if(isEffRatioScale) {
+		eff = effB/effC;
+	}
+	else if(isEffScale) {
+			if(isPrompt) eff = effC;
+			else eff = effB;
+	}
+	else eff = 1;
+	
+    if(isHIScale){
+		if( isPrompt || isRaaSys) raa = fRaaC[j+fraabin];
+		else if (isRaaSys) raa = fRaaBSys[j_fraabin];
+		//if(isPrompt) raa = fRaaC[j+fraabin];
+		//else if(fBRaaSys || isRaaSys) raa = fRaaB[j+fraabin]/2.;
+		else raa = fRaaB[j+fraabin];
+	}
+	double scale = eff*raa;
+	//if(isEffScale && isHIScale) cout << "\n\n =========== B scaling: " << scale << endl;
     if (!j){
         hPt = (TH1D*)hjetpt[j]->Clone("hPt");
-        hPt->Scale(eff);
+        hPt->Scale(scale);
     }
-    else hPt->Add(hjetpt[j],eff);
+    else{ 
+		hjetpt[j]->Scale(scale);
+		hPt->Add(hjetpt[j]);
+		
+	}
   }
 
   hPt->Scale(scaling);
+  hPt->SetName("hPt");
+
+  TFile *outfile = new TFile(outname,"RECREATE");
+  hPt->Write();
+  //hPt_reb->Write();
+  outfile->Close();
 
   return hPt;
 
@@ -1081,9 +2016,11 @@ TH1* getPowhegJetSpectra(TString data, Bool_t isPrompt=1, Bool_t isEffScale=0){
 
 TH1* getPowhegDSpectra(TString data, Bool_t isPrompt=1, Bool_t recal=0){
 
-  TString outname;
-  if(isPrompt) outname = "Powheg_DpT_prompt.root";
-  else outname = "Powheg_DpT_nonprompt.root";
+  TString outname = data;
+  if(isPrompt) outname += "_prompt";
+  else outname += "_nonprompt";
+  outname += ".root";
+  
   if(!recal) {
     TFile *file = new TFile(outname,"read");
     if(!file->IsZombie()){
@@ -1093,7 +2030,7 @@ TH1* getPowhegDSpectra(TString data, Bool_t isPrompt=1, Bool_t recal=0){
     }
   }
 
-  TFile *fileInput = new TFile(data,"read");
+  TFile *fileInput = new TFile(Form("%s.root",data.Data()),"read");
   if(!fileInput){
     std::cout << "File " << fileInput << " cannot be opened! check your file path!" << std::endl; return kFALSE;
   }
@@ -1151,7 +2088,7 @@ TH1* getPowhegDSpectra(TString data, Bool_t isPrompt=1, Bool_t recal=0){
   hPt_reb->Write();
   outfile->Close();
 
-  return hPt_reb;
+  return hPt;
 
 }
 
@@ -1349,7 +2286,6 @@ cRaa->cd();
   hRaaC->Draw("p");
   hRaaB->Draw("psame");
 
-
     leg->Draw("same");
 
     SaveCanvas(cRaa, Form("%s/Raa",OUTDIRECTORYPLOTS.Data()));
@@ -1443,18 +2379,120 @@ void getMCJetPt(TString data){
 
 }
 
+
+
+/// rebin in 2d variable size - no such routine in Root
+TH2D * Rebin2D(const char* name, TH2D *h, int nx, const double *binx, int ny, const double *biny, bool crop) {
+	if (!h) {
+		cerr << "Warning in <AliHeavyUnfoldTools::Rebin2D> : h==0." << endl;
+		return 0;
+	}
+
+	TAxis *xaxis = h->GetXaxis();
+    TAxis *yaxis = h->GetYaxis();
+
+	TH2D * hre = new TH2D(name,name,nx,binx,ny,biny);
+    hre->Sumw2();
+    for (int i=1; i<=xaxis->GetNbins();i++) {
+        for (int j=1; j<=yaxis->GetNbins();j++) {
+            hre->Fill(xaxis->GetBinCenter(i),yaxis->GetBinCenter(j),h->GetBinContent(i,j));
+        }
+    }
+
+    //for(int i=0;i<=hre->GetNbinsX();i++){
+        for(int j=0;j<=hre->GetNbinsY()+1;j++){
+            hre->SetBinContent(0,j,0);
+            hre->SetBinError(0,j,0);
+			hre->SetBinContent(hre->GetNbinsX()+1,j,0);
+            hre->SetBinError(hre->GetNbinsX()+1,j,0);
+
+    }
+    //}
+
+
+	return hre;
+}
+
+/// get pearson coeffs from covariance matrix
+TH2D * getPearsonCoeffs(const TMatrixD &covMatrix) {
+
+	Int_t nrows = covMatrix.GetNrows();
+	Int_t ncols = covMatrix.GetNcols();
+
+	TH2D* PearsonCoeffs = new TH2D("PearsonCoeffs","Pearson Coefficients", nrows, 0, nrows, ncols, 0, ncols);
+	for(Int_t row = 0; row<nrows; row++) {
+		for(Int_t col = 0; col<ncols; col++) {
+			Double_t pearson = 0.;
+			if(covMatrix(row,row)!=0. && covMatrix(col,col)!=0.)
+				pearson = covMatrix(row,col)/TMath::Sqrt(covMatrix(row,row)*covMatrix(col,col));
+			PearsonCoeffs->SetBinContent(row+1,col+1, pearson);
+		}
+	}
+
+	return PearsonCoeffs;
+}
+
+/// Weight matrix along y axis by histo values
+void WeightMatrixY(TH2D * Mtx, TH1D * h, bool divide) {
+	if (!Mtx) {
+		cerr << "Warning in <AliHeavyUnfoldTools::WeightMatrixY> : Mtx==0." << endl;
+		return;
+	}
+	if (!h) {
+		cerr << "Warning in <AliHeavyUnfoldTools::WeightMatrixY> : h==0." << endl;
+		return;
+	}
+
+	for(int j=1; j<=Mtx->GetNbinsY()+1; j++) {
+
+		double value = Mtx->GetYaxis()->GetBinCenter(j);
+		double c = h->GetBinContent(h->GetXaxis()->FindBin(value));
+		if (divide && c)  c = 1./c;
+		//else c = 1.;
+		for(int i=1; i<=Mtx->GetNbinsX()+1; i++) {
+			Mtx->SetBinContent(i, j, Mtx->GetBinContent(i,j)*c);
+			//Mtx->SetBinError(i, j, Mtx->GetBinError(i,j)*c);
+		}
+	}
+}
+
+/// Weight matrix along y axis by histo values
+void WeightMatrixX(TH2D * Mtx, TH1D * h, bool divide) {
+	if (!Mtx) {
+		cerr << "Warning in <AliHeavyUnfoldTools::WeightMatrixY> : Mtx==0." << endl;
+		return;
+	}
+	if (!h) {
+		cerr << "Warning in <AliHeavyUnfoldTools::WeightMatrixY> : h==0." << endl;
+		return;
+	}
+
+	for(int j=1; j<=Mtx->GetNbinsX()+1; j++) {
+
+		double value = Mtx->GetXaxis()->GetBinCenter(j);
+		double c = h->GetBinContent(h->GetYaxis()->FindBin(value));
+		if (divide && c)  c = 1./c;
+		//else c = 1.;
+		for(int i=1; i<=Mtx->GetNbinsY()+1; i++) {
+			Mtx->SetBinContent(i, j, Mtx->GetBinContent(i,j)*c);
+			//Mtx->SetBinError(i, j, Mtx->GetBinError(i,j)*c);
+		}
+	}
+}
+
 double GetContent(TH1 *hh, double bin){
     return hh->GetBinContent(hh->GetXaxis()->FindBin(bin));
 }
 
 
-void setHistoDetails(TH1 *h, Color_t color, Style_t Mstyle, Size_t size = 0.9, Width_t width=2){
+void setHistoDetails(TH1 *h, Color_t color, Style_t Mstyle, Size_t size = 0.9, Style_t Lstyle=1, Width_t width=2){
 
     h->SetMarkerStyle(Mstyle);
     h->SetMarkerColor(color);
     h->SetMarkerSize(size);
     h->SetLineColor(color);
     h->SetLineWidth(width);
+    h->SetLineStyle(Lstyle);
     h->SetTitle(0);
 
     return;
