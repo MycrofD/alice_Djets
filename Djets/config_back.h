@@ -104,6 +104,6 @@ enum DMesonSpecies {kD0toKpi=0, kDStarD0pi};
       "muR=1,muF=0.5",
       "muR=0.5,muF=1"
     };
-const Int_t fBsimN = 4;
-const Int_t fCsimN = 1;
-TString OUTDIRECTORY="/home/basia/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_cuts2";
+const Int_t fBsimN = ;
+const Int_t fCsimN = ;
+TString OUTDIRECTORY="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_cuts2";

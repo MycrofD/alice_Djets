@@ -10,25 +10,35 @@ Int_t colors2[] = {1,2,kGreen+3,kMagenta+2,4,6,kCyan+1,kYellow+2,kOrange-1,8,kGr
 Int_t markers2[] = {20,21,22,23,24,25,26,27,28,29,30,32,33,34};
 Int_t linestyle2[] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
 
-const int nFiles = 7;
+const int nFiles = 9;
 TString inDir[nFiles] = {
-  "349",
-  "359",
-  "348",
-  "347",
-  "358",
   "249",
-  "259"
+  "247",
+  "248",
+  "257",
+  "258",
+  "259",
+//  "347",
+  "348",
+  "349",
+//  "357",
+//  "358",
+  "359"
 };
 
 TString desc[nFiles] = {
-  "S:3#sigma, B:4-9#sigma (Def)",
-  "S:3#sigma, B:5-9#sigma",
+  "S:2#sigma, B:4-9#sigma (Def)",
+  "S:2#sigma, B:4-7#sigma",
+  "S:2#sigma, B:4-8#sigma",
+  "S:2#sigma, B:5-7#sigma",
+  "S:2#sigma, B:5-8#sigma",
+  "S:2#sigma, B:5-9#sigma",
+//  "S:3#sigma, B:4-7#sigma",
   "S:3#sigma, B:4-8#sigma",
-  "S:3#sigma, B:4-7#sigma",
-  "S:3#sigma, B:5-8#sigma",
-  "S:2#sigma, B:4-9#sigma",
-  "S:2#sigma, B:5-9#sigma"
+  "S:3#sigma, B:4-9#sigma",
+//  "S:3#sigma, B:5-7#sigma",
+//  "S:3#sigma, B:5-8#sigma",
+  "S:3#sigma, B:5-9#sigma",
 };
 
 //const int nFilesCut = 6;
@@ -60,7 +70,7 @@ int nJetBins2 = 7;
 double ptJetbins2[] = {5,6,8,10,14,20,30,50};
 //double ptJetbins2[] = { 5,10,15,20,25,35,50 };
 
-void BkgSRangesComparison2(int reg=3,  TString inDirBase = "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet", TString inName = "systematics")
+void BkgSRangesComparison2(int reg=3,  TString inDirBase = "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts", TString inName = "systematics/SBkgRanges")
 {
 
   TString inputDir = inDirBase;
@@ -88,7 +98,7 @@ void unfSpectra(TString inName, TString inDirBase)
             for (int i=0; i<nFiles; i++){
                 dirName[i] = inDirBase;
                 dirName[i] += "/";
-                dirName[i] += "results_";
+                dirName[i] += "Default_";
                 dirName[i] += inDir[i];
             }
 
@@ -96,7 +106,7 @@ void unfSpectra(TString inName, TString inDirBase)
 
             TFile *fproj[nFiles];
             for(int i=0; i<nFiles; i++) {
-              fproj[i] = new TFile(Form("%s/DzeroR03_pPbCuts/Default/unfolding_Bayes_4/unfoldedSpectrum_unfoldedJetSpectrum.root",dirName[i].Data()),"READ");
+              fproj[i] = new TFile(Form("%s/unfolding_Bayes_4/unfoldedSpectrum_unfoldedJetSpectrum.root",dirName[i].Data()),"READ");
               //fproj[i] = new TFile(Form("%s/FDsubtraction/JetPtSpectrum_FDsub.root",dirName[i].Data()),"READ");
 
               if(!fproj[i]) { cout << "NO FILE !!!!!" << endl; return; }
@@ -181,12 +191,28 @@ void unfSpectra(TString inName, TString inDirBase)
         cspecUnc->SaveAs(Form("%s/SBRangesUncComparison.pdf",out.Data()));
         cspecUnc->SaveAs(Form("%s/SBRangesUncComparison.png",out.Data()));
 
+          TCanvas *cspecUnc2 = new TCanvas("cspecUnc2","cspecUnc2",1200,800);
+          TLegend *leg32 = new TLegend(0.15,0.45,0.45,0.85);
+          leg32->SetBorderSize(0);
+
+          for(int i=0; i<1; i++) {
+
+              specUnc[0]->Draw();
+              specUnc[7]->Draw("same");
+              leg32->AddEntry(specUnc[0],desc[0].Data());
+              leg32->AddEntry(specUnc[7],desc[7].Data());
+          }
+          leg32->Draw("same");
+
+        cspecUnc2->SaveAs(Form("%s/SBRangesUncComparison2.pdf",out.Data()));
+        cspecUnc2->SaveAs(Form("%s/SBRangesUncComparison2.png",out.Data()));
+
 
             TLegend *leg2 = new TLegend(0.15,0.15,0.5,0.4);
             leg2->SetBorderSize(0);
             TLegend *leg4 = new TLegend(0.45,0.2,0.65,0.25);
             leg4->SetBorderSize(0);
-            TLegend *leg5 = new TLegend(0.15,0.75,0.65,0.85,"Signal extraction with different S and SB ranges");
+            TLegend *leg5 = new TLegend(0.15,0.75,0.5,0.85,"Signal extraction with different S and SB ranges");
             leg5->SetBorderSize(0);
             TCanvas *cspec2 = new TCanvas("cspec2","cspec2",1200,800);
             TH1F *hratio[nFiles-1];
@@ -227,7 +253,7 @@ void unfSpectra(TString inName, TString inDirBase)
             TH1F *hmean = (TH1F*)hsys->Clone("hmean");
             getRMS(nFiles,hratio,hmean,hsys);
 
-            hsys->GetYaxis()->SetRangeUser(0,15);
+            hsys->GetYaxis()->SetRangeUser(0,11);
             hsys->SetLineColor(kViolet+2);
             TCanvas *cspecRMS = new TCanvas("cspecRMS","cspecRMS",800,400);
             hsys->Draw("hist");
@@ -236,7 +262,7 @@ void unfSpectra(TString inName, TString inDirBase)
             cspecRMS->SaveAs(Form("%s/SBRangesComparison_rms.pdf",out.Data()));
             cspecRMS->SaveAs(Form("%s/SBRangesComparison_rms.png",out.Data()));
 
-            hmean->GetYaxis()->SetRangeUser(0.93,1.08);
+            hmean->GetYaxis()->SetRangeUser(0.95,1.1);
             hmean->SetLineColor(kMagenta+1);
             TCanvas *cspecMean = new TCanvas("cspecMean","cspecMean",800,400);
             hmean->Draw("hist");

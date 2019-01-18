@@ -7,7 +7,7 @@ setHistoDetails(TH1 *h, Color_t color, Style_t Mstyle, Width_t width);
 
  double zmin = 0, zmax = 2.;
     double jetmin = 2, jetmax = 40;
-    double plotmin = 2, plotmax = 36;
+    double plotmin = 3, plotmax = 36;
 
 
     const int ptbinsJetN = 8;
@@ -34,8 +34,8 @@ sst.clear(); sst.str("");
    //TFile *inFilePrompt = new TFile("out_806Preliminary/DjetEff_prompt_jetpt2_50.root","read");
    //TFile *inFileFD = new TFile("out_806Base_FD/DjetEff_nonPrompt_jetpt2_50.root","read");
 
-   TFile *inFilePrompt = new TFile("/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning/efficiency//DjetEff_prompt_jetpt5_50.root","read");
-   TFile *inFileFD = new TFile("/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning/efficiency//DjetEff_nonPrompt_jetpt5_50.root","read");
+   TFile *inFilePrompt = new TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_cutTight/DzeroR03_def_437_old0/Default/efficiency/DjetEff_prompt_jetpt5_50.root","read");
+   TFile *inFileFD = new TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_cutTight/DzeroR03_def_437_old0/Default/efficiency/DjetEff_nonPrompt_jetpt5_50.root","read");
 
     TH1F *hEffPrompt = (TH1F*)inFilePrompt->Get("hEff_reb");
     TH1F *hEffNonPrompt = (TH1F*)inFileFD->Get("hEff_reb");
@@ -95,7 +95,8 @@ sst.clear(); sst.str("");
     pvEn->SetTextFont(42);
     pvEn->SetTextSize(0.045);
     pvEn->SetTextAlign(11);
-    pvEn->AddText("p-Pb, #sqrt{#it{s}_{NN}} = 5.02 TeV");
+    //pvEn->AddText("p-Pb, #sqrt{#it{s}_{NN}} = 5.02 TeV");
+    pvEn->AddText("pp, #sqrt{#it{s}} = 5.02 TeV");
 
     double shift = 0.1;
     TPaveText *pvD = new TPaveText(0.42,0.65-shift,0.9,0.69-shift,"brNDC");
@@ -118,6 +119,7 @@ sst.clear(); sst.str("");
 
 
     TPaveText *pvEta = new TPaveText(0.42,0.54-shift,0.8,0.59-shift,"brNDC");
+    TPaveText *pvEta = new TPaveText(0.425,0.54-shift,0.8,0.59-shift,"brNDC");
     pvEta->SetFillStyle(0);
     pvEta->SetBorderSize(0);
     pvEta->SetTextFont(42);

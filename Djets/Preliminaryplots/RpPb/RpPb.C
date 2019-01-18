@@ -1,4 +1,4 @@
-
+// for x-section, not RpPb
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -11,6 +11,7 @@ Int_t linestyle2[] = {1,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
 
 const int nFiles = 2;
 TString inDirData[nFiles] = {
+
   "$HOME/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts/Default/unfolding_Bayes_4/finalSpectra/", // pp final pT spectrum
   "../" //p-Pb final pT spectrum
   //"$HOME/Work/alice/analysis/pPb_run2/D0jet/PreliminaryOut/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning_MAIN/unfolding_Bayes_3_MAIN/finalSpectra/" //p-Pb final pT spectrum
@@ -19,37 +20,41 @@ TString inDirData[nFiles] = {
 TString dataFile[nFiles] = {
   "JetPtSpectrum_final.root",
   "JetPtSpectrum_final_pPb.root"
-}
+};
 
 TString histName[nFiles] = {
   "hData_binned",
   "hData_binned"
-}
+};
 
 
 TString desc[nFiles] = {
-  "D^{0}-jet, pp 5@TeV (#times A)",
-  "D^{0}-jet, p-Pb@5TeV"
+  "pp, #sqrt{#it{s}} = 5.02 TeV (scaled by A)",
+  "p-Pb, #sqrt{#it{s}_{NN}} = 5.02 TeV,  y_{NN} = 0.465"
 };
 
 const int     ptbinsN = 7;
 double        ptbinsA[ptbinsN+1] = { 5,6,8,10,14,20,30,50 };
-double        plotmin = 5, plotmax = 50;
+//double        plotmin = 5, plotmax = 50;
 
 double        sysUnc_pPb[ptbinsN];
 double        sysUncErr_pPb[ptbinsN] = {0.3571682, 0.1144968, 0.04982845, 0.01508283, 0.003925845, 0.001088327, 0.0001712551};
 double        sysUnc_pp[ptbinsN];
-double        sysUncErr_pp[ptbinsN] = {0.15,0.15,0.15,0.15,0.15,0.15,0.15};
+
+//double        sysUncErr_pp[ptbinsN] = {0.104599235179,0.0886904729946,0.114415907985,0.111763142404,0.15895282319,0.180252600536,0.199602104197};//norm Lum included
+double        sysUncErr_pp[ptbinsN] = {0.104599395179,0.0886906329946,0.114416067985,0.111763302404,0.15895298319,0.180252760536,0.199602264197};//with BR 0.04% incl
 double        sysUnc[ptbinsN];
 double        sysUncErr[ptbinsN];
-
 //double        sysUnc_pPb[ptbinsN] = {1.949626, 1.018353, 0.4938436, 0.1498547, 0.03191447, 0.005496932, 0.0007480437};
+double ptval[ptbinsN];
+double ptvalunc[ptbinsN];
 
-void RpPb(TString outName = "$HOME/Work/alice/analysis/RpPb")
+void compareData(TString inName, TString outHistName);
+void RpPb(TString outName = "$HOME/Work/alice/analysis/RpPb/xsec")
 {
 
   gSystem->Exec(Form("mkdir %s",outName.Data()));
-  plotmin = ptbinsA[0], plotmax = ptbinsA[ptbinsN];
+  //plotmin = ptbinsA[0], plotmax = ptbinsA[ptbinsN];
 
   compareData(outName,"RpPb_pPbcuts");
 
@@ -78,9 +83,19 @@ void compareData(TString inName, TString outHistName)
             }
 
             TCanvas *cspec = new TCanvas("cspec","cspec",900,800);
+            //TCanvas *cspec = new TCanvas("cspec","cspec",9000,8000);
             cspec->SetLogy();
 
-            TLegend *leg = new TLegend(0.5,0.55,0.75,0.65);
+   cspec->SetLeftMargin(0.13);
+   cspec->SetRightMargin(0.09);
+   cspec->SetTopMargin(0.09);
+   cspec->SetBottomMargin(0.13);
+
+   cspec->SetTickx(1);
+   cspec->SetTicky(1);
+
+
+            TLegend *leg = new TLegend(0.33,0.58,0.82,0.68);
             leg->SetBorderSize(0);
 
             TH1F *spec[nFiles];
@@ -92,21 +107,21 @@ void compareData(TString inName, TString outHistName)
             for(int i=0; i<nFiles; i++) {
                 spec[i] = (TH1F*)fproj[i]->Get(Form("%s",histName[i].Data()));
                 spec[i]->Sumw2();
-                spec[i]->SetTitle();
+                spec[i]->SetTitle("");
                 spec[i]->SetLineColor(colors2[i]);
                 spec[i]->SetMarkerColor(colors2[i]);
                 spec[i]->SetMarkerStyle(markers2[i]);
                 spec[i]->SetMinimum(0.001);
 
-                specReb[i] = (TH1F*)spec[i]->Rebin(ptbinsN,Form("specReb_%d",i),ptbinsA);
-                specReb[i]->SetTitle();
+                //specReb[i] = (TH1F*)spec[i]->Rebin(ptbinsN,Form("specReb_%d",i),ptbinsA);
+                specReb[i] = (TH1F*)spec[i]->Clone(Form("specReb_%d",i));
+                specReb[i]->SetTitle("");
                 specReb[i]->SetLineColor(colors2[i]);
                 specReb[i]->SetMarkerColor(colors2[i]);
                 specReb[i]->SetMarkerStyle(markers2[i]);
                 if(!i) specReb[i]->Scale(208);
                 //specReb[i]->GetXaxis()->SetRangeUser(plotmin,plotmax);
-                Double_t ptval[ptbinsN];
-                Double_t ptvalunc[ptbinsN];
+
                 for(int j=0; j<specReb[i]->GetNbinsX(); j++){
                   ptval[j] = (ptbinsA[j]+ptbinsA[j+1]) / 2.;
                   ptvalunc[j] = (ptbinsA[j+1]-ptbinsA[j]) / 2.;
@@ -125,6 +140,7 @@ void compareData(TString inName, TString outHistName)
 
                 }
                 leg->AddEntry(specReb[i],desc[i].Data());
+leg->SetTextSize(0.035);
             }
 
             TGraphAsymmErrors *graSys_pp  = new TGraphAsymmErrors(ptbinsN,ptval,sysUnc_pp,ptvalunc,ptvalunc,sysUncErr_pp,sysUncErr_pp);
@@ -135,18 +151,20 @@ void compareData(TString inName, TString outHistName)
             graSys_pPb->SetFillColor(colors2[3]);
             graSys_pPb->SetLineColor(colors2[3]);
 
-
             TH1F *Graph_central_syst_unc1 = new TH1F("Graph_central_syst_unc1","",100,4.8,50.2);
             Graph_central_syst_unc1->SetMinimum(2.e-04);
             Graph_central_syst_unc1->SetMaximum(10);
             Graph_central_syst_unc1->SetDirectory(0);
             Graph_central_syst_unc1->SetStats(0);
             Graph_central_syst_unc1->GetXaxis()->SetTitle("#it{p}_{T,ch jet} (GeV/#it{c})");
+            Graph_central_syst_unc1->GetXaxis()->SetTitleOffset(1.3);
             Graph_central_syst_unc1->GetXaxis()->SetLabelFont(42);
             Graph_central_syst_unc1->GetXaxis()->SetLabelSize(0.035);
             Graph_central_syst_unc1->GetXaxis()->SetTitleSize(0.035);
             Graph_central_syst_unc1->GetXaxis()->SetTitleFont(42);
-            Graph_central_syst_unc1->GetYaxis()->SetTitle("#frac{d^{2}#sigma}{d#it{p}_{T}d#it{#eta}} [mb (GeV/#it{c})^{-1}]");
+            //Graph_central_syst_unc1->GetYaxis()->SetTitle("#frac{d^{2}#sigma}{d#it{p}_{T}d#it{#eta}} [mb (GeV/#it{c})^{-1}]");
+            Graph_central_syst_unc1->GetYaxis()->SetTitle("#frac{d^{2}#sigma}{d#it{p}_{T}d#it{#eta}} mb (GeV/#it{c})^{-1}");
+            Graph_central_syst_unc1->GetYaxis()->SetTitleOffset(1.3);
             Graph_central_syst_unc1->GetYaxis()->SetLabelFont(42);
             Graph_central_syst_unc1->GetYaxis()->SetLabelSize(0.035);
             Graph_central_syst_unc1->GetYaxis()->SetTitleSize(0.035);
@@ -163,25 +181,29 @@ void compareData(TString inName, TString outHistName)
             specReb[0]->Draw("same");
             leg->Draw("same");
 
-            TPaveText *pt = new TPaveText(0.4,0.7,0.85,0.9,"NB NDC");
+            TPaveText *pt = new TPaveText(0.33,0.72,0.82,0.88,"NB NDC");
             pt->SetBorderSize(0);
             pt->SetFillStyle(0);
             pt->SetTextAlign(13);
             pt->SetTextFont(43);
             pt->SetTextSize(22);
             TText *text = new TText;
-            text = pt->AddText("pp, p-Pb #sqrt{#it{s}_{NN}} = 5.02 TeV");
-            text = pt->AddText(Form("Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.%d, |#it{#eta}_{lab}^{jet}| < 0.%d",3,6));
-            text = pt->AddText(Form ("with D^{0}, %d < #it{p}_{T,D} < %d GeV/#it{c}",3,36));
+            text = pt->AddText("ALICE Preliminary");
+            //text = pt->AddText("pp, p-Pb #sqrt{#it{s}_{NN}} = 5.02 TeV");
+//            text = pt->AddText("#sqrt{#it{s}_{NN}} = 5.02 TeV");
+            text = pt->AddText(Form("charged jets, anti-#it{k}_{T}, #it{R} = 0.%d, |#it{#eta}_{lab}| < 0.%d",3,6));
+            text = pt->AddText(Form ("with D^{0}, %d < #it{p}_{T,D^{0}} < %d GeV/#it{c}",3,36));
+//           pt->SetTextFont(42);
+pt->SetTextSize(27);
             pt->Draw();
 
           cspec->SaveAs(Form("%s/%s.pdf",out.Data(),outHistName.Data()));
           cspec->SaveAs(Form("%s/%s.png",out.Data(),outHistName.Data()));
 
-
+return;
             TCanvas *cspec2 = new TCanvas("cspec2","cspec2",1000,600);
 
-                TH1F *hratio = (TH1F*)specReb[1]->Clone( Form("hratio_%d",i));
+                TH1F *hratio = (TH1F*)specReb[1]->Clone( Form("hratio_%d",0));
                 hratio->Divide(specReb[0]);
                 hratio->SetLineStyle(linestyle2[1]);
                 hratio->SetLineColor(colors2[4]);
@@ -236,6 +258,6 @@ void compareData(TString inName, TString outHistName)
             cspec2->SaveAs(Form("%s/%s_ratio.pdf",out.Data(),outHistName.Data()));
             cspec2->SaveAs(Form("%s/%s_ratio.png",out.Data(),outHistName.Data()));
 
-            return;
+            return 0;
 
 }

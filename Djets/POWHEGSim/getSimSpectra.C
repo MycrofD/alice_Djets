@@ -17,6 +17,8 @@ double jetptmin = 5, jetptmax = 30; // for D pT spectra
 double jetEta = 0.9-fRpar;
 int BFDsim;
 
+
+
 //quark: 1 = beauty, 0 = charm
 void getSimSpectra(
 TString simFile = "./",
@@ -55,7 +57,7 @@ void getSimSpectra(TString simFile, int simNr,
     simFile += ".root";
 
     TH1D *hPt;
-    if(jet) hPt = (TH1D*) GetInputSimHistJet(simFile.Data(),hPt, isEff, effFilePrompt.Data(), effFileNonPrompt.Data(),isDptcut);
+    if(jet) hPt = (TH1D*) GetInputSimHistJet(simFile.Data(),hPt, isEff, effFilePrompt.Data(), effFileNonPrompt.Data(),isDptcut,quark,simNr);
     else hPt = (TH1D*) GetInputSimHistD(simFile.Data(),hPt,isjetptcut);
 
     TString out = outFileDir;
@@ -95,7 +97,7 @@ TH1* GetInputHist(TString inFile, string histName,TH1 *hh){
     return hh;
 }
 
-TH1* GetInputSimHistJet(TString inFile, TH1 *hPt, bool isEff, TString effFilePrompt, TString effFileNonPrompt,bool isDptcut){
+TH1* GetInputSimHistJet(TString inFile, TH1 *hPt, bool isEff, TString effFilePrompt, TString effFileNonPrompt,bool isDptcut, int isNPrompt, int SimNr){
 
     TFile *fileInput = new TFile(inFile,"read");
     if(!fileInput){
@@ -108,8 +110,15 @@ TH1* GetInputSimHistJet(TString inFile, TH1 *hPt, bool isEff, TString effFilePro
       return kFALSE;
     }
 
-    TH1D *hxsection = (TH1D*)dir->FindObject("fHistXsectionVsPtHard");
-     if(!hxsection) {
+    TH1D *hxsection;
+    if(!isNPrompt)	hxsection = (TH1D*)dir->FindObject("fHistXsection");
+    else { 
+          if(SimNr == 11)  hxsection = (TH1D*)dir->FindObject("fHistXsection");
+          else hxsection = (TH1D*)dir->FindObject("fHistXsectionVsPtHard");
+          //else hxsection = (TH1D*)dir->FindObject("fHistXsection");
+    }   
+ 
+    if(!hxsection) {
       std::cout << "Error in getting x-section hist! Exiting..." << std::endl;
       return kFALSE;
     }

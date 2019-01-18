@@ -43,8 +43,10 @@ TString sysDir = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3Pythi
 bool issys = 1,
 bool issim = 1,
 bool simsys = 1,
-TString histBase = "unfoldedSpectrum",
-bool oldCounter = 1
+TString listName = "",
+bool oldCounter = 0,
+TString histBase = "unfoldedSpectrum"
+
 )
 {
     isSimSys = simsys;
@@ -59,7 +61,16 @@ bool oldCounter = 1
     xAxis = new double[fptbinsJetFinalN+1];
     for(int k=0; k<fptbinsJetFinalN+1; k++) xAxis[k] = fptbinsJetFinalA[k];
     systuncP = new double[fptbinsJetFinalN];
-    for(int k=0; k<fptbinsJetFinalN; k++) systuncP[k] = 0.15;
+//    for(int k=0; k<fptbinsJetFinalN; k++) systuncP[k] = 0.15;
+//    systuncErr_pp[ptbinsN] = {0.104599235179,0.0886904729946,0.114415907985,0.111763142404,0.15895282319,0.180252600536,0.199602104197};
+//    sysUncErr_pp[ptbinsN] = {0.104599395179,0.0886906329946,0.114416067985,0.111763302404,0.15895298319,0.180252760536,0.199602264197};//with BR 0.04% incl
+systuncP[0]=0.104599395179;
+systuncP[1]=0.0886906329946;
+systuncP[2]=0.114416067985;
+systuncP[3]=0.111763302404;
+systuncP[4]=0.15895298319;
+systuncP[5]=0.180252760536;
+systuncP[6]=0.199602264197;
     sysCutVar = new double[fptbinsJetFinalN];
     for(int k=0; k<fptbinsJetFinalN; k++) sysCutVar[k] = 0.05;
 
@@ -78,6 +89,7 @@ bool oldCounter = 1
       nEv = nEvScale*nEvSel;
     }
     else {
+      //dir = (TDirectoryFile*)File->Get(Form("PWG3_D2H_DmesonsForJetCorrelations%sMBN0",listName.Data()));
       dir = (TDirectoryFile*)File->Get("PWG3_D2H_DmesonsForJetCorrelationsMBN0");
       AliNormalizationCounter *c = (AliNormalizationCounter*)dir->Get("NormalizationCounter");
       nEv = c->GetNEventsForNorm();
@@ -536,7 +548,8 @@ void drawFinal(TString outPlotDir){
    CentralPointsStatisticalUncertainty__1->GetXaxis()->SetLabelSize(0.035);
    CentralPointsStatisticalUncertainty__1->GetXaxis()->SetTitleSize(0.035);
    CentralPointsStatisticalUncertainty__1->GetXaxis()->SetTitleFont(42);
-   CentralPointsStatisticalUncertainty__1->GetYaxis()->SetTitle("#frac{d^{2}#sigma}{d#it{p}_{T}d#it{#eta}} [mb (GeV/#it{c})^{-1}]");
+   //CentralPointsStatisticalUncertainty__1->GetYaxis()->SetTitle("#frac{d^{2}#sigma}{d#it{p}_{T}d#it{#eta}} [mb (GeV/#it{c})^{-1}]");
+   CentralPointsStatisticalUncertainty__1->GetYaxis()->SetTitle("#frac{d^{2}#sigma}{d#it{p}_{T}d#it{#eta}} mb (GeV/#it{c})^{-1}");
    CentralPointsStatisticalUncertainty__1->GetYaxis()->SetLabelFont(43);
    CentralPointsStatisticalUncertainty__1->GetYaxis()->SetLabelSize(22);
    CentralPointsStatisticalUncertainty__1->GetYaxis()->SetTitleSize(26);
@@ -701,7 +714,7 @@ if(isSim){
 
    if(isSys){
 
-     entry=leg->AddEntry("CentralPointsSystematicUncertainty_copy","Syst. Unc. (data)","f");
+     entry=leg->AddEntry("CentralPointsSystematicUncertainty_copy","Syst. unc. (data)","f");
      ci = TColor::GetColor("#cccccc");
      entry->SetFillColor(ci);
      entry->SetFillStyle(1001);
@@ -727,7 +740,7 @@ if(isSim){
      entry->SetMarkerSize(1.2);
      entry->SetTextFont(43);
      if(isSimSys) {
-       entry=leg->AddEntry("theorySyst_copy","Syst. Unc. (theory)","f");
+       entry=leg->AddEntry("theorySyst_copy","Syst. unc. (theory)","f");
        entry->SetFillColor(1);
        entry->SetLineColor(ci);
        entry->SetLineStyle(1);
@@ -748,10 +761,11 @@ if(isSim){
    pt->SetTextSize(22);
    //TText *text = pt->AddText("ALICE Preliminary");
    TText *text = new TText;
+   text = pt->AddText("ALICE Preliminary");
    if(fSystem) text = pt->AddText("p-Pb, #sqrt{#it{s}_{NN}} = 5.02 TeV");
    else text = pt->AddText("pp, #sqrt{#it{s}} = 5.02 TeV");
-   text = pt->AddText(Form("Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.%d, |#it{#eta}_{lab}^{jet}| < 0.%d",Rpar,9-Rpar));
-   text = pt->AddText(Form ("with D^{0}, %d < #it{p}_{T,D} < %d GeV/#it{c}",(int)fptbinsDA[0],(int)fptbinsDA[fptbinsDN]));
+   text = pt->AddText(Form("charged jets, anti-#it{k}_{T}, #it{R} = 0.%d, |#it{#eta}_{lab}^{jet}| < 0.%d",Rpar,9-Rpar));
+   text = pt->AddText(Form ("with D^{0}, %d < #it{p}_{T,D^{0}} < %d GeV/#it{c}",(int)fptbinsDA[0],(int)fptbinsDA[fptbinsDN]));
    pt->Draw();
 
    // does nothing

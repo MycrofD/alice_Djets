@@ -1,16 +1,11 @@
 #include "style.C"
 
-TString out = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning/systematics";
-TString jetDataFile = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning/signalExtraction/JetPtSpectra_SB_eff.root";
 const int ptbinsJetN = 9;
 double ptbinsJet[ptbinsJetN+1] = { 3,4,5,6,8,10,14,20,30,50 };
 
 // Pb-Pb binning
-TString out = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_PbPbbinning/systematics";
-TString jetDataFile = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_PbPbbinning/signalExtraction/JetPtSpectra_SB_eff.root";
-const int ptbinsJetN = 7;
-double ptbinsJet[ptbinsJetN+1] = {3,5,10,15,20,25,35,50 };
-
+TString out = "out";
+TString jetDataFile = "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts/Default_249/signalExtraction/JetPtSpectra_SB_eff.root";
 
 void compareVariationAnalysis(char *outDir = "JetPtComparison" )
 {
@@ -20,7 +15,7 @@ void compareVariationAnalysis(char *outDir = "JetPtComparison" )
     double plotmin = 3;
     double plotmax = 50;
 
-    TString jetSimFile = "FinalRawYieldCentralPlusSystUncertainty_Dzero.root";
+    TString jetSimFile = "out/FinalRawYieldCentralPlusSystUncertainty_Dzero.root";
     TFile *outFile = new TFile(Form("%s/YieldExtraction.root",out.Data()),"RECREATE");
 
 	  TFile *jetPtFile2 = new TFile(jetDataFile,"read");
