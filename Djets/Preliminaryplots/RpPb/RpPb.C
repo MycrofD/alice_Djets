@@ -11,11 +11,11 @@ Int_t linestyle2[] = {1,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
 
 const int nFiles = 2;
 TString inDirData[nFiles] = {
-//  "$HOME/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts_0final/Default/unfolding_Bayes_4/finalSpectra", // pp final pT spectrum
-"/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_cutTight/DzeroR03_def_437_old0/Default/unfolding_Bayes_4/finalSpectra",
+
+  "$HOME/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts/Default/unfolding_Bayes_4/finalSpectra/", // pp final pT spectrum
   "../" //p-Pb final pT spectrum
   //"$HOME/Work/alice/analysis/pPb_run2/D0jet/PreliminaryOut/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning_MAIN/unfolding_Bayes_3_MAIN/finalSpectra/" //p-Pb final pT spectrum
-};
+}
 
 TString dataFile[nFiles] = {
   "JetPtSpectrum_final.root",
@@ -40,17 +40,11 @@ double        ptbinsA[ptbinsN+1] = { 5,6,8,10,14,20,30,50 };
 double        sysUnc_pPb[ptbinsN];
 double        sysUncErr_pPb[ptbinsN] = {0.3571682, 0.1144968, 0.04982845, 0.01508283, 0.003925845, 0.001088327, 0.0001712551};
 double        sysUnc_pp[ptbinsN];
-//double        sysUncErr_pp[ptbinsN] = {0.10,0.09,0.11,0.11,0.16,0.18,0.20};
-//{0.0105,0.007425,0.01265,0.01205,0.024825,0.03205,0.0394}
-//double        sysUncErr_pp[ptbinsN] = {0.114,0.10,0.11,0.12,0.17,0.19,0.20};
-////{0.0130,0.009925,0.01315,0.01455,0.027325,0.03455,0.0419}
+
 //double        sysUncErr_pp[ptbinsN] = {0.104599235179,0.0886904729946,0.114415907985,0.111763142404,0.15895282319,0.180252600536,0.199602104197};//norm Lum included
 double        sysUncErr_pp[ptbinsN] = {0.104599395179,0.0886906329946,0.114416067985,0.111763302404,0.15895298319,0.180252760536,0.199602264197};//with BR 0.04% incl
-//{0.010941,0.007866,0.013091,0.012491,0.025266,0.032491,0.039841}
 double        sysUnc[ptbinsN];
 double        sysUncErr[ptbinsN];
-
-
 //double        sysUnc_pPb[ptbinsN] = {1.949626, 1.018353, 0.4938436, 0.1498547, 0.03191447, 0.005496932, 0.0007480437};
 double ptval[ptbinsN];
 double ptvalunc[ptbinsN];
@@ -127,8 +121,7 @@ void compareData(TString inName, TString outHistName)
                 specReb[i]->SetMarkerStyle(markers2[i]);
                 if(!i) specReb[i]->Scale(208);
                 //specReb[i]->GetXaxis()->SetRangeUser(plotmin,plotmax);
-            //    double ptval[ptbinsN];
-//                Double_t ptvalunc[ptbinsN];
+
                 for(int j=0; j<specReb[i]->GetNbinsX(); j++){
                   ptval[j] = (ptbinsA[j]+ptbinsA[j+1]) / 2.;
                   ptvalunc[j] = (ptbinsA[j+1]-ptbinsA[j]) / 2.;

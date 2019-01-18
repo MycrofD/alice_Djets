@@ -21,9 +21,8 @@ fi
 roounfoldpwd=$HOME/ALICE_HeavyFlavour/RooUnfold-1.1.1/libRooUnfold
 
 currDir=`pwd`
-outputdirectorybase=$HOME/Work/alice/analysis/pp5TeV/D0jet/results_cutTight/DzeroR03_
-#outputdirectory=${outputdirectorybase}pPbCuts_simFold_evtgen
-outputdirectory=${outputdirectorybase}def_437_old0 #_simFold_
+outputdirectorybase=$HOME/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_
+outputdirectory=${outputdirectorybase}pPbCuts 
 #outputdirectory=${outputdirectorybase}cuts2
 outputdirectorySignal=Default
 
@@ -43,7 +42,6 @@ isMoreFiles=0                                     # 1 if there are more input fi
 prod=kl                                           # if there are more input files to be read
 reflfile=reflectionTemplates_pPb.root
 effMCfile=AnalysisResults_fast_R03_D0MC_def.root
-#effMCfile=AnalysisResults_479_cutTight.root
 MCfile=$effMCfile 
 #MCfile=AnalysisResults_fast_R03_D0MCPythia_JES96_1.root
 efficiencyfile=$effMCfile
@@ -55,6 +53,7 @@ postfix=HP4 #cut2
 ispostfixFD=0                                     # if container in the analysis output file has different name than default you set here if and what is the postfix, for the FD part wagons are usually configured with additional "FD" string in the container name, you should adjust this to yours configuration
 #postfixFD=FD
 postfixFD=HP4 #FDcut2
+
 
 isRefl=1
 isBkgRM=0

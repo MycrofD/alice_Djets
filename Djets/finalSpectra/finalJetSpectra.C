@@ -46,6 +46,7 @@ bool simsys = 1,
 TString listName = "",
 bool oldCounter = 0,
 TString histBase = "unfoldedSpectrum"
+
 )
 {
     isSimSys = simsys;
@@ -88,7 +89,6 @@ systuncP[6]=0.199602264197;
       nEv = nEvScale*nEvSel;
     }
     else {
-      //dir = (TDirectoryFile*)File->Get("PWG3_D2H_DmesonsForJetCorrelationsHP1MBN0");
       //dir = (TDirectoryFile*)File->Get(Form("PWG3_D2H_DmesonsForJetCorrelations%sMBN0",listName.Data()));
       dir = (TDirectoryFile*)File->Get("PWG3_D2H_DmesonsForJetCorrelationsMBN0");
       AliNormalizationCounter *c = (AliNormalizationCounter*)dir->Get("NormalizationCounter");

@@ -54,12 +54,9 @@ bool oldCounter = 0)
       nEv = nEvScale*nEvSel;
     }
     else {
-      //dir = (TDirectoryFile*)File->Get("PWG3_D2H_DmesonsForJetCorrelationsHP1MBN0");
       dir = (TDirectoryFile*)File->Get(Form("PWG3_D2H_DmesonsForJetCorrelations%sMBN0",listName.Data()));
-//      dir = (TDirectoryFile*)File->Get("PWG3_D2H_DmesonsForJetCorrelationsMBN0");
       AliNormalizationCounter *c = (AliNormalizationCounter*)dir->Get("NormalizationCounter");
       nEv = c->GetNEventsForNorm();
-cout << "----------------------------------------        "<< nEv << "          ---------------------------------" << endl;
     }
 
     double dataLum = nEv/(sigma_in*1000) ;//Luminosity in mbar
