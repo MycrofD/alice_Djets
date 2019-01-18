@@ -49,15 +49,23 @@ enum DMesonSpecies {kD0toKpi, kDStarD0pi};
     const int     APb = 208;
 
     //====== D pT bins ---- set up your D pT bins ======
-    const int     fptbinsDN = 10;
-    double        fptbinsDA[fptbinsDN+1] = { 3,4,5,6,7,8,10,12,16,24,36 };
-    //====== jet pT bins ---- set up your jet pT bins ======
-    const int     fptbinsJetTrueN = 10;
-    double        fptbinsJetTrueA[fptbinsJetTrueN+1] = { 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
-    const int     fptbinsJetMeasN = 10;
-    double        fptbinsJetMeasA[fptbinsJetMeasN+1] = { 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
-    const int     fptbinsJetFinalN = 10;
-    double        fptbinsJetFinalA[fptbinsJetFinalN+1] = { 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+    const int     fptbinsDN = 12;
+    double        fptbinsDA[fptbinsDN+1] = {1,2,3,4,5,6,7,8,10,12,16,24,36 };
+    //const int     fptbinsDN = 8;
+    //double        fptbinsDA[fptbinsDN+1] = { 3,4,5,6,7,8,10,12,16};
+    //const int     fptbinsDN = 8;
+    //double        fptbinsDA[fptbinsDN+1] = { 4,5,7,8,10,12,16,24,36 };
+
+    //====== jet pT bins --- set up your jet pT bins ======
+    const int 	  fptbinsJetN = 3;
+    double	  fptbinsJetA[fptbinsJetN+1] = {1.0, 15.0, 30.0, 50.0};
+    //====== z bins ---- set up your z (momentum fraction) bins ======
+    const int     fptbinsZTrueN = 9;
+    double        fptbinsZTrueA[fptbinsZTrueN+1] = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+    const int     fptbinsZMeasN = 9;
+    double        fptbinsZMeasA[fptbinsZMeasN+1] = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+    const int     fptbinsZFinalN = 9;
+    double        fptbinsZFinalA[fptbinsZFinalN+1] = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
     //====== z range ---- set up your min, max z ======
     double        zmin = -2, zmax = 2.; // for D-jet pT spectrum
 
@@ -67,8 +75,8 @@ enum DMesonSpecies {kD0toKpi, kDStarD0pi};
     Float_t       fsigmaSignal = 2;                  //-----! sigma for the signal region
     Float_t       fsigmaBkg[] = {-9,-4,4,9};         //-----! sigma for the SB region (both left and right side from the fit)
     Float_t       fDmass = 1.864, fDsigma = 0.010;   //-----! initial values for D mass and sigma
-    Float_t       fDsigmafix[fptbinsDN] = {0.01,0.011,0.01175,0.0125,0.013,0.0135,0.0145,0.016,0.0175,0.0185};   //-----! initial values for D mass and sigma
-    Float_t       minf = 1.71, maxf = 2.1;           //-----! min/mass of the inv. mass distributions
+    //Float_t       fDsigmafix[fptbinsDN] = {0.01,0.011,0.01175,0.0125,0.013,0.0135,0.0145,0.016,0.0175,0.0185};   //-----! initial values for D mass and sigma
+    double       minf = 1.71, maxf = 2.1;           //-----! min/mass of the inv. mass distributions
     Int_t         fRebinMass = 2;                    //-----! rebining of the inv. mass distributions
 
     Int_t fColors[] = {1,2,8,4,kOrange-1,6,kGray+1,kCyan+1,kMagenta+2,kGreen+3,kViolet+5,kYellow+2};

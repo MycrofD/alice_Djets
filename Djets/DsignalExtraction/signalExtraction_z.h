@@ -28,7 +28,7 @@
 
     double jetmin = 0, jetmax = 50;
     double jetplotmin = 2, jetplotmax = 50;
-    double zplotmin = 0, zplotmax = 1;
+    double zplotmin = 0, zplotmax = 1.0;
     bool isEta = 0;
     double jetEta = 0.4;
 
@@ -45,9 +45,9 @@
     double *efficiency = 0x0;
 
     TH1F* hmass[fptbinsDN];
-    TH1F *hmass_l[fptbinsDN];
-    TH1F *hmass_u[fptbinsDN];
-    TH1F *hmass_c[fptbinsDN];
+    TH1F* hmass_l[fptbinsDN];
+    TH1F* hmass_u[fptbinsDN];
+    TH1F* hmass_c[fptbinsDN];
     TF1* fullfit[fptbinsDN];
     TF1* massfit[fptbinsDN];
     TF1* bkgfit[fptbinsDN];
@@ -55,28 +55,30 @@
 
     TH1F* hjetpt[fptbinsDN];
     TH1F *hjetpt_sb[fptbinsDN];
-    TH1F *hjetptsub[fptbinsDN];
+    TH1F* hjetptsub[fptbinsDN];
     TH1F *hjetptcorr[fptbinsDN];
 
-    TH1F *hjetptspectrum;
-    TH1F *hrawjetptspectrum;
-    TH1F *hjetptspectrumReb;
-    TH1F *hjetptspectrumRebScaled;
-    TH1F *hjetptspectrumRebUnc;
+    TH1F* hjetptspectrum;
+    TH1F* hrawjetptspectrum;
+    TH1F* hjetptspectrumReb;
+    TH1F* hjetptspectrumRebScaled;
+    TH1F* hjetptspectrumRebUnc;
 
-    TH1F *hmean;
-    TH1F *hsigma;
-    TH1F *hrelErr;
-    TH1F *hsign;
-    TH1F *hsb;
-    TH1F *hSignal;
+    TH1F* hmean;
+    TH1F* hsigma;
+    TH1F* hrelErr;
+    TH1F* hsign;
+    TH1F* hsb;
+    TH1F* hSignal;
     TH3D* hInvMassptD;
     TH1F* hReflRS;
 
-    setHistoDetails(TH1 *h, Color_t color, Style_t Mstyle, Width_t width);
+    void setHistoDetails(TH1 *h, int scale, Color_t color, Style_t Mstyle, Size_t size);//, Width_t width);
+    void SaveCanvas(TCanvas *c, TString name = "tmp");
     Bool_t rawJetSpectra(TString outdir, TString prod);
     void  saveSpectraPlots(TString outdir,TString prod);
     void  saveFitParams(TString outdir,TString prod);
-    Bool_t SetReflection(AliHFInvMassFitter* &fitter, Int_t iBin, Float_t fLeftFitRange, Float_t fRightFitRange,Float_t &RS);
+    Bool_t SetReflection(AliHFInvMassFitter* &fitter, Float_t fLeftFitRange, Float_t fRightFitRange,Float_t &RS, Int_t iBin);
+    Bool_t SetReflection(AliHFInvMassFitter* &fitter, Float_t fLeftFitRange, Float_t fRightFitRange,Float_t &RS, Int_t ptmin, Int_t ptmax );
 
 #endif
