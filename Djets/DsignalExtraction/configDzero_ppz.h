@@ -49,16 +49,32 @@ enum DMesonSpecies {kD0toKpi, kDStarD0pi};
     const int     APb = 208;
 
     //====== D pT bins ---- set up your D pT bins ======
-    const int     fptbinsDN = 12;
-    double        fptbinsDA[fptbinsDN+1] = {1,2,3,4,5,6,7,8,10,12,16,24,36 };
-    //const int     fptbinsDN = 8;
-    //double        fptbinsDA[fptbinsDN+1] = { 3,4,5,6,7,8,10,12,16};
-    //const int     fptbinsDN = 8;
-    //double        fptbinsDA[fptbinsDN+1] = { 4,5,7,8,10,12,16,24,36 };
+//    const int     fptbinsDN = 12;
+//    double        fptbinsDA[fptbinsDN+1] = {1,2,3,4,5,6,7,8,10,12,16,24,36 };
+//    const int     fptbinsDN = 8;
+//    double        fptbinsDA[fptbinsDN+1] = { 3,4,5,6,7,8,10,12,16};// 1-16 Jetpt
+//    const int     fptbinsDN = 3;
+//    double        fptbinsDA[fptbinsDN+1] = { 3,4,5,6};// 3-6 Jetpt
+//    const int     fptbinsDN = 6;
+//    double        fptbinsDA[fptbinsDN+1] = {3,4,5,6,7,8,10};// 6-10 Jetpt
+//    const int     fptbinsDN = 3;
+//    double        fptbinsDA[fptbinsDN+1] = {6,7,8,10};// 6-10 Jetpt
+//    const int     fptbinsDN = 8;
+//    double        fptbinsDA[fptbinsDN+1] = {3,4,5,6,7,8,10,12,16};// 10-16 Jetpt
+//    const int     fptbinsDN = 5;
+//    double        fptbinsDA[fptbinsDN+1] = {6,7,8,10,12,16};// 10-16 Jetpt
+    const int     fptbinsDN = 3;
+    double        fptbinsDA[fptbinsDN+1] = {8,10,12,16};// 10-16 Jetpt
+//    const int     fptbinsDN = 10;
+//    double        fptbinsDA[fptbinsDN+1] = { 3,4,5,6,7,8,10,12,16,24,36};// 16-36 Jetpt
+//    const int     fptbinsDN = 3;
+//    double        fptbinsDA[fptbinsDN+1] = { 12,16,24,36 };// 36-50 Jetpt
 
     //====== jet pT bins --- set up your jet pT bins ======
-    const int 	  fptbinsJetN = 3;
-    double	  fptbinsJetA[fptbinsJetN+1] = {1.0, 15.0, 30.0, 50.0};
+//    const int 	  fptbinsJetN = 3;
+//    double	  fptbinsJetA[fptbinsJetN+1] = {3.0, 16.0, 36.0, 50.0};
+    const int 	  fptbinsJetN = 5;
+    double	  fptbinsJetA[fptbinsJetN+1] = {3.0, 6.0, 10.0, 16.0, 36.0, 50.0};
     //====== z bins ---- set up your z (momentum fraction) bins ======
     const int     fptbinsZTrueN = 9;
     double        fptbinsZTrueA[fptbinsZTrueN+1] = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
@@ -67,7 +83,7 @@ enum DMesonSpecies {kD0toKpi, kDStarD0pi};
     const int     fptbinsZFinalN = 9;
     double        fptbinsZFinalA[fptbinsZFinalN+1] = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
     //====== z range ---- set up your min, max z ======
-    double        zmin = -2, zmax = 2.; // for D-jet pT spectrum
+    double        zmin = -2., zmax = 2.; // for D-jet pT spectrum
 
     //====== signal extraction config ======
     Bool_t        fUseRefl = 1;                      //-----! if to use reflections (for D0, you must have reflections files ready)

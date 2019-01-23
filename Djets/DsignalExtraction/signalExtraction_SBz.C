@@ -24,6 +24,7 @@
 
 
 #include "signalExtraction_z.h"
+//--------------------------
 
 bool isRefSys=0;
 double refScale = 1.5;
@@ -31,8 +32,8 @@ double refScale = 1.5;
 void signalExtraction_SBz(
 //  TString data = "$HOME/Work/alice/analysis/out/AnalysisResults.root",
   TString data = "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/trial_437.root",
-  bool isEff = 0, 
-  TString efffile = "../efficiency/DjetEff_prompt.root",
+  bool isEff = 1, 
+  TString efffile = "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts/Default/efficiency/DjetEff_prompt_jetpt5_50.root",
   bool isRef = 0, 
   TString refFile = "test.root",
   bool postfix = 0, 
@@ -44,10 +45,9 @@ void signalExtraction_SBz(
   bool isprefix=0
 )
 {
-
 	bool zjet1 = 0, zjet2 = 0, zjet3 = 0; 					// 1. zjet1/2/3 are bin numbers of zjet
 //	bool zjet = 0;
-	int zjetbin = 0; // only this should be changed from 0 to 1, 2, 3.	// 2. zjetbin default is zero. bin numbers too are zero. 
+	int zjetbin = 3; // only this should be changed from 0 to 1, 2, 3.	// 2. zjetbin default is zero. bin numbers too are zero. 
 	switch(zjetbin){ // other cases of zjetbin
 		case 1: 
        			zjet1 = 1, zjet2 = 0, zjet3 = 0;
@@ -59,13 +59,15 @@ void signalExtraction_SBz(
        			zjet1 = 0, zjet2 = 0, zjet3 = 1;
 			break;
 	}
+
+
     fUseRefl = isRef;
     if(fUseRefl) fReflFilename = refFile;
 
     savePlots = save;
     bEff = isEff;
-    if(bEff)plotsDir="/plots";
-    else plotsDir = "/plotsNoEff";
+    if(bEff)plotsDir=Form("/plots/jetbin_%d", zjetbin);
+    else plotsDir = Form("/plotsNoEff/jetbin_%d", zjetbin);
     TString outdir = out;
     gSystem->Exec(Form("mkdir %s",outdir.Data()));
     gSystem->Exec(Form("mkdir %s%s",outdir.Data(),plotsDir.Data()));
@@ -256,8 +258,8 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
     pvJet->SetFillStyle(0);
     pvJet->SetBorderSize(0);
     pvJet->SetTextFont(42);
-    pvJet->SetTextSize(0.085);
-    pvJet->AddText(Form("in Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.%d",Rpar));
+    pvJet->SetTextSize(0.075);
+    pvJet->AddText(Form("#splitline{in Charged Jets,}{Anti-#it{k}_{T}, #it{R} = 0.%d}",Rpar));
     pvJet->SetTextAlign(11);
 
     TPaveText *pvEta = new TPaveText(0.15,0.45-shift,0.8,0.5-shift,"brNDC");
@@ -268,11 +270,12 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
     pvEta->SetTextAlign(11);
     pvEta->AddText(Form("|#it{#eta}_{jet}| < 0.%d",9-Rpar));
 
-    int xnx = 3, xny=4;
-    if(fptbinsDN>4 && fptbinsDN<7) { xnx = 2; xny=3; }
-    else if(fptbinsDN>6 && fptbinsDN<10) { xnx = 3; xny=3; }
-    else if(fptbinsDN>9 && fptbinsDN<13) { xnx = 3; xny=4; }
-    else { xnx = 4; xny=4; }
+    int xnx = 3, xny=3;
+//    if(fptbinsDN<3) { xnx = 3; xny=1; }
+//    if(fptbinsDN>4 && fptbinsDN<7) { xnx = 2; xny=3; }
+//    else if(fptbinsDN>6 && fptbinsDN<10) { xnx = 3; xny=3; }
+//    else if(fptbinsDN>9 && fptbinsDN<13) { xnx = 3; xny=4; }
+//    else { xnx = 4; xny=4; }
 
     TCanvas *c2 = new TCanvas("c2","c2",1200,1200);
     c2->Divide(xnx,xny);
@@ -288,7 +291,7 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
     else if(fptbinsDA[0] == 4) firstPtBin = 5;
     else if(fptbinsDA[0] == 5) firstPtBin = 6;
     else if(fptbinsDA[0] == 6) firstPtBin = 7;
-    if(!firstPtBin) { std::cout << "==== Wrong first value of the D pT (should be 2,3 or 4) === \n"; return kFALSE; }
+    //if(!firstPtBin) { std::cout << "==== Wrong first value of the D pT (should be 2,3 or 4) === \n"; return kFALSE; }
     Float_t RS = 0;
 
     for(int i=0; i<fptbinsDN; i++){
@@ -463,7 +466,7 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         hSignal->SetBinError(i+1,serr);
 
         // ---------------- side-band drawing
-       hmass_l[i] = (TH1F*)hmass[i]->Clone("hmass_l");
+        hmass_l[i] = (TH1F*)hmass[i]->Clone("hmass_l");
         hmass_l[i]->GetXaxis()->SetRangeUser(signal_l_min,signal_l_max);
         hmass_l[i]->SetName(Form("hmass_l_%d",i));
         hmass_u[i] = (TH1F*)hmass[i]->Clone("hmass_u");
@@ -572,19 +575,19 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         if(!hjetptspectrum) hjetptspectrum = (TH1F*)hjetptcorr[i]->Clone("hjetptspectrum");
         else hjetptspectrum->Add(hjetptcorr[i]);
 
-    //}
+    }
 
-    c2->cd(i+1);
+    c2->cd(fptbinsDN+1);
     pvEn->Draw();
     pvD->Draw("same");
     pvJet->Draw("same");
     pvEta->Draw("same");
-    c2jet->cd(i+1);
+    c2jet->cd(fptbinsDN+1);
     pvEn->Draw();
     pvD->Draw("same");
     pvJet->Draw("same");
     pvEta->Draw("same");
-}
+
     if(savePlots) SaveCanvas(c2,outdir+plotsDir+"/invMass"+prod);
     if(savePlots) SaveCanvas(c2jet,outdir+plotsDir+"/jetRawSpectrum"+prod);
 
