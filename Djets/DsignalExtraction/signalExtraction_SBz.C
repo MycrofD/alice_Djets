@@ -45,18 +45,21 @@ void signalExtraction_SBz(
   bool isprefix=0
 )
 {
-	bool zjet1 = 0, zjet2 = 0, zjet3 = 0; 					// 1. zjet1/2/3 are bin numbers of zjet
+	bool zjet1 = 0, zjet2 = 0, zjet3 = 0, zjet4 = 0;			// 1. zjet1/2/3 are bin numbers of zjet
 //	bool zjet = 0;
-	int zjetbin = 3; // only this should be changed from 0 to 1, 2, 3.	// 2. zjetbin default is zero. bin numbers too are zero. 
+	int zjetbin = 4; // only this should be changed from 0 to 1, 2, 3.	// 2. zjetbin default is zero. bin numbers too are zero. 
 	switch(zjetbin){ // other cases of zjetbin
 		case 1: 
-       			zjet1 = 1, zjet2 = 0, zjet3 = 0;
+       			zjet1 = 1;
 			break;
 		case 2: 
-       			zjet1 = 0, zjet2 = 1, zjet3 = 0;
+       			zjet2 = 1;
 			break;
 		case 3: 
-       			zjet1 = 0, zjet2 = 0, zjet3 = 1;
+       			zjet3 = 1;
+			break;
+		case 4: 
+       			zjet4 = 1;
 			break;
 	}
 
@@ -114,6 +117,7 @@ void signalExtraction_SBz(
           if(zjet1)sparse->GetAxis(1)->SetRangeUser(fptbinsJetA[0],fptbinsJetA[1]);
           else if(zjet2)sparse->GetAxis(1)->SetRangeUser(fptbinsJetA[1],fptbinsJetA[2]);
           else if(zjet3)sparse->GetAxis(1)->SetRangeUser(fptbinsJetA[2],fptbinsJetA[3]);
+          else if(zjet4)sparse->GetAxis(1)->SetRangeUser(fptbinsJetA[3],fptbinsJetA[4]);
           if(isEta) sparse->GetAxis(5)->SetRangeUser(-jetEta,jetEta);
           if(i==0) hInvMassptD=(TH3D*)sparse->Projection(3,0,2);
           else hInvMassptD->Add((TH3D*)sparse->Projection(3,0,2));
@@ -660,16 +664,16 @@ void  saveSpectraPlots(TString outdir,TString prod){
       pvCuts->SetBorderSize(0);
       pvCuts->AddText(Form("%s",outdir.Data()));
 
-      TPaveText *pvEn= new TPaveText(0.2,0.80,0.8,0.85,"brNDC");
+      TPaveText *pvEn= new TPaveText(0.12,0.82,0.5,0.87,"brNDC");
       pvEn->SetFillStyle(0);
       pvEn->SetBorderSize(0);
       pvEn->SetTextFont(42);
-      pvEn->SetTextSize(0.045);
+      pvEn->SetTextSize(0.04);
       pvEn->SetTextAlign(11);
       pvEn->AddText(Form("%s",fSystemS.Data()));
 
-      double shift = -0.05;
-      TPaveText *pvJet = new TPaveText(0.52,0.65-shift,0.9,0.7-shift,"brNDC");
+      double shift = -0.10;
+      TPaveText *pvJet = new TPaveText(0.12,0.65-shift,0.5,0.7-shift,"brNDC");
       pvJet->SetFillStyle(0);
       pvJet->SetBorderSize(0);
       pvJet->SetTextFont(42);
@@ -678,7 +682,7 @@ void  saveSpectraPlots(TString outdir,TString prod){
       pvJet->AddText(Form("Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.%d",Rpar));
 
       shift+=0.07;
-      TPaveText *pvD = new TPaveText(0.52,0.65-shift,0.9,0.7-shift,"brNDC");
+      TPaveText *pvD = new TPaveText(0.12,0.65-shift,0.5,0.7-shift,"brNDC");
       pvD->SetFillStyle(0);
       pvD->SetBorderSize(0);
       pvD->SetTextFont(42);
@@ -688,7 +692,7 @@ void  saveSpectraPlots(TString outdir,TString prod){
       else pvD->AddText("with D^{0} #rightarrow K^{-}#pi^{+} and charge conj.");
 
       shift+=0.07;
-      TPaveText *pvEta = new TPaveText(0.52,0.65-shift,0.9,0.7-shift,"brNDC");
+      TPaveText *pvEta = new TPaveText(0.12,0.65-shift,0.5,0.7-shift,"brNDC");
       pvEta->SetFillStyle(0);
       pvEta->SetBorderSize(0);
       pvEta->SetTextFont(42);
@@ -697,7 +701,7 @@ void  saveSpectraPlots(TString outdir,TString prod){
       pvEta->AddText(Form("|#it{#eta}_{jet}| < 0.%d",9-Rpar));
 
       shift+=0.07;
-      TPaveText *pv3 = new TPaveText(0.52,0.65-shift,0.9,0.7-shift,"brNDC");
+      TPaveText *pv3 = new TPaveText(0.12,0.65-shift,0.5,0.7-shift,"brNDC");
       pv3->SetFillStyle(0);
       pv3->SetBorderSize(0);
       pv3->SetTextFont(42);
@@ -745,6 +749,7 @@ hjetptspectrumRebScaled = (TH1F*)hjetptspectrumReb->Clone("hjetptspectrumRebScal
       hjetptspectrumRebScaled->GetXaxis()->SetTitle("z = p_{D}/p_{ch jet}");
       TCanvas *cSpectrumRebin = new TCanvas("cSpectrumRebin","cSpectrumRebin",800,600);
       cSpectrumRebin->SetLogy();
+      hjetptspectrumRebScaled->GetYaxis()->SetRangeUser(100,300000);
       hjetptspectrumRebScaled->Draw();
       pvEn->Draw("same");
       pvD->Draw("same");
