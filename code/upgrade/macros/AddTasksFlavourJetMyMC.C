@@ -12,9 +12,6 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
    const Bool_t bRM = kFALSE,
    const Bool_t bRMEff = kFALSE,
    const Bool_t bPythia = kFALSE,
-   const Bool_t bPythiaMult = kFALSE,
-   const Bool_t bPythiaBkg = kFALSE,
-   const Bool_t bHijing = kFALSE,
    const Bool_t isPrompt = kTRUE,
    TString sText="",/*completes the name of the candidate task lists*/
    Bool_t doBkg = kFALSE
@@ -37,8 +34,8 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
    const TString  sRadius[] = { "R02", "R04", "R06" };
    */
    const Int_t    nRadius = 1;
-   const Double_t aRadius[] = {  0.3  };
-   const TString  sRadius[] = { "R03" };
+   const Double_t aRadius[] = {  0.4  };
+   const TString  sRadius[] = { "R04" };
 
 
    //=============================================================================
@@ -70,7 +67,7 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
 
 
     //Centrality Selection
-  // gROOT->LoadMacro("$ALICE_PHYSICS/OADB/COMMON/MULTIPLICITY/macros/AddTaskMultSelection.C");
+   gROOT->LoadMacro("$ALICE_PHYSICS/OADB/COMMON/MULTIPLICITY/macros/AddTaskMultSelection.C");
    //AliMultSelectionTask *taskMult = AddTaskMultSelection();
 
    //D mesons -- PID
@@ -78,7 +75,7 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
    AliAnalysisTaskSE *taskRespPID = AddTaskPIDResponse(bIsMC,kFALSE,kTRUE,"1");
 
    gROOT->LoadMacro("$ALICE_PHYSICS/OADB/macros/AddTaskPhysicsSelection.C");
-  /* gROOT->LoadMacro("$ALICE_PHYSICS/PWGHF/vertexingHF/macros/AddTaskImproveITS.C");
+   gROOT->LoadMacro("$ALICE_PHYSICS/PWGHF/vertexingHF/macros/AddTaskImproveITS.C");
    // -- Physics selection task
    if(!bIsMC){
         gROOT->LoadMacro("$ALICE_PHYSICS/PWG/EMCAL/macros/AddTaskEmcalPhysicsSelection.C");
@@ -99,7 +96,7 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
    }
    // --
 
-*/
+
 
     //D meson filtering task
     //gROOT->LoadMacro("$ALICE_PHYSICS/PWGJE/FlavourJetTasks/macros/AddTaskSEDmesonsFilterCJ.C");
@@ -114,10 +111,12 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
     //Jet task
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGJE/EMCALJetTasks/macros/AddTaskEmcalJet.C");
     //Rho task
-    //gROOT->LoadMacro("$ALICE_PHYSICS/PWGJE/EMCALJetTasks/macros/AddTaskRhoSparse.C");
+    gROOT->LoadMacro("$ALICE_PHYSICS/PWGJE/EMCALJetTasks/macros/AddTaskRhoSparse.C");
     //gROOT->LoadMacro("$ALICE_PHYSICS/PWGJE/EMCALJetTasks/macros/AddTaskLocalRho.C");
 
-    for(Int_t i=0; i<15  ; i++)
+
+    //In Pb-Pb there are no events with more than 5 candidates. For pp or p-Pb this number is probably smaller
+    for(Int_t i=0; i<2  ; i++)
     {
 
         TString TaskText = sText;
@@ -129,22 +128,17 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
         filter->SetMultipleCandidates(kTRUE); //Analyse one candidate per event
         filter->SetAnalysedCandidate(i); //Number of the candidate that will be analysed (0 = first candidate)
 
-        if(bPythia) {
-			if(isPrompt){
+        if(isPrompt){
                 filter->SetRejectDfromB(kTRUE);
                 filter->SetKeepOnlyDfromB(kFALSE);
-			}
-			else{
+        }
+        else{
                 filter->SetRejectDfromB(kFALSE);
                 filter->SetKeepOnlyDfromB(kTRUE);
-			}
-		}
+        }
 
         filter->SetBuildRMEff(bRMEff);
         filter->SetUsePythia(bPythia);
-        filter->SetUseMultPythia(bPythiaMult);
-        filter->SetUsePythiaWithBkg(bPythiaBkg);
-        filter->SetUseHijing(bHijing);
         // set filter bits if needed
 
        //This is the particle container with the tracks of the event
@@ -196,26 +190,25 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
         TString AKTJet = "AKTJet";
         AKTJet += TaskText;
 
-        AliEmcalJetTask *taskFJDandTracks = AddTaskEmcalJet(DcandAndTracks,"",1,aRadius[0],AliJetContainer::kFullJet,0.15,0.30,0.005,1,AKTJet,0.,kFALSE,kFALSE);
-        //taskFJDandTracks->SelectCollisionCandidates(uTriggerMask);
+        AliEmcalJetTask *taskFJDandTracks = AddTaskEmcalJet(DcandAndTracks,"",1,aRadius[0],AliJetContainer::kChargedJet,0.15,0.30,0.005,1,AKTJet,0.,kFALSE,kFALSE);
+        taskFJDandTracks->SelectCollisionCandidates(uTriggerMask);
 
         //Generated level jets. No pT>0.15 GeV/c cut should be applied here!
-		AliEmcalJetTask *taskFJMCDandTracks = AddTaskEmcalJet(MCDcandAndTracks,"",1,aRadius[0],AliJetContainer::kFullJet,0.0,0.0,0.005,1,AKTJet,0.,kFALSE,kFALSE);
-        //taskFJMCDandTracks->SelectCollisionCandidates(uTriggerMask);
+        AliEmcalJetTask *taskFJMCDandTracks = AddTaskEmcalJet(MCDcandAndTracks,"",1,aRadius[0],AliJetContainer::kChargedJet,0.0,0.0,0.005,1,AKTJet,0.,kFALSE,kFALSE);
+        taskFJMCDandTracks->SelectCollisionCandidates(uTriggerMask);
 
-	/*
         TString KTJet = "KTJet";
         KTJet += TaskText;
 
         rhoName = "Rho";
         rhoName += TaskText;
         AliEmcalJetTask *taskFJ2 = AddTaskEmcalJet(DcandAndTracks,"",0,aRadius[0],AliJetContainer::kChargedJet,0.15,0.30,0.005,1,KTJet,0.,kFALSE,kFALSE);
-        //taskFJ2->SelectCollisionCandidates(uTriggerMask);
+        taskFJ2->SelectCollisionCandidates(uTriggerMask);
 
         // for pPb use rhoSparse
         rhotask = (AliAnalysisTaskRhoSparse*) AddTaskRhoSparse(taskFJ2->GetName(), taskFJDandTracks->GetName(), DcandAndTracks,"", rhoName, aRadius[0], "TPCFID", 0.01, 0., 0, 0, 2, kTRUE);
-        //rhotask->SelectCollisionCandidates(uTriggerMask);
-        rhotask->SetVzRange(-10,10);*/
+        rhotask->SelectCollisionCandidates(uTriggerMask);
+        rhotask->SetVzRange(-10,10);
 
         //For Data. Comment this part if you run on Monte Carlo
         AliAnalysisTaskFlavourJetCorrelationsTest *CorrTask = AddTaskDFilterAndCorrelations(
@@ -227,7 +220,7 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
                                                                                          taskFJDandTracks->GetName(),
                                                                                          DcandAndTracks,
                                                                                          "",
-                                                                                         "", //rhoName,
+                                                                                         rhoName,
                                                                                          "",
                                                                                          "",
                                                                                          "",
@@ -251,6 +244,7 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
             jetContMC->SetJetPtCut(dJetPtCut);
             jetContMC->SetPercAreaCut(dJetAreaCut);
         }
+
 
 
     }

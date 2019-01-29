@@ -1,4 +1,4 @@
-void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
+void AddTasksFlavourJetMyMCHijingRC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
    const TString sCutFile = "cutsHF/D0toKpiCutsppRecVtxNoPileupRejNoEMCAL.root",
    const Double_t dJetPtCut   = 0.,
    const Double_t dJetAreaCut = 0.,
@@ -16,6 +16,7 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
    const Bool_t bPythiaBkg = kFALSE,
    const Bool_t bHijing = kFALSE,
    const Bool_t isPrompt = kTRUE,
+   const Bool_t bLeadHFJet = kFALSE,
    TString sText="",/*completes the name of the candidate task lists*/
    Bool_t doBkg = kFALSE
    )
@@ -109,15 +110,16 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
     //D meson filtering task
     gROOT->LoadMacro("AddTaskSEDmesonsFilterCJ.C");
     //D-jet correlation task
-    gROOT->LoadMacro("AddTaskDFilterAndCorrelations.C");
+    gROOT->LoadMacro("AddTaskDFilterAndCorrelationsRC.C");
 
     //Jet task
     gROOT->LoadMacro("$ALICE_PHYSICS/PWGJE/EMCALJetTasks/macros/AddTaskEmcalJet.C");
     //Rho task
+    gROOT->LoadMacro("$ALICE_PHYSICS/PWGJE/EMCALJetTasks/macros/AddTaskRho.C");
     //gROOT->LoadMacro("$ALICE_PHYSICS/PWGJE/EMCALJetTasks/macros/AddTaskRhoSparse.C");
     //gROOT->LoadMacro("$ALICE_PHYSICS/PWGJE/EMCALJetTasks/macros/AddTaskLocalRho.C");
 
-    for(Int_t i=0; i<15  ; i++)
+    for(Int_t i=0; i<1  ; i++)
     {
 
         TString TaskText = sText;
@@ -129,7 +131,7 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
         filter->SetMultipleCandidates(kTRUE); //Analyse one candidate per event
         filter->SetAnalysedCandidate(i); //Number of the candidate that will be analysed (0 = first candidate)
 
-        if(bPythia) {
+		if(bPythia) {
 			if(isPrompt){
                 filter->SetRejectDfromB(kTRUE);
                 filter->SetKeepOnlyDfromB(kFALSE);
@@ -139,7 +141,7 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
                 filter->SetKeepOnlyDfromB(kTRUE);
 			}
 		}
-
+        
         filter->SetBuildRMEff(bRMEff);
         filter->SetUsePythia(bPythia);
         filter->SetUseMultPythia(bPythiaMult);
@@ -203,7 +205,7 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
 		AliEmcalJetTask *taskFJMCDandTracks = AddTaskEmcalJet(MCDcandAndTracks,"",1,aRadius[0],AliJetContainer::kFullJet,0.0,0.0,0.005,1,AKTJet,0.,kFALSE,kFALSE);
         //taskFJMCDandTracks->SelectCollisionCandidates(uTriggerMask);
 
-	/*
+	
         TString KTJet = "KTJet";
         KTJet += TaskText;
 
@@ -213,12 +215,13 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
         //taskFJ2->SelectCollisionCandidates(uTriggerMask);
 
         // for pPb use rhoSparse
-        rhotask = (AliAnalysisTaskRhoSparse*) AddTaskRhoSparse(taskFJ2->GetName(), taskFJDandTracks->GetName(), DcandAndTracks,"", rhoName, aRadius[0], "TPCFID", 0.01, 0., 0, 0, 2, kTRUE);
+        //rhotask = (AliAnalysisTaskRhoSparse*) AddTaskRhoSparse(taskFJ2->GetName(), taskFJDandTracks->GetName(), DcandAndTracks,"", rhoName, aRadius[0], "TPCFID", 0.01, 0., 0, 0, 2, kTRUE);
+        AliAnalysisTaskRho *rhotask = (AliAnalysisTaskRho*) AddTaskRho(taskFJ2->GetName(), DcandAndTracks,"", rhoName, aRadius[0], "TPCFID", 0.01, 0, 0, 2, kTRUE);
         //rhotask->SelectCollisionCandidates(uTriggerMask);
-        rhotask->SetVzRange(-10,10);*/
+        rhotask->SetVzRange(-10,10);
 
         //For Data. Comment this part if you run on Monte Carlo
-        AliAnalysisTaskFlavourJetCorrelationsTest *CorrTask = AddTaskDFilterAndCorrelations(
+        AliAnalysisTaskFlavourJetCorrelationsRC *CorrTask = AddTaskDFilterAndCorrelationsRC(
                                                                                          iCandType,
                                                                                          sCutFile,
                                                                                          bIsMC,
@@ -227,7 +230,7 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
                                                                                          taskFJDandTracks->GetName(),
                                                                                          DcandAndTracks,
                                                                                          "",
-                                                                                         "", //rhoName,
+                                                                                         rhoName,
                                                                                          "",
                                                                                          "",
                                                                                          "",
@@ -236,12 +239,14 @@ void AddTasksFlavourJetMyMC(const Int_t iCandType = 1 /*0 = D0, 1=Dstar...*/,
                                                                                          dJetPtCut,
                                                                                          acctype,
                                                                                          dJetAreaCut,
-                                                                                         AliAnalysisTaskFlavourJetCorrelationsTest::kConstituent);
+                                                                                         AliAnalysisTaskFlavourJetCorrelationsRC::kConstituent);
         //Flag to build the Response Matrix
         CorrTask->SetBuildResponseMatrix(bRM);
         CorrTask->SetBuildResponseMatrixEff(bRMEff);
         //if to use only Pythia tracks for MC
         CorrTask->SetUsePythia(bPythia);
+        CorrTask->SetUseHFJet(kTRUE);
+		CorrTask->SetHFLeadJet(bLeadHFJet);
 
         //Container with generated level particles and D meson instead of the daughters
         AliMCParticleContainer *MCpartCont  = CorrTask->AddMCParticleContainer(MCDcandAndTracks);

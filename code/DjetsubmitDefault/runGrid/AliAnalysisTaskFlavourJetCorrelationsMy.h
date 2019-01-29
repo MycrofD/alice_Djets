@@ -1,5 +1,5 @@
-#ifndef ALIANALYSISTASKFLAVOURJETCORRELATIONS_H
-#define ALIANALYSISTASKFLAVOURJETCORRELATIONS_H
+#ifndef AliAnalysisTaskFlavourJetCorrelationsMy_H
+#define AliAnalysisTaskFlavourJetCorrelationsMy_H
 /**************************************************************************
 * Copyright(c) 1998-2009, ALICE Experiment at CERN, All rights reserved. *
 *                                                                        *
@@ -42,7 +42,7 @@ class AliParticleContainer;
 class AliClusterContainer;
 class AliJetContainer;
 
-class AliAnalysisTaskFlavourJetCorrelations : public AliAnalysisTaskEmcalJet
+class AliAnalysisTaskFlavourJetCorrelationsMy : public AliAnalysisTaskEmcalJet
 {
 
 public:
@@ -50,9 +50,9 @@ public:
    enum ECandidateType{ kD0toKpi, kDstartoKpipi };
    enum ECorrelationMethod{ kConstituent, kAngular, kResponseMatrix };
 
-   AliAnalysisTaskFlavourJetCorrelations();
-   AliAnalysisTaskFlavourJetCorrelations(const Char_t* name,AliRDHFCuts* cuts, ECandidateType candtype);
-   virtual ~AliAnalysisTaskFlavourJetCorrelations();
+   AliAnalysisTaskFlavourJetCorrelationsMy();
+   AliAnalysisTaskFlavourJetCorrelationsMy(const Char_t* name,AliRDHFCuts* cuts, ECandidateType candtype);
+   virtual ~AliAnalysisTaskFlavourJetCorrelationsMy();
 
    virtual void     UserCreateOutputObjects();
    virtual Bool_t   Run();
@@ -93,7 +93,7 @@ public:
    void CreateMCResponseMatrix(AliEmcalJet* MCjet, AliAODEvent* aodEvent);
    void FillDJetHistograms(AliEmcalJet* jet, Double_t rho, Bool_t IsBkg, AliAODEvent* aodEvent);
    void GetHFJet(AliEmcalJet*& jet, Bool_t IsBkg);
-   void FillHistogramsD0JetCorr(AliAODRecoDecayHF* candidate, Double_t z, Double_t ptD, Double_t ptj, Double_t jetEta, Bool_t IsBkg, Bool_t bDInEMCalAcc, Bool_t bJetInEMCalAcc, AliAODEvent* aodEvent, Int_t pdg);
+   void FillHistogramsD0JetCorr(AliAODRecoDecayHF* candidate, Double_t z, Double_t ptD, Double_t ptj, Double_t jetEta, Bool_t IsBkg, Bool_t bDInEMCalAcc, Bool_t bJetInEMCalAcc, AliAODEvent* aodEvent, Int_t pdg, Int_t nJetTrks);
    void FillHistogramsDstarJetCorr(AliAODRecoCascadeHF* dstar, Double_t z, Double_t ptD, Double_t ptj, Double_t jetEta, Bool_t IsBkg, Bool_t bDInEMCalAcc, Bool_t bJetInEMCalAcc);
    void FillHistogramsMCGenDJetCorr(Double_t z,Double_t ptD,Double_t ptjet, Double_t yD, Double_t jetEta, Bool_t bDInEMCalAcc, Bool_t bJetInEMCalAcc);
    void FindMCJet(AliEmcalJet*& mcjet);
@@ -110,8 +110,8 @@ public:
 
 private:
 
-   AliAnalysisTaskFlavourJetCorrelations(const AliAnalysisTaskFlavourJetCorrelations &source);
-   AliAnalysisTaskFlavourJetCorrelations& operator=(const AliAnalysisTaskFlavourJetCorrelations& source);
+   AliAnalysisTaskFlavourJetCorrelationsMy(const AliAnalysisTaskFlavourJetCorrelationsMy &source);
+   AliAnalysisTaskFlavourJetCorrelationsMy& operator=(const AliAnalysisTaskFlavourJetCorrelationsMy& source);
 
    Double_t Z(AliVParticle* part, AliEmcalJet* jet, Double_t rho) const;
    Double_t Z(AliVParticle* part, AliEmcalJet* jet) const;
@@ -170,7 +170,7 @@ private:
    THnSparse* fResponseMatrix;      //!
 
 
-   ClassDef(AliAnalysisTaskFlavourJetCorrelations,8); // class for charm-jet CorrelationsExch
+   ClassDef(AliAnalysisTaskFlavourJetCorrelationsMy,8); // class for charm-jet CorrelationsExch
 };
 
 #endif

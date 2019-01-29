@@ -30,19 +30,20 @@ AliAnalysisGrid* CreateAlienHandler(const char* uniqueName, const char* gridDir,
                                     Int_t workerTTL, Bool_t isMC);
 
 //______________________________________________________________________________
-void AnalysisTrainCorrJetsLocalMC (
+void AnalysisTrainCorrJetsLocalMCBeauty (
                                  const char*    dataType            = "AOD",                       // set the analysis type, AOD, ESD or sESD
                                  Bool_t         useGrid             = kTRUE,                      // local or grid
                                  TString        localfilename       = "files_aod.txt",
-                                 const char*    gridMode            = "test",                      // set the grid run mode (can be "full", "test", "offline", "submit" or "terminate")
+                                 const char*    gridMode            = "terminate",                      // set the grid run mode (can be "full", "test", "offline", "submit" or "terminate")
                                  //const char*    pattern             = "/pass1_CENT_wSDD/*/AliAOD.root",   // file pattern (here one can specify subdirs like passX etc.) (used on grid)
                                  const char*    pattern             = "/AOD/*AliAOD.root",   // file pattern (here one can specify subdirs like passX etc.) (used on grid)
-                                 const char*    gridDir             = "/alice/sim/2018/LHC18i1a_tres/6/",
+                                 const char*    gridDir             = "/alice/sim/2018/LHC18i1b_tres/6/",
                                  const char*    runNumbers          = "246392",
                                  const Int_t    nrunspermaster      = 50,
                                  UInt_t         numLocalFiles       = 2,                          // number of files analyzed locally
                                  const char*    runPeriod           = "lhc18i1a",                    // set the run period (used on grid)
-                                 const char*    uniqueName          = "UpgradeMC_charmHFTres_1",
+                                 const char*    uniqueName          = "UpgradeMC_beautyHF_Tres6",
+                                 //const char*    uniqueName          = "UpgradeMC_HijingTres_6",
                                  UInt_t         pSel                = AliVEvent::kINT7,             // used event selection for every task except for the analysis tasks
                                  Bool_t         isMC                = kTRUE,                      // trigger, if MC handler should be used
                                  Bool_t         isReco              = kTRUE,
@@ -53,7 +54,7 @@ void AnalysisTrainCorrJetsLocalMC (
                                  Bool_t			bPythiaMult			= kTRUE,
                                  Bool_t			bPythiaBkg			= kFALSE,
                                  Bool_t 		bHijing				= kFALSE,
-                                 Bool_t         isPrompt            = kTRUE,
+                                 Bool_t         isPrompt            = kFALSE,
                                  Bool_t         useTender           = kFALSE,                      // trigger, if tender task should be used
                                  // Here you have to specify additional code files you want to use but that are not in aliroot
                                  const char*    addCXXs             = "AliAnalysisTaskSEDmesonsFilterCJTest.cxx AliAnalysisTaskFlavourJetCorrelationsTest.cxx", // to add local tasks
@@ -129,7 +130,7 @@ void AnalysisTrainCorrJetsLocalMC (
     gROOT->LoadMacro("AliAnalysisTaskFlavourJetCorrelationsTest.cxx++g");
     gROOT->LoadMacro("AddTasksFlavourJetMyMC.C");
 
-     AddTasksFlavourJetMyMC(0,"cuts/centralD0_forUpgrade.root",0.,0.557,"TPCFID",runPeriod,0,pSel,isMC,isReco,isMap,bRM,bRMEff,bPythia,bPythiaMult,bPythiaBkg,bHijing,isPrompt,"Upgrade"); // Jet(1,..) for D*  
+     AddTasksFlavourJetMyMC(0,"cuts/centralD0_forUpgrade.root",0.,0.,"TPCFID",runPeriod,0,pSel,isMC,isReco,isMap,bRM,bRMEff,bPythia,bPythiaMult,bPythiaBkg,bHijing,isPrompt,"Upgrade"); // Jet(1,..) for D*  
 
 
 
@@ -275,7 +276,7 @@ AliAnalysisGrid* CreateAlienHandler(const char* uniqueName, const char* gridDir,
     plugin->SetAPIVersion("V1.1x");
     //plugin->SetROOTVersion("v5-34-30-alice-3");
     //plugin->SetAliROOTVersion("v5-07-01-4");
-    plugin->SetAliPhysicsVersion("vAN-20180924-1");
+    plugin->SetAliPhysicsVersion("vAN-20181024-1");
     plugin->SetGridDataDir(gridDir); // e.g. "/alice/sim/LHC10a6"
     plugin->SetDataPattern(pattern); //dir structure in run directory
     //plugin->SetFriendChainName("./AliAOD.VertexingHF.root");

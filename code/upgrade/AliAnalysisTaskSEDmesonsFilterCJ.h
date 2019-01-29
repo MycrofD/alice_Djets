@@ -36,6 +36,7 @@ class AliAODRecoCascadeHF;
 class AliAODRecoDecayHF2Prong;
 class AliAODRecoDecay;
 class AliStack;
+class AliNormalizationCounter;
 
 class AliAnalysisTaskSEDmesonsFilterCJ : public AliAnalysisTaskEmcal 
 {
@@ -68,6 +69,12 @@ class AliAnalysisTaskSEDmesonsFilterCJ : public AliAnalysisTaskEmcal
   
   void   SetUsePythia(Bool_t theUsePythia) 	{ fUsePythia = theUsePythia	; }
   Bool_t GetUsePythia() const 			{ return fUsePythia		; }
+  
+  void   SetUseMultPythia(Bool_t theUseMultPythia) 	{ fMultPythiaHeader = theUseMultPythia	; }
+  Bool_t GetUseMultPythia() const 			{ return fMultPythiaHeader		; }
+  
+  void SetUseHijing(Bool_t theUseHijing)	{ fUseHijing = theUseHijing; }
+  Bool_t GetUseHijing() const				{ return fUseHijing;	 }
 
   // set track fraction rejection for JES systematics
   void SetJESsys(Bool_t c) 		{ fUseRejTracks = c	; }
@@ -87,6 +94,9 @@ class AliAnalysisTaskSEDmesonsFilterCJ : public AliAnalysisTaskEmcal
 
   void   SetAnalysedCandidate(Int_t c)     { fAnalyseCand = c             ; }
   Int_t  GetAnalysedCandidate() const      { return fAnalyseCand          ; }
+  
+  void SetPythiaEvent(Int_t c)				{ fPythiaEvent = c				;}
+  Int_t GetPythiaEvent() const				{ return fPythiaEvent			;}
 
   void   SetRejectQuarkNotFound(Bool_t c)  { fRejectQuarkNotFound = c     ; }
   Bool_t GetRejectQuarkNotFound() const    { return fRejectQuarkNotFound  ; }
@@ -133,11 +143,13 @@ class AliAnalysisTaskSEDmesonsFilterCJ : public AliAnalysisTaskEmcal
   void AddMCEventTracks(TClonesArray* coll, AliParticleContainer* mctracks);
   
 
-  Bool_t          fUseMCInfo;              //  Use MC info
-  Bool_t 	  fBuildRMEff;		   //  MC RM or efficiency studies
-  Bool_t 	  fUsePythia;		   //  Use Pythia info only for MC
-  Bool_t	  fUseRejTracks;	   //  Reject tracks for JES systematics
-  Double_t	  fTrackIneff;		   //  Tracking inefficiency for JES systematics
+  Bool_t          	fUseMCInfo;              //  Use MC info
+  Bool_t 	  		fBuildRMEff;		   	//  MC RM or efficiency studies
+  Bool_t 	  		fUsePythia;		   		//  Use Pythia info only for MC
+  Bool_t			fMultPythiaHeader;		// Use Pythia info only, with multiple Pythia events per one MB event
+  Bool_t			fUseHijing;				// Use only Hijing info for MC
+  Bool_t	  		fUseRejTracks;	   		//  Reject tracks for JES systematics
+  Double_t	  		fTrackIneff;		   //  Tracking inefficiency for JES systematics
   Bool_t          fUseReco;                //  use reconstructed tracks when running on MC
   UInt_t          fCandidateType;          //  Dstar or D0
   TString         fCandidateName;          //  Dstar or D0
@@ -153,11 +165,13 @@ class AliAnalysisTaskSEDmesonsFilterCJ : public AliAnalysisTaskEmcal
   Bool_t          fCombineDmesons;         //  create an additional collection with D meson candidates and the rest of the tracks (for jet finding)
   Bool_t          fMultCand;               //  In case of multiple candidates per event
   Int_t           fAnalyseCand;            //  Number of the candidate to be analysed
+  Int_t 			fPythiaEvent;			// Pythia event to be analysed, for MC with more than one Pythia event
   Bool_t          fRejectQuarkNotFound;    //  reject D mesons for which the original charm or bottom quark could not be found (MC)
   Bool_t          fRejectDfromB;           //  reject D mesons coming from a B meson decay (MC)
   Bool_t          fKeepOnlyDfromB;         //  only accept D mesons coming from a B meson decay (MC)
   AliAODEvent    *fAodEvent;               //!
   AliAODMCHeader *fMCHeader;		   //!
+  AliNormalizationCounter *fCounter;       //! AliNormalizationCounter
   TRandom3	 *fRan;			   //! Random number generator
   TClonesArray   *fArrayDStartoD0pi;       //!
   TClonesArray   *fMCarray;                //!
