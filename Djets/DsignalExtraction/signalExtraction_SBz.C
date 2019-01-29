@@ -45,9 +45,8 @@ void signalExtraction_SBz(
   bool isprefix=0
 )
 {
-	bool zjet1 = 0, zjet2 = 0, zjet3 = 0, zjet4 = 0;			// 1. zjet1/2/3 are bin numbers of zjet
-//	bool zjet = 0;
-	int zjetbin = 4; // only this should be changed from 0 to 1, 2, 3.	// 2. zjetbin default is zero. bin numbers too are zero. 
+	bool zjet1 = 0, zjet2 = 0, zjet3 = 0, zjet4 = 0, zjet5 = 0;			// 1. zjet1/2/3/4/5 are bin numbers of jet intervals
+	int zjetbin = 1; // only this should be changed from 0 to 1, 2, 3.	// 2. zjetbin default is zero. bin numbers too are zero. 
 	switch(zjetbin){ // other cases of zjetbin
 		case 1: 
        			zjet1 = 1;
@@ -60,6 +59,9 @@ void signalExtraction_SBz(
 			break;
 		case 4: 
        			zjet4 = 1;
+			break;
+		case 5: 
+       			zjet5 = 1;
 			break;
 	}
 
@@ -118,6 +120,7 @@ void signalExtraction_SBz(
           else if(zjet2)sparse->GetAxis(1)->SetRangeUser(fptbinsJetA[1],fptbinsJetA[2]);
           else if(zjet3)sparse->GetAxis(1)->SetRangeUser(fptbinsJetA[2],fptbinsJetA[3]);
           else if(zjet4)sparse->GetAxis(1)->SetRangeUser(fptbinsJetA[3],fptbinsJetA[4]);
+          else if(zjet5)sparse->GetAxis(1)->SetRangeUser(fptbinsJetA[4],fptbinsJetA[5]);
           if(isEta) sparse->GetAxis(5)->SetRangeUser(-jetEta,jetEta);
           if(i==0) hInvMassptD=(TH3D*)sparse->Projection(3,0,2);
           else hInvMassptD->Add((TH3D*)sparse->Projection(3,0,2));
@@ -274,7 +277,7 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
     pvEta->SetTextAlign(11);
     pvEta->AddText(Form("|#it{#eta}_{jet}| < 0.%d",9-Rpar));
 
-    int xnx = 3, xny=3;
+    int xnx = 3, xny=4;
 //    if(fptbinsDN<3) { xnx = 3; xny=1; }
 //    if(fptbinsDN>4 && fptbinsDN<7) { xnx = 2; xny=3; }
 //    else if(fptbinsDN>6 && fptbinsDN<10) { xnx = 3; xny=3; }
