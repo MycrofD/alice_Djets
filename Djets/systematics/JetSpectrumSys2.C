@@ -7,7 +7,7 @@
 #include "config.h"
 
 
-void JetSpectrumSys2(int reg=4,  TString inDirBase ="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_doJESSys", TString input = "DzeroR03_pPbCuts/Default", bool isChain = 1, TString int measmin=3, int measmax=50, int truemin=5, int truemax=50)
+void JetSpectrumSys2(int reg=4,  TString inDirBase ="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts", TString input = "systematics/doJESSys", bool isChain = 1, TString int measmin=3, int measmax=50, int truemin=5, int truemax=50)
 {
 
   if(!isChain) {
@@ -41,7 +41,7 @@ void JetSpectrumSys2(int reg=4,  TString inDirBase ="/home/jackbauer/Work/alice/
 //  inDir += "/";
 //  inDir += input;
   //gSystem->Exec(Form("mkdir %s/systematics",inDir.Data()));
-  gSystem->Exec(Form("mkdir %s/systematics",inDir.Data()));
+  gSystem->Exec(Form("mkdir %s/%s",inDir.Data(),input.Data()));
 
 
 //  FDsys(reg,inDir);
@@ -58,37 +58,35 @@ void compareJES(int reg = , TString inDir = "", TString input = "")
 {
 
         gStyle->SetOptStat(0000); //Mean and RMS shown
-        gSystem->Exec(Form("mkdir %s/systematics",inDir.Data()));
+        gSystem->Exec(Form("mkdir %s/%s",inDir.Data(),input.Data()));
 
-        TFile *outFile = new TFile(Form("%s/systematics/JES_reg%d.root",inDir.Data(),reg),"RECREATE");
+        TFile *outFile = new TFile(Form("%s/%s/JES_reg%d.root",inDir.Data(),input.Data(),reg),"RECREATE");
 
         const int nFiles = 3;
-        TString tab[nFiles-1] = { "96", "95"};
+        TString tab[nFiles-1] = { "96", "95"};//, "90"};
         TString dirName[nFiles];
         dirName[0] = inDir;
-        dirName[0] += "/"+input;
-        dirName[0] += "";
+        dirName[0] += "/Default_JES";
         dirName[0] += "/unfolding_Bayes_";
         dirName[0] += reg;
 
         dirName[1] = inDir;
-        dirName[1] += "/"+input;
-        dirName[1] += "96";
+        dirName[1] += "/Default_JES96";
         dirName[1] += "/unfolding_Bayes_";
         dirName[1] += reg;
 
         dirName[2] = inDir;
-        dirName[2] += "/"+input;
-        dirName[2] += "95";
+        dirName[2] += "/Default_JES95";
+        //dirName[2] += "/Default95";
         dirName[2] += "/unfolding_Bayes_";
         dirName[2] += reg;
 
 //        dirName[3] = inDir;
-//        dirName[3] += "_JES90";
+//        dirName[3] += "/Default_JES90";
 //        dirName[3] += "/unfolding_Bayes_";
 //        dirName[3] += reg;
 
-        TString desc[nFiles] = {"central","inefficiency 4%","inefficiency 5%"};//,"inefficiency 10%"
+        TString desc[nFiles] = {"central","inefficiency 4%","inefficiency 5%"};//,"inefficiency 10%"};
 
         double plotmin = ptJetbins[0], plotmax = ptJetbins[nJetBins];
         //  double plotmin = 5;
@@ -118,8 +116,8 @@ void compareJES(int reg = , TString inDir = "", TString input = "")
         }
         leg->Draw("same");
 
-      cspec->SaveAs(Form("%s/systematics/JES_reg%d.pdf",inDir.Data(),reg));
-      cspec->SaveAs(Form("%s/systematics/JES_reg%d.png",inDir.Data(),reg));
+      cspec->SaveAs(Form("%s/%s/JES_reg%d.pdf",inDir.Data(),input.Data(),reg));
+      cspec->SaveAs(Form("%s/%s/JES_reg%d.png",inDir.Data(),input.Data(),reg));
 
 
         TH1F *hratio[nFiles-1];
@@ -130,34 +128,34 @@ void compareJES(int reg = , TString inDir = "", TString input = "")
           	hratio[i] -> Divide(spec[i+1],spec[0],1,1,"b");
             hratio[i]->SetLineStyle(linestyle[i]);
             hratio[i]->GetXaxis()->SetRangeUser(plotmin,plotmax);
-            hratio[i]->GetYaxis()->SetRangeUser(0.82,1.1);
+            hratio[i]->GetYaxis()->SetRangeUser(0.95,1.15);
             hratio[i]->GetYaxis()->SetTitle(Form("ratio to central (%s)",desc[0].Data()));
 
             fr[i] = new TF1(Form("fr_%d",i),"[0]*x+[1]",4,plotmax);
             fr[i]->SetLineStyle(1);
             fr[i]->SetLineWidth(2);
             fr[i]->SetLineColor(colors[i+1]);
-            hratio[i]->Fit(fr[i],"EM0","",6,plotmax);
+            hratio[i]->Fit(fr[i],"EM0","",5,plotmax);
 
             double value = 0;
             hratiof[i] = (TH1F*)hratio[i]->Clone(Form("hratiof_%d",i));
             for(int j=0; j<hratio[i]->GetNbinsX();j++){
-                value = (1 - fr[i]->Eval(hratio[i]->GetBinCenter(j+1))) *100;
+                value = TMath::Abs((1 - fr[i]->Eval(hratio[i]->GetBinCenter(j+1)))) *100;
                 hratiof[i]->SetBinContent(j+1,value);
-                //if(!i)cout << "bin: " << j+1 << "\t\t 4% value in: " << hratio[i]->GetBinCenter(j+1) << ":\t\t" << value << endl;
+                if(!i)cout << "bin: " << j+1 << "\t\t 4% value in: " << hratio[i]->GetBinCenter(j+1) << ":\t\t" << value << endl;
             }
-            hratiof[i]->GetYaxis()->SetRangeUser(0,20);
+            hratiof[i]->GetYaxis()->SetRangeUser(0,12);
             hratiof[i]->GetYaxis()->SetTitle("unc.from fit [%]");
           //  hratiof[i]->Write();
 
         }
 
-        TLegend *leg2 = new TLegend(0.6,0.65,0.85,0.85);
+        TLegend *leg2 = new TLegend(0.2,0.65,0.45,0.85);
         leg2->SetBorderSize(0);
         TCanvas *cspec2 = new TCanvas("cspec2","cspec2",800,400);
         for(int i=0; i<nFiles-1; i++){
             hratio[i]->GetXaxis()->SetRangeUser(5,plotmax);
-            hratio[i]->GetYaxis()->SetRangeUser(0.82,1.1);
+            hratio[i]->GetYaxis()->SetRangeUser(0.95,1.2);
 
             if(!i) hratio[i]->Draw();
             else hratio[i]->Draw("same");
@@ -171,8 +169,8 @@ void compareJES(int reg = , TString inDir = "", TString input = "")
         line->SetLineWidth(2);
         line->Draw("same");
 
-        cspec2->SaveAs(Form("%s/systematics/JES_reg%d_ratio.pdf",inDir.Data(),reg));
-        cspec2->SaveAs(Form("%s/systematics/JES_reg%d_ratio.png",inDir.Data(),reg));
+        cspec2->SaveAs(Form("%s/%s/JES_reg%d_ratio.pdf",inDir.Data(),input.Data(),reg));
+        cspec2->SaveAs(Form("%s/%s/JES_reg%d_ratio.png",inDir.Data(),input.Data(),reg));
 
         outFile->cd();
         hratiof[0]->Write();
@@ -180,7 +178,7 @@ void compareJES(int reg = , TString inDir = "", TString input = "")
     //    hratiof[2]->Write();
     TCanvas *cspecf2 = new TCanvas("cspecf2","cspecf2",800,400);
     for(int i=0; i<nFiles-1; i++){
-        hratiof[i]->GetYaxis()->SetRangeUser(0,20);
+        hratiof[i]->GetYaxis()->SetRangeUser(0,12);
         hratiof[i]->GetXaxis()->SetRangeUser(5,plotmax);
         hratiof[i]->GetYaxis()->SetTitle("unc.from fit [%]");
         cspecf2->cd();
@@ -193,8 +191,8 @@ void compareJES(int reg = , TString inDir = "", TString input = "")
         cout << "bin: " << j+1 << "\t\t 4% value in: " << hratiof[0]->GetBinCenter(j+1) << ":\t\t" << hratiof[0]->GetBinContent(j+1) << endl;
     }
 
-    cspecf2->SaveAs(Form("%s/systematics/JES_reg%d_unc.pdf",inDir.Data(),reg));
-    cspecf2->SaveAs(Form("%s/systematics/JES_reg%d_unc.png",inDir.Data(),reg));
+    cspecf2->SaveAs(Form("%s/%s/JES_reg%d_unc.pdf",inDir.Data(),input.Data(),reg));
+    cspecf2->SaveAs(Form("%s/%s/JES_reg%d_unc.png",inDir.Data(),input.Data(),reg));
 
     outFile->cd();
   //  hratiof[0]->Write();
@@ -261,7 +259,7 @@ void compareReg(TString inDir = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR
 
           cspec->SaveAs(Form("%s/systematics/RegComparison_reg.pdf",inDir.Data()));
           cspec->SaveAs(Form("%s/systematics/RegComparison_reg.png",inDir.Data()));
-          TLegend *leg2 = new TLegend(0.55,0.75,0.9,0.85);
+          TLegend *leg2 = new TLegend(0.55,0.15,0.9,0.45);
 
             leg2->SetBorderSize(0);
             TCanvas *cspec2 = new TCanvas("cspec2","cspec2",800,400);
@@ -271,7 +269,7 @@ void compareReg(TString inDir = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR
                 hratio[i]->Divide(spec[0]);
                 hratio[i]->SetLineStyle(linestyle[i]);
                 hratio[i]->GetXaxis()->SetRangeUser(plotmin,plotmax);
-                hratio[i]->GetYaxis()->SetRangeUser(0.8,1.15);
+                hratio[i]->GetYaxis()->SetRangeUser(0.95,1.2);
                 hratio[i]->GetYaxis()->SetTitle(Form("ratio to central (%s)",desc[0].Data()));
                 if(!i) hratio[i]->Draw("hist");
                 else hratio[i]->Draw("histsame");
@@ -356,7 +354,7 @@ void comparePriors(int reg = 4 , TString inDir = "/home/basia/Work/alice/analysi
       cspec->SaveAs(Form("%s/systematics/PriorComparison_reg%d.pdf",inDir.Data(),reg));
       cspec->SaveAs(Form("%s/systematics/PriorComparison_reg%d.png",inDir.Data(),reg));
 
-        TLegend *leg2 = new TLegend(0.55,0.5,0.9,0.88);
+        TLegend *leg2 = new TLegend(0.55,0.15,0.9,0.45);
         leg2->SetBorderSize(0);
         TCanvas *cspec2 = new TCanvas("cspec2","cspec2",800,400);
         TH1F *hratio[nFiles-1];
@@ -365,7 +363,7 @@ void comparePriors(int reg = 4 , TString inDir = "/home/basia/Work/alice/analysi
             hratio[i]->Divide(spec[0]);
             hratio[i]->SetLineStyle(linestyle[i]);
             hratio[i]->GetXaxis()->SetRangeUser(plotmin,plotmax);
-            hratio[i]->GetYaxis()->SetRangeUser(0.8,1.5);
+            hratio[i]->GetYaxis()->SetRangeUser(0.95,1.3);
             hratio[i]->GetYaxis()->SetTitle(Form("ratio to central (%s)",desc[0].Data()));
             if(!i) hratio[i]->Draw("hist");
             else hratio[i]->Draw("histsame");

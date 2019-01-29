@@ -14,8 +14,9 @@ postfix=$7
 dirOut=$8
 isMoreFile=$9
 prod=${10}
+isprefix=${11}
 ################################################
 ############### D-jet signal
 ################################################
 
-root -l -b -q signalExtraction_SB.C'("'$dataFile'", '$isEff', "'$effFile'",'$isRefl', "'$refFile'", '$ispostfix', "'$postfix'", "'$dirOut'", 1, '$isMoreFile',"'$prod'")' #> outfile 2>&1
+root -l -b -q signalExtraction_SB.C'("'$dataFile'", '$isEff', "'$effFile'",'$isRefl', "'$refFile'", '$ispostfix', "'$postfix'", "'$dirOut'", 1, '$isMoreFile',"'$prod'",'$isprefix')' #> outfile 2>&1

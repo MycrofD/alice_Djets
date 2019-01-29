@@ -11,7 +11,7 @@ using namespace std;
 float ptmin = fptbinsDA[0], ptmax = fptbinsDA[fptbinsDN];
 
 void DjetEfficiency(bool isPrompt = 1, TString effFile = "../outMC/AnalysisResults_fast_D0MCHijing_SMQcorr2.root", TString outDir = "SQMCorrcuts",
-float jetptmin = 2, float jetptmax = 50, bool recoPt = 0, bool postfix = 0, TString listName = "FD")
+float jetptmin = 2, float jetptmax = 50, bool recoPt = 0, bool postfix = 0, TString listName = "", bool isprefix = 0 )
 {
 
  	gStyle->SetOptStat(0000); //Mean and RMS shown
@@ -22,8 +22,12 @@ float jetptmin = 2, float jetptmax = 50, bool recoPt = 0, bool postfix = 0, TStr
 	TDirectoryFile* dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
 
 	TString histName;
-	if(fDmesonSpecie) histName = "histosDStarMBN";
-	else histName = "histosD0MBN";
+	if(!isprefix){
+		if(fDmesonSpecie) histName = "histosDStarMBN";
+		else histName = "histosD0MBN";}
+	else{
+		if(fDmesonSpecie) histName = "histosDStarMBN";
+		else histName = "histosD0";}
 
 	TH1F *hMCpt;
 	TH1F *hMCpt_reco;
@@ -35,12 +39,20 @@ float jetptmin = 2, float jetptmax = 50, bool recoPt = 0, bool postfix = 0, TStr
 	THnSparseF *sparsereco[NDMC];
 
 	for(int i=0; i<NDMC; i++){
-
+	   if(!isprefix){
 		if(postfix) { histList[i] =  (TList*)dir->Get(Form("%s%d%sMCrec",histName.Data(),i,listName.Data())); }
-    else {
+		else {
 			 if(isPrompt) histList[i] =  (TList*)dir->Get(Form("%s%dMCrec",histName.Data(),i));
 			 else histList[i] =  (TList*)dir->Get(Form("%s%dFDMCrec",histName.Data(),i));
 		}
+	   }
+	   else{
+		if(postfix) {
+			if(isPrompt){ histList[i] =  (TList*)dir->Get(Form("%s%sMBN%dMCrec",histName.Data(),listName.Data(),i)); }
+			else{ histList[i] =  (TList*)dir->Get(Form("%s%sMBN%dFDMCrec",histName.Data(),listName.Data(),i)); }
+		}
+		else { cout<<"-----postfix has to be true if prefix is true!! check again----------------"<<endl; return;	}
+	   }
 
 		sparseMC[i] = (THnSparseF*)histList[i]->FindObject("ResponseMatrix");
     if(fDmesonSpecie) sparseMC[i]->GetAxis(5)->SetRangeUser(jetptmin,jetptmax); // Dstar tmp

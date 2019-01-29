@@ -256,7 +256,7 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
 
 		hRatioS->SetMinimum(hRatioS->GetMinimum("nostack"));
 		hRatioS->Draw("nostackhist");
-		hRatioS->GetXaxis()->SetTitle("p_{T, ch.jet}");
+//		hRatioS->GetXaxis()->SetTitle("p_{T, ch.jet}");
 		gPad->BuildLegend(0.55,0.65,0.9,0.9,"");
     //legRatio2->Draw("same");
 
@@ -296,7 +296,7 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
 		hRatioUnfS->SetMinimum(hRatioUnfS->GetMinimum("nostack"));
 		//hRatioUnfS->SetMaximum(hRatioUnfS->GetMaximum("nostack")*0.8);
 		hRatioUnfS->Draw("nostackhist");
-		hRatioUnfS->GetXaxis()->SetTitle("p_{T, ch.jet}");
+//		hRatioUnfS->GetXaxis()->SetTitle("p_{T, ch.jet}");
 		gPad->BuildLegend(0.55,0.65,0.9,0.9,"");
     line->Draw("same");
 
