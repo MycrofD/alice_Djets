@@ -14,8 +14,6 @@ confCommands
 Djets/runGrid/*
 Djets/DsignalExtraction/signalExtraction_MC.C
 Djets/ResponseMatrix/bkgRM03/
-Djets/cuts_pp/Dzero/makeTFile4CutsD0Jet_pp5TeV_BasepPb_noTopo.C
-Djets/fastSimulation_April19MyCode/
 Djets/run*.csh
 Djets/run.csh
 Djets/systematics/unfRangesComparison_max30.C
