@@ -45,26 +45,6 @@ void signalExtraction_SBz(
   bool isprefix=0
 )
 {
-	bool zjet1 = 0, zjet2 = 0, zjet3 = 0, zjet4 = 0, zjet5 = 0;			// 1. zjet1/2/3/4/5 are bin numbers of jet intervals
-	int zjetbin = 1; // only this should be changed from 0 to 1, 2, 3.	// 2. zjetbin default is zero. bin numbers too are zero. 
-	switch(zjetbin){ // other cases of zjetbin
-		case 1: 
-       			zjet1 = 1;
-			break;
-		case 2: 
-       			zjet2 = 1;
-			break;
-		case 3: 
-       			zjet3 = 1;
-			break;
-		case 4: 
-       			zjet4 = 1;
-			break;
-		case 5: 
-       			zjet5 = 1;
-			break;
-	}
-
 
     fUseRefl = isRef;
     if(fUseRefl) fReflFilename = refFile;
@@ -96,6 +76,16 @@ void signalExtraction_SBz(
     TList *histList;
     THnSparseF *sparse;
 
+cout<<"-------------------------------------"<<endl;
+cout<<"-------------------------------------"<<endl;
+cout<<"-------------"<<zjetbin <<"--------------"<<endl;
+cout<<"-------------------------------------"<<endl;
+cout<<"-------------------------------------"<<endl;
+cout<<fptbinsJetA[(int)zjetbin-1]<<endl;
+cout<<fptbinsJetA[(int)zjetbin]<<endl;
+cout<<"-------------------------------------"<<endl;
+cout<<"-------------------------------------"<<endl;
+
     if(!isMoreFiles) {
       datafile = data;
       File = new TFile(datafile,"read");
@@ -116,11 +106,7 @@ void signalExtraction_SBz(
 //		for (int j = 0; j < fptbinsJetN+1; j++){
 //			if(zjet==j) sparse->GetAxis(1)->SetRangeUser(fptbinsJetA[0+j],fptbinsJetA[1+j]);
 //			}
-          if(zjet1)sparse->GetAxis(1)->SetRangeUser(fptbinsJetA[0],fptbinsJetA[1]);
-          else if(zjet2)sparse->GetAxis(1)->SetRangeUser(fptbinsJetA[1],fptbinsJetA[2]);
-          else if(zjet3)sparse->GetAxis(1)->SetRangeUser(fptbinsJetA[2],fptbinsJetA[3]);
-          else if(zjet4)sparse->GetAxis(1)->SetRangeUser(fptbinsJetA[3],fptbinsJetA[4]);
-          else if(zjet5)sparse->GetAxis(1)->SetRangeUser(fptbinsJetA[4],fptbinsJetA[5]);
+          if(zjetbin)sparse->GetAxis(1)->SetRangeUser(fptbinsJetA[(int)zjetbin-1],fptbinsJetA[(int)zjetbin]);
           if(isEta) sparse->GetAxis(5)->SetRangeUser(-jetEta,jetEta);
           if(i==0) hInvMassptD=(TH3D*)sparse->Projection(3,0,2);
           else hInvMassptD->Add((TH3D*)sparse->Projection(3,0,2));
@@ -750,19 +736,23 @@ hjetptspectrumRebScaled = (TH1F*)hjetptspectrumReb->Clone("hjetptspectrumRebScal
       setHistoDetails(hjetptspectrumRebScaled,1,kBlue,20,1.2); // with bin width scaling
       hjetptspectrumReb->GetXaxis()->SetTitle("z = p_{D}/p_{ch jet}");
       hjetptspectrumRebScaled->GetXaxis()->SetTitle("z = p_{D}/p_{ch jet}");
-      TCanvas *cSpectrumRebin = new TCanvas("cSpectrumRebin","cSpectrumRebin",800,600);
+      TCanvas *cSpectrumRebin = new TCanvas("cSpectrumRebinProb","cSpectrumRebinProb",800,600);
       cSpectrumRebin->SetLogy();
-      hjetptspectrumRebScaled->GetYaxis()->SetRangeUser(100,300000);
-      hjetptspectrumRebScaled->Draw();
-      pvEn->Draw("same");
-      pvD->Draw("same");
-      pvJet->Draw("same");
-      pvEta->Draw("same");
+      hjetptspectrumRebScaled->GetYaxis()->SetRangeUser(1,1000000);
+      hjetptspectrumRebScaled->SetTitle(Form("p_{T,%s} > %d GeV/#it{c}",fDmesonS.Data(),(int)fptbinsDA[0]));
+      TH1F* hjetptspectrumRebScaledProb=(TH1F*)hjetptspectrumRebScaled->Clone("hjetptspectrumRebScaledProb");
+      hjetptspectrumRebScaledProb->Scale(1.0/hjetptspectrumRebScaled->Integral());
+      hjetptspectrumRebScaledProb->Draw();
+      //pvEn->Draw("same");
+      //pvD->Draw("same");
+      //pvJet->Draw("same");
+      //pvEta->Draw("same");
       if(isdetails) pvProd->Draw("same");
       if(isdetails) pvCuts->Draw("same");
-      pv3->Draw("same");
+      //pv3->Draw("same");
 
-      SaveCanvas(cSpectrumRebin,outdir+plotsDir+"/jetPtSpectrum_SB_Rebin"+prod);
+      //SaveCanvas(cSpectrumRebin,outdir+plotsDir+"/jetPtSpectrum_SB_RebinProbLinear"+prod);
+      SaveCanvas(cSpectrumRebin,outdir+plotsDir+"/jetPtSpectrum_SB_RebinProb"+prod);
 
       hjetptspectrumRebUnc = (TH1F*)hjetptspectrumReb->Clone("hjetptspectrumRebUnc");
       hjetptspectrumRebUnc->GetYaxis()->SetTitle("Rel. unc.");
