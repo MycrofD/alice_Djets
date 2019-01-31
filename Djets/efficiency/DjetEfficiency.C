@@ -37,45 +37,48 @@ float jetptmin = 2, float jetptmax = 50, bool recoPt = 0, bool postfix = 0, TStr
 	TList *histList[NDMC];
 	THnSparseF *sparseMC[NDMC];
 	THnSparseF *sparsereco[NDMC];
-
 	for(int i=0; i<NDMC; i++){
-	   if(!isprefix){
-		if(postfix) { histList[i] =  (TList*)dir->Get(Form("%s%d%sMCrec",histName.Data(),i,listName.Data())); }
-		else {
-			 if(isPrompt) histList[i] =  (TList*)dir->Get(Form("%s%dMCrec",histName.Data(),i));
-			 else histList[i] =  (TList*)dir->Get(Form("%s%dFDMCrec",histName.Data(),i));
+
+		if(!isprefix){
+			if(postfix) { histList[i] =  (TList*)dir->Get(Form("%s%d%sMCrec",histName.Data(),i,listName.Data())); }
+			else {
+			 	if(isPrompt) histList[i] =  (TList*)dir->Get(Form("%s%dMCrec",histName.Data(),i));
+			 	else histList[i] =  (TList*)dir->Get(Form("%s%dFDMCrec",histName.Data(),i));
+			}
+	   	}
+	   	else{
+			if(postfix) {
+				if(isPrompt){ histList[i] =  (TList*)dir->Get(Form("%s%sMBN%dMCrec",histName.Data(),listName.Data(),i)); }
+				else{ histList[i] =  (TList*)dir->Get(Form("%s%sMBN%dFDMCrec",histName.Data(),listName.Data(),i)); }
+			}
+			else { cout<<"-----postfix has to be true if prefix is true!! check again----------------"<<endl; return;	}
+	   	}
+
+		THnSparseF* sMC = (THnSparseF*)histList[i]->FindObject("ResponseMatrix");
+		sparseMC[i] = (THnSparseF*)sMC->Clone(Form("sparseMC_%d",i));
+		if(fDmesonSpecie) sparseMC[i]->GetAxis(5)->SetRangeUser(jetptmin,jetptmax); // Dstar tmp
+    		else { 	sparseMC[i]->GetAxis(6)->SetRangeUser(jetptmin,jetptmax); // jet pT gen
+			sparseMC[i]->GetAxis(9)->SetRangeUser(-(0.9-fRpar),0.9-fRpar); // MC jet eta
 		}
-	   }
-	   else{
-		if(postfix) {
-			if(isPrompt){ histList[i] =  (TList*)dir->Get(Form("%s%sMBN%dMCrec",histName.Data(),listName.Data(),i)); }
-			else{ histList[i] =  (TList*)dir->Get(Form("%s%sMBN%dFDMCrec",histName.Data(),listName.Data(),i)); }
-		}
-		else { cout<<"-----postfix has to be true if prefix is true!! check again----------------"<<endl; return;	}
-	   }
+    		if(fDmesonSpecie) hMC[i] = (TH1F*)sparseMC[i]->Projection(6); // Dstar tmp
+    		else hMC[i] = (TH1F*)sparseMC[i]->Projection(7); // Dpt gen
+		hMC[i]->SetName(Form("hMC_%d",i));
 
-		sparseMC[i] = (THnSparseF*)histList[i]->FindObject("ResponseMatrix");
-    if(fDmesonSpecie) sparseMC[i]->GetAxis(5)->SetRangeUser(jetptmin,jetptmax); // Dstar tmp
-    else sparseMC[i]->GetAxis(6)->SetRangeUser(jetptmin,jetptmax); // jet pT gen
+		THnSparseF* sreco = (THnSparseF*)histList[i]->FindObject("ResponseMatrix");
+                sparsereco[i] = (THnSparseF*)sreco->Clone(Form("sparsereco_%d",i));
+   	 	if(recoPt) {
+      			sparsereco[i]->GetAxis(1)->SetRangeUser(ptmin,ptmax); // jet pT reco
+    		}
+    		else {
+      			if(fDmesonSpecie)sparsereco[i]->GetAxis(5)->SetRangeUser(jetptmin,jetptmax); // Dstar tmp
+      			else sparsereco[i]->GetAxis(6)->SetRangeUser(jetptmin,jetptmax); // jet pT gen
+  			sparsereco[i]->GetAxis(1)->SetRangeUser(0,100); // jet pT reco
+    		}
+   		if(!fDmesonSpecie) sparsereco[i]->GetAxis(4)->SetRangeUser(-(0.9-fRpar),0.9-fRpar); // reco jet eta
 
-    if(fDmesonSpecie) hMC[i] = (TH1F*)sparseMC[i]->Projection(6); // Dstar tmp
-    else hMC[i] = (TH1F*)sparseMC[i]->Projection(7); // Dpt gen
-    hMC[i]->SetName(Form("hMC_%d",i));
-
-		sparsereco[i] = (THnSparseF*)histList[i]->FindObject("ResponseMatrix");
-    if(recoPt) {
-      sparsereco[i]->GetAxis(1)->SetRangeUser(ptmin,ptmax); // jet pT reco
-    }
-    else {
-      if(fDmesonSpecie)sparsereco[i]->GetAxis(5)->SetRangeUser(jetptmin,jetptmax); // Dstar tmp
-      else sparsereco[i]->GetAxis(6)->SetRangeUser(jetptmin,jetptmax); // jet pT gen
-  		sparsereco[i]->GetAxis(1)->SetRangeUser(0,100); // jet pT reco
-    }
-
-    if(fDmesonSpecie)hreco[i] = (TH1F*)sparsereco[i]->Projection(6); // Dstar tmp
-    else hreco[i] = (TH1F*)sparsereco[i]->Projection(7); // Dpt gen
+    		if(fDmesonSpecie)hreco[i] = (TH1F*)sparsereco[i]->Projection(6); // Dstar tmp
+    		else hreco[i] = (TH1F*)sparsereco[i]->Projection(7); // Dpt gen
 		hreco[i]->SetName(Form("hreco_%d",i));
-
 		if (!i){
 			hMCpt = (TH1F*)hMC[0]->Clone("hMCpt");
 			hMCpt_reco = (TH1F*)hreco[0]->Clone("hMCpt_reco");
@@ -85,9 +88,9 @@ float jetptmin = 2, float jetptmax = 50, bool recoPt = 0, bool postfix = 0, TStr
 			hMCpt_reco->Add(hreco[i]);
 		}
 	}
+
 	hMCpt->Sumw2();
 	hMCpt_reco->Sumw2();
-
 	hMCpt->SetLineColor(4);
 	hMCpt->SetMarkerColor(4);
 	hMCpt->SetMarkerStyle(20);
@@ -95,10 +98,9 @@ float jetptmin = 2, float jetptmax = 50, bool recoPt = 0, bool postfix = 0, TStr
 	hMCpt_reco->SetLineColor(2);
 	hMCpt_reco->SetMarkerColor(2);
 	hMCpt_reco->SetMarkerStyle(20);
-
+	
 	TH1D * hEff = (TH1D*)hMCpt_reco->Clone("hEff");
 	hEff -> Divide(hMCpt_reco,hMCpt,1,1,"b");
-
 	//hEff->GetXaxis()->SetRangeUser(ptmin,ptmax);
 
 	hMCpt->SetMinimum(10);
@@ -118,7 +120,7 @@ float jetptmin = 2, float jetptmax = 50, bool recoPt = 0, bool postfix = 0, TStr
 	TH1D * hEff_reb = (TH1D*)hpt_reco_reb->Clone("hEff_reb");
 	hEff_reb -> Divide(hpt_reco_reb,hpt_mc_reb,1,1,"b");
 	//hEff_reb->GetXaxis()->SetRangeUser(ptmin,ptmax);
-	hEff_reb->SetTitle(Form("|#eta_{jet}|<0.%d",9-Rpar));
+	hEff_reb->SetTitle(Form("|#eta_{jet}|<%.1f",0.9-fRpar));
 	hEff_reb->GetXaxis()->SetTitle(Form("p_{T,%s} (GeV/$it{c})",fDmesonS.Data()));
 	hEff_reb->GetYaxis()->SetTitle("Acc #times Eff");
 
