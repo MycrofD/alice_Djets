@@ -47,35 +47,19 @@ enum DMesonSpecies {kD0toKpi, kDStarD0pi};
     const double  BRDstar = 0.0257;
     const double  BRDzero = 0.0389;
     const int     APb = 208;
-
-    //====== D pT bins ---- set up your D pT bins ======
-//    const int     fptbinsDN = 12;
-//    double        fptbinsDA[fptbinsDN+1] = {1,2,3,4,5,6,7,8,10,12,16,24,36 };
-//---------//---------//---------//---------//---------//---------
-//---------new sugested binning
-//----------------5-7 Jet pt
-    const int     fptbinsDN = 6;
-    double        fptbinsDA[fptbinsDN+1] = {1,2,3,4,5,6,7};// 5-7 Jetpt
-//----------------7-10 Jet pt
-//    const int     fptbinsDN = 6;
-//    double        fptbinsDA[fptbinsDN+1] = {1,2,3,4,5,6,7,8,10};// 7-10 Jetpt
-//----------------10-16 Jet pt
-//    const int     fptbinsDN = 8;
-//    double        fptbinsDA[fptbinsDN+1] = {1,2,3,4,5,6,7,8,10,12,16};// 10-16 Jetpt
-//----------------16-36 Jet pt
-//    const int     fptbinsDN = 10;
-//    double        fptbinsDA[fptbinsDN+1] = {1,2,3,4,5,6,7,8,10,12,16,24,36};// 16-36 Jetpt// 
-//----------------36-50 Jet pt
-//    const int     fptbinsDN = 3;
-//    double        fptbinsDA[fptbinsDN+1] = {12,16,24,36 };// 36-50 Jetpt
+int zjetbin = 9;
+double        fptbinsDA[] = {10,12,16,24,36,50};
+    const int     fptbinsDN = sizeof(fptbinsDA)/sizeof(fptbinsDA[0])-1;
 
     //====== jet pT bins --- set up your jet pT bins ======
-//    const int 	  fptbinsJetN = 3;
-//    double	  fptbinsJetA[fptbinsJetN+1] = {3.0, 16.0, 36.0, 50.0};
-//    const int 	  fptbinsJetN = 5;
-//    double	  fptbinsJetA[fptbinsJetN+1] = {3.0, 6.0, 10.0, 16.0, 36.0, 50.0};
-    const int 	  fptbinsJetN = 5;
-    double	  fptbinsJetA[fptbinsJetN+1] = {5.0, 7.0, 10.0, 16.0, 36.0, 50.0};
+    //const int 	  fptbinsJetN = 3;
+    //double	  fptbinsJetA[fptbinsJetN+1] = {5.0, 7.0, 10.0, 16.0, 36.0, 50.0};
+    //double	  fptbinsJetA[fptbinsJetN+1] = {5.0, 7.0, 10.0, 15.0, 36.0, 50.0};
+    //double	  fptbinsJetA[] = {5.0, 15.0, 30.0};
+    double	  fptbinsJetA[] = {5.0, 7.0, 10.0, 15.0, 36.0, 5.0, 15.0, 30.0, 15.0, 50.0, 10.0, 16.0, 36.0};
+    
+    const int     fptbinsJetN = sizeof(fptbinsJetA)/sizeof(fptbinsJetA[0])-1;
+
 //---------new suggested binning end
 //---------//---------//---------//---------//---------//---------
     //====== z bins ---- set up your z (momentum fraction) bins ======
@@ -96,7 +80,7 @@ enum DMesonSpecies {kD0toKpi, kDStarD0pi};
     Float_t       fDmass = 1.864, fDsigma = 0.010;   //-----! initial values for D mass and sigma
     //Float_t       fDsigmafix[fptbinsDN] = {0.01,0.011,0.01175,0.0125,0.013,0.0135,0.0145,0.016,0.0175,0.0185};   //-----! initial values for D mass and sigma
     double       minf = 1.71, maxf = 2.1;           //-----! min/mass of the inv. mass distributions
-    Int_t         fRebinMass = 2;                    //-----! rebining of the inv. mass distributions
+    Int_t         fRebinMass = 4;                    //-----! rebining of the inv. mass distributions
 
     Int_t fColors[] = {1,2,8,4,kOrange-1,6,kGray+1,kCyan+1,kMagenta+2,kGreen+3,kViolet+5,kYellow+2};
     Int_t fMarkers[] = {20,21,22,23,24,25,26,27,28,29,30,32,33,34};
