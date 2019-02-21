@@ -33,7 +33,7 @@ void signalExtraction_SBz(
 //  TString data = "$HOME/Work/alice/analysis/out/AnalysisResults.root",
   TString data = "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/trial_437.root",
   bool isEff = 0, 
-  TString efffile = "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts/Default/efficiency/DjetEff_prompt_jetpt5_50.root",
+  TString efffile ="",// "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts/Default/efficiency/DjetEff_prompt_jetpt5_50.root",
   bool isRef = 0, 
   TString refFile = "test.root",
   bool postfix = 0, 
@@ -42,7 +42,8 @@ void signalExtraction_SBz(
   bool save = 1,
   bool isMoreFiles = 0,
   TString prod = "kl",   // for more than 1 file, for one file leave it empty)
-  bool isprefix=0
+  bool isprefix=0,
+  TString saveDir="Feb21"
 )
 {
 
@@ -51,8 +52,9 @@ void signalExtraction_SBz(
 
     savePlots = save;
     bEff = isEff;
-    if(bEff)plotsDir=Form("/plots_Feb14/jetbin_%d_%d", (int)fptbinsJetA[(int)zjetbin-1], (int)fptbinsJetA[(int)zjetbin]);
-    else plotsDir = Form("/plotsNoEff_Feb14/jetbin_%d", zjetbin);
+    TString plotsDir;
+    if(bEff)plotsDir=Form("/plots_%s/jetbin_%d_%d", saveDir.Data(),(int)fptbinsJetA[(int)zjetbin-1], (int)fptbinsJetA[(int)zjetbin]);
+    else plotsDir = Form("/plotsNoEff_%s/jetbin_%d",saveDir.Data(), zjetbin);
     TString outdir = out;
     gSystem->Exec(Form("mkdir %s",outdir.Data()));
     gSystem->Exec(Form("mkdir %s%s",outdir.Data(),plotsDir.Data()));
