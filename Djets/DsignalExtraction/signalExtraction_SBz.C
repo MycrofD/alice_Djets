@@ -32,8 +32,8 @@ double refScale = 1.5;
 void signalExtraction_SBz(
 //  TString data = "$HOME/Work/alice/analysis/out/AnalysisResults.root",
   TString data = "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/trial_437.root",
-  bool isEff = 1, 
-  TString efffile = "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts/Default/efficiency/DjetEff_prompt_jetpt5_50.root",
+  bool isEff = 0, 
+  TString efffile ="",// "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts/Default/efficiency/DjetEff_prompt_jetpt5_50.root",
   bool isRef = 0, 
   TString refFile = "test.root",
   bool postfix = 0, 
@@ -42,7 +42,8 @@ void signalExtraction_SBz(
   bool save = 1,
   bool isMoreFiles = 0,
   TString prod = "kl",   // for more than 1 file, for one file leave it empty)
-  bool isprefix=0
+  bool isprefix=0,
+  TString saveDir="Feb21"
 )
 {
 
@@ -51,8 +52,9 @@ void signalExtraction_SBz(
 
     savePlots = save;
     bEff = isEff;
-    if(bEff)plotsDir=Form("/plots/jetbin_%d", zjetbin);
-    else plotsDir = Form("/plotsNoEff/jetbin_%d", zjetbin);
+    TString plotsDir;
+    if(bEff)plotsDir=Form("/plots_%s/jetbin_%d_%d", saveDir.Data(),(int)fptbinsJetA[(int)zjetbin-1], (int)fptbinsJetA[(int)zjetbin]);
+    else plotsDir = Form("/plotsNoEff_%s/jetbin_%d",saveDir.Data(), zjetbin);
     TString outdir = out;
     gSystem->Exec(Form("mkdir %s",outdir.Data()));
     gSystem->Exec(Form("mkdir %s%s",outdir.Data(),plotsDir.Data()));
@@ -738,11 +740,11 @@ hjetptspectrumRebScaled = (TH1F*)hjetptspectrumReb->Clone("hjetptspectrumRebScal
       hjetptspectrumRebScaled->GetXaxis()->SetTitle("z = p_{D}/p_{ch jet}");
       TCanvas *cSpectrumRebin = new TCanvas("cSpectrumRebinProb","cSpectrumRebinProb",800,600);
       cSpectrumRebin->SetLogy();
-      hjetptspectrumRebScaled->GetYaxis()->SetRangeUser(1,1000000);
+      //hjetptspectrumRebScaled->GetYaxis()->SetRangeUser(1,1000000);
       hjetptspectrumRebScaled->SetTitle(Form("p_{T,%s} > %d GeV/#it{c}",fDmesonS.Data(),(int)fptbinsDA[0]));
-      TH1F* hjetptspectrumRebScaledProb=(TH1F*)hjetptspectrumRebScaled->Clone("hjetptspectrumRebScaledProb");
-      hjetptspectrumRebScaledProb->Scale(1.0/hjetptspectrumRebScaled->Integral());
-      hjetptspectrumRebScaledProb->Draw();
+      //TH1F* hjetptspectrumRebScaledProb=(TH1F*)hjetptspectrumRebScaled->Clone("hjetptspectrumRebScaledProb");
+      //hjetptspectrumRebScaledProb->Scale(1.0/hjetptspectrumRebScaled->Integral());
+      hjetptspectrumRebScaled->Draw();
       //pvEn->Draw("same");
       //pvD->Draw("same");
       //pvJet->Draw("same");
