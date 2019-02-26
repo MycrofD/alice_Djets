@@ -43,7 +43,7 @@ void signalExtraction_SBz(
   bool isMoreFiles = 0,
   TString prod = "kl",   // for more than 1 file, for one file leave it empty)
   bool isprefix=0,
-  TString saveDir="Feb21"
+  TString saveDir="Feb28"
 )
 {
 
@@ -53,8 +53,8 @@ void signalExtraction_SBz(
     savePlots = save;
     bEff = isEff;
     TString plotsDir;
-    if(bEff)plotsDir=Form("/plots_%s/jetbin_%d_%d", saveDir.Data(),(int)fptbinsJetA[(int)zjetbin-1], (int)fptbinsJetA[(int)zjetbin]);
-    else plotsDir = Form("/plotsNoEff_%s/jetbin_%d",saveDir.Data(), zjetbin);
+    if(bEff)plotsDir=Form("/plots/%s_jetbin_%d_%d", saveDir.Data(),(int)fptbinsJetA[(int)zjetbin-1], (int)fptbinsJetA[(int)zjetbin]);
+    else plotsDir = Form("/plotsNoEff/%s_jetbin_%d_%d",saveDir.Data(),(int)fptbinsJetA[(int)zjetbin-1], (int)fptbinsJetA[(int)zjetbin]);
     TString outdir = out;
     gSystem->Exec(Form("mkdir %s",outdir.Data()));
     gSystem->Exec(Form("mkdir %s%s",outdir.Data(),plotsDir.Data()));
