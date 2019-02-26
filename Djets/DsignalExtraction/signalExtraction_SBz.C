@@ -38,7 +38,8 @@ void signalExtraction_SBz(
   TString refFile = "test.root",
   bool postfix = 0, 
   TString listName = "Cut",
-  TString out = "signalExtraction",
+//  TString out = "signalExtraction",
+  TString out = "/media/jackbauer/data/z_out/",
   bool save = 1,
   bool isMoreFiles = 0,
   TString prod = "kl",   // for more than 1 file, for one file leave it empty)
