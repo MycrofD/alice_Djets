@@ -3,13 +3,18 @@
 //  Utrecht University
 //  barbara.antonina.trzeciak@cern.ch
 //-----------------------------------------------------------------------
+//-----------------------------------------------------------------------
+//  [Modified] A.Mohanty
+//  Utrecht University
+//  auro.mohanty@cern.ch
+//-----------------------------------------------------------------------
 
 #include "../DsignalExtraction/configDzero_ppz.h"
 
 void DetRM_z(
-bool isPrompt = 1, 
-TString datafile = "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/AnalysisResults_414_z.root", 
-TString outDir = "plots",
+bool isPrompt = 0, 
+TString datafile = ".root", 
+TString outDir = "/ResponseMatrix", //"plots",
 bool postfix = 0, 
 TString listName = "FD", 
 bool isprefix=0 )
@@ -32,6 +37,7 @@ bool isprefix=0 )
 
 
     float zmin = 0, zmax = 1.0;
+    float jetptmin = (int)fptbinsJetA[(int)zjetbin-1], jetptmax = (int)fptbinsJetA[(int)zjetbin];
     float Dptmin = fptbinsDA[0], Dptmax = fptbinsDA[fptbinsDN];
 
     TPaveText *pv2 = new TPaveText(0.15,0.8,0.25,0.9,"brNDC");
@@ -84,14 +90,18 @@ bool isprefix=0 )
         sparseMC[i] = (THnSparseF*)histList[i]->FindObject("ResponseMatrix");
 
         sparseMC[i]->GetAxis(2)->SetRangeUser(Dptmin,Dptmax);
-        sparseMC[i]->GetAxis(0)->SetRangeUser(zmin,zmax);
+        sparseMC[i]->GetAxis(1)->SetRangeUser(jetptmin,jetptmax);
+//        sparseMC[i]->GetAxis(0)->SetRangeUser(zmin,zmax);
 
-        if(fDmesonSpecie) sparseMC[i]->GetAxis(6)->SetRangeUser(Dptmin,Dptmax);
-        else sparseMC[i]->GetAxis(7)->SetRangeUser(Dptmin,Dptmax);
+	if(fDmesonSpecie) sparseMC[i]->GetAxis(6)->SetRangeUser(Dptmin,Dptmax);
+        else sparseMC[i]->GetAxis(7)->SetRangeUser(Dptmin,Dptmax);//Gen level cut on Dpt
 
-        if(fDmesonSpecie) sparseMC[i]->GetAxis(4)->SetRangeUser(zmin,zmax); // Dstar tmp
-        else sparseMC[i]->GetAxis(5)->SetRangeUser(zmin,zmax);
+        if(fDmesonSpecie) sparseMC[i]->GetAxis(5)->SetRangeUser(jetptmin,jetptmax); // Dstar tmp
+        else sparseMC[i]->GetAxis(6)->SetRangeUser(jetptmin,jetptmax);//gen level cut on jetpt
 
+//        if(fDmesonSpecie) sparseMC[i]->GetAxis(4)->SetRangeUser(zmin,zmax);
+//        else sparseMC[i]->GetAxis(5)->SetRangeUser(zmin,zmax);//Gen level cut on Dpt
+        
         if(fDmesonSpecie) hZ[i] = (TH2D*)sparseMC[i]->Projection(4,0,"E"); //Dstar tmp
         else hZ[i] = (TH2D*)sparseMC[i]->Projection(5,0,"E");
 
@@ -124,7 +134,9 @@ bool isprefix=0 )
     hZ2d->SetTitle("hZ2d");
     hZ2d->SetName("hZ2d");
     hZ2d->GetXaxis()->SetTitle("z_{||}^{rec.} ");
+    hZ2d->GetXaxis()->SetRangeUser(zmin,zmax);
     hZ2d->GetYaxis()->SetTitle("z_{||}^{gen.} ");
+    hZ2d->GetYaxis()->SetRangeUser(zmin,zmax);
 
     hZGen->SetName("hZGen");
     hZRec->SetName("hZRec");
@@ -145,9 +157,11 @@ bool isprefix=0 )
     pv2->Draw("same");
 
 
-    cZ2d->SaveAs(Form("%s/plots/DetMatrix_%s_Dpt%d_%d.png",outDir.Data(), isPrompt ? "prompt" : "nonPrompt", (int)Dptmin, (int)Dptmax));
+    //cZ2d->SaveAs(Form("%s/plots/DetMatrix_%s_Dpt%d_%d.png",outDir.Data(), isPrompt ? "prompt" : "nonPrompt", (int)Dptmin, (int)Dptmax));
+    cZ2d->SaveAs(Form("%s/plots/DetMatrix_%s_Jet%d_%d_Dpt%d_%d.png",outDir.Data(), isPrompt ? "prompt" : "nonPrompt",(int)fptbinsJetA[(int)zjetbin-1],(int)fptbinsJetA[(int)zjetbin], (int)fptbinsDA[0], (int)fptbinsDA[fptbinsDN]));
 
-    TFile *ofile = new TFile(Form("%s/DetMatrix_%s.root",outDir.Data(), isPrompt ? "prompt" : "nonPrompt" ),"RECREATE");
+    //TFile *ofile = new TFile(Form("%s/DetMatrix_%s.root",outDir.Data(), isPrompt ? "prompt" : "nonPrompt" ),"RECREATE");
+    TFile *ofile = new TFile(Form("%s/DetMatrix_%s_Jet%d_%d_Dpt%d_%d.root",outDir.Data(), isPrompt ? "prompt" : "nonPrompt", (int)fptbinsJetA[(int)zjetbin-1],(int)fptbinsJetA[(int)zjetbin], (int)fptbinsDA[0], (int)fptbinsDA[fptbinsDN]),"RECREATE");
 
     hZGen->Write();
     hZRec->Write();

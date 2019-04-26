@@ -28,16 +28,17 @@
 #include "RooUnfoldSvd.h"
 #include "RooUnfoldBinByBin.h"*/
 
+TString roounfoldpwd = "$HOME/ALICE_HeavyFlavour/RooUnfold-1.1.1/libRooUnfold";
+
 enum DMesonSpecies {kD0toKpi, kDStarD0pi};
 
+TString OUTDIRECTORY="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_cutTight/DzeroR03_def_437_old0";
     // ========================== Prepare your config ============================================
     int           fSystem = 0;            //-----! 0: pp, 1: p-Pb, Pb-Pb -- set up system
     TString       fSystemS = "pp, #sqrt{#it{s}} = 5.02 TeV";
     DMesonSpecies fDmesonSpecie = kD0toKpi;
     TString       fDmesonDsc = "Dzero";
     TString       fDmesonS = "D^{0}";
-    const double  fRpar = 0.3;           //-----! jet R parameter for your studies (the one that you use in your jet finder!)
-    const int     Rpar = 3;
     const int     ND = 4;                //-----!  change these numbers based on how many D mesons you analyse in data !
     const int     NDMC = 2;              //-----!  change these numbers based on how many D mesons you analyse in MC !
 

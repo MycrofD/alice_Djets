@@ -21,6 +21,10 @@
 //  Author B.Trzeciak
 //  Utrecht University
 //  barbara.antonina.trzeciak@cern.ch
+//
+//  [Modified] A.Mohanty
+//  Utrecht University
+//  auro.mohanty@cern.ch
 //-----------------------------------------------------------------------
 
 
@@ -29,11 +33,11 @@
     double jetmin = 0, jetmax = 50;
     double jetplotmin = 2, jetplotmax = 50;
     double zplotmin = 0, zplotmax = 1.0;
-    bool isEta = 0;
-    double jetEta = 0.4;
+    bool isEta = 0; double jetEta = 0.4;
 
     bool savePlots = 1;
     bool bEff = 0;
+    int  bSigma = 0;
     bool isptcut = 1;
     bool isdetails = 0;
 
@@ -43,6 +47,7 @@
 
     //------- efficiency
     double *efficiency = 0x0;
+    double *sigmaMC = 0x0;
 
     TH1F* hmass[fptbinsDN];
     TH1F* hmass_l[fptbinsDN];
