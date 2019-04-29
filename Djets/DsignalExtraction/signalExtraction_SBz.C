@@ -50,12 +50,13 @@ void signalExtraction_SBz(
   TString prod = "kl",   // for more than 1 file, for one file leave it empty)
   bool isprefix=0,
   TString saveDir="Feb28",
-  bool boundSigma = 0
+  int boundSigma = 0
 )
 {
 //gInterpreter->LoadMacro("AliHFInvMassFitterDJET.cxx++g");//to load custom cxx macro by entering ROOT environment.
 
 efffile+=Form("%d_%d.root",(int)fptbinsJetA[(int)zjetbin-1], (int)fptbinsJetA[(int)zjetbin]);
+refFile+= Form("R0%d_%d_%d.root",(int)Rpar,(int)fptbinsJetA[(int)zjetbin-1], (int)fptbinsJetA[(int)zjetbin]);
 cout<<efffile<<endl;
     fUseRefl = isRef;
     if(fUseRefl) fReflFilename = refFile;
@@ -345,11 +346,26 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
 	if(bSigma == 1){
         	fitterp->SetInitialGaussianMean(fDmass);
         	fitterp->SetInitialGaussianSigma(fDsigma);
-		
 		if(i == fptbinsDN-1){
 			double fDsigmafix = sigmaMC[i];
         		fitterp->SetBoundGaussianSigma(fDsigmafix, 0.1);
 		}
+	}
+	else if(bSigma == 2){
+        	fitterp->SetInitialGaussianMean(fDmass);
+        	fitterp->SetInitialGaussianSigma(fDsigma);
+		
+			double fDsigmafix = sigmaMC[i];
+        		fitterp->SetBoundGaussianSigma(fDsigmafix, 0.1);
+		
+	}
+	else if(bSigma == 3){
+        	fitterp->SetInitialGaussianMean(fDmass);
+        	fitterp->SetInitialGaussianSigma(fDsigma);
+		
+			double fDsigmafix = sigmaMC[i];
+        		fitterp->SetBoundGaussianSigma(fDsigmafix, 0.2);
+		
 	}
 	else{
         	fitterp->SetInitialGaussianMean(fDmass);
