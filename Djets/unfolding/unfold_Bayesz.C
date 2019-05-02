@@ -455,6 +455,7 @@ LoadDetectorMatrix(detRMfile.Data(),"hZ2d","hZGen","hZRec",0);
 		pvEta->Draw("same");
 
     TLegend* ls = new TLegend(0.15,0.75,0.4,0.85);
+//    TLegend* ls = new TLegend(0.6,0.55,0.9,0.65);
     ls->SetBorderSize(0);
     ls->AddEntry(fRawRebin,"Measured","p");
     //ls->AddEntry(fUnfoldedBayes[regBayes-1], Form("Unfolded, Bayes reg=%d",regBayes,"p"));

@@ -21,13 +21,15 @@ bin_zjet=$1 # change the bin number you want to use here.
 		# 1 through x mean all bins of jet pt
 		# The arguments here are passed from zrun_main.csh
 #----- Flags for all analysis steps
-flagEff=0 #1 Getting efficiencies and MC sigmas in different jetpt intervals for all Dpt bins
-flagSBs=1 #2 Side Band subtraction method
-flagSim=0 #3 Simulation for non-prompt and prompt D-jets
-flagRes=0 #4 Response matrix
-flagBFD=0 #5 B-feed down subtraction
-flagUnf=0 #6 Unfolding
+flagEff=1 #1 Getting efficiencies and MC sigmas in different jetpt intervals for all Dpt bins
+flagRef=1 #2 Reflections for different jetpt intervals for all Dpt bins
+flagSBs=1 #3 Side Band subtraction method
+flagSim=0 #4 Simulation for non-prompt and prompt D-jets
+flagRes=1 #5 Response matrix
+flagBFD=1 #6 B-feed down subtraction
+flagUnf=1 #7 Unfolding
 #-----
+finerunfold=0
 boundSigma=0	# if needed to fit certain Dpt bins with a bounded sigma: sigma +/- some fraction of this sigma
 R=$2		# Jet radius, fed as an argument from zrun_main.csh 
 fBsimN=11	# number of non-prompt sim files
@@ -43,7 +45,7 @@ echo "const int fBsimN = ${fBsimN};" >> configDzero_ppz.h	#
 echo "const int fCsimN = ${fCsimN};" >> configDzero_ppz.h	#
 echo "int zjetbin = ${bin_zjet};" >> configDzero_ppz.h		#
 
-# defining Dpt intervals and measured and unfolding true bins for different jetpt intervals
+# defining Dpt intervals and, measured and unfolding true bins for different jetpt intervals
 if [ $bin_zjet -eq 14 ]; then  # full jet bin			 
  echo "double        fptbinsDA[] = {1,2,3,4,5,6,7,8,10,12,16,24,36};" >> configDzero_ppz.h
  echo " const int     fptbinsZFinalN = 6;" >> configDzero_ppz.h
@@ -61,8 +63,13 @@ elif [ $bin_zjet -eq 2 ]; then #7-10
  echo " double fdplotmin = 800, dataplotmax = 100000;" >> configDzero_ppz.h
 elif [ $bin_zjet -eq 3 ]; then #10-15
  echo "double        fptbinsDA[] = {5,6,7,8,10,12,15};" >> configDzero_ppz.h
- echo " const int     fptbinsZFinalN = 5;" >> configDzero_ppz.h
- echo " double        fptbinsZFinalA[fptbinsZFinalN+1] = {0.4, 0.6, 0.7, 0.8, 0.9, 1.02};" >> configDzero_ppz.h
+ if [ $finerunfold -eq 0 ]; then #10-15
+  echo " const int     fptbinsZFinalN = 5;" >> configDzero_ppz.h
+  echo " double        fptbinsZFinalA[fptbinsZFinalN+1] = {0.4, 0.6, 0.7, 0.8, 0.9, 1.02};" >> configDzero_ppz.h
+ elif [ $finerunfold -eq 1 ]; then #10-15
+  echo " const int     fptbinsZFinalN = 6;" >> configDzero_ppz.h
+  echo " double        fptbinsZFinalA[fptbinsZFinalN+1] = {0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.02};" >> configDzero_ppz.h
+ fi
  echo " double fdplotmin = 100, dataplotmax = 40000;" >> configDzero_ppz.h
 elif [ $bin_zjet -eq 6 ]; then #5-15
  echo "double        fptbinsDA[] = {2,3,4,5,6,7,8,10,12,15};" >> configDzero_ppz.h
@@ -81,7 +88,11 @@ cat $conffile_z2 >> configDzero_ppz.h
 # Output directory
 OUT=/media/jackbauer/data/z_out/R_0$R
 if [ $boundSigma -eq 1 ]; then
- OUT=${OUT}_boundSigma
+ OUT=${OUT}_boundSigma1
+elif [ $boundSigma -eq 2 ]; then
+ OUT=${OUT}_boundSigmaall10
+elif [ $boundSigma -eq 3 ]; then
+ OUT=${OUT}_boundSigmaall20
 fi
 ## Getting Efficiencies for each bin of jet pt interval
 ##-----------------------------------------------------
@@ -106,16 +117,28 @@ if [ $flagEff -eq 1 ]; then
  root -l -b -q DjetEfficiency_z.C'(0, "'$effFile'","'$outDir'", 0, '$postfix', "'$listName'", '$isprefix')'
  cd ../DsignalExtraction
 fi
+## Reflections
+##------------
+outRefl=/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/reflections
+listNameRef=""
+kl=""
+if [ $flagRef -eq 1 ]; then
+ root -l -b -q signalExtraction_zrefl.C'("'$effFile'","'$outRefl'",0,"'$listNameRef'",0,"'$kl'")'
+fi
 ## Signal Extraction Side Bands, with/without efficiency correction
 ##---------------------------------------------------------
-isEff=0
+isEff=1
 #efffile=/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts/Default/efficiency/DjetEff_prompt_jetpt5_50.root
 efffile=$outDir/DjetEff_prompt_jetpt
-isRef=0
-refFile=test.root
+isRef=$flagRef
+refFile=$outRefl/reflectionTemplates_pp_
 postfix=0
 listName=Cut
+if [ $flagRef -eq 1 ]; then
 out=$OUT/signalExtraction
+elif [ $flagRef -eq 0 ]; then
+out=$OUT/signalExtraction_noRef
+fi
 save=1
 isMoreFiles=0
 prod=kl
@@ -173,7 +196,11 @@ fi
 dataUnfoldInDir=$OUT/FDsubtraction
 detRMFilePrompt=$OUT/ResponseMatrix/DetMatrix_prompt
 bkgRMFile=$OUT/ResponseMatrix/DetMatrix_
+ if [ $finerunfold -eq 0 ]; then #10-15
 unfoldingDirOut=$OUT/unfolding
+ elif [ $finerunfold -eq 1 ]; then #10-15
+unfoldingDirOut=$OUT/unfolding_finer
+ fi
 regPar=5
 isPrior=0
 priorType=0 
