@@ -208,7 +208,7 @@ LoadDetectorMatrix(detRMfile.Data(),"hZ2d","hZGen","hZRec",0);
 		fUnfoldedBayes[ivar]->SetLineStyle(1);
 		fUnfoldedBayes[ivar]->SetMarkerColor(colortable[ivar]);
 		fUnfoldedBayes[ivar]->SetMarkerStyle(fMarkers[ivar]);
-		fUnfoldedBayes[ivar]->SetLineWidth(2);
+		fUnfoldedBayes[ivar]->SetLineWidth(3);
 		fUnfoldedBayes[ivar]->GetXaxis()->SetTitle("z_{||, ch}");
 		fUnfoldedBayes[ivar]->GetYaxis()->SetTitle("dN/dp_{T}");
 		fUnfoldedBayes[ivar]->SetTitle("Bayes unfolding");
