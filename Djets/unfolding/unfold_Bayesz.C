@@ -148,6 +148,9 @@ LoadDetectorMatrix(detRMfile.Data(),"hZ2d","hZGen","hZRec",0);
 				}
 
     TH1D* hNormY;
+		TFile *outFile2 = new TFile(Form("%s/alljetz2D/outTest.root",outDir.Data()),"recreate");//deleteme
+    priorhisto->Write();//deleteme
+    fMatrixProd->Write();//deleteme
     // weighting the matrix
 		if (fDoWeighting) {
         cout << "==== weighting ==== " << endl;
@@ -158,11 +161,15 @@ LoadDetectorMatrix(detRMfile.Data(),"hZ2d","hZGen","hZRec",0);
         }
 				else{
 	        cout << "==== dividing ==== " << endl;
+    hNormY->Write("hNormYb4Divide");//deleteme
 					hNormY->Divide(priorhisto);
+    hNormY->Write("hNormYafterDivide");//deleteme
         }
 				WeightMatrixY(fMatrixProd,hNormY,fdivide);
 	}
 
+    fMatrixProd->Write("fMatrixProdafter");//deleteme
+    outFile2->Close();//deleteme
     TH1D* hProjYeff=(TH1D*)fMatrixProd->ProjectionY("hProjYeff");
     TH1D* hProjXeff=(TH1D*)fMatrixProd->ProjectionX("hProjXeff");
 
@@ -341,7 +348,7 @@ LoadDetectorMatrix(detRMfile.Data(),"hZ2d","hZGen","hZRec",0);
     fUnfoldedBayes[regBayes-1]->SetLineColor(kRed+1);
     fUnfoldedBayes[regBayes-1]->SetMarkerColor(kRed+1);
     fUnfoldedBayes[regBayes-1]->SetMarkerStyle(21);
-		fUnfoldedBayes[regBayes-1]->SetLineStyle(1);
+    fUnfoldedBayes[regBayes-1]->SetLineStyle(1);
     folded[regBayes-1]->SetLineColor(kGreen+1);//(kRed+1);
     folded[regBayes-1]->SetMarkerColor(kGreen+1);//(kRed+1);
 
@@ -349,22 +356,22 @@ LoadDetectorMatrix(detRMfile.Data(),"hZ2d","hZGen","hZRec",0);
     folded[regBayes-1]->SetName("foldedSpectrum");
     fRawRebin->SetName("fRawRebin");
 
-		TH1F *hUnfolded_Unc = (TH1F*)fUnfoldedBayes[regBayes-1]->Clone("hUnfolded_Unc");
-		hUnfolded_Unc->GetYaxis()->SetTitle("Rel. unc.");
-		hUnfolded_Unc->SetLineColor(kGreen+1);
-		hUnfolded_Unc->SetMarkerColor(kGreen+1);
-
-		for(int j=1; j<=fUnfoldedBayes[regBayes-1]->GetNbinsX();j++){
-								double err;
-								if(fUnfoldedBayes[regBayes-1]->GetBinContent(j)) err = fUnfoldedBayes[regBayes-1]->GetBinError(j)/fUnfoldedBayes[regBayes-1]->GetBinContent(j);
-								else err = 0;
-								hUnfolded_Unc->SetBinContent(j,err);
-								hUnfolded_Unc->SetBinError(j,0);
-		}
-
-		hUnfolded_Unc->SetTitle("");
-		hUnfolded_Unc->SetMaximum(hUnfolded_Unc->GetMaximum()*1.2);
-		hUnfolded_Unc->SetMinimum(0);
+    TH1F *hUnfolded_Unc = (TH1F*)fUnfoldedBayes[regBayes-1]->Clone("hUnfolded_Unc");
+    hUnfolded_Unc->GetYaxis()->SetTitle("Rel. unc.");
+    hUnfolded_Unc->SetLineColor(kGreen+1);
+    hUnfolded_Unc->SetMarkerColor(kGreen+1);
+    
+    for(int j=1; j<=fUnfoldedBayes[regBayes-1]->GetNbinsX();j++){
+    	double err;
+    	if(fUnfoldedBayes[regBayes-1]->GetBinContent(j)) err = fUnfoldedBayes[regBayes-1]->GetBinError(j)/fUnfoldedBayes[regBayes-1]->GetBinContent(j);
+    	else err = 0;
+    	hUnfolded_Unc->SetBinContent(j,err);
+    	hUnfolded_Unc->SetBinError(j,0);
+    }
+    
+    hUnfolded_Unc->SetTitle("");
+    hUnfolded_Unc->SetMaximum(hUnfolded_Unc->GetMaximum()*1.2);
+    hUnfolded_Unc->SetMinimum(0);
 
     TFile *outSpectra = new TFile(Form("%s/%s_unfoldedZSpectrum.root",outDir.Data(),outName.Data()),"recreate");
 		//TFile *outSpectra = new TFile(Form("%s/%s_unfoldedZSpectrum.root",outDir.Data(),outName.Data()),"recreate");
@@ -486,32 +493,32 @@ LoadDetectorMatrix(detRMfile.Data(),"hZ2d","hZGen","hZRec",0);
 
     TH1F* hratio = (TH1F*)fUnfoldedBayes[regBayes-1]->Rebin(fptbinsZFinalN,"hratio",fptbinsZFinalA);
     TH1D* fRawRebinClone;
-		if (fptbinsZFinalN != fptbinsZMeasN){
-	    fRawRebinClone = new TH1D("fRawRebinClone","Measured hist, True rebinned",fptbinsZFinalN,fptbinsZFinalA);
-			int istart = 0;
-			while (fptbinsZFinalA[0] != fptbinsZMeasA[istart]){
-			istart++;
-			}
-      for(int j=0; j<=fRawRebinClone->GetNbinsX()+1;j++){
-        double cont = fRawRebin->GetBinContent(j+istart);
-        double err = fRawRebin->GetBinError(j+istart);
-        fRawRebinClone->SetBinContent(j, cont);
-        fRawRebinClone->SetBinError(j, err);
-      }
-	}
-	else    fRawRebinClone = (TH1D*)fRawRebin->Clone("fRawRebinClone");
+    if (fptbinsZFinalN != fptbinsZMeasN){
+        fRawRebinClone = new TH1D("fRawRebinClone","Measured hist, True rebinned",fptbinsZFinalN,fptbinsZFinalA);
+    	    int istart = 0;
+    	    while (fptbinsZFinalA[0] != fptbinsZMeasA[istart]){
+    	        istart++;
+    	    }
+        for(int j=0; j<=fRawRebinClone->GetNbinsX()+1;j++){
+            double cont = fRawRebin->GetBinContent(j+istart);
+            double err = fRawRebin->GetBinError(j+istart);
+            fRawRebinClone->SetBinContent(j, cont);
+            fRawRebinClone->SetBinError(j, err);
+        }
+    }
+    else    fRawRebinClone = (TH1D*)fRawRebin->Clone("fRawRebinClone");
 //    TH1D* fRawRebinClone = (TH1D*)hBaseMeasure->Clone("fRawRebinClone");
-	hratio->Divide(fRawRebinClone);
-	hratio->SetLineColor(kMagenta+1);
-	hratio->SetMarkerColor(kMagenta+1);
+    hratio->Divide(fRawRebinClone);
+    hratio->SetLineColor(kMagenta+1);
+    hratio->SetMarkerColor(kMagenta+1);
 
-  TCanvas* cr= new TCanvas("cr","cr",800,600);
-	hratio->GetYaxis()->SetTitle(Form("dN/dp_{T} Unfolded(Reg=%d)/Measured",regBayes));
-	hratio->SetTitle(Form("Unfolded(Reg=%d)/Measured",regBayes));
-	hratio->Draw("hist");
-	line->Draw("same");
-	cr->SaveAs(Form("%s/plots/%s_UnfMeasRatio.pdf",outDir.Data(),outName.Data()));
-  cr->SaveAs(Form("%s/plots/%s_UnfMeasRatio.png",outDir.Data(),outName.Data()));
+    TCanvas* cr= new TCanvas("cr","cr",800,600);
+    hratio->GetYaxis()->SetTitle(Form("dN/dp_{T} Unfolded(Reg=%d)/Measured",regBayes));
+    hratio->SetTitle(Form("Unfolded(Reg=%d)/Measured",regBayes));
+    hratio->Draw("hist");
+    line->Draw("same");
+    cr->SaveAs(Form("%s/plots/%s_UnfMeasRatio.pdf",outDir.Data(),outName.Data()));
+    cr->SaveAs(Form("%s/plots/%s_UnfMeasRatio.png",outDir.Data(),outName.Data()));
 
     hProjXeff->GetXaxis()->SetRangeUser(plotmin,plotmax);
     hProjYeff->GetXaxis()->SetRangeUser(plotmin,plotmax);
@@ -519,13 +526,13 @@ LoadDetectorMatrix(detRMfile.Data(),"hZ2d","hZGen","hZRec",0);
     TCanvas* cProjMatrix= new TCanvas("cProjMatrix","cProjMatrix",800,600);
     cProjMatrix->SetLogz();
     fMatrixProd->Draw("colz");
-		cProjMatrix->SaveAs(Form("%s/plots/%s_MatrixProd.pdf",outDir.Data(),outName.Data()));
+    cProjMatrix->SaveAs(Form("%s/plots/%s_MatrixProd.pdf",outDir.Data(),outName.Data()));
     cProjMatrix->SaveAs(Form("%s/plots/%s_MatrixProd.png",outDir.Data(),outName.Data()));
 
     TCanvas* cMatrix= new TCanvas("cMatrix","cMatrix",800,600);
     cMatrix->SetLogz();
     Matrix->Draw("colz");
-		cMatrix->SaveAs(Form("%s/plots/%s_Matrix.pdf",outDir.Data(),outName.Data()));
+    cMatrix->SaveAs(Form("%s/plots/%s_Matrix.pdf",outDir.Data(),outName.Data()));
     cMatrix->SaveAs(Form("%s/plots/%s_Matrix.png",outDir.Data(),outName.Data()));
 
     TCanvas* cProjMReb= new TCanvas("cProjMReb","cProjMReb",800,600);
@@ -539,9 +546,9 @@ LoadDetectorMatrix(detRMfile.Data(),"hZ2d","hZGen","hZRec",0);
     hProjXeffRebin->Draw("same");
 
     cProjMReb->SaveAs(Form("%s/plots/%s_MatrixProdProjReb.pdf",outDir.Data(),outName.Data()));
-		cProjMReb->SaveAs(Form("%s/plots/%s_MatrixProdProjReb.png",outDir.Data(),outName.Data()));
-
-		if(fSystem) MtxPlots(outDir,outName);
+    cProjMReb->SaveAs(Form("%s/plots/%s_MatrixProdProjReb.png",outDir.Data(),outName.Data()));
+    
+    if(fSystem) MtxPlots(outDir,outName);
 }
 
 
@@ -549,36 +556,36 @@ int LoadDetectorMatrix(TString fn, TString mxname, TString tsname, TString msnam
 	TFile *f  = TFile::Open(fn);
 	if (!f) { Error("LoadDetectorMatrix","Detector matrix file %s not found.",fn.Data()); return 0; }
 
-    if(norm){
-	if (mxname == "") mxname = "Detectormatrix";
-        //fMatrixPP = (TH2D*)f->Get(mxname);
-        TH2D *matrix = (TH2D*)f->Get(mxname);
-        //if (!fMatrixPP) {
-        if (!matrix) {
-            Error("LoadDetectorMatrix","Detector matrix %s could not be gotten from file.",mxname.Data());
-            return 0;
-        }
-        fMatrixPP = NormMatrixY(mxname,matrix);
-    }
-    else {
-        fMatrixPP = (TH2D*)f->Get(mxname);
-        if (!fMatrixPP) {
-            Error("LoadDetectorMatrix","Detector matrix %s could not be gotten from file.",mxname.Data());
-            return 0;
-        }
+  if(norm){
+	    if (mxname == "") mxname = "Detectormatrix";
+      //fMatrixPP = (TH2D*)f->Get(mxname);
+      TH2D *matrix = (TH2D*)f->Get(mxname);
+      //if (!fMatrixPP) {
+      if (!matrix) {
+          Error("LoadDetectorMatrix","Detector matrix %s could not be gotten from file.",mxname.Data());
+          return 0;
+      }
+      fMatrixPP = NormMatrixY(mxname,matrix);
+  }
+  else {
+      fMatrixPP = (TH2D*)f->Get(mxname);
+      if (!fMatrixPP) {
+          Error("LoadDetectorMatrix","Detector matrix %s could not be gotten from file.",mxname.Data());
+          return 0;
+      }
 
-    }
+  }
 
-    for(int i=0; i<=fMatrixPP->GetNbinsX()+1;i++){
-        for(int j=0; j<=fMatrixPP->GetNbinsY()+1;j++){
+  for(int i=0; i<=fMatrixPP->GetNbinsX()+1;i++){
+      for(int j=0; j<=fMatrixPP->GetNbinsY()+1;j++){
 
-            double cont = fMatrixPP->GetBinContent(i,j);
-            if(i==0 && j==0)fMatrixPP->SetBinContent(i,j,0);
-            else if(i==fMatrixPP->GetNbinsX()+1 && j==fMatrixPP->GetNbinsY()+1)fMatrixPP->SetBinContent(i,j,0);
-            else fMatrixPP->SetBinContent(i,j,cont);
+          double cont = fMatrixPP->GetBinContent(i,j);
+          if(i==0 && j==0)fMatrixPP->SetBinContent(i,j,0);
+          else if(i==fMatrixPP->GetNbinsX()+1 && j==fMatrixPP->GetNbinsY()+1)fMatrixPP->SetBinContent(i,j,0);
+          else fMatrixPP->SetBinContent(i,j,cont);
 
-        }
-    }
+      }
+  }
 
 	if (tsname == "") tsname = "hTrue";
 	fTrueSpectrum = (TH1D*) f->Get(tsname);
@@ -966,7 +973,7 @@ TH2D * Rebin2D(const char* name, TH2D *h, int nx, const double *binx, int ny, co
 */
 
     //for(int i=0;i<=hre->GetNbinsX();i++){
-        for(int j=0;j<=hre->GetNbinsY()+1;j++){
+    for(int j=0;j<=hre->GetNbinsY()+1;j++){
             hre->SetBinContent(0,j,0);
             hre->SetBinError(0,j,0);
 
