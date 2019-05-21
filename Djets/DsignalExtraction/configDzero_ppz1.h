@@ -34,6 +34,10 @@ enum DMesonSpecies {kD0toKpi, kDStarD0pi};
 
 TString OUTDIRECTORY="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_cutTight/DzeroR03_def_437_old0";
     // ========================== Prepare your config ============================================
+
+    const int     fJetptbinsN = 4;
+    double        fJetptbinsA[fJetptbinsN+1] = {5.0, 7.0, 10.0, 15.0, 50.0};
+    //
     int           fSystem = 0;            //-----! 0: pp, 1: p-Pb, Pb-Pb -- set up system
     TString       fSystemS = "pp, #sqrt{#it{s}} = 5.02 TeV";
     DMesonSpecies fDmesonSpecie = kD0toKpi;

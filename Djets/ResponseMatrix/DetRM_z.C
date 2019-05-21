@@ -12,11 +12,11 @@
 #include "../DsignalExtraction/configDzero_ppz.h"
 
 void DetRM_z(
-bool isPrompt = 0, 
-TString datafile = ".root", 
+bool isPrompt = 0,
+TString datafile = ".root",
 TString outDir = "/ResponseMatrix", //"plots",
-bool postfix = 0, 
-TString listName = "FD", 
+bool postfix = 0,
+TString listName = "FD",
 bool isprefix=0 )
 {
 
@@ -37,7 +37,8 @@ bool isprefix=0 )
 
 
     float zmin = 0, zmax = 1.0;
-    float jetptmin = (int)fptbinsJetA[(int)zjetbin-1], jetptmax = (int)fptbinsJetA[(int)zjetbin];
+  //  float jetptmin = (int)fptbinsJetA[(int)zjetbin-1], jetptmax = (int)fptbinsJetA[(int)zjetbin];
+    float jetptmin =0, jetptmax = 60;//(int)fptbinsJetA[(int)zjetbin];
     float Dptmin = fptbinsDA[0], Dptmax = fptbinsDA[fptbinsDN];
 
     TPaveText *pv2 = new TPaveText(0.15,0.8,0.25,0.9,"brNDC");
@@ -45,40 +46,37 @@ bool isprefix=0 )
     pv2->SetBorderSize(0);
     pv2->AddText(Form("R=0.%d",Rpar));
 
-    TH1F *hMCpt;
-    TH1F *hMCpt_reco;
-    TH2D* hZ[NDMC];
-    TH1D* hZG[NDMC];
-    TH1D* hZR[NDMC];
+    //TH1F *hMCpt;
+    //TH1F *hMCpt_reco;
+    TH2D *hZ[NDMC];
+    TH1D *hZG[NDMC];
+    TH1D *hZR[NDMC];
 
-	  TList *histList[NDMC];
+	  TList      *histList[NDMC];
 	  THnSparseF *sparseMC[NDMC];
 	  THnSparseF *sparsereco[NDMC];
 
-    TH2D* hZ2d;
-    TH1D* hZGen;
-    TH1D* hZRec;
+    TH2D *hZ2d;
+    TH1D *hZGen;
+    TH1D *hZRec;
 
 
-        for(int i=0; i<NDMC; i++){
-           if(!isprefix){
-                if(postfix) { 
-			histList[i] =  (TList*)dir->Get(Form("%s%d%sMCrec",histName.Data(),i,listName.Data())); }
-                else {
-                         if(isPrompt) histList[i] =  (TList*)dir->Get(Form("%s%dMCrec",histName.Data(),i));
-                         else histList[i] =  (TList*)dir->Get(Form("%s%dFDMCrec",histName.Data(),i));
-                }
-           }
-           else{
-                if(postfix) {
-                        if(isPrompt){ histList[i] =  (TList*)dir->Get(Form("%s%sMBN%dMCrec",histName.Data(),listName.Data(),i)); }
-                        else{    histList[i] =  (TList*)dir->Get(Form("%s%sMBN%dFDMCrec",histName.Data(),listName.Data(),i)); }
-                }
-                else { cout<<"-----postfix has to be true if prefix is true!! check again----------------"<<endl; return;       }
-           }
-
-
-
+    for(int i=0; i<NDMC; i++){
+        if(!isprefix){
+            if(postfix) {
+			          histList[i] =  (TList*)dir->Get(Form("%s%d%sMCrec",histName.Data(),i,listName.Data())); }
+            else {
+                if(isPrompt) histList[i] =  (TList*)dir->Get(Form("%s%dMCrec",histName.Data(),i));
+                else histList[i] =  (TList*)dir->Get(Form("%s%dFDMCrec",histName.Data(),i));
+            }
+        }
+        else{
+            if(postfix) {
+                if(isPrompt){ histList[i] =  (TList*)dir->Get(Form("%s%sMBN%dMCrec",histName.Data(),listName.Data(),i)); }
+                else{    histList[i] =  (TList*)dir->Get(Form("%s%sMBN%dFDMCrec",histName.Data(),listName.Data(),i)); }
+            }
+            else { cout<<"-----postfix has to be true if prefix is true!! check again----------------"<<endl; return;       }
+        }
 
 //	  for(int i=0; i<NDMC; i++){
 //        if(postfix) { histList[i] =  (TList*)dir->Get(Form("%s%d%sMCrec",histName.Data(),i,listName.Data())); }
@@ -89,19 +87,19 @@ bool isprefix=0 )
 
         sparseMC[i] = (THnSparseF*)histList[i]->FindObject("ResponseMatrix");
 
-        sparseMC[i]->GetAxis(2)->SetRangeUser(Dptmin,Dptmax);
-        sparseMC[i]->GetAxis(1)->SetRangeUser(jetptmin,jetptmax);
+        //sparseMC[i]->GetAxis(2)->SetRangeUser(Dptmin,Dptmax);//recent removal May20: during 2D unfolding
+        sparseMC[i]->GetAxis(1)->SetRangeUser(jetptmin,jetptmax);//recent removal May20
 //        sparseMC[i]->GetAxis(0)->SetRangeUser(zmin,zmax);
 
 	if(fDmesonSpecie) sparseMC[i]->GetAxis(6)->SetRangeUser(Dptmin,Dptmax);
-        else sparseMC[i]->GetAxis(7)->SetRangeUser(Dptmin,Dptmax);//Gen level cut on Dpt
+       // else sparseMC[i]->GetAxis(7)->SetRangeUser(Dptmin,Dptmax);//Gen level cut on Dpt//recent removal May20
 
         if(fDmesonSpecie) sparseMC[i]->GetAxis(5)->SetRangeUser(jetptmin,jetptmax); // Dstar tmp
-        else sparseMC[i]->GetAxis(6)->SetRangeUser(jetptmin,jetptmax);//gen level cut on jetpt
+        else sparseMC[i]->GetAxis(6)->SetRangeUser(jetptmin,jetptmax);//gen level cut on jetpt//recent removal May20
 
 //        if(fDmesonSpecie) sparseMC[i]->GetAxis(4)->SetRangeUser(zmin,zmax);
 //        else sparseMC[i]->GetAxis(5)->SetRangeUser(zmin,zmax);//Gen level cut on Dpt
-        
+
         if(fDmesonSpecie) hZ[i] = (TH2D*)sparseMC[i]->Projection(4,0,"E"); //Dstar tmp
         else hZ[i] = (TH2D*)sparseMC[i]->Projection(5,0,"E");
 
@@ -134,9 +132,9 @@ bool isprefix=0 )
     hZ2d->SetTitle("hZ2d");
     hZ2d->SetName("hZ2d");
     hZ2d->GetXaxis()->SetTitle("z_{||}^{rec.} ");
-    hZ2d->GetXaxis()->SetRangeUser(zmin,zmax);
+    //hZ2d->GetXaxis()->SetRangeUser(zmin,zmax);
     hZ2d->GetYaxis()->SetTitle("z_{||}^{gen.} ");
-    hZ2d->GetYaxis()->SetRangeUser(zmin,zmax);
+    //hZ2d->GetYaxis()->SetRangeUser(zmin,zmax);
 
     hZGen->SetName("hZGen");
     hZRec->SetName("hZRec");
@@ -168,6 +166,6 @@ bool isprefix=0 )
     hZ2d->Write();
     ofile->Close();
 
-   return;
+    return;
 
 }
