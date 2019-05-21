@@ -15,16 +15,18 @@
 
 //====================== global =========================
 double plotmin = fptbinsZMeasA[0], plotmax =  fptbinsZMeasA[fptbinsZMeasN];
-        //sparseMC[i]->GetAxis(1)->SetRangeUser(jetmin,jetmax);
+
 const int fptbinsZGenN=10, fJetptbinsGenN=9;
 double fptbinsZGenA[fptbinsZGenN+1]={0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.02};
 double fJetptbinsGenA[fJetptbinsGenN+1]={0,2,3,4,5,7,10,15,50,60};
-TH1D* fRawSpec2Dproj[fJetptbinsN];
+const int nDim    = 4;//the four dimensions
+double bins[nDim] = {fptbinsZGenN,fptbinsZGenN};//for creating 4D ResponseMatrix
+int dim[nDim]     = {0,1,5,6};//for extacting 4D info from THnSparse
+TH1D *fRawSpec2Dproj[fJetptbinsN];
 
-TH1D *LoadRawSpec2D(TString fn, TString sname, TString spostfix="");
+TH1D *LoadRawSpec(TString fn, TString sname, TString spostfix="");
 TH2D *Rebin2D(const char* name, TH2D *h, int nx, const double *binx, int ny, const double *biny, bool crop);
 ////===================== for 2D unfolding
-////=====================
 /***********************************
 ############# define your bins #####################
 ************************************/
@@ -33,35 +35,33 @@ int linesytle[] = {1,2,3,4,5,6,7,8,9,10,11,12,13};
 /***********************************
 ############# begining of the macro ##################
 ************************************/
-void unfold_Bayeszjet
-(
-//TString roounfoldpwd = "",
-TString listName = "FD",
-bool isPrompt=1,
-bool postfix=0,
-bool isprefix=0,
-TString effFile = "",
-TString datafile = "file.root",
-TString detRMfile = "detRM.root",
-TString bkgRMfile = "bkgRM.root",
-TString outDir = "out", // output directory
-const int regBayes = 5,  // default reg. parameter for the bayes unfolding
-bool isPrior = 0,  // if to use prior different than the true spectrum from the sim
-int priorType = 1,   // if isPrior == 1, choose type of the prior
-bool useDeltaPt = 1,  // if to use a separate bkg. fluctuation matrix
-bool isFDUpSpec = 0,
-bool isFDDownSpec = 0,
-bool fDoWeighting = 1,
-bool fdivide = 1,
-bool overflow = 1,  // if to use overflow in the unfolding
-const int NTrials = 10,//10,  //number of total trials
-bool debug = 0
+void unfold_Bayeszjet(
+  //TString roounfoldpwd = "",
+  TString listName = "FD",
+  bool isPrompt=1,
+  bool postfix=0,
+  bool isprefix=0,
+  TString effFile = "",
+  TString datafile = "file.root",
+  TString detRMfile = "detRM.root",
+  TString bkgRMfile = "bkgRM.root",
+  TString outDir = "out", // output directory
+  const int regBayes = 5,  // default reg. parameter for the bayes unfolding
+  bool isPrior = 0,  // if to use prior different than the true spectrum from the sim
+  int priorType = 1,   // if isPrior == 1, choose type of the prior
+  bool useDeltaPt = 1,  // if to use a separate bkg. fluctuation matrix
+  bool isFDUpSpec = 0,
+  bool isFDDownSpec = 0,
+  bool fDoWeighting = 1,
+  bool fdivide = 1,
+  bool overflow = 1,  // if to use overflow in the unfolding
+  const int NTrials = 10,//10,  //number of total trials
+  bool debug = 0
 )
 {
     bool tempo_data_plot = 0;
     //-----------------------------
-    gStyle->SetOptStat(0000);
-    gSystem->Load(Form("%s",roounfoldpwd.Data()));
+    gStyle ->SetOptStat(0000);
     gSystem->Exec(Form("mkdir  %s",outDir.Data()));
     gSystem->Exec(Form("mkdir  %s/Bayes",outDir.Data()));
     outDir+="/Bayes";
@@ -82,7 +82,7 @@ bool debug = 0
     }
     for (int binjet=0; binjet < fJetptbinsN; binjet++){
         //cout<<fJetptbinsA[binjet]<<endl;
-        fRawSpec2Dproj[binjet] = (TH1D*)LoadRawSpec2D(data2D[binjet].Data(),"hData_binned_sub");
+        fRawSpec2Dproj[binjet] = (TH1D*)LoadRawSpec(data2D[binjet].Data(),"hData_binned_sub");
         TH1D *fRawSpec2DprojScale=(TH1D*)fRawSpec2Dproj[binjet]->Clone();
         fRawSpec2DprojScale->Scale(1,"width");
         for (Int_t binz=0; binz < fptbinsZMeasN+1; binz++){
@@ -97,46 +97,46 @@ bool debug = 0
         }
     }
     // Saving the 2D data file.
-    TCanvas* cFD_2D = new TCanvas();
-    cFD_2D->SetLogz();
-    hData2DS->SetTitle("z-jetpt spectrum");
+    TCanvas *cFD_2D = new TCanvas("Measured2D", "Measured2D", 800, 600);
+    cFD_2D  ->SetLogz();
+    hData2DS->SetTitle("z-jet p_{T} spectrum (before unfolding)");
+    hData2DS->GetYaxis()->SetTitle("jet p_{T}");
+    hData2DS->GetXaxis()->SetTitle("z_{||}^{ch}");
     hData2DS->Draw("colz");
     hData2DS->Draw("TEXT SAME");
-    cFD_2D->SaveAs(Form("%s/alljetz2D/FDdata2D.pdf",outDir.Data()));
-    cFD_2D->SaveAs(Form("%s/alljetz2D/FDdata2D.png",outDir.Data()));
-    cFD_2D->SaveAs(Form("%s/alljetz2D/FDdata2D.svg",outDir.Data()));
+    cFD_2D  ->SaveAs(Form("%s/alljetz2D/FDdata2D.pdf",outDir.Data()));
+    cFD_2D  ->SaveAs(Form("%s/alljetz2D/FDdata2D.png",outDir.Data()));
+    cFD_2D  ->SaveAs(Form("%s/alljetz2D/FDdata2D.svg",outDir.Data()));
     TFile *outFile = new TFile(Form("%s/alljetz2D/outFD.root",outDir.Data()),"recreate");
-    hData2D->Write();
+    hData2D ->Write();
     hData2DS->Write();
-    outFile->Close();
+    outFile ->Close();
     //-----------------------------
     // Time for Response Matrix in 2D
-    TFile *File = new TFile(effFile,"read");
-    TDirectoryFile* dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
+    TFile          *File = new TFile(effFile,"read");
+    TDirectoryFile *dir  = (TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
     TString histName;
     if(!isprefix){
         if(fDmesonSpecie) histName = "histosDStarMBN";
-        else histName = "histosD0MBN";}
+        else histName              = "histosD0MBN";}
     else{
         if(fDmesonSpecie) histName = "histosDStarMBN";
-        else histName = "histosD0";}
-    double jetmin = 0, jetmax = 60;
+        else histName              = "histosD0";}
     TPaveText *pv2 = new TPaveText(0.15,0.8,0.25,0.9,"brNDC");
     pv2->SetFillStyle(0);
     pv2->SetBorderSize(0);
     pv2->AddText(Form("R=0.%d",Rpar));
 
-    //TH2D* hZjetG[NDMC];TH2D* hZjetR[NDMC];
-    THnSparseD* hZjetRecGen;THnSparseD* hZjetRG[NDMC];
-    TList *histList[NDMC];THnSparseF *sparseMC[NDMC];THnSparseF *sparsereco[NDMC];
+    THnSparseD *hZjetRecGen;THnSparseD *hZjetRG[NDMC];
+    THnD *hZ4d; //TH2D *;
 
+    TList *histList[NDMC];THnSparseD *sparseMC[NDMC];THnSparseD *sparsereco[NDMC];
+
+    //Empty 2D histograms to define binning of response matrix at reco and gen level
     TH2D* hZjetRRebin = new TH2D("hRecRebin","hRecRebin", fptbinsZMeasN, fptbinsZMeasA, fJetptbinsN, fJetptbinsA);
     hZjetRRebin->Sumw2();
     TH2D* hZjetGRebin = new TH2D("hGenRebin","hGenRebin", fptbinsZFinalN, fptbinsZFinalA, fJetptbinsN, fJetptbinsA);
     hZjetGRebin->Sumw2();
-
-    const int nDim = 4;
-    int dim[nDim] = {0,1,5,6};
 
     for(int i=0; i<NDMC; i++){
         if(!isprefix){
@@ -155,16 +155,9 @@ bool debug = 0
             else { cout<<"-----postfix has to be true if prefix is true!! check again----------------"<<endl; return;       }
         }
 
-        sparseMC[i] = (THnSparseF*)histList[i]->FindObject("ResponseMatrix");
-        //hZjetG[i] = (TH2D*)sparseMC[i]->Projection(6,5,"E");
-        //hZjetR[i] = (TH2D*)sparseMC[i]->Projection(1,0,"E");
-
-        //hZjetR[i]->Sumw2();
-        //hZjetG[i]->Sumw2();
-        //hZjetG[i]->SetName(Form("hZjetG_%d",i));
-        //hZjetR[i]->SetName(Form("hZjetR_%d",i));
-        sparseMC[i]->GetAxis(5)->SetRangeUser(fptbinsZGenA[0],fptbinsZGenA[fptbinsZGenN]);
-        sparseMC[i]->GetAxis(6)->SetRangeUser(fJetptbinsGenA[0],fJetptbinsGenA[fJetptbinsGenN]);
+        sparseMC[i] = (THnSparseD*)histList[i]->FindObject("ResponseMatrix");
+        //sparseMC[i]->GetAxis(5)->SetRangeUser(fptbinsZGenA[0],fptbinsZGenA[fptbinsZGenN]);
+        sparseMC[i]->GetAxis(1)->SetRangeUser(fJetptbinsGenA[0],fJetptbinsGenA[fJetptbinsGenN]);
 
         //----- getting min and max of each dimension
         for (int idim=0; idim< sparseMC[i]->GetNdimensions(); idim++){
@@ -205,17 +198,7 @@ bool debug = 0
        int coord[4]={0,0,0,0};
        double content = hZjetRecGen->GetBinContent(z,coord);
        int i = coord[0], j = coord[1], k = coord[2], m = coord[3];
-       double scaleD = 0;
-       scaleD = hZjetGenRebin->GetBinContent(
-                                         hZjetGenRebin->GetXaxis()->FindBin(hZjetGenRebin->GetXaxis()->GetBinCenter(k)),
-                                         hZjetGenRebin->GetYaxis()->FindBin(hZjetGenRebin->GetYaxis()->GetBinCenter(m))
-                                         );
        double weight = content;
-       //cout<<(int)weight<<endl;
-       
-       if ((int)scaleD){
-         weight = content/scaleD;
-         cout<<weight<<"------"<<scaleD<<endl;}
        double i_center = hZjetRecGen->GetAxis(0)->GetBinCenter(i);
        double j_center = hZjetRecGen->GetAxis(1)->GetBinCenter(j);
        double k_center = hZjetRecGen->GetAxis(2)->GetBinCenter(k);
@@ -225,7 +208,7 @@ bool debug = 0
        //if (i==0 || j ==0 || k ==0 || m == 0){
        if (i_center<0 || j_center<0){
            measurement_ok = kFALSE;
-           //cout<<i<<"--"<<j<<"--"<<k<<"--"<<m<<endl;
+           cout<<i<<"--"<<j<<endl;//"--"<<k<<"--"<<m<<endl;
            //eventcount+=1;
        }
        if (measurement_ok){
@@ -245,8 +228,11 @@ bool debug = 0
 
     }
     //cout<<eventcount<<endl;
-    response.UseOverflow(overflow);
 
+    //response.UseOverflow(overflow);
+
+    //THnD *responseplot = (THnD*)response.Hresponse();
+    //TH2D *responseplot1 = (TH2D*)responseplot->Projection(0,1);
     TH2D *fUnfoldedBayes[NTrials];
     TH2D *folded[NTrials];
     TString outName = "unfoldedSpectrum";
@@ -268,12 +254,44 @@ bool debug = 0
         if(ivar == regBayes-1){fUnfoldedBayes[ivar]->Draw("TEXT SAME");}
         //else{fUnfoldedBayes[ivar]->Draw("TEXT SAME");}
         //leg->AddEntry(fUnfoldedBayes[ivar],Form("Reg=%d",ivar+1),"p");
-
     }
     //leg->Draw("same");
 	  cUnfolded->SaveAs(Form("%s/plots/%s_unfSpectra.pdf",outDir.Data(),outName.Data()));
 	  cUnfolded->SaveAs(Form("%s/plots/%s_unfSpectra.png",outDir.Data(),outName.Data()));
 	  cUnfolded->SaveAs(Form("%s/plots/%s_unfSpectra.svg",outDir.Data(),outName.Data()));
+    //TCanvas* cUnfolded_proj = new TCanvas("cUnfolded_proj","cUnfolded_proj",800,600);
+    //cUnfolded_proj->SetLogy();
+    //TH1D *proj_hist = (TH1D*)fUnfoldedBayes[regBayes-1]->ProjectionX("projunfold",1,1,"E");
+    //responseplot1->Draw();
+    TH2D *fUnfoldedBayesScale = (TH2D*)fUnfoldedBayes[regBayes-1]->Clone();
+    TH1D *UnfProjectX[4];
+    TH1D *hDataProjectX[4];
+    TH1D *UnfProjectXScale[4];
+    TFile *unfold2DoutFile = new TFile(Form("%s/alljetz2D/unfold2DoutFile.root",outDir.Data()),"recreate");
+    for (int binjet=1; binjet<= fUnfoldedBayes[regBayes-1]->GetNbinsY(); binjet++){
+      UnfProjectX[binjet-1] = (TH1D*)fUnfoldedBayes[regBayes-1]->ProjectionX(Form("UnfProjectX_%d",binjet), binjet, binjet, "E");
+      hDataProjectX[binjet-1] = (TH1D*)hData2D->ProjectionX(Form("hDatarojectX_%d",binjet), binjet, binjet, "E");
+      UnfProjectXScale[binjet-1] = (TH1D*)UnfProjectX[binjet-1]->Clone();
+      UnfProjectXScale[binjet-1]->Scale(1,"width");
+      UnfProjectX[binjet-1]     ->Write(Form("UnfProjectX_%d",binjet-1));
+      hDataProjectX[binjet-1]   ->Write(Form("hDataProjectX_%d",binjet-1));
+      //UnfProjectXScale[binjet-1]->Write(Form("UnfProjectXScale_%d",binjet-1));
+      for(int binz=1;binz<=fUnfoldedBayesScale->GetNbinsX();binz++){
+        fUnfoldedBayesScale->SetBinContent(binz,binjet,UnfProjectXScale[binjet-1]->GetBinContent(binz));
+        fUnfoldedBayesScale->SetBinError(binz,binjet,UnfProjectXScale[binjet-1]->GetBinError(binz));
+      }
+    }
+    unfold2DoutFile->Close();
+    TCanvas *cUnfoldedScale = new TCanvas("cUnfoldedScale", "cUnfoldedScale", 800, 600);
+    cUnfoldedScale->SetLogz();
+    fUnfoldedBayesScale->SetTitle("z-jet p_{T} spectrum (after unfolding)");
+    fUnfoldedBayesScale->GetYaxis()->SetTitle("jet p_{T}");
+    fUnfoldedBayesScale->GetXaxis()->SetTitle("z_{||}^{ch}");
+    fUnfoldedBayesScale->Draw("colz");
+    fUnfoldedBayesScale->Draw("TEXT SAME");
+cout<<hData2D->GetNbinsY()<<endl;
+cout<<hData2D->GetNbinsX()<<endl;
+
 return;
 }
 
@@ -306,8 +324,8 @@ TH2D *Rebin2D(const char* name, TH2D *h, int nx, const double *binx, int ny, con
     }
 	return hre;
 }
-/// load raw spectrum (that is to be unfolded)
-TH1D *LoadRawSpec2D(TString fn, TString sname, TString spostfix="") {
+/// load 1D raw spectrum (that is to be unfolded)
+TH1D *LoadRawSpec(TString fn, TString sname, TString spostfix="") {
 	TFile *f  = TFile::Open(fn);
 	if (!f) { Error("LoadRawSpectrum","Raw spectrum file %s not found.",fn.Data());	return 0; }
 	TH1D *spectrum = (TH1D*)f->Get(sname);

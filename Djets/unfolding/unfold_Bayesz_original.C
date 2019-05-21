@@ -44,18 +44,10 @@ int colortable[] = {kMagenta, kViolet, kBlue, kCyan+2, kGreen+4, kGreen+1, kYell
 int linesytle[] = {1,2,3,4,5,6,7,8,9,10,11,12,13};
 	 // Int_t fColors[] = {1,2,8,4,kOrange-1,6,kGray+1,kCyan+1,kMagenta+2,kGreen+3,kViolet+5,kYellow+2};
 
-
-const int fptbinsZGenN=10, fJetptbinsGenN=9;
-double fptbinsZGenA[fptbinsZGenN+1]={0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.02};
-double fJetptbinsGenA[fJetptbinsGenN+1]={0,2,3,4,5,7,10,15,50,60};
-const int nDim    = 2;//the four dimensions
-double bins[nDim] = {fptbinsZGenN,fptbinsZGenN};//for creating 4D ResponseMatrix
-int dim[nDim]     = {5,0};//for extacting 4D info from THnSparse
-TH1D *fRawSpec2Dproj[fJetptbinsN];
 /***********************************
 ############# begining of the macro ##################
 ************************************/
-void unfold_Bayesz
+void unfold_Bayesz_original
 (
 //TString roounfoldpwd = "",
 TString datafile = "file.root",
@@ -72,12 +64,7 @@ bool fDoWeighting = 1,
 bool fdivide = 1,
 bool overflow = 1,  // if to use overflow in the unfolding
 const int NTrials = 10,//10,  //number of total trials
-bool debug = 0,
-TString effFile = "/home/jackbauer/ALICE_HeavyFlavour/work/Djets/alice_Djets/Djets/unfolding/AnalysisResults_642_pp5TeV_z.root",
-bool isprefix = 0,
-bool postfix = 0,
-  TString listName = "FD",
-  bool isPrompt=1
+bool debug = 0
 )
 {
 datafile+=Form("/Jetbin_%d_%d",(int)fptbinsJetA[(int)zjetbin-1], (int)fptbinsJetA[(int)zjetbin]);
@@ -94,56 +81,7 @@ gSystem->Exec(Form("mkdir  %s/Bayes",outDir.Data()));
 outDir+=Form("/Bayes/Jetbin_%d_%d",(int)fptbinsJetA[(int)zjetbin-1], (int)fptbinsJetA[(int)zjetbin]);
 gSystem->Exec(Form("mkdir  %s",outDir.Data()));
 gSystem->Exec(Form("mkdir  %s/plots",outDir.Data()));
-//-----------------------------------------------------------------
-    TFile          *File = new TFile(effFile,"read");
-    TDirectoryFile *dir  = (TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
-    TString histName;
-    THnSparseD *hZjetRecGen;THnSparseD *hZjetRG[NDMC];
-    THnD *hZ4d; //TH2D *;
-    TList *histList[NDMC];THnSparseD *sparseMC[NDMC];THnSparseD *sparsereco[NDMC];
-    if(!isprefix){
-        if(fDmesonSpecie) histName = "histosDStarMBN";
-        else histName              = "histosD0MBN";}
-    else{
-        if(fDmesonSpecie) histName = "histosDStarMBN";
-        else histName              = "histosD0";}
-    for(int i=0; i<NDMC; i++){
-        if(!isprefix){
-            if(postfix) {
-                histList[i] =  (TList*)dir->Get(Form("%s%d%sMCrec",histName.Data(),i,listName.Data())); }
-            else {
-                if(isPrompt) histList[i] =  (TList*)dir->Get(Form("%s%dMCrec",histName.Data(),i));
-                else histList[i] =  (TList*)dir->Get(Form("%s%dFDMCrec",histName.Data(),i));
-            }
-        }
-        else{
-            if(postfix) {
-                if(isPrompt){ histList[i] =  (TList*)dir->Get(Form("%s%sMBN%dMCrec",histName.Data(),listName.Data(),i)); }
-                else{    histList[i] =  (TList*)dir->Get(Form("%s%sMBN%dFDMCrec",histName.Data(),listName.Data(),i)); }
-            }
-            else { cout<<"-----postfix has to be true if prefix is true!! check again----------------"<<endl; return;       }
-        }
 
-        sparseMC[i] = (THnSparseD*)histList[i]->FindObject("ResponseMatrix");
-  //      sparseMC[i]->GetAxis(5)->SetRangeUser(fptbinsZGenA[0],fptbinsZGenA[fptbinsZGenN]);
-    //    sparseMC[i]->GetAxis(6)->SetRangeUser(fJetptbinsGenA[0],fJetptbinsGenA[fJetptbinsGenN]);
-
-        //----- getting min and max of each dimension
-        //for (int idim=0; idim< sparseMC[i]->GetNdimensions(); idim++){
-        //	auto axis = sparseMC[i]->GetAxis(i);
-        //	int min = 0; int max = axis->GetNbins()+1;
-        //	axis->SetRange(min,max);
-        //}
-        hZjetRG[i] = (THnSparseD*)sparseMC[i]->Projection(nDim,dim,"E");
-        //-----
-        if (!i){
-                hZjetRecGen = (THnSparseD*)hZjetRG[0]->Clone("hZjetRecGen");
-        }
-        else {
-                hZjetRecGen->Add(hZjetRG[i]);
-        }
-    }//end of NDMC for loop //hZjetRecGen->SaveAs("proj.root");
-//-----------------------------------------------------------------
 
 TString outName = "unfoldedSpectrum";
 	//outName += "Bayes";
@@ -248,52 +186,14 @@ LoadDetectorMatrix(detRMfile.Data(),"hZ2d","hZGen","hZRec",0);
 **************************************************/
 
     RooUnfold::ErrorTreatment errorTreatment = RooUnfold::kCovariance;
-
-    RooUnfoldResponse response (hProjXeffRebin, hProjYeffRebin);
-    //----------- fill 4D histo response matrix
-    for (int z = 0; z< hZjetRecGen->GetNbins();z++) {
-       int coord[2]={0,0};
-       double content = hZjetRecGen->GetBinContent(z,coord);
-       int i = coord[0], j = coord[1];//, k = coord[2], m = coord[3];
-       double i_center = hZjetRecGen->GetAxis(0)->GetBinCenter(i);
-       double j_center = hZjetRecGen->GetAxis(1)->GetBinCenter(j);
-       //double k_center = hZjetRecGen->GetAxis(2)->GetBinCenter(k);
-       //double m_center = hZjetRecGen->GetAxis(3)->GetBinCenter(m);
-			 double weight = content;
-       bool measurement_ok = kTRUE;
-       //if (i==0 || j ==0 || k ==0 || m == 0){
-       if (i_center<0 || j_center<0){
-           measurement_ok = kFALSE;
-           //cout<<i<<"--"<<j<<"--"<<k<<"--"<<m<<endl;
-           //eventcount+=1;
-       }
-       if (measurement_ok){
-           //double newi = hZjetRRebin->GetXaxis()->GetBinCenter(hZjetRRebin->GetXaxis()->FindBin(i_center));
-           //double newj = hZjetRRebin->GetYaxis()->GetBinCenter(hZjetRRebin->GetYaxis()->FindBin(j_center));
-           //double newk = hZjetGRebin->GetXaxis()->GetBinCenter(hZjetGRebin->GetXaxis()->FindBin(k_center));
-           //double newm = hZjetGRebin->GetYaxis()->GetBinCenter(hZjetGRebin->GetYaxis()->FindBin(m_center));
-           //response.Fill(newi,newj,newk,newm,weight);
-           //response.Fill(i_center,j_center,k_center,m_center,weight);
-           response.Fill(i_center,j_center,weight);
-       }
-       else{
-           //double newk = hZjetGRebin->GetXaxis()->GetBinCenter(hZjetGRebin->GetXaxis()->FindBin(k_center));
-           //double newm = hZjetGRebin->GetYaxis()->GetBinCenter(hZjetGRebin->GetYaxis()->FindBin(m_center));
-           //response.Miss(newk,newm,weight);
-           response.Miss(j_center,weight);
-       }//cout<<i<<"-"<<j<<"-"<<k<<"-"<<m<<endl;
-
-    }
-
-//    RooUnfoldResponse response(hProjXeffRebin,hProjYeffRebin, Matrix, "response","response");
-  //  response.UseOverflow(overflow);
+    RooUnfoldResponse response(hProjXeffRebin,hProjYeffRebin, Matrix, "response","response");
+    response.UseOverflow(overflow);
 
     TH1D* fUnfoldedBayes[NTrials];
     TH1D* folded[NTrials];
     TH2D* fPearsonCoeffs[NTrials];
     TH1D* hRatioSpectrum[NTrials];
     TH1D* hRatio[NTrials];
-		TFile *outFile = new TFile(Form("%s/alljetz2D/outFD.root",outDir.Data()),"recreate");
 
     TCanvas* cUnfolded = new TCanvas("cUnfolded","cUnfolded",800,600);
     cUnfolded->SetLogy();
@@ -999,7 +899,7 @@ void WeightMatrixY(TH2D *Mtx, TH1D *h, bool divide) {
 	for(int j=1; j<=Mtx->GetNbinsY()+1; j++) {
 		double value = Mtx->GetYaxis()->GetBinCenter(j);
 		double c = h->GetBinContent(h->GetXaxis()->FindBin(value));
-		cout<<"Divide or not:"<<c<<endl;
+		//cout<<"Divide or not:"<<c<<endl;
 		if (divide && c)  c = 1./c;
 		//else c = 1.;
 		for(int i=1; i<=Mtx->GetNbinsX()+1; i++) {
