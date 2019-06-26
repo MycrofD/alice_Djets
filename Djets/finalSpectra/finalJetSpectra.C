@@ -47,6 +47,8 @@ TString sysDir = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3Pythi
 bool issys = 1,
 bool issim = 1,
 bool simsys = 1,
+TString listName = "",
+bool oldCounter = 0,
 TString histBase = "unfoldedSpectrum"
 )
 {
@@ -63,19 +65,37 @@ TString histBase = "unfoldedSpectrum"
     for(int k=0; k<fptbinsJetFinalN+1; k++) xAxis[k] = fptbinsJetFinalA[k];
     systuncP = new double[fptbinsJetFinalN];
 //    for(int k=0; k<fptbinsJetFinalN; k++) systuncP[k] = 0.15;
-systuncP[0] = 0.10; systuncP[1] = 0.10; systuncP[2] = 0.115; systuncP[3] = 0.115; systuncP[4] = 0.15; systuncP[5] = 0.18; systuncP[6] = 0.21;
+systuncP[0]=0.104599395179;
+systuncP[1]=0.0886906329946;
+systuncP[2]=0.114416067985;
+systuncP[3]=0.111763302404;
+systuncP[4]=0.15895298319;
+systuncP[5]=0.180252760536;
+systuncP[6]=0.199602264197;
     sysCutVar = new double[fptbinsJetFinalN];
     for(int k=0; k<fptbinsJetFinalN; k++) sysCutVar[k] = 0.05;
 
     TFile *File = new TFile(dataAnalysisFile,"read");
-    TDirectoryFile* dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
+    TDirectoryFile* dir;
     TList *histList;
-    if(fDmesonSpecie) histList = (TList*)dir->Get("histosDStarMBN0");
-    else histList = (TList*)dir->Get("histosD0MBN0");
-    TH1F* hEvents = (TH1F*)histList->FindObject("hstat");
-    double nEvSel = hEvents->GetBinContent(2);
-    double nEvAna = hEvents->GetBinContent(1);
-    double nEv = nEvScale*nEvSel;
+    double nEv;
+
+    if(oldCounter) {
+      dir = (TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
+      if(fDmesonSpecie) histList = (TList*)dir->Get("histosDStarMBN0");
+      else histList = (TList*)dir->Get("histosD0MBN0");
+      TH1F* hEvents = (TH1F*)histList->FindObject("hstat");
+      double nEvSel = hEvents->GetBinContent(2);
+      double nEvAna = hEvents->GetBinContent(1);
+      nEv = nEvScale*nEvSel;
+    }
+    else {
+      //dir = (TDirectoryFile*)File->Get(Form("PWG3_D2H_DmesonsForJetCorrelations%sMBN0",listName.Data()));
+      dir = (TDirectoryFile*)File->Get("PWG3_D2H_DmesonsForJetCorrelationsMBN0");
+      AliNormalizationCounter *c = (AliNormalizationCounter*)dir->Get("NormalizationCounter");
+      nEv = c->GetNEventsForNorm();
+    }
+
     double dataLum = nEv/(sigma_in*1000) ;//Luminosity in mbar
     double simScaling = 1;
     if(fSystem) simScaling = APb/2.;
@@ -239,7 +259,7 @@ systuncP[0] = 0.10; systuncP[1] = 0.10; systuncP[2] = 0.115; systuncP[3] = 0.115
             valuetheoryerrupratio[j] = hPrompt_up_ratio->GetBinContent(hPrompt_up_ratio->GetXaxis()->FindBin(ptvaltheory[j])) - valuetheoryratio[j];
             valuetheoryerrdownratio[j] = valuetheoryratio[j] - hPrompt_down_ratio->GetBinContent(hPrompt_down_ratio->GetXaxis()->FindBin(ptvaltheory[j]));
         }
-         grsystheoryratio = new TGraphAsymmErrors(fptbinsJetFinalN,ptvaltheoryratio,valuetheoryratio,ptvalunctheoryratio,ptvalunctheoryratio,valuetheoryerrdownratio,valuetheoryerrupratio);
+        grsystheoryratio = new TGraphAsymmErrors(fptbinsJetFinalN,ptvaltheoryratio,valuetheoryratio,ptvalunctheoryratio,ptvalunctheoryratio,valuetheoryerrdownratio,valuetheoryerrupratio);
      }
 
 
@@ -500,12 +520,12 @@ void drawFinal(TString outPlotDir){
    FinalSpectrum_1->SetTicky(1);
    FinalSpectrum_1->SetLeftMargin(0.15);
    FinalSpectrum_1->SetBottomMargin(0);
-   FinalSpectrum_1->SetFrameBorderMode(0);
-   FinalSpectrum_1->SetFrameBorderMode(0);
+    FinalSpectrum_1->SetFrameBorderMode(0);
+    FinalSpectrum_1->SetFrameBorderMode(0);
 
-   TH1D *CentralPointsStatisticalUncertainty__1 = new TH1D("CentralPointsStatisticalUncertainty__1","Central Values",fptbinsJetFinalN, xAxis);
-   //TH1D *CentralPointsStatisticalUncertainty__1 = new TH1D("CentralPointsStatisticalUncertainty__1","Central Values",fptbinsJetFinalN2, xAxis2);
-   if(fSystem){
+    TH1D *CentralPointsStatisticalUncertainty__1 = new TH1D("CentralPointsStatisticalUncertainty__1","Central Values",fptbinsJetFinalN, xAxis);
+    //TH1D *CentralPointsStatisticalUncertainty__1 = new TH1D("CentralPointsStatisticalUncertainty__1","Central Values",fptbinsJetFinalN2, xAxis2);
+    if(fSystem){
         CentralPointsStatisticalUncertainty__1->SetMinimum(2.e-04);
         CentralPointsStatisticalUncertainty__1->SetMaximum(500);
     }
@@ -531,7 +551,7 @@ void drawFinal(TString outPlotDir){
     CentralPointsStatisticalUncertainty__1->GetXaxis()->SetLabelSize(0.035);
     CentralPointsStatisticalUncertainty__1->GetXaxis()->SetTitleSize(0.035);
     CentralPointsStatisticalUncertainty__1->GetXaxis()->SetTitleFont(42);
-    CentralPointsStatisticalUncertainty__1->GetYaxis()->SetTitle("#frac{d^{2}#sigma}{d#it{p}_{T}d#it{#eta}} [mb (GeV/#it{c})^{-1}]");
+   //CentralPointsStatisticalUncertainty__1->GetYaxis()->SetTitle("#frac{d^{2}#sigma}{d#it{p}_{T}d#it{#eta}} [mb (GeV/#it{c})^{-1}]");
     CentralPointsStatisticalUncertainty__1->GetYaxis()->SetLabelFont(43);
     CentralPointsStatisticalUncertainty__1->GetYaxis()->SetLabelSize(22);
     CentralPointsStatisticalUncertainty__1->GetYaxis()->SetTitleSize(26);

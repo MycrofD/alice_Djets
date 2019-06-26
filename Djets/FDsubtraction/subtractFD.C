@@ -24,21 +24,23 @@ void SaveCanvas(TCanvas *c, TString name = "tmp");
 
 
 void subtractFD(
-//TString roounfoldpwd = "$HOME/ALICE_HeavyFlavour/RooUnfold-1.1.1/libRooUnfold",
+TString roounfoldpwd = "$HOME/ALICE_HeavyFlavour/RooUnfold-1.1.1/libRooUnfold",
 TString dataFile = "JetPtSpectra_SB_FASTwoSDD_eff_ptD3.root",
 TString dataAnalysisFile = "",
 TString simDir = "../simulations/POWHEG/out/",
 TString comMatrixFile = "",
 TString outSpectraDir = "out_FDPythia",
+TString listName = "",
 bool isDptcut = 1,
 bool fold = 1, 
 TString outHistName = "ptSpectrumSim_",
 bool isSys = 1, 
 bool rebinned = 1, 
-bool isEff = 1 )
+bool isEff = 1,
+bool oldCounter = 0)
 {
 
- //   gSystem->Load(Form("%s",roounfoldpwd.Data()));
+    gSystem->Load(Form("%s",roounfoldpwd.Data()));
 
     gStyle->SetOptStat(0000);
 
@@ -48,18 +50,24 @@ bool isEff = 1 )
     gSystem->Exec(Form("mkdir %s",outPlotDir.Data()));
 
     TFile *File = new TFile(dataAnalysisFile,"read");
-    TDirectoryFile* dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
+    TDirectoryFile* dir;
     TList *histList;
-    if(fDmesonSpecie) histList =  (TList*)dir->Get("histosDStarMBN0");
-    else histList =  (TList*)dir->Get("histosD0MBN0");
-    TH1F* hEvents = (TH1F*)histList->FindObject("hstat");
-    double nEvSel = hEvents->GetBinContent(2);
-    double nEvAna = hEvents->GetBinContent(1);
-    double nEv = nEvScale*nEvSel;
-  //  if(fSystem) nEv = nEvScale*nEvSel;
-  //  else nEv = nEvScale*nEvAna;
-
-  //  cout << "==== Number of events: " << nEvSel << endl;
+    double nEv;
+    
+    if(oldCounter) {
+      dir = (TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
+      if(fDmesonSpecie) histList = (TList*)dir->Get("histosDStarMBN0");
+      else histList = (TList*)dir->Get("histosD0MBN0");
+      TH1F* hEvents = (TH1F*)histList->FindObject("hstat");
+      double nEvSel = hEvents->GetBinContent(2);
+      double nEvAna = hEvents->GetBinContent(1);
+      nEv = nEvScale*nEvSel;
+    }
+    else {
+      dir = (TDirectoryFile*)File->Get(Form("PWG3_D2H_DmesonsForJetCorrelations%sMBN0",listName.Data()));
+      AliNormalizationCounter *c = (AliNormalizationCounter*)dir->Get("NormalizationCounter");
+      nEv = c->GetNEventsForNorm();
+    }
 
     double dataLum = nEv/(sigma_in*1000) ;//Luminosity in mbar
     double simScaling;
@@ -76,8 +84,6 @@ bool isEff = 1 )
     TH1D *hData;
     hData = (TH1D*)GetInputHist(dataFile, "hjetptspectrum", hData);
     TH1D *hData_binned = (TH1D*)hData->Rebin(fptbinsJetMeasN,"hData_binned", fptbinsJetMeasA);
-    //TH1D *hData_binned_sub_up = (TH1D*)hData_binned->Clone("hData_binned_sub_up");
-    //TH1D *hData_binned_sub_down = (TH1D*)hData_binned->Clone("hData_binned_sub_down");
 
     // ----------------- B->D simulation ---------------------
     int cent = 0;
@@ -187,11 +193,6 @@ void subtractB_afterFolding(TString matrixFile,TH1D *hFD_central_binned,TH1D *hF
         hData_binned_sub_up->Add(hFD_down_fold ,-1);
         setHistoDetails(hFD_down_fold,4,20,0,2,2);
         setHistoDetails(hData_binned_sub_up,2,20,0,2,2);
-//        for(int j=1; j<=fptbinsJetMeasN; j++ ){
-//            hData_binned_sub_up->SetBinError(j,0);
-//        }
-
-
 
         hFD_up_fold = (TH1D*)foldB(matrixFile,hFD_up,hFD_up_fold,roounfoldpwd.Data());
         hFD_up_fold->SetName("hFD_up_fold");
@@ -227,16 +228,15 @@ void subtractB_afterFolding(TString matrixFile,TH1D *hFD_central_binned,TH1D *hF
         setHistoDetails(hFDUnc,kMagenta+2,20);
         hFDUnc->GetYaxis()->SetTitle("FD sys. unc");
         for(int j=1; j<=fptbinsJetMeasN; j++ ){
-                double unc1 = hData_binned_sub_up->GetBinContent(j) - hData_binned_sub->GetBinContent(j);
-                double unc2 = hData_binned_sub->GetBinContent(j) - hData_binned_sub_down->GetBinContent(j);
-                double unc = 0;
-                if(unc1>unc2) unc = unc1;
-                else unc = unc2;
-                unc /= hData_binned_sub->GetBinContent(j);
-                hFDUnc->SetBinContent(j,unc);
-                hFDUnc->SetBinError(j,0);
+            double unc1 = hData_binned_sub_up->GetBinContent(j) - hData_binned_sub->GetBinContent(j);
+            double unc2 = hData_binned_sub->GetBinContent(j) - hData_binned_sub_down->GetBinContent(j);
+            double unc = 0;
+            if(unc1>unc2) unc = unc1;
+            else unc = unc2;
+            unc /= hData_binned_sub->GetBinContent(j);
+            hFDUnc->SetBinContent(j,unc);
+            hFDUnc->SetBinError(j,0);
 
-                //cout << "unc: " << unc << endl;
         }
 
     }
@@ -466,7 +466,7 @@ void subtractB_beforeFolding(TH1D *hFD_central_binned,TH1D *hFD_up,TH1D *hFD_dow
             unc /= hData_binned_sub->GetBinContent(j);
             hFDUnc->SetBinContent(j,unc);
             hFDUnc->SetBinError(j,0);
-    	}
+        }
 
     }
 

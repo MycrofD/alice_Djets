@@ -321,8 +321,6 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         bkgfit[i]->SetName(Form("bkgFit_%d",i));
 
         // bkg+reflection function
-	cout<<fUseRefl<<"-------==========="<<endl;
-	cout<<fUseRefl<< fDmesonSpecie<<"-------==========="<<endl;
           cout<< fitterp->GetBkgPlusReflFunc()<<endl;
         if(fUseRefl && fDmesonSpecie == 0) {
           bkgRfit[i] = fitterp->GetBkgPlusReflFunc();

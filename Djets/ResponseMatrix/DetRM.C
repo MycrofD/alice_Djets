@@ -7,7 +7,7 @@
 #include "config.h"
 
 void DetRM(bool isPrompt = 1, TString datafile = "../outMC/AnalysisResults_fast_D0MCPythia_SMQcorr2.root", TString outDir = "plots",
-bool postfix = 0, TString listName = "FD" )
+bool postfix = 0, TString listName = "FD", bool isprefix=0 )
 {
 
     gStyle->SetOptStat(0000); //Mean and RMS shown
@@ -18,8 +18,12 @@ bool postfix = 0, TString listName = "FD" )
     TFile *File = new TFile(datafile,"read");
     TDirectoryFile* dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
     TString histName;
-  	if(fDmesonSpecie) histName = "histosDStarMBN";
-  	else histName = "histosD0MBN";
+        if(!isprefix){
+                if(fDmesonSpecie) histName = "histosDStarMBN";
+                else histName = "histosD0MBN";}
+        else{
+                if(fDmesonSpecie) histName = "histosDStarMBN";
+                else histName = "histosD0";}
 
     float jetmin = 0, jetmax = 60;
     float Dptmin = fptbinsDA[0], Dptmax = fptbinsDA[fptbinsDN];
@@ -37,18 +41,29 @@ bool postfix = 0, TString listName = "FD" )
 
 	  TList *histList[NDMC];
 	  THnSparseF *sparseMC[NDMC];
-	  THnSparseF *sparsereco[NDMC];
 
     TH2F *hPtJet2d;
     TH1F *hPtJetGen;
     TH1F *hPtJetRec;
 
-	  for(int i=0; i<NDMC; i++){
-        if(postfix) { histList[i] =  (TList*)dir->Get(Form("%s%d%sMCrec",histName.Data(),i,listName.Data())); }
-        else {
-    			 if(isPrompt) histList[i] =  (TList*)dir->Get(Form("%s%dMCrec",histName.Data(),i));
-    			 else histList[i] =  (TList*)dir->Get(Form("%s%dFDMCrec",histName.Data(),i));
-    		}
+
+    for(int i=0; i<NDMC; i++){
+        if(!isprefix){
+                if(postfix) { 
+			histList[i] =  (TList*)dir->Get(Form("%s%d%sMCrec",histName.Data(),i,listName.Data())); }
+                else {
+                         if(isPrompt) histList[i] =  (TList*)dir->Get(Form("%s%dMCrec",histName.Data(),i));
+                         else histList[i] =  (TList*)dir->Get(Form("%s%dFDMCrec",histName.Data(),i));
+                }
+           }
+           else{
+                if(postfix) {
+                        if(isPrompt){ histList[i] =  (TList*)dir->Get(Form("%s%sMBN%dMCrec",histName.Data(),listName.Data(),i)); }
+                        else{    histList[i] =  (TList*)dir->Get(Form("%s%sMBN%dFDMCrec",histName.Data(),listName.Data(),i)); }
+                }
+                else { cout<<"-----postfix has to be true if prefix is true!! check again----------------"<<endl; return;       }
+           }
+
 
         sparseMC[i] = (THnSparseF*)histList[i]->FindObject("ResponseMatrix");
 
@@ -60,6 +75,11 @@ bool postfix = 0, TString listName = "FD" )
 
         if(fDmesonSpecie) sparseMC[i]->GetAxis(5)->SetRangeUser(jetmin,jetmax); // Dstar tmp
         else sparseMC[i]->GetAxis(6)->SetRangeUser(jetmin,jetmax);
+
+	if(!fDmesonSpecie) {
+		sparseMC[i]->GetAxis(4)->SetRangeUser(-(0.9-fRpar),0.9-fRpar);
+		sparseMC[i]->GetAxis(9)->SetRangeUser(-(0.9-fRpar),0.9-fRpar);
+	}
 
         if(fDmesonSpecie) hPtJet[i] = (TH2F*)sparseMC[i]->Projection(5,1,"E"); //Dstar tmp
         else hPtJet[i] = (TH2F*)sparseMC[i]->Projection(6,1,"E");
