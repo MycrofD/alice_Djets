@@ -9,6 +9,8 @@
 using namespace std;
 
 float ptmin = fptbinsDA[0], ptmax = fptbinsDA[fptbinsDN];
+void setHistoDetails(TH1 *h, Color_t color, Style_t Mstyle, Size_t size);
+void SaveCanvas(TCanvas *c, TString name = "tmp");
 
 void DjetEfficiency(bool isPrompt = 1, TString effFile = "../outMC/AnalysisResults_fast_D0MCHijing_SMQcorr2.root", TString outDir = "SQMCorrcuts",
 float jetptmin = 2, float jetptmax = 50, bool recoPt = 0, bool postfix = 0, TString listName = "FD")
@@ -135,7 +137,9 @@ return;
 
 }
 
-void setHistoDetails(TH1 *h, Color_t color, Style_t Mstyle, Size_t size = 0.9, Width_t width=2){
+void setHistoDetails(TH1 *h, Color_t color, Style_t Mstyle, Size_t size = 0.9){
+
+    Width_t width =2;
 
     h->SetMarkerStyle(Mstyle);
     h->SetMarkerColor(color);

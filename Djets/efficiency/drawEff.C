@@ -29,7 +29,7 @@ double plotmin = 2, double plotmax = 36)
     TH1F *hEffPrompt = (TH1F*)inFilePrompt->Get("hEff_reb");
     TH1F *hEffNonPrompt = (TH1F*)inFileFD->Get("hEff_reb");
 
-    hEffPrompt->SetTitle();
+    hEffPrompt->SetTitle("");
     hEffPrompt->SetMarkerColor(promptColor);
     hEffPrompt->SetLineColor(promptColor);
     hEffPrompt->SetMarkerStyle(20);
@@ -46,7 +46,7 @@ double plotmin = 2, double plotmax = 36)
     //if(fSystem) hEffPrompt->SetMaximum(hEffPrompt->GetMaximum()*1.6);
     //else hEffPrompt->SetMaximum(hEffNonPrompt->GetMaximum()*1.6);
 
-    hEffNonPrompt->SetTitle();
+    hEffNonPrompt->SetTitle("");
     hEffNonPrompt->SetMarkerColor(nonpromptColor);
     hEffNonPrompt->SetLineColor(nonpromptColor);
     hEffNonPrompt->SetMarkerStyle(21);

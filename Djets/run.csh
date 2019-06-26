@@ -21,14 +21,14 @@ Dmeson=$4           # 0: D0, 1: D*
 # usually you don't need to change this part
 isSignal=1          # if to extract signal from the inv. mass
 isEffPrompt=1       # if to extract prompt D-jet efficiency
-isEffNonPrompt=1    # if to extract non-prompt D-jet efficiency
-isDetRMPrompt=1     # if to extract prompt D-jet response matrix
-isDetRMNonPrompt=1  # if to extract non-prompt D-jet response matrix
-isUnfolding=1       # if to perform unfolding
-isFDSub=1           # if to subtract feed-down
-isFinalSpectra=1    # if to extract the final x-section
+isEffNonPrompt=0    # if to extract non-prompt D-jet efficiency
+isDetRMPrompt=0     # if to extract prompt D-jet response matrix
+isDetRMNonPrompt=0  # if to extract non-prompt D-jet response matrix
+isUnfolding=0       # if to perform unfolding
+isFDSub=0           # if to subtract feed-down
+isFinalSpectra=0    # if to extract the final x-section
 
-isCsim=1            # switch this flag on if you haven't prepared output of the simulations yet, it takes time -- if the simulation output directory is empty the simulations will be run anyway
+isCsim=0            # switch this flag on if you haven't prepared output of the simulations yet, it takes time -- if the simulation output directory is empty the simulations will be run anyway
 isBsim=0            # switch this flag on if you haven't prepared output of the simulations yet with a current efficiencies, it takes time -- if the simulation output directory is empty the simulations will be run anyway
 isBsimNoEff=0       # switch one if you want non-prompt simulations without scaling for non-prompt/prompt efficiency (shouldn't be used in a standard analysis chain)
 
@@ -59,6 +59,7 @@ ispostfix=${12}
 postfix=${13}
 ispostfixFD=${14}
 postfixFD=${15}
+isprefix=${35}
 
 ########## efficiency config
 MCoutfiledir=${16}
@@ -167,8 +168,8 @@ fi
 ################################################
 cd $effDir
 if [ $isEffPrompt -eq 1 ]; then
-    #aliroot -l -b -q DjetEfficiency.C'(1,"'$efffile'","'$effDirOut'",'$jetpteffmin','$jetpteffmax','$recoPt','$ispostfix',"'$postfix'")'
-    aliroot -l -b -q DjetEfficiency.C'(1,"'$efffile'","'$effDirOut'",'$jetpteffmin','$jetpteffmax','$recoPt',0,"")'  # for 95%
+    aliroot -l -b -q DjetEfficiency.C'(1,"'$efffile'","'$effDirOut'",'$jetpteffmin','$jetpteffmax','$recoPt','$ispostfix',"'$postfix'")'
+    #aliroot -l -b -q DjetEfficiency.C'(1,"'$efffile'","'$effDirOut'",'$jetpteffmin','$jetpteffmax','$recoPt',0,"")'  # for 95%
 fi
 
 if [ $isEffNonPrompt -eq 1 ]; then
@@ -294,7 +295,8 @@ if [ $isFDSub -eq 1 ]; then
   cd $currDir
 
   cd $FDDir
-  aliroot -l -b -q subtractFD.C'("'$roounfoldpwd'","'$signalFile'","'$analysisDataFile'","'$BFDSimDirOut'","'$combRMFDFile'","'$FDSubDirOut'")'
+  #aliroot -l -b -q subtractFD.C'("'$roounfoldpwd'","'$signalFile'","'$analysisDataFile'","'$BFDSimDirOut'","'$combRMFDFile'","'$FDSubDirOut'")'
+  aliroot -l -b -q subtractFD.C'("'$signalFile'","'$analysisDataFile'","'$BFDSimDirOut'","'$combRMFDFile'","'$FDSubDirOut'")'
 
   cd $currDir
 fi

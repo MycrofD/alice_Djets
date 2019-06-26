@@ -17,7 +17,7 @@ const double simScaling =  APb;
 TH1* GetInputHist(TString inFile, string histName,TH1 *hh);
 
 void ScaleHist(TH1 *hh, int full = 0);
-void setHistoDetails(TH1 *hh, Color_t color, Style_t Mstyle, int Msize = 1.3, Width_t Lwidth = 2, Style_t Lstyle = 1);
+void setHistoDetails(TH1 *hh, Color_t color, Style_t Mstyle, double Msize , Width_t Lwidth, Style_t Lstyle);
 void SaveCanvas(TCanvas *c, TString name = "tmp");
 void compareSpectra(TH1D **hFD, const int nFiles, bool isjet, bool quark, TString cName = "canvas");
 TH1* GetUpSys(TH1D **hFD, const int nFiles, TH1D *hFD_up);
@@ -86,8 +86,8 @@ bool isjetptcut = 0, double jetptmin = 5, double jetptmax = 30 )
     TH1D *hSpectrum_central = (TH1D*)htmp->Clone("hSpectrum_central");
     TH1D *hSpectrum_central_binned = (TH1D*)htmp->Rebin(fptbinsJetTrueN,"hSpectrum_central_binned",fptbinsJetTrueA);
 
-    setHistoDetails(hSpectrum_central,4,24);
-    setHistoDetails(hSpectrum_central_binned,4,24);
+    setHistoDetails(hSpectrum_central,4,24,1.3,2,1);
+    setHistoDetails(hSpectrum_central_binned,4,24,1.3,2,1);
 
     hSpectrum_central->Scale(simScaling);
     hSpectrum_central_binned->Scale(simScaling);
@@ -201,7 +201,7 @@ void compareSpectra(TH1D **hFD, const int nFiles, bool isjet, bool quark, TStrin
         hPt[i]->SetName(Form("hPt_%d",i));
         hPt[i]->GetYaxis()->SetTitle("d#sigma/dp_{T} (mb)");
         //hJetPt_B[i]->GetXaxis()->SetRangeUser(plotmin,plotmax);
-        setHistoDetails(hPt[i],fColors[i],fMarkers[i]);
+        setHistoDetails(hPt[i],fColors[i],fMarkers[i],1.3,2,1);
         hPt[i]->SetLineColor(fColors[i]);
         if(isjet) hPt[i]->GetXaxis()->SetTitle("p_{T}^{ch jet} (GeV/c)");
         else hPt[i]->GetXaxis()->SetTitle("p_{T}^{D*} (GeV/c)");
@@ -289,7 +289,7 @@ void ScaleHist(TH1 *hh, int full){
 
 }
 
-void setHistoDetails(TH1 *hh, Color_t color, Style_t Mstyle, int Msize, Width_t Lwidth, Style_t Lstyle){
+void setHistoDetails(TH1 *hh, Color_t color, Style_t Mstyle, double Msize, Width_t Lwidth, Style_t Lstyle){
 
     hh->SetMarkerColor(color);
     hh->SetMarkerStyle(Mstyle);;

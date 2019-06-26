@@ -26,8 +26,9 @@
 
 #include "config.h"
 
-    double jetmin = 0, jetmax = 50;
-    double jetplotmin = 2, jetplotmax = 50;
+    double jetmin = fptbinsJetMeasA[0], jetmax = fptbinsJetMeasA[fptbinsJetMeasN];
+    double jetplotmin = fptbinsJetMeasA[0], jetplotmax = fptbinsJetMeasA[fptbinsJetMeasN];
+
     bool isEta = 0;
     double jetEta = 0.4;
 
@@ -60,6 +61,7 @@
     TH1F *hjetptspectrum;
     TH1F *hrawjetptspectrum;
     TH1F *hjetptspectrumReb;
+    TH1F *hjetptspectrumRebScaled;
     TH1F *hjetptspectrumRebUnc;
 
     TH1F *hmean;
@@ -71,10 +73,12 @@
     TH3D* hInvMassptD;
     TH1F* hReflRS;
 
-    setHistoDetails(TH1 *h, Color_t color, Style_t Mstyle, Width_t width);
+    void setHistoDetails(TH1 *h, int scale, Color_t color, Style_t Mstyle, Size_t size);//, Width_t width);
+    void SaveCanvas(TCanvas *c, TString name = "tmp");
     Bool_t rawJetSpectra(TString outdir, TString prod);
     void  saveSpectraPlots(TString outdir,TString prod);
     void  saveFitParams(TString outdir,TString prod);
-    Bool_t SetReflection(AliHFInvMassFitter* &fitter, Int_t iBin, Float_t fLeftFitRange, Float_t fRightFitRange,Float_t &RS);
+    Bool_t SetReflection(AliHFInvMassFitter* &fitter, Float_t fLeftFitRange, Float_t fRightFitRange,Float_t &RS, Int_t iBin);
+    Bool_t SetReflection(AliHFInvMassFitter* &fitter, Float_t fLeftFitRange, Float_t fRightFitRange,Float_t &RS, Int_t ptmin, Int_t ptmax);
 
 #endif

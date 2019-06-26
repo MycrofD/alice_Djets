@@ -90,7 +90,7 @@ bool postfix = 0, TString listName = "FD" )
 	}
 
 
-    hPtJet2d->SetTitle();
+    hPtJet2d->SetTitle("");
     hPtJet2d->SetName("hPtJet2d");
     hPtJet2d->GetXaxis()->SetTitle("p_{T,ch jet}^{rec.} (GeV/#it{c})");
     hPtJet2d->GetYaxis()->SetTitle("p_{T,ch jet}^{gen.} (GeV/#it{c})");
