@@ -104,8 +104,9 @@ bool isprefix = 0 )
         }
         else {
           if(fDmesonSpecie)sparsereco[i]->GetAxis(5)->SetRangeUser(jetptmin,jetptmax); // Dstar tmp
-          else sparsereco[i]->GetAxis(6)->SetRangeUser(jetptmin,jetptmax); // jet pT gen
-    	   sparsereco[i]->GetAxis(1)->SetRangeUser(0,100); // jet pT reco
+          else //sparsereco[i]->GetAxis(6)->SetRangeUser(jetptmin,jetptmax); // jet pT gen
+    	   //sparsereco[i]->GetAxis(1)->SetRangeUser(0,100); // jet pT reco
+    	   sparsereco[i]->GetAxis(1)->SetRangeUser(jetptmin,jetptmax); // jet pT reco, to account for 2D unfolding with eff correction and 1D unfolding
         }
         if(!fDmesonSpecie) sparsereco[i]->GetAxis(4)->SetRangeUser(-(0.9-fRpar),0.9-fRpar); // reco jet eta
     //	sparsereco[i]->GetAxis(9)->SetRangeUser(-(0.9-fRpar),0.9-fRpar);
