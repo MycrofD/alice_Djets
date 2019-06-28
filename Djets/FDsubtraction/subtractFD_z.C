@@ -24,7 +24,6 @@ void ScaleHist(TH1 *hh, int full = 0);
 void setHistoDetails(TH1 *hh, Color_t color, Style_t Mstyle, double Msize = 1.1, Width_t Lwidth = 2, Style_t Lstyle = 1);
 void SaveCanvas(TCanvas *c, TString name = "tmp");
 
-
 void subtractFD_z(
 //TString dataFile = "/JetPtSpectra_SB_eff.root",
 TString dataFile="",
@@ -57,7 +56,7 @@ comMatrixFile+=Form("_Jet%d_%d_Dpt%d_%d.root",(int)fptbinsJetA[(int)zjetbin-1], 
     TDirectoryFile* dir;
     TList *histList;
     double nEv;
-    
+
     if(oldCounter) {
       dir = (TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
       if(fDmesonSpecie) histList = (TList*)dir->Get("histosDStarMBN0");
@@ -143,7 +142,6 @@ cout<<"-================="<<file<<"==========="<<endl;
     TH1D *hFD_central_binned = (TH1D*)htmp->Rebin(fptbinsZTrueN,"hFD_central_binned",fptbinsZTrueA);
 //TH1D *hFD_central_binned = (TH1D*)hFD_central->Clone("hFD_central_binned");
 
-
     setHistoDetails(hFD_central,4,24);
     setHistoDetails(hFD_central_binned,4,24);
 
@@ -214,25 +212,23 @@ void subtractB_afterFolding(TString matrixFile,TH1D *hFD_central_binned,TH1D *hF
     TH1D *hData_binned_sub_up = (TH1D*)hData_binned->Clone("hData_binned_sub_up");
     TH1D *hData_binned_sub_down = (TH1D*)hData_binned->Clone("hData_binned_sub_down");
     if(isSys) {
-    hFD_down_fold = (TH1D*)foldB(matrixFile,hFD_down,hFD_down_fold,roounfoldpwd.Data());
-    hFD_down_fold->SetName("hFD_down_fold");
-    hData_binned_sub_up->Add(hFD_down_fold ,-1);
-    setHistoDetails(hFD_down_fold,4,20,0,2,2);
-    setHistoDetails(hData_binned_sub_up,2,20,0,2,2);
-    	for(int j=1; j<=fptbinsZMeasN; j++ ){
-    	        hData_binned_sub_up->SetBinError(j,0);
-    	}
+        hFD_down_fold = (TH1D*)foldB(matrixFile,hFD_down,hFD_down_fold,roounfoldpwd.Data());
+        hFD_down_fold->SetName("hFD_down_fold");
+        hData_binned_sub_up->Add(hFD_down_fold ,-1);
+        setHistoDetails(hFD_down_fold,4,20,0,2,2);
+        setHistoDetails(hData_binned_sub_up,2,20,0,2,2);
+        for(int j=1; j<=fptbinsZMeasN; j++ ){
+            hData_binned_sub_up->SetBinError(j,0);
+        }
 
-
-//    TH1D *hFD_up_fold;
-    hFD_up_fold = (TH1D*)foldB(matrixFile,hFD_up,hFD_up_fold,roounfoldpwd.Data());
-    hFD_up_fold->SetName("hFD_up_fold");
-    hData_binned_sub_down->Add(hFD_up_fold ,-1);
-    setHistoDetails(hFD_up_fold,4,20,0,2,2);
-    setHistoDetails(hData_binned_sub_down,2,20,0,2,2);
-    	for(int j=1; j<=fptbinsZMeasN; j++ ){
-    	        hData_binned_sub_down->SetBinError(j,0);
-    	}
+        hFD_up_fold = (TH1D*)foldB(matrixFile,hFD_up,hFD_up_fold,roounfoldpwd.Data());
+        hFD_up_fold->SetName("hFD_up_fold");
+        hData_binned_sub_down->Add(hFD_up_fold ,-1);
+        setHistoDetails(hFD_up_fold,4,20,0,2,2);
+        setHistoDetails(hData_binned_sub_down,2,20,0,2,2);
+       	for(int j=1; j<=fptbinsZMeasN; j++ ){
+       	    hData_binned_sub_down->SetBinError(j,0);
+       	}
     }
 
     //-------------- data to sim ratio - B feed-down fraction
@@ -505,14 +501,14 @@ void subtractB_beforeFolding(TH1D *hFD_central_binned,TH1D *hFD_up,TH1D *hFD_dow
     	setHistoDetails(hFDUnc,kMagenta+2,20);
     	hFDUnc->GetYaxis()->SetTitle("FD sys. unc");
     	for(int j=1; j<=fptbinsZMeasN; j++ ){
-    	        double unc1 = hData_binned_sub_up->GetBinContent(j) - hData_binned_sub->GetBinContent(j);
-    	        double unc2 = hData_binned_sub->GetBinContent(j) - hData_binned_sub_down->GetBinContent(j);
-    	        double unc = 0;
-    	        if(unc1>unc2) unc = unc1;
-    	        else unc = unc2;
-    	        unc /= hData_binned_sub->GetBinContent(j);
-    	        hFDUnc->SetBinContent(j,unc);
-    	        hFDUnc->SetBinError(j,0);
+    	    double unc1 = hData_binned_sub_up->GetBinContent(j) - hData_binned_sub->GetBinContent(j);
+    	    double unc2 = hData_binned_sub->GetBinContent(j) - hData_binned_sub_down->GetBinContent(j);
+    	    double unc = 0;
+    	    if(unc1>unc2) unc = unc1;
+    	    else unc = unc2;
+    	    unc /= hData_binned_sub->GetBinContent(j);
+    	    hFDUnc->SetBinContent(j,unc);
+    	    hFDUnc->SetBinError(j,0);
     	}
 
     }
@@ -617,12 +613,10 @@ TH1* GetUpSys(TH1D **hFD, int nFiles, TH1D *hFD_up){
 
         }
 
-
     return hFD_up;
 }
 
 TH1* GetDownSys(TH1D **hFD, int nFiles, TH1D *hFD_down){
-
 
         double bin = 0, binerr = 0;
         double max = 0, maxerr = 0;
@@ -642,15 +636,13 @@ TH1* GetDownSys(TH1D **hFD, int nFiles, TH1D *hFD_down){
 
         }
 
-
     return hFD_down;
 }
 
-TH1* foldB(TString matrixFile, TH1D *hFD, TH1D *folded, TString roounfoldpwd ){
+TH1* foldB(TString matrixFile, TH1D *hFD, TH1D *folded, TString roounfoldpwd){
 
     gSystem->Load(Form("%s",roounfoldpwd.Data()));
     gStyle->SetOptStat(0000); //Mean and RMS shown
-
 
     folded = new TH1D("folded","folded",fptbinsZMeasN,fptbinsZMeasA);
 
