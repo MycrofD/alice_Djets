@@ -23,7 +23,7 @@
     Int_t         fbkgtype = 0;                      //-----! kExpo=0, kLin=1, kPol2=2, kNoBk=3, kPow=4, kPowEx=5
     Float_t       fsigmaSignal = 2;                  //-----! sigma for the signal region
     Float_t       fsigmaBkg[] = {-9,-4,4,9};         //-----! sigma for the SB region (both left and right side from the fit)
-    Float_t       fDmass = 1.864, fDsigma = 0.010;   //-----! initial values for D mass and sigma
+    Float_t       fDmass = 1.86484, fDsigma = 0.010;   //-----! initial values for D mass and sigma
     //Float_t       fDsigmafix[fptbinsDN] = {0.01,0.011,0.01175,0.0125,0.013,0.0135,0.0145,0.016,0.0175,0.0185};   //-----! initial values for D mass and sigma
     double       minf = 1.71, maxf = 2.1;           //-----! min/mass of the inv. mass distributions
     Int_t         fRebinMass = 2;                    //-----! rebining of the inv. mass distributions

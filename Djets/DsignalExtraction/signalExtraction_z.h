@@ -38,6 +38,8 @@
     bool savePlots = 1;
     bool bEff = 0;
     int  bSigma = 0;
+    bool fMass = 0;
+    double fsigfactor=1;
     bool isptcut = 1;
     bool isdetails = 0;
 

@@ -30,18 +30,21 @@
 #include "signalExtraction_z.h"
 //--------------------------
 
+  //MCclosureTest
+bool MCclosure=0;
 bool isRefSys=0;
-double refScale = 1.5;
+double refScale = 1.5;// 0(0.5) or 1(1.5)
+int refpc = 1;
 
 void signalExtraction_SBz(
 //  TString data = "$HOME/Work/alice/analysis/out/AnalysisResults.root",
   TString data = "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/trial_437.root",
-  bool isEff = 0, 
+  bool isEff = 0,
   //TString efffile ="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts/Default/efficiency/DjetEff_prompt_jetpt5_50.root",
   TString efffile ="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts/Default/efficiency/DjetEff_prompt_jetpt",
-  bool isRef = 0, 
+  bool isRef = 0,
   TString refFile = "test.root",
-  bool postfix = 0, 
+  bool postfix = 0,
   TString listName = "Cut",
 //  TString out = "signalExtraction",
   TString out = "/media/jackbauer/data/z_out/signalExtraction",
@@ -50,9 +53,37 @@ void signalExtraction_SBz(
   TString prod = "kl",   // for more than 1 file, for one file leave it empty)
   bool isprefix=0,
   TString saveDir="Feb28",
-  int boundSigma = 0
+//raw yield systematics configs follow// also remember to turn bool rawsys on
+  int boundSigma = 0,
+  double fsigmafactor = 1,
+  bool fixedMass = 0,
+  int bkgType=0,
+  double minfSys=1.71,
+  double maxfSys=2.1,
+  int fMassBinWidthFactor=2,
+  int sysNum=1,
+//SB systematics configs follow
+  Float_t sigmaSignal = 2,
+  Float_t sigmaBkgll=-9,
+  Float_t sigmaBkglh=-4,
+  Float_t sigmaBkgrl=4,
+  Float_t sigmaBkgrh=9
 )
 {
+cout<<"MC closure is -------------------"<<MCclosure<<endl;
+TString sysnum = "";bool rawsys = 0; if (rawsys){TString sysnum = Form("%d",(int)sysNum);}
+	fsigfactor=fsigmafactor;
+	fMass=fixedMass;
+	fbkgtype=bkgType;
+	minf=minfSys;
+	maxf=maxfSys;
+	fRebinMass=fMassBinWidthFactor;
+//SB systematics configs follow
+  fsigmaSignal = sigmaSignal;
+  fsigmaBkg[0]=sigmaBkgll;
+  fsigmaBkg[1]=sigmaBkglh;
+  fsigmaBkg[3]=sigmaBkgrh;
+  fsigmaBkg[2]=sigmaBkgrl;
 //gInterpreter->LoadMacro("AliHFInvMassFitterDJET.cxx++g");//to load custom cxx macro by entering ROOT environment.
 
 efffile+=Form("%d_%d.root",(int)fptbinsJetA[(int)zjetbin-1], (int)fptbinsJetA[(int)zjetbin]);
@@ -113,7 +144,8 @@ cout<<"-------------------------------------"<<endl;
       for(int i=0;i<ND; i++){
 		if(!isprefix){
 		          if(postfix) histList =  (TList*)dir->Get(Form("%s%d%s",histName.Data(),i,listName.Data()));
-		          else histList =  (TList*)dir->Get(Form("%s%d",histName.Data(),i));
+              else if(MCclosure){histList = (TList*)dir->Get(Form("%s%dMCrec",histName.Data(),i));}
+		          else {histList =  (TList*)dir->Get(Form("%s%d",histName.Data(),i));cout<<histList<<endl;}
 		}
 		else{    if(postfix){ histList =  (TList*)dir->Get(Form("%s%sMBN%d",histName.Data(),listName.Data(),i));}
 		          else {cout<<postfix<<"----dude! something's wrong, postfix has to be true if prefix is, check again-----"<<endl; return;}
@@ -187,12 +219,12 @@ else {          if(postfix) histList =  (TList*)dir->Get(Form("%s%sMBN%d",histNa
    //------------------- draw output histos -------------------
     if(savePlots){
       saveFitParams(outdir,prod);
-      saveSpectraPlots(outdir,prod);
     }
+      saveSpectraPlots(outdir,prod);
 
     // --------------------------------------------------------
     // ----------- write to output file
-    TFile *ofile = new TFile(Form("%s/JetPtSpectra_SB_%s.root",outdir.Data(), bEff ? "eff" : "noEff"),"RECREATE");
+    TFile *ofile = new TFile(Form("%s/JetPtSpectra_SB_%s%s%s.root",outdir.Data(), bEff ? "eff" : "noEff",sysnum.Data(),isRefSys ? Form("refSys%d",(int)refpc) : ""),"RECREATE");
     hmean->Write();
     hsigma->Write();
     hsign->Write();
@@ -323,9 +355,9 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
 
         TH1D *hh=(TH1D*)hInvMassptD->ProjectionX(
 		Form("hh_%d",i),
-		hInvMassptD->GetYaxis()->FindBin(jetmin), 
+		hInvMassptD->GetYaxis()->FindBin(jetmin),
 		hInvMassptD->GetYaxis()->FindBin(jetmax)-1,
-		hInvMassptD->GetZaxis()->FindBin(fptbinsDA[i]), 
+		hInvMassptD->GetZaxis()->FindBin(fptbinsDA[i]),
 		hInvMassptD->GetZaxis()->FindBin(fptbinsDA[i+1])-1
 	);
         hh->Rebin(fRebinMass);
@@ -337,41 +369,34 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         //TH1F* hmassfitD = (TH1F*)hh->Clone("hmassfit");
         //TH1F* hmassfit; hmassfitD->Copy(hmassfit);// = (TH1F*)hh->Clone("hmassfit");
         if(fDmesonSpecie) hmassfit->SetMaximum(hmassfit->GetMaximum()*1.3);
-
         float hmin = TMath::Max(minf,hmassfit->GetBinLowEdge(2));
         float hmax = TMath::Min(maxf,hmassfit->GetBinLowEdge(hmassfit->GetNbinsX()));
-       // AliHFMassFitter* fitterp=new AliHFMassFitter((TH1F*)hmassfit,hmin,hmax,1,fbkgtype,0);
         AliHFInvMassFitter* fitterp = new AliHFInvMassFitter((TH1F*)hmassfit,hmin,hmax,fbkgtype,0);
-//        AliHFInvMassFitterDJET* fitterp = new AliHFInvMassFitterDJET((TH1F*)hmassfit,hmin,hmax,fbkgtype,0);
-	if(bSigma == 1){
         	fitterp->SetInitialGaussianMean(fDmass);
         	fitterp->SetInitialGaussianSigma(fDsigma);
+	if(bSigma == 1){
 		if(i == fptbinsDN-1){
 			double fDsigmafix = sigmaMC[i];
         		fitterp->SetBoundGaussianSigma(fDsigmafix, 0.1);
 		}
 	}
 	else if(bSigma == 2){
-        	fitterp->SetInitialGaussianMean(fDmass);
-        	fitterp->SetInitialGaussianSigma(fDsigma);
-		
 			double fDsigmafix = sigmaMC[i];
         		fitterp->SetBoundGaussianSigma(fDsigmafix, 0.1);
-		
 	}
 	else if(bSigma == 3){
-        	fitterp->SetInitialGaussianMean(fDmass);
-        	fitterp->SetInitialGaussianSigma(fDsigma);
-		
 			double fDsigmafix = sigmaMC[i];
         		fitterp->SetBoundGaussianSigma(fDsigmafix, 0.2);
-		
 	}
-	else{
-        	fitterp->SetInitialGaussianMean(fDmass);
-        	fitterp->SetInitialGaussianSigma(fDsigma);
+	else if(bSigma == 4){ // fix gaussian sigma
+			double fDsigmafix = fsigfactor*sigmaMC[i];
+        		fitterp->SetFixGaussianSigma(fDsigmafix);
 	}
-	
+	if(fMass){ // fix gaussian sigma
+			double fMassDfix = fDmass;
+        		fitterp->SetFixGaussianMean(fMassDfix);
+	}
+
 //        if(fUseRefl && fDmesonSpecie == 0) {
 //	    if(fSystem) SetReflection(fitterp,hmin,hmax,RS,i+firstPtBin); // older way from Fabio's templates for p-Pb
 //          else SetReflection(fitterp,hmin,hmax,RS,(Int_t)fptbinsDA[i],(Int_t)fptbinsDA[i+1]); // new for pp (new templates from D-jet code)
@@ -599,7 +624,7 @@ cout<<"-------------------------------------------------------------------------
         }
 	//hjetptsub[i]->Add(hjetpt_sb[i],-1);
 
-	if(fsigmaSignal==2) hjetptsub[i]->Scale(1./0.9545); 
+	if(fsigmaSignal==2) hjetptsub[i]->Scale(1./0.9545);
         hjetptsub[i]->SetMarkerColor(kGreen+3);
         hjetptsub[i]->SetLineColor(kGreen+3);
 
@@ -663,32 +688,6 @@ cout<<"-------------------------------------------------------------------------
 
 }
 
-//Bool_t SetReflectionDJET(AliHFInvMassFitterDJET* &fitter, Float_t fLeftFitRange, Float_t fRightFitRange, Float_t &RS, Int_t iBin) {
-//
-//  TFile *fileRefl = TFile::Open(fReflFilename.Data());
-//  if(!fileRefl){
-//    std::cout << "File " << fReflFilename << " (reflection templates) cannot be opened! check your file path!"; return kFALSE;
-//  }
-//
-//  TString fHistnameRefl = "histRflFittedDoubleGaus_ptBin";
-//  TString fHistnameSign = "histSgn_";
-//  TH1F* histRefl = (TH1F*)fileRefl->Get(Form("%s%d",fHistnameRefl.Data(),iBin));
-//  TH1F* histSign = (TH1F*)fileRefl->Get(Form("%s%d",fHistnameSign.Data(),iBin));
-//  if(!histRefl || !histSign){
-//    std::cout << "Error in loading the template/signal histrograms! Exiting..." << endl; return kFALSE;
-//  }
-//
-//  fitter->SetTemplateReflections(histRefl,"template",fLeftFitRange,fRightFitRange);
-//  Double_t RoverS = histRefl->Integral(histRefl->FindBin(fLeftFitRange),histRefl->FindBin(fRightFitRange))/histSign->Integral(histSign->FindBin(fLeftFitRange),histSign->FindBin(fRightFitRange));
-//  if(isRefSys) RoverS*=refScale;
-//  printf("R/S ratio in fit range for bin %d = %1.3f\n",iBin,RoverS);
-//  fitter->SetFixReflOverS(RoverS);
-//
-//  RS = (Float_t)RoverS;
-//  return kTRUE;
-//
-//}
-
 Bool_t SetReflection(AliHFInvMassFitter* &fitter, Float_t fLeftFitRange, Float_t fRightFitRange, Float_t &RS, Int_t iBin) {
 
   TFile *fileRefl = TFile::Open(fReflFilename.Data());
@@ -716,32 +715,6 @@ Bool_t SetReflection(AliHFInvMassFitter* &fitter, Float_t fLeftFitRange, Float_t
 }
 
 
-
-//Bool_t SetReflectionDJET(AliHFInvMassFitterDJET* &fitter, Float_t fLeftFitRange, Float_t fRightFitRange, Float_t &RS, Int_t ptmin, Int_t ptmax) {
-//
-//  TFile *fileRefl = TFile::Open(fReflFilename.Data());
-//  if(!fileRefl){
-//    std::cout << "File " << fReflFilename << " (reflection templates) cannot be opened! check your file path!"; return kFALSE;
-//  }
-//
-//  TString fHistnameRefl = "histRflFittedDoubleGaus_pt";
-//  TString fHistnameSign = "histSgn_";
-//  TH1F* histRefl = (TH1F*)fileRefl->Get(Form("%s%d_%d",fHistnameRefl.Data(),ptmin,ptmax));
-//  TH1F* histSign = (TH1F*)fileRefl->Get(Form("%s%d_%d",fHistnameSign.Data(),ptmin,ptmax));
-//  if(!histRefl || !histSign){
-//    std::cout << "Error in loading the template/signal histrograms! Exiting..." << endl; return kFALSE;
-//  }
-//
-//  fitter->SetTemplateReflections(histRefl,"template",fLeftFitRange,fRightFitRange);
-//  Double_t RoverS = histRefl->Integral(histRefl->FindBin(fLeftFitRange),histRefl->FindBin(fRightFitRange))/histSign->Integral(histSign->FindBin(fLeftFitRange),histSign->FindBin(fRightFitRange));
-//  if(isRefSys) RoverS*=refScale;
-//  //printf("R/S ratio in fit range for bin %d = %1.3f\n",iBin,RoverS);
-//  fitter->SetFixReflOverS(RoverS);
-//
-//  RS = (Float_t)RoverS;
-//  return kTRUE;
-//
-//}
 
 Bool_t SetReflection(AliHFInvMassFitter* &fitter, Float_t fLeftFitRange, Float_t fRightFitRange, Float_t &RS, Int_t ptmin, Int_t ptmax) {
 
@@ -899,7 +872,7 @@ hjetptspectrumRebScaled = (TH1F*)hjetptspectrumReb->Clone("hjetptspectrumRebScal
       //pv3->Draw("same");
 
       //SaveCanvas(cSpectrumRebin,outdir+plotsDir+"/jetPtSpectrum_SB_RebinProbLinear"+prod);
-      SaveCanvas(cSpectrumRebin,outdir+plotsDir+"/jetPtSpectrum_SB_RebinProb"+prod);
+      if(savePlots) SaveCanvas(cSpectrumRebin,outdir+plotsDir+"/jetPtSpectrum_SB_RebinProb"+prod);
 
       hjetptspectrumRebUnc = (TH1F*)hjetptspectrumReb->Clone("hjetptspectrumRebUnc");
       hjetptspectrumRebUnc->GetYaxis()->SetTitle("Rel. unc.");
@@ -965,7 +938,7 @@ hjetptspectrumRebScaled = (TH1F*)hjetptspectrumReb->Clone("hjetptspectrumRebScal
       pvJet->Draw("same");
       pvEta->Draw("same");
 
-      SaveCanvas(cSpectrumRebinUnc,outdir+plotsDir+"/jetPtSpectrumUnc_SB_Rebin"+prod);
+      if(savePlots) SaveCanvas(cSpectrumRebinUnc,outdir+plotsDir+"/jetPtSpectrumUnc_SB_Rebin"+prod);
 
 }
 
@@ -1096,4 +1069,3 @@ void SaveCanvas(TCanvas *c, TString name = "tmp"){
     c->SaveAs(Form("%s_pTD%d.png",name.Data(),(int)fptbinsDA[0]));
     c->SaveAs(Form("%s_pTD%d.pdf",name.Data(),(int)fptbinsDA[0]));
 }
-

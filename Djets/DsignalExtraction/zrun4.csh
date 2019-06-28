@@ -24,15 +24,13 @@ bin_zjet=$1 # change the bin number you want to use here.
 		# 1 through x mean all bins of jet pt
 		# The arguments here are passed from zrun_main.csh
 #----- Flags for all analysis steps
-flagEff=0 #1 Getting efficiencies and MC sigmas in different jetpt intervals for all Dpt bins
-flagRef=0 #2 Reflections for different jetpt intervals for all Dpt bins
-flagSBs=0 #3 Side Band subtraction method
+flagEff=1 #1 Getting efficiencies and MC sigmas in different jetpt intervals for all Dpt bins
+flagRef=1 #2 Reflections for different jetpt intervals for all Dpt bins
+flagSBs=1 #3 Side Band subtraction method
 flagSim=0 #4 Simulation for non-prompt and prompt D-jets
 flagRes=1 #5 Response matrix
-flagBFD=0 #6 B-feed down subtraction
+flagBFD=1 #6 B-feed down subtraction
 flagUnf=1 #7 Unfolding
-#-----
-flagRawSys=0 #8 Raw Yield Systematics
 #-----
 finerunfold=0
 boundSigma=0	# if needed to fit certain Dpt bins with a bounded sigma: sigma +/- some fraction of this sigma
@@ -68,13 +66,13 @@ elif [ $bin_zjet -eq 2 ]; then #7-10
  echo " double fdplotmin = 800, dataplotmax = 100000;" >> configDzero_ppz.h
 elif [ $bin_zjet -eq 3 ]; then #10-15
  echo "double        fptbinsDA[] = {5,6,7,8,10,12,15};" >> configDzero_ppz.h
- if [ $finerunfold -eq 0 ]; then #10-15
-  echo " const int     fptbinsZFinalN = 5;" >> configDzero_ppz.h
-  echo " double        fptbinsZFinalA[fptbinsZFinalN+1] = {0.4, 0.6, 0.7, 0.8, 0.9, 1.02};" >> configDzero_ppz.h
- elif [ $finerunfold -eq 1 ]; then #10-15
+# if [ $finerunfold -eq 0 ]; then #10-15
+#  echo " const int     fptbinsZFinalN = 5;" >> configDzero_ppz.h
+#  echo " double        fptbinsZFinalA[fptbinsZFinalN+1] = {0.4, 0.6, 0.7, 0.8, 0.9, 1.02};" >> configDzero_ppz.h
+# elif [ $finerunfold -eq 1 ]; then #10-15
   echo " const int     fptbinsZFinalN = 6;" >> configDzero_ppz.h
   echo " double        fptbinsZFinalA[fptbinsZFinalN+1] = {0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.02};" >> configDzero_ppz.h
- fi
+# fi
  echo " double fdplotmin = 100, dataplotmax = 40000;" >> configDzero_ppz.h
 elif [ $bin_zjet -eq 6 ]; then #5-15
  echo "double        fptbinsDA[] = {2,3,4,5,6,7,8,10,12,15};" >> configDzero_ppz.h
@@ -92,6 +90,7 @@ cat $conffile_z2 >> configDzero_ppz.h
 
 # Output directory
 OUT=${EOS_local}/media/jackbauer/data/z_out/R_0$R
+OUT=${OUT}_1D
 if [ $boundSigma -eq 1 ]; then
  OUT=${OUT}_boundSigma1
 elif [ $boundSigma -eq 2 ]; then
@@ -111,6 +110,7 @@ elif [ $R -eq 6 ]; then
  data=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/AnalysisResults_504_R06.root
  effFile=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/AnalysisResults_683_ppMC_R06.root
 fi
+
 isPrompt=1
 outDir=$OUT/efficiency
 postfix=0
@@ -219,12 +219,3 @@ if [ $flagUnf -eq 1 ]; then
  cd ../DsignalExtraction
 fi
 
-
-#####--- Systematics ---#####
-## Raw Yield Systematics
-##---------------------------
-#if [ $flagRawSys -eq 1 ]; then
-# cd ../systematics/YieldExtraction
-# bash zrun_rawsys.csh 
-# cd ../../DsignalExtraction
-#fi
