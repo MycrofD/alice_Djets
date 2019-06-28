@@ -195,37 +195,37 @@ LoadDetectorMatrix(detRMfile.Data(),"hZ2d","hZGen","hZRec",0);
 
         TF1* fPriorFunction;
         if(isPrior) {
-					fPriorFunction = getPriorFunction(isPrior, priorhisto,priorType, rawspectrum);
-					priorhisto->SetTitle("");
-					priorhisto->GetXaxis()->SetTitle("z_{||, ch}");
-					TCanvas* cPrior = new TCanvas("cPrior0", "cPrior0", 800, 600);
-					cPrior->SetLogy();
-					TH1D* histoPrior=(TH1D*)priorhisto->Clone();
-					histoPrior->Draw();
-					if(priorType == 8) rawspectrum->Draw();
-					fPriorFunction->Draw("same");
+		fPriorFunction = getPriorFunction(isPrior, priorhisto,priorType, rawspectrum);
+		priorhisto->SetTitle("");
+		priorhisto->GetXaxis()->SetTitle("z_{||, ch}");
+		TCanvas* cPrior = new TCanvas("cPrior0", "cPrior0", 800, 600);
+		cPrior->SetLogy();
+		TH1D* histoPrior=(TH1D*)priorhisto->Clone();
+		histoPrior->Draw();
+		if(priorType == 8) rawspectrum->Draw();
+		fPriorFunction->Draw("same");
 
-					cPrior->SaveAs(Form("%s/plots/%s_prior.pdf",outDir.Data(),outName.Data()));
-					cPrior->SaveAs(Form("%s/plots/%s_prior.png",outDir.Data(),outName.Data()));
-				}
+		cPrior->SaveAs(Form("%s/plots/%s_prior.pdf",outDir.Data(),outName.Data()));
+		cPrior->SaveAs(Form("%s/plots/%s_prior.png",outDir.Data(),outName.Data()));
+	}
 
-    TH1D *hNormY;TH1D *hNormYa4;
-		TFile *outFile2 = new TFile(Form("%s/alljetz2D/outTest.root",outDir.Data()),"recreate");//deleteme
-    priorhisto->Write();//deleteme
-    fMatrixProd->Write();//deleteme
-    // weighting the matrix
-		if (fDoWeighting) {
-        cout << "==== weighting ==== " << endl;
-				hNormY=(TH1D*)fMatrixProd->ProjectionY("hNormY");
-				if (isPrior){
-	          cout << "=== using prior function ====" << endl;
-					  if (! hNormY->Divide(fPriorFunction) ) { cout << "\"divide\" failed "; return; }
-        }
-				else{
-	          cout << "==== dividing ==== " << endl;
-				    hNormY->Divide(priorhisto);
-        }
-				WeightMatrixY(fMatrixProd,hNormY,fdivide);
+    	TH1D *hNormY;TH1D *hNormYa4;
+	TFile *outFile2 = new TFile(Form("%s/alljetz2D/outTest.root",outDir.Data()),"recreate");//deleteme
+    	priorhisto->Write();//deleteme
+    	fMatrixProd->Write();//deleteme
+    	// weighting the matrix
+	if (fDoWeighting) {
+        	cout << "==== weighting ==== " << endl;
+		hNormY=(TH1D*)fMatrixProd->ProjectionY("hNormY");
+		if (isPrior){
+	        	cout << "=== using prior function ====" << endl;
+			if (! hNormY->Divide(fPriorFunction) ) { cout << "\"divide\" failed "; return; }
+        	}
+		else{
+	       		cout << "==== dividing ==== " << endl;
+		    	hNormY->Divide(priorhisto);
+        	}
+		WeightMatrixY(fMatrixProd,hNormY,fdivide);
 	}
 
     fMatrixProd->Write("fMatrixProdafter");//deleteme
@@ -597,10 +597,10 @@ LoadDetectorMatrix(detRMfile.Data(),"hZ2d","hZGen","hZRec",0);
     TH1D* fRawRebinClone;
     if (fptbinsZFinalN != fptbinsZMeasN){
         fRawRebinClone = new TH1D("fRawRebinClone","Measured hist, True rebinned",fptbinsZFinalN,fptbinsZFinalA);
-    	    int istart = 0;
-    	    while (fptbinsZFinalA[0] != fptbinsZMeasA[istart]){
-    	        istart++;
-    	    }
+    	int istart = 0;
+    	while (fptbinsZFinalA[0] != fptbinsZMeasA[istart]){
+    	    istart++;
+    	}
         for(int j=0; j<=fRawRebinClone->GetNbinsX()+1;j++){
             double cont = fRawRebin->GetBinContent(j+istart);
             double err = fRawRebin->GetBinError(j+istart);
