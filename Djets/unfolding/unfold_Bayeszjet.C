@@ -15,17 +15,25 @@
 
 //====================== global =========================
 double plotmin = fptbinsZMeasA[0], plotmax =  fptbinsZMeasA[fptbinsZMeasN];
-
-const int fptbinsZGenN=10, fJetptbinsGenN=9;
-double fptbinsZGenA[fptbinsZGenN+1]={0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.02};
+// to fill the response matrix
+const int fptbinsZGenN=10;
+double fptbinsZGenA[fptbinsZGenN+1]={0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0};
+bool BayesTrueRangeSys=1;
+const int fJetptbinsGenN=9; TString truebinnum="";
 double fJetptbinsGenA[fJetptbinsGenN+1]={0,2,3,4,5,7,10,15,50,60};
+//const int fJetptbinsGenN=6; TString truebinnum="550";
+//double fJetptbinsGenA[fJetptbinsGenN+1]={5,7,10,15,50,50};
+//const int fJetptbinsGenN=8; TString truebinnum="360";
+//double fJetptbinsGenA[fJetptbinsGenN+1]={3,4,5,7,10,15,50,60};
+//const int fJetptbinsGenN=7; TString truebinnum="350";
+//double fJetptbinsGenA[fJetptbinsGenN+1]={3,4,5,7,10,15,50};
 const int nDim    = 4;//the four dimensions
 int dim[nDim]     = {0,1,5,6};//for extacting 4D info from THnSparse
-const int DnDim    = 5;//the four dimensions
-int Ddim[DnDim]     = {0,1,5,6,7};//for extacting 4D info from THnSparse
+const int DnDim   = 6;//the six dimensions
+int Ddim[DnDim]   = {0,1,5,6,2,7};//for extacting 6D info from THnSparse
 TH1D *fRawSpec2Dproj[fJetptbinsN];
-TH1D *fRawSpec2DprojUp[fJetptbinsN];
-TH1D *fRawSpec2DprojDo[fJetptbinsN];
+TH1D *fRawSpec2DprojUp[fJetptbinsN];//FD systematics
+TH1D *fRawSpec2DprojDo[fJetptbinsN];//FD systematics
 
 TH1D *LoadRawSpec(TString fn, TString sname, TString spostfix="");
 TH2D *Rebin2D(const char* name, TH2D *h, int nx, const double *binx, int ny, const double *biny, bool crop);
@@ -158,9 +166,11 @@ void unfold_Bayeszjet(
     THnSparseD *hZjetRecGenD;
     THnSparseD *hZjetRGD[NDMC];
     THnD *hZ4d; //TH2D *;
+    TH2D *hZjetMCclosure[NDMC];
+    TH2D *hZjetMCC;
 
     TList *histList[NDMC];THnSparseD *sparseMC[NDMC];THnSparseD *sparsereco[NDMC];
-
+    THnSparseD *sparseMCclosure[NDMC];
     //Empty 2D histograms to define binning of response matrix at reco and gen level
     TH2D* hZjetRRebin = new TH2D("hRecRebin","hRecRebin", fptbinsZMeasN, fptbinsZMeasA, fJetptbinsN, fJetptbinsA);
     hZjetRRebin->Sumw2();
@@ -185,10 +195,15 @@ void unfold_Bayeszjet(
         }
 
         sparseMC[i] = (THnSparseD*)histList[i]->FindObject("ResponseMatrix");
+        sparseMCclosure[i] = (THnSparseD*)histList[i]->FindObject("ResponseMatrix");
         //sparseMC[i]->GetAxis(5)->SetRangeUser(fptbinsZGenA[0],fptbinsZGenA[fptbinsZGenN]);
         sparseMC[i]->GetAxis(1)->SetRangeUser(fJetptbinsGenA[0],fJetptbinsGenA[fJetptbinsGenN]);
         sparseMC[i]->GetAxis(9)->SetRangeUser(-0.9+fRpar,0.9-fRpar);
 
+        sparseMCclosure[i]->GetAxis(1)->SetRangeUser(fJetptbinsGenA[0],fJetptbinsGenA[fJetptbinsGenN]);
+        sparseMCclosure[i]->GetAxis(6)->SetRangeUser(5,50);//fJetptbinsGenA[0],fJetptbinsGenA[fJetptbinsGenN]);
+        sparseMCclosure[i]->GetAxis(1)->SetRangeUser(5,50);//fJetptbinsGenA[0],fJetptbinsGenA[fJetptbinsGenN]);
+        sparseMCclosure[i]->GetAxis(9)->SetRangeUser(-0.9+fRpar,0.9-fRpar);
         //----- getting min and max of each dimension
         for (int idim=0; idim< sparseMC[i]->GetNdimensions(); idim++){
         	auto axis = sparseMC[i]->GetAxis(i);
@@ -197,17 +212,34 @@ void unfold_Bayeszjet(
         }
         hZjetRG[i] = (THnSparseD*)sparseMC[i]->Projection(nDim,dim,"E");
         hZjetRGD[i] = (THnSparseD*)sparseMC[i]->Projection(DnDim,Ddim,"E");
+        hZjetMCclosure[i] = (TH2D*)sparseMCclosure[i]->Projection(6,5,"E");
         //-----
         if (!i){
                 hZjetRecGen = (THnSparseD*)hZjetRG[0]->Clone("hZjetRecGen");
                 hZjetRecGenD = (THnSparseD*)hZjetRGD[0]->Clone("hZjetRecGenD");
+                hZjetMCC = (TH2D*)hZjetMCclosure[0]->Clone("hZjetMCC");
         }
         else {
                 hZjetRecGen->Add(hZjetRG[i]);
                 hZjetRecGenD->Add(hZjetRGD[i]);
+                hZjetMCC->Add(hZjetMCclosure[i]);
         }
     }//end of NDMC for loop //hZjetRecGen->SaveAs("proj.root");
 
+    //**************************
+    //MC Closure tests
+    TH2D* hZjetMCCGen = new TH2D("hMCCGenRebin","hMCCGenRebin", fptbinsZFinalN, fptbinsZFinalA, fJetptbinsN, fJetptbinsA);
+
+    TH2D *hZjetMCCRebin  = Rebin2D("hZjetMCC", hZjetMCC, fptbinsZTrueN, fptbinsZTrueA, fJetptbinsN, fJetptbinsA, 0);
+    TH2D *hZjetMCCRebin2  = Rebin2D("hZjetMCC", hZjetMCC, fptbinsZFinalN, fptbinsZFinalA, fJetptbinsN, fJetptbinsA, 0);
+    TCanvas* cZGen2 = new TCanvas();
+    cZGen2->SetLogz();
+    hZjetMCCRebin2->Draw("TEXT SAME");
+
+    //hZjetMCCRebin->Draw("colz");
+    //hZjetMCCRebin->Draw("TEXT SAME");
+
+    //**************************
     /**************************
     #### normalizing
     **************************/
@@ -216,8 +248,8 @@ void unfold_Bayeszjet(
     TH2D *hZjetGenRebin = Rebin2D("hZjetGenRebin", hZjetGen, fptbinsZGenN, fptbinsZGenA, fJetptbinsGenN, fJetptbinsGenA, 0);
     TCanvas* cZGen = new TCanvas();
     cZGen->SetLogz();
-    hZjetGenRebin->Draw("colz");
-    hZjetGenRebin->Draw("TEXT SAME");
+    //hZjetGenRebin->Draw("colz");
+    //hZjetGenRebin->Draw("TEXT SAME");
     //WeightMatrixY1Y2(hZjetRecGen,hZjetGen);
 
     /***************************
@@ -229,15 +261,16 @@ void unfold_Bayeszjet(
     //int eventcount = 0;
     if(DptcutTrue){
     for (int z = 0; z< hZjetRecGenD->GetNbins();z++) {
-       int coord[DnDim]={0,0,0,0,0};
+       int coord[DnDim]={0,0,0,0,0,0};
        double content = hZjetRecGenD->GetBinContent(z,coord);
-       int i = coord[0], j = coord[1], k = coord[2], m = coord[3], n = coord[4];
+       int i = coord[0], j = coord[1], k = coord[2], m = coord[3], n = coord[4], p = coord[5];
        double weight = content;
        double i_center = hZjetRecGenD->GetAxis(0)->GetBinCenter(i);
        double j_center = hZjetRecGenD->GetAxis(1)->GetBinCenter(j);
        double k_center = hZjetRecGenD->GetAxis(2)->GetBinCenter(k);
        double m_center = hZjetRecGenD->GetAxis(3)->GetBinCenter(m);
        double n_center = hZjetRecGenD->GetAxis(4)->GetBinCenter(n);
+       double p_center = hZjetRecGenD->GetAxis(5)->GetBinCenter(p);
 //
        bool measurement_ok = kTRUE;
        //if (i==0 || j ==0 || k ==0 || m == 0){
@@ -246,13 +279,13 @@ void unfold_Bayeszjet(
       //     cout<<i<<"--"<<j<<endl;//"--"<<k<<"--"<<m<<endl;
       //     //eventcount+=1;
       // }
-       if(n_center<2){
+       if(n_center<2 || p_center<2){
              measurement_ok = kFALSE;
        }
-       else if(n_center<3 && m_center>=7 ){
+       else if((n_center<3 || p_center<3) && m_center>=7 ){
              measurement_ok = kFALSE;
        }
-       else if(n_center<5 && m_center>=10 ){
+       else if((n_center<5 || p_center<5) && m_center>=10 ){
              measurement_ok = kFALSE;
        }
        if (measurement_ok){
@@ -358,7 +391,7 @@ void unfold_Bayeszjet(
       TH1D *hDataProjectXDo[4];
       TH1D *UnfProjectXScaleDo[4];
     //************************************
-    TFile *unfold2DoutFile = new TFile(Form("%s/alljetz2D/unfold2DoutFile.root",outDir.Data()),"recreate");
+    TFile *unfold2DoutFile = new TFile(Form("%s/alljetz2D/unfold2DoutFile%s.root",outDir.Data(),truebinnum.Data()),"recreate");
     for (int binjet=1; binjet<= fUnfoldedBayes[regBayes-1]->GetNbinsY(); binjet++){
       UnfProjectX[binjet-1] = (TH1D*)fUnfoldedBayes[regBayes-1]->ProjectionX(Form("UnfProjectX_%d",binjet), binjet, binjet, "E");
       hDataProjectX[binjet-1] = (TH1D*)hData2D->ProjectionX(Form("hDatarojectX_%d",binjet), binjet, binjet, "E");
@@ -414,6 +447,14 @@ void unfold_Bayeszjet(
 cout<<hData2D->GetNbinsY()<<endl;
 cout<<hData2D->GetNbinsX()<<endl;
 
+    if (BayesTrueRangeSys){
+      TFile *unfold2DoutFileRangeSys = new TFile(Form("%s/alljetz2D/unfold2DoutFileRangeSys_%s.root",outDir.Data(),truebinnum.Data()),"recreate");
+      for (int binjet=1; binjet<= fUnfoldedBayes[regBayes-1]->GetNbinsY(); binjet++){
+        UnfProjectX[binjet-1] = (TH1D*)fUnfoldedBayes[regBayes-1]->ProjectionX(Form("UnfProjectX_%d",binjet), binjet, binjet, "E");
+        UnfProjectX[binjet-1] ->Write(Form("UnfProjectX_%d",binjet-1));
+      }
+      unfold2DoutFileRangeSys->Close();
+    }
 return;
 }
 
