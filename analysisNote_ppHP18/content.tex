@@ -314,9 +314,10 @@ yield, relative statistical uncertainty, signal / background ratio and significa
 \end{minipage}%
 \begin{minipage}{.4\textwidth}
   \centering
-\includegraphics[width=\textwidth]{pp_2sig/R3_jetbin_5_7/signalParams_pTD2}
+  \includegraphics[width=\textwidth]{pp_2sig/R3_jetbin_5_7/signalParams_pTD2}
+  \includegraphics[width=0.65\linewidth]{pp_2sig/R3_jetbin_5_7/RefOverS_pTD2}
 \caption{%Left: 
-\Dzero-jet raw signal extraction: raw yields, relative statistical uncertainties, significance and S/B ratio in \Dzero\ \pt\ bins, in \pp\ collisions at $\s=5.02$~TeV for $5<$ jet \pt\ $<7$~\GeVc\ with the Side Band method.
+\Dzero-jet: raw yields, relative statistical uncertainties, significance, S/B ratio and R/S ratio in \Dzero\ \pt\ bins, in \pp\ collisions at $\s=5.02$~TeV for $5<$ jet \pt\ $<7$~\GeVc\ with the Side Band method.
 }
 \label{fig:eq_pp_signalParams_5_7_R3}
 \end{minipage}
@@ -364,8 +365,9 @@ Similarly for $7<$ jet \pt\ $<10$ \GeVc, we have figures \ref{fig:eq_pp_InvMass_
 \begin{minipage}{.4\textwidth}
   \centering
   \includegraphics[width=\linewidth]{pp_2sig/R3_jetbin_7_10/signalParams_pTD3}
+  \includegraphics[width=0.65\linewidth]{pp_2sig/R3_jetbin_7_10/RefOverS_pTD3}
 \caption{%Left: 
-\Dzero-jet raw signal extraction: raw yields, relative statistical uncertainties, significance and S/B ratio in \Dzero\ \pt\ bins, in \pp\ collisions at $\s=5.02$~TeV for $7<$ jet \pt\ $<10$~\GeVc\ with the Side Band method.
+\Dzero-jet: raw yields, relative statistical uncertainties, significance, S/B ratio and R/S ratio in \Dzero\ \pt\ bins, in \pp\ collisions at $\s=5.02$~TeV for $7<$ jet \pt\ $<10$~\GeVc\ with the Side Band method.
 }
 \label{fig:eq_pp_signalParams_7_10_R3}
 \end{minipage}
@@ -397,15 +399,16 @@ For $10<$ jet \pt\ $<15$ \GeVc, we have figures \ref{fig:eq_pp_InvMass_Dzero_10_
 \begin{minipage}{.65\textwidth}
   \centering
   \includegraphics[width=\linewidth]{pp_2sig/R3_jetbin_10_15/invMass_pTD5}
-\caption{\Dzero-jet signal extraction in bins of D transverse momentum in \pp\ collisions at $\s=5.02$~TeV (raw yields). D mesons are required to have $\pt>3$~\GeVc. Jet $\pt$ is in 10-15 \GeVc.
+\caption{\Dzero-jet signal extraction in bins of D transverse momentum in \pp\ collisions at $\s=5.02$~TeV (raw yields). D mesons are required to have $\pt>5$~\GeVc. Jet $\pt$ is in 10-15 \GeVc.
 }
 \label{fig:eq_pp_InvMass_Dzero_10_15_R3}
 \end{minipage}%
 \begin{minipage}{.4\textwidth}
   \centering
   \includegraphics[width=\linewidth]{pp_2sig/R3_jetbin_10_15/signalParams_pTD5}
+  \includegraphics[width=0.65\linewidth]{pp_2sig/R3_jetbin_10_15/RefOverS_pTD5}
 \caption{%Left: 
-\Dzero-jet raw signal extraction: raw yields, relative statistical uncertainties, significance and S/B ratio in \Dzero\ \pt\ bins, in \pp\ collisions at $\s=5.02$~TeV for $10<$ jet \pt\ $<15$~\GeVc\ with the Side Band method.
+\Dzero-jet: raw yields, relative statistical uncertainties, significance, S/B ratio and R/S ratio in \Dzero\ \pt\ bins, in \pp\ collisions at $\s=5.02$~TeV for $10<$ jet \pt\ $<15$~\GeVc\ with the Side Band method.
 }
 \label{fig:eq_pp_signalParams_10_15_R3}
 \end{minipage}
@@ -428,23 +431,28 @@ For $10<$ jet \pt\ $<15$ \GeVc, we have figures \ref{fig:eq_pp_InvMass_Dzero_10_
 \end{minipage}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-For $15<$ jet \pt\ $<50$ \GeVc, the sigma(s) were fixed to MC values to get better fit results. Our figures are \ref{fig:eq_pp_InvMass_Dzero_15_50_R3}, \ref{fig:eq_pp_signalParams_15_50_R3}, \ref{fig:eq_pp_signBkgJet_Dzero_15_50_R3} and \ref{fig:eq_pp_signBkgJet_tot_15_50_R3}.
+For $15<$ jet \pt\ $<50$ \GeVc, the sigma of the last bin was bound within 10\% of its corresponding MC value to get better fit results. Our figures are \ref{fig:eq_pp_InvMass_Dzero_15_50_R3}, \ref{fig:eq_pp_signalParams_15_50_R3}, \ref{fig:eq_pp_signBkgJet_Dzero_15_50_R3} and \ref{fig:eq_pp_signBkgJet_tot_15_50_R3}. This step was also done for $R=$ 0.4.
+
+A comparison between invariant mass fits with free sigma, sigma bound within 10\% of MC value for the last bin, 
+sigma bound within 10\% and 20\% of MC values for all bins in this jet-$p_{\text T}$ interval can be seen in 
+figures~\ref{fig:freeVbound_R3} and \ref{fig:freeVbound_R4}. Particular difference between free sigma fit and last bin bound within 10\% MC sigma fit is observed for $R=$ 0.4.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[bth]
 \centering
 \begin{minipage}{.65\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{pp_2sig/R3_jetbin_15_50/invMass_pTD5}
-\caption{\Dzero-jet signal extraction in bins of D transverse momentum in \pp\ collisions at $\s=5.02$~TeV (raw yields). D mesons are required to have $\pt>3$~\GeVc. Jet $\pt$ is in 15-50 \GeVc.
+  \includegraphics[width=\linewidth]{pp_2sig/R3_jetbin_15_50/Z0to102_jetbin_15_50/invMass_pTD5}
+\caption{\Dzero-jet signal extraction in bins of D transverse momentum in \pp\ collisions at $\s=5.02$~TeV (raw yields). D mesons are required to have $\pt>5$~\GeVc. Jet $\pt$ is in 15-50 \GeVc.
 }
 \label{fig:eq_pp_InvMass_Dzero_15_50_R3}
 \end{minipage}%
 \begin{minipage}{.4\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{pp_2sig/R3_jetbin_15_50/signalParams_pTD5}
+  \includegraphics[width=\linewidth]{pp_2sig/R3_jetbin_15_50/Z0to102_jetbin_15_50/signalParams_pTD5}
+  \includegraphics[width=0.65\linewidth]{pp_2sig/R3_jetbin_15_50/Z0to102_jetbin_15_50/RefOverS_pTD5}
 \caption{%Left: 
-\Dzero-jet raw signal extraction: raw yields, relative statistical uncertainties, significance and S/B ratio in \Dzero\ \pt\ bins, in \pp\ collisions at $\s=5.02$~TeV for $15<$ jet \pt\ $<50$~\GeVc\ with the Side Band method.
+\Dzero-jet: raw yields, relative statistical uncertainties, significance, S/B ratio and R/S ratio in \Dzero\ \pt\ bins, in \pp\ collisions at $\s=5.02$~TeV for $15<$ jet \pt\ $<50$~\GeVc\ with the Side Band method.
 }
 \label{fig:eq_pp_signalParams_15_50_R3}
 \end{minipage}
@@ -454,13 +462,13 @@ For $15<$ jet \pt\ $<50$ \GeVc, the sigma(s) were fixed to MC values to get bett
 \centering
 \begin{minipage}{.65\textwidth}
   \centering
-\includegraphics[width=\textwidth]{pp_2sig/R3_jetbin_15_50/jetRawSpectrum_pTD5}
+\includegraphics[width=\textwidth]{pp_2sig/R3_jetbin_15_50/Z0to102_jetbin_15_50/jetRawSpectrum_pTD5}
 \caption{Raw $z_{||}$ distributions in bins of \Dzero\ transverse momentum in \pp\ collisions at $\s=5.02$~TeV for $15<$ jet \pt\ $<50$ \GeVc\ .}
 \label{fig:eq_pp_signBkgJet_Dzero_15_50_R3}
 \end{minipage}%
 \begin{minipage}{.4\textwidth}
   \centering
-\includegraphics[width=\textwidth]{pp_2sig/R3_jetbin_15_50/jetPtSpectrum_SB_pTD5}
+\includegraphics[width=\textwidth]{pp_2sig/R3_jetbin_15_50/Z0to102_jetbin_15_50/jetPtSpectrum_SB_pTD5}
 \caption{Total raw $z_{||}$ distributions in \pp\ collisions at $\s=5.02$~TeV, obtained summing together all D \pt\ bins without an efficiency correction for $15<$ jet \pt\ $<50$ \GeVc\ .
 }
 \label{fig:eq_pp_signBkgJet_tot_15_50_R3}
@@ -490,9 +498,10 @@ For jet radius of $R=0.4$ (in $\eta-\phi$ plane), the corresponding figures for 
 \end{minipage}%
 \begin{minipage}{.4\textwidth}
   \centering
-\includegraphics[width=\textwidth]{pp_2sig/R4_jetbin_5_7/signalParams_pTD2}
+  \includegraphics[width=\textwidth]{pp_2sig/R4_jetbin_5_7/signalParams_pTD2}
+  \includegraphics[width=0.65\linewidth]{pp_2sig/R4_jetbin_5_7/RefOverS_pTD2}
 \caption{%Left: 
-\Dzero-jet raw signal extraction: raw yields, relative statistical uncertainties, significance and S/B ratio in \Dzero\ \pt\ bins, in \pp\ collisions at $\s=5.02$~TeV for $5<$ jet \pt\ $<7$~\GeVc\ with the Side Band method.
+\Dzero-jet: raw yields, relative statistical uncertainties, significance, S/B ratio and R/S ratio in \Dzero\ \pt\ bins, in \pp\ collisions at $\s=5.02$~TeV for $5<$ jet \pt\ $<7$~\GeVc\ with the Side Band method.
 }
 \label{fig:eq_pp_signalParams_5_7_R4}
 \end{minipage}
@@ -528,8 +537,9 @@ For jet radius of $R=0.4$ (in $\eta-\phi$ plane), the corresponding figures for 
 \begin{minipage}{.4\textwidth}
   \centering
   \includegraphics[width=\linewidth]{pp_2sig/R4_jetbin_7_10/signalParams_pTD3}
+  \includegraphics[width=0.65\linewidth]{pp_2sig/R4_jetbin_7_10/RefOverS_pTD3}
 \caption{%Left: 
-\Dzero-jet raw signal extraction: raw yields, relative statistical uncertainties, significance and S/B ratio in \Dzero\ \pt\ bins, in \pp\ collisions at $\s=5.02$~TeV for $7<$ jet \pt\ $<10$~\GeVc\ with the Side Band method.
+\Dzero-jet: raw yields, relative statistical uncertainties, significance, S/B ratio and R/S ratio in \Dzero\ \pt\ bins, in \pp\ collisions at $\s=5.02$~TeV for $7<$ jet \pt\ $<10$~\GeVc\ with the Side Band method.
 }
 \label{fig:eq_pp_signalParams_7_10_R4}
 \end{minipage}
@@ -558,15 +568,16 @@ For jet radius of $R=0.4$ (in $\eta-\phi$ plane), the corresponding figures for 
 \begin{minipage}{.65\textwidth}
   \centering
   \includegraphics[width=\linewidth]{pp_2sig/R4_jetbin_10_15/invMass_pTD5}
-\caption{\Dzero-jet signal extraction in bins of D transverse momentum in \pp\ collisions at $\s=5.02$~TeV (raw yields). D mesons are required to have $\pt>3$~\GeVc. Jet $\pt$ is in 10-15 \GeVc.
+\caption{\Dzero-jet signal extraction in bins of D transverse momentum in \pp\ collisions at $\s=5.02$~TeV (raw yields). D mesons are required to have $\pt>5$~\GeVc. Jet $\pt$ is in 10-15 \GeVc.
 }
 \label{fig:eq_pp_InvMass_Dzero_10_15_R4}
 \end{minipage}%
 \begin{minipage}{.4\textwidth}
   \centering
   \includegraphics[width=\linewidth]{pp_2sig/R4_jetbin_10_15/signalParams_pTD5}
+  \includegraphics[width=0.65\linewidth]{pp_2sig/R4_jetbin_10_15/RefOverS_pTD5}
 \caption{%Left: 
-\Dzero-jet raw signal extraction: raw yields, relative statistical uncertainties, significance and S/B ratio in \Dzero\ \pt\ bins, in \pp\ collisions at $\s=5.02$~TeV for $10<$ jet \pt\ $<15$~\GeVc\ with the Side Band method.
+\Dzero-jet: raw yields, relative statistical uncertainties, significance, S/B ratio and R/S ratio in \Dzero\ \pt\ bins, in \pp\ collisions at $\s=5.02$~TeV for $10<$ jet \pt\ $<15$~\GeVc\ with the Side Band method.
 }
 \label{fig:eq_pp_signalParams_10_15_R4}
 \end{minipage}
@@ -594,16 +605,17 @@ For jet radius of $R=0.4$ (in $\eta-\phi$ plane), the corresponding figures for 
 \centering
 \begin{minipage}{.65\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{pp_2sig/R4_jetbin_15_50/invMass_pTD5}
-\caption{\Dzero-jet signal extraction in bins of D transverse momentum in \pp\ collisions at $\s=5.02$~TeV (raw yields). D mesons are required to have $\pt>3$~\GeVc. Jet $\pt$ is in 15-50 \GeVc.
+  \includegraphics[width=\linewidth]{pp_2sig/R4_jetbin_15_50/Z0to102_jetbin_15_50/invMass_pTD5}
+\caption{\Dzero-jet signal extraction in bins of D transverse momentum in \pp\ collisions at $\s=5.02$~TeV (raw yields). D mesons are required to have $\pt>5$~\GeVc. Jet $\pt$ is in 15-50 \GeVc.
 }
 \label{fig:eq_pp_InvMass_Dzero_15_50_R4}
 \end{minipage}%
 \begin{minipage}{.4\textwidth}
   \centering
-  \includegraphics[width=\linewidth]{pp_2sig/R4_jetbin_15_50/signalParams_pTD5}
+  \includegraphics[width=\linewidth]{pp_2sig/R4_jetbin_15_50/Z0to102_jetbin_15_50/signalParams_pTD5}
+  \includegraphics[width=0.65\linewidth]{pp_2sig/R4_jetbin_15_50/Z0to102_jetbin_15_50/RefOverS_pTD5}
 \caption{%Left: 
-\Dzero-jet raw signal extraction: raw yields, relative statistical uncertainties, significance and S/B ratio in \Dzero\ \pt\ bins, in \pp\ collisions at $\s=5.02$~TeV for $15<$ jet \pt\ $<50$~\GeVc\ with the Side Band method.
+\Dzero-jet: raw yields, relative statistical uncertainties, significance, S/B ratio and R/S ratio in \Dzero\ \pt\ bins, in \pp\ collisions at $\s=5.02$~TeV for $15<$ jet \pt\ $<50$~\GeVc\ with the Side Band method.
 }
 \label{fig:eq_pp_signalParams_15_50_R4}
 \end{minipage}
@@ -613,13 +625,13 @@ For jet radius of $R=0.4$ (in $\eta-\phi$ plane), the corresponding figures for 
 \centering
 \begin{minipage}{.65\textwidth}
   \centering
-\includegraphics[width=\textwidth]{pp_2sig/R4_jetbin_15_50/jetRawSpectrum_pTD5}
+\includegraphics[width=\textwidth]{pp_2sig/R4_jetbin_15_50/Z0to102_jetbin_15_50/jetRawSpectrum_pTD5}
 \caption{Raw $z_{||}$ distributions in bins of \Dzero\ transverse momentum in \pp\ collisions at $\s=5.02$~TeV for $15<$ jet \pt\ $<50$ \GeVc\ .}
 \label{fig:eq_pp_signBkgJet_Dzero_15_50_R4}
 \end{minipage}%
 \begin{minipage}{.4\textwidth}
   \centering
-\includegraphics[width=\textwidth]{pp_2sig/R4_jetbin_15_50/jetPtSpectrum_SB_pTD5}
+\includegraphics[width=\textwidth]{pp_2sig/R4_jetbin_15_50/Z0to102_jetbin_15_50/jetPtSpectrum_SB_pTD5}
 \caption{Total raw $z_{||}$ distributions in \pp\ collisions at $\s=5.02$~TeV, obtained summing together all D \pt\ bins without an efficiency correction for $15<$ jet \pt\ $<50$ \GeVc\ .
 }
 \label{fig:eq_pp_signBkgJet_tot_15_50_R4}
@@ -627,6 +639,24 @@ For jet radius of $R=0.4$ (in $\eta-\phi$ plane), the corresponding figures for 
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[bth]
+\centering
+\begin{minipage}{.5\textwidth}
+  \includegraphics[width=\linewidth]{pp_2sig/freeVboundSigma/R_03_15_50_freeVboundSigma}
+\caption{Comparison of raw D$^0$-jet spectra for free sigma and bound sigma fits for $R=$ 0.3.
+}
+\label{fig:freeVbound_R3}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{pp_2sig/freeVboundSigma/R_04_15_50_freeVboundSigma}
+\caption{Comparison of raw D$^0$-jet spectra for free sigma and bound sigma fits for $R=$ 0.4.
+}
+\label{fig:freeVbound_R4}
+\end{minipage}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -661,6 +691,42 @@ The efficiency is with a cut on \ptchjet\ of $5 < \ptchjet < 50$ \GeVc\ (range o
 For $z_{||,\text{ch}}$ distribution studies, efficiencies are found as a function of D-\pt\ separately in the respective jet $p_{\text T}$ interval and applied accordingly. 
 %Prompt and non-prompt efficiencies can be seen in figures ~\ref{fig:eq_pp_DrecEff} and ~\ref{fig:eq_pp_DrecEff} respectively for jet radius $R=$0.3 .
 
+\begin{figure}[bth]
+\centering
+\begin{minipage}{.5\textwidth}
+\centering
+\includegraphics[width=0.6\textwidth]{pp_2sig/efficiencies/compareEfficiencies/R03/5_7.pdf}
+\includegraphics[width=0.6\textwidth]{pp_2sig/efficiencies/compareEfficiencies/R03/7_10.pdf}
+\caption{\Dzero-meson-jet reconstruction efficiencies for [top] 5 $<$ jet $p_\text{T}$ $<$ 7 GeV/$c$ and [bottom] 7 $<$ jet $p_\text{T}$ $<$ 10 GeV/$c$, $R=0.3$.}
+\label{fig:eq_pp_DrecEffR3_1}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+\centering
+\includegraphics[width=0.6\textwidth]{pp_2sig/efficiencies/compareEfficiencies/R03/10_15.pdf}
+\includegraphics[width=0.6\textwidth]{pp_2sig/efficiencies/compareEfficiencies/R03/15_50.pdf}
+\caption{\Dzero-meson-jet reconstruction efficiencies for [top] 10 $<$ jet $p_\text{T}$ $<$ 15 GeV/$c$ and [bottom] 15 $<$ jet $p_\text{T}$ $<$ 50 GeV/$c$, $R=0.3$.}
+\label{fig:eq_pp_DrecEffR3_2}
+\end{minipage}%
+\end{figure}
+
+
+\begin{figure}[bth]
+\centering
+\begin{minipage}{.5\textwidth}
+\centering
+\includegraphics[width=0.6\textwidth]{pp_2sig/efficiencies/compareEfficiencies/R04/5_7.pdf}
+\includegraphics[width=0.6\textwidth]{pp_2sig/efficiencies/compareEfficiencies/R04/7_10.pdf}
+\caption{\Dzero-meson-jet reconstruction efficiencies for [top] 5 $<$ jet $p_\text{T}$ $<$ 7 GeV/$c$ and [bottom] 7 $<$ jet $p_\text{T}$ $<$ 10 GeV/$c$, $R=0.4$.}
+\label{fig:eq_pp_DrecEffR4_1}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+\centering
+\includegraphics[width=0.6\textwidth]{pp_2sig/efficiencies/compareEfficiencies/R04/10_15.pdf}
+\includegraphics[width=0.6\textwidth]{pp_2sig/efficiencies/compareEfficiencies/R04/15_50.pdf}
+\caption{\Dzero-meson-jet reconstruction efficiencies for [top] 10 $<$ jet $p_\text{T}$ $<$ 15 GeV/$c$ and [bottom] 15 $<$ jet $p_\text{T}$ $<$ 50 GeV/$c$, $R=0.4$.}
+\label{fig:eq_pp_DrecEffR4_2}
+\end{minipage}%
+\end{figure}
 \subsection{Efficiency-Corrected Yields}
 
 As discussed in the previous section, the D-meson reconstruction efficiency shows a strong dependence on \ptd\ (but has very weak or no dependence on \ptjet).
@@ -897,7 +963,7 @@ The second part of the parton shower and the fragmentation into hadrons is provi
 We generated 25 M \bbbar\ events for the baseline parameters: 
 $m_{\rm b} = 4.75$~\GeVcsq, $\mu_{\rm R} = \mu_{\rm F} =\mu_{0} = \sqrt{m^2+\pt^2}$,
 where $m_{\rm b}$ is the beauty masses, $\mu_{\rm R}$ and $\mu_{\rm F}$ are respectively the renormalization and factorization scale factors; used based PDF set is: CT10NLO.
-Variation of the simulation parameters are a source of the B feed-down subtraction systematic uncertainties.
+Variations of the simulation parameter are a source of the B feed-down subtraction systematic uncertainties.
 
 The reconstruction of D-meson jets is performed in the POWHEG+PYTHIA6 events using the same procedure used for the main data analysis.
 
@@ -1029,7 +1095,7 @@ Then the matrix is rebinned according to the binning used for the final jet \pt\
 \subsection{\Dzero-tagged jets}
 
 Figure~\ref{fig:pPb_ResponseMatrix_Dzero} shows a rebinned response matrix for prompt \Dzero-jets.
-The corrected for the reconstruction efficiency and B feed-down jet \pt\ spectra before the unfolding (blue) and after the unfolding (red), for the side-band method, are presented in Fig.~\ref{fig:UnfSpec_pPb_Dzero}.
+The jet \pt\ spectra corrected for reconstruction efficiency and B feed-down before unfolding (blue) and after unfolding (red), for the side-band method, are presented in Fig.~\ref{fig:UnfSpec_pPb_Dzero}.
 Unfolding is done with Bayesian technique using the \texttt{RooUnfold} software package. The default method is the Bayesian with 4 iterations and \ptchjet\ ranges are 3 $< \ptchjet< $ 50 both for the generator and reconstructed level \pt\, with over/under flow bins considered in the unfolding procedure.
 The green line represents refolded back spectrum, and is compared to the measured jet spectrum before unfolding with different iterations in the Bayes unfolding - right panel of Fig.~\ref{fig:unfIterations_pPb_Dzero}. Figure~\ref{fig:unfIterations_pPb_Dzero} (left) shows also unfolded spectra with next iterations compared to the default spectrum obtained with 4 iterations.
 The final reported jet \pt\ range is 5 $< \ptchjet<$ 50 GeV/$c$.
@@ -1065,6 +1131,164 @@ Comparison of unfolded spectra with the SVD method, different \pt\ ranges for th
 \label{fig:unfPearsonCoeff_pp_Dzero}
 \end{figure}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{\Dzero-tagged jets: Parallel momentum fraction, $z_{||}^\text{ch}$}
+The measure of detector performance is quantified in detector response matrices using the final binning for $z_{||}^\text{ch}$ used for unfolding, similar to what was done for unfolding in the previous sub-section in bins of jet-$p_{\text T}$.
+For different jet-$p_{\text T}$ intervals the rebinned detector response matrices of previously shown detector response matrices for prompt D-jets are:
+\subsubsection{R = 0.3}
+
+\begin{itemize}
+	\item 5-7   \GeVc:\ref{fig:fRMdet_pp_Dzero_5_7_R3}(left, prompt)$\rightarrow$\ref{fig:detectorResponse_5_7_10_R3} (top).
+	\item 7-10  \GeVc:\ref{fig:fRMdet_pp_Dzero_7_10_R3}(left, prompt)$\rightarrow$\ref{fig:detectorResponse_5_7_10_R3} (bottom).
+	\item 10-15 \GeVc:\ref{fig:fRMdet_pp_Dzero_10_15_R3}(left, prompt)$\rightarrow$\ref{fig:detectorResponse_10_15_50_R3} (top).
+	\item 15-50 \GeVc:\ref{fig:fRMdet_pp_Dzero_15_50_R3}(left, prompt)$\rightarrow$\ref{fig:detectorResponse_10_15_50_R3} (bottom).
+\end{itemize}
+\subsubsection{R = 0.4}
+\begin{itemize}
+	\item 5-7   \GeVc:\ref{fig:fRMdet_pp_Dzero_5_7_R4}(left, prompt)$\rightarrow$\ref{fig:detectorResponse_5_7_10_R4} (top).
+	\item 7-10  \GeVc:\ref{fig:fRMdet_pp_Dzero_7_10_R4}(left, prompt)$\rightarrow$\ref{fig:detectorResponse_5_7_10_R4} (bottom).
+	\item 10-15 \GeVc:\ref{fig:fRMdet_pp_Dzero_10_15_R4}(left, prompt)$\rightarrow$\ref{fig:detectorResponse_10_15_50_R4} (top).
+	\item 15-50 \GeVc:\ref{fig:fRMdet_pp_Dzero_15_50_R4}(left, prompt)$\rightarrow$\ref{fig:detectorResponse_10_15_50_R4} (bottom).
+\end{itemize}
+
+\begin{figure}[bth]
+\centering
+\begin{minipage}{.5\textwidth}
+\centering
+\includegraphics[width=0.6\textwidth]{pp_2sig/response/R03/ProdMatrixPropRebin_Jet5_7_Dpt2_7}
+\includegraphics[width=0.6\textwidth]{pp_2sig/response/R03/ProdMatrixPropRebin_Jet7_10_Dpt3_10}
+\caption{Rebinned detector response matrix calculated with the PYTHIA part of the simulation of pp events at $\sqrt{s} = 5.02$ TeV: [top] 5 $<$ jet $p_\text{T}$ $<$ 7 GeV/$c$ and [bottom] 7 $<$ jet $p_\text{T}$ $<$ 10 GeV/$c$, $R=0.3$.}
+\label{fig:detectorResponse_5_7_10_R3}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+\centering
+\includegraphics[width=0.6\textwidth]{pp_2sig/response/R03/ProdMatrixPropRebin_Jet10_15_Dpt5_15}
+\includegraphics[width=0.6\textwidth]{pp_2sig/response/R03/ProdMatrixPropRebin_Jet15_50_Dpt5_36}
+\caption{Rebinned detector response matrix calculated with the PYTHIA part of the simulation of pp events at $\sqrt{s} = 5.02$ TeV: [top] 10 $<$ jet $p_\text{T}$ $<$ 15 GeV/$c$ and [bottom] 15 $<$ jet $p_\text{T}$ $<$ 50 GeV/$c$, $R=0.3$.}
+\label{fig:detectorResponse_10_15_50_R3}
+\end{minipage}%
+\end{figure}
+
+\begin{figure}[bth]
+\centering
+\begin{minipage}{.5\textwidth}
+\centering
+\includegraphics[width=0.6\textwidth]{pp_2sig/response/R04/ProdMatrixPropRebin_Jet5_7_Dpt2_7}
+\includegraphics[width=0.6\textwidth]{pp_2sig/response/R04/ProdMatrixPropRebin_Jet7_10_Dpt3_10}
+\caption{Rebinned detector response matrix calculated with the PYTHIA part of the simulation of pp events at $\sqrt{s} = 5.02$ TeV: [top] 5 $<$ jet $p_\text{T}$ $<$ 7 GeV/$c$ and [bottom] 7 $<$ jet $p_\text{T}$ $<$ 10 GeV/$c$, $R=0.4$.}
+\label{fig:detectorResponse_5_7_10_R4}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+\centering
+\includegraphics[width=0.6\textwidth]{pp_2sig/response/R04/ProdMatrixPropRebin_Jet10_15_Dpt5_15}
+\includegraphics[width=0.6\textwidth]{pp_2sig/response/R04/ProdMatrixPropRebin_Jet15_50_Dpt5_36}
+\caption{Rebinned detector response matrix calculated with the PYTHIA part of the simulation of pp events at $\sqrt{s} = 5.02$ TeV: [top] 10 $<$ jet $p_\text{T}$ $<$ 15 GeV/$c$ and [bottom] 15 $<$ jet $p_\text{T}$ $<$ 50 GeV/$c$, $R=0.4$.}
+\label{fig:detectorResponse_10_15_50_R4}
+\end{minipage}%
+\end{figure}
+%%%%%%%
+Unfolding is done using the Bayesian approach with default number of iterations as 5. The $z_{||}^\text{ch}$ ranges are 0.4 to 1 for 
+both the generator and reconstructed levels. The unfolded spectra can be found at fig.~\ref{fig:unf_R03_5_7} \ref{fig:unf_R03_7_10} \ref{fig:unf_R03_10_15} \ref{fig:unf_R03_15_50} for $R=$ 0.3 and at fig.~\ref{fig:unf_R04_5_7} \ref{fig:unf_R04_7_10} \ref{fig:unf_R04_10_15} \ref{fig:unf_R04_15_50} for $R=$ 0.4 .
+
+
+\begin{figure}[bth]
+\centering
+\includegraphics[width=0.45\textwidth]{pp_2sig/R03unfolding/Bayes/Jetbin_5_7/plots/unfoldedSpectrum_UnfSpectrum}
+\includegraphics[width=0.45\textwidth]{pp_2sig/R03unfolding/Bayes/Jetbin_5_7/plots/unfoldedSpectrum_UnfSpectrum_unc}
+\includegraphics[width=0.45\textwidth]{pp_2sig/R03unfolding/Bayes/Jetbin_5_7/plots/unfoldedSpectrum_unfRatio}
+\includegraphics[width=0.45\textwidth]{pp_2sig/R03unfolding/Bayes/Jetbin_5_7/plots/unfoldedSpectrum_Pearson}
+\caption{TOP : Left: Unfolded $z_{||}^\text{ch}$ spectra for jet-\pt\ in 5-7 \GeVc\, $R=$ 0.3. Right: Relative statistical uncertainties after unfolding.
+BOTTOM : Left: Ratio of spectra unfolded with different number of iterations. Right: Pearson coefficients.
+}
+\label{fig:unf_R03_5_7}
+\end{figure}
+
+
+\begin{figure}[bth]
+\centering
+\includegraphics[width=0.45\textwidth]{pp_2sig/R03unfolding/Bayes/Jetbin_7_10/plots/unfoldedSpectrum_UnfSpectrum}
+\includegraphics[width=0.45\textwidth]{pp_2sig/R03unfolding/Bayes/Jetbin_7_10/plots/unfoldedSpectrum_UnfSpectrum_unc}
+\includegraphics[width=0.45\textwidth]{pp_2sig/R03unfolding/Bayes/Jetbin_7_10/plots/unfoldedSpectrum_unfRatio}
+\includegraphics[width=0.45\textwidth]{pp_2sig/R03unfolding/Bayes/Jetbin_7_10/plots/unfoldedSpectrum_Pearson}
+\caption{TOP : Left: Unfolded $z_{||}^\text{ch}$ spectra for jet-\pt\ in 7-10 \GeVc\, $R=$ 0.3. Right: Relative statistical uncertainties after unfolding.
+BOTTOM : Left: Ratio of spectra unfolded with different number of iterations. Right: Pearson coefficients.
+}
+\label{fig:unf_R03_7_10}
+\end{figure}
+
+\begin{figure}[bth]
+\centering
+\includegraphics[width=0.45\textwidth]{pp_2sig/R03unfolding/Bayes/Jetbin_10_15/plots/unfoldedSpectrum_UnfSpectrum}
+\includegraphics[width=0.45\textwidth]{pp_2sig/R03unfolding/Bayes/Jetbin_10_15/plots/unfoldedSpectrum_UnfSpectrum_unc}
+\includegraphics[width=0.45\textwidth]{pp_2sig/R03unfolding/Bayes/Jetbin_10_15/plots/unfoldedSpectrum_unfRatio}
+\includegraphics[width=0.45\textwidth]{pp_2sig/R03unfolding/Bayes/Jetbin_10_15/plots/unfoldedSpectrum_Pearson}
+\caption{TOP : Left: Unfolded $z_{||}^\text{ch}$ spectra for jet-\pt\ in 10-15 \GeVc\, $R=$ 0.3. Right: Relative statistical uncertainties after unfolding.
+BOTTOM : Left: Ratio of spectra unfolded with different number of iterations. Right: Pearson coefficients.
+}
+\label{fig:unf_R03_10_15}
+\end{figure}
+
+\begin{figure}[bth]
+\centering
+\includegraphics[width=0.45\textwidth]{pp_2sig/R03unfolding/Bayes/Jetbin_15_50/plots/unfoldedSpectrum_UnfSpectrum}
+\includegraphics[width=0.45\textwidth]{pp_2sig/R03unfolding/Bayes/Jetbin_15_50/plots/unfoldedSpectrum_UnfSpectrum_unc}
+\includegraphics[width=0.45\textwidth]{pp_2sig/R03unfolding/Bayes/Jetbin_15_50/plots/unfoldedSpectrum_unfRatio}
+\includegraphics[width=0.45\textwidth]{pp_2sig/R03unfolding/Bayes/Jetbin_15_50/plots/unfoldedSpectrum_Pearson}
+\caption{TOP : Left: Unfolded $z_{||}^\text{ch}$ spectra for jet-\pt\ in 15-50 \GeVc\, $R=$ 0.3. Right: Relative statistical uncertainties after unfolding.
+BOTTOM : Left: Ratio of spectra unfolded with different number of iterations. Right: Pearson coefficients.
+}
+\label{fig:unf_R03_15_50}
+\end{figure}
+%%%%%%%%%%%%%%
+\begin{figure}[bth]
+\centering
+\includegraphics[width=0.45\textwidth]{pp_2sig/R04unfolding/Bayes/Jetbin_5_7/plots/unfoldedSpectrum_UnfSpectrum}
+\includegraphics[width=0.45\textwidth]{pp_2sig/R04unfolding/Bayes/Jetbin_5_7/plots/unfoldedSpectrum_UnfSpectrum_unc}
+\includegraphics[width=0.45\textwidth]{pp_2sig/R04unfolding/Bayes/Jetbin_5_7/plots/unfoldedSpectrum_unfRatio}
+\includegraphics[width=0.45\textwidth]{pp_2sig/R04unfolding/Bayes/Jetbin_5_7/plots/unfoldedSpectrum_Pearson}
+\caption{TOP : Left: Unfolded $z_{||}^\text{ch}$ spectra for jet-\pt\ in 5-7 \GeVc\, $R=$ 0.4. Right: Relative statistical uncertainties after unfolding.
+BOTTOM : Left: Ratio of spectra unfolded with different number of iterations. Right: Pearson coefficients.
+}
+\label{fig:unf_R04_5_7}
+\end{figure}
+
+
+\begin{figure}[bth]
+\centering
+\includegraphics[width=0.45\textwidth]{pp_2sig/R04unfolding/Bayes/Jetbin_7_10/plots/unfoldedSpectrum_UnfSpectrum}
+\includegraphics[width=0.45\textwidth]{pp_2sig/R04unfolding/Bayes/Jetbin_7_10/plots/unfoldedSpectrum_UnfSpectrum_unc}
+\includegraphics[width=0.45\textwidth]{pp_2sig/R04unfolding/Bayes/Jetbin_7_10/plots/unfoldedSpectrum_unfRatio}
+\includegraphics[width=0.45\textwidth]{pp_2sig/R04unfolding/Bayes/Jetbin_7_10/plots/unfoldedSpectrum_Pearson}
+\caption{TOP : Left: Unfolded $z_{||}^\text{ch}$ spectra for jet-\pt\ in 7-10 \GeVc\, $R=$ 0.4. Right: Relative statistical uncertainties after unfolding.
+BOTTOM : Left: Ratio of spectra unfolded with different number of iterations. Right: Pearson coefficients.
+}
+\label{fig:unf_R04_7_10}
+\end{figure}
+
+\begin{figure}[bth]
+\centering
+\includegraphics[width=0.45\textwidth]{pp_2sig/R04unfolding/Bayes/Jetbin_10_15/plots/unfoldedSpectrum_UnfSpectrum}
+\includegraphics[width=0.45\textwidth]{pp_2sig/R04unfolding/Bayes/Jetbin_10_15/plots/unfoldedSpectrum_UnfSpectrum_unc}
+\includegraphics[width=0.45\textwidth]{pp_2sig/R04unfolding/Bayes/Jetbin_10_15/plots/unfoldedSpectrum_unfRatio}
+\includegraphics[width=0.45\textwidth]{pp_2sig/R04unfolding/Bayes/Jetbin_10_15/plots/unfoldedSpectrum_Pearson}
+\caption{TOP : Left: Unfolded $z_{||}^\text{ch}$ spectra for jet-\pt\ in 10-15 \GeVc\, $R=$ 0.4. Right: Relative statistical uncertainties after unfolding.
+BOTTOM : Left: Ratio of spectra unfolded with different number of iterations. Right: Pearson coefficients.
+}
+\label{fig:unf_R04_10_15}
+\end{figure}
+
+\begin{figure}[bth]
+\centering
+\includegraphics[width=0.45\textwidth]{pp_2sig/R04unfolding/Bayes/Jetbin_15_50/plots/unfoldedSpectrum_UnfSpectrum}
+\includegraphics[width=0.45\textwidth]{pp_2sig/R04unfolding/Bayes/Jetbin_15_50/plots/unfoldedSpectrum_UnfSpectrum_unc}
+\includegraphics[width=0.45\textwidth]{pp_2sig/R04unfolding/Bayes/Jetbin_15_50/plots/unfoldedSpectrum_unfRatio}
+\includegraphics[width=0.45\textwidth]{pp_2sig/R04unfolding/Bayes/Jetbin_15_50/plots/unfoldedSpectrum_Pearson}
+\caption{TOP : Left: Unfolded $z_{||}^\text{ch}$ spectra for jet-\pt\ in 15-50 \GeVc\, $R=$ 0.4. Right: Relative statistical uncertainties after unfolding.
+BOTTOM : Left: Ratio of spectra unfolded with different number of iterations. Right: Pearson coefficients.
+}
+\label{fig:unf_R04_15_50}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Systematic Uncertainties}
 
 We considered the following sources of systematic uncertainties:
@@ -1171,7 +1395,7 @@ systematic uncertainty. Considered variations are $\pm$ 50\% of the default valu
 The uncertainties are added in quadratures in order to obtain the final systematic uncertainty on the raw yield extraction. 
 
 \subsection{D-Meson Selection Cuts}
-Uncertainties of the D-meson cut selection is estimated by varying applied in the analysis D-meson selection criteria, as reported in~\ref{sec:DmesonSel}. 
+Uncertainties of the D-meson cut selection is estimated by varying cuts applied in the analysis of D-meson selection criteria, as reported in~\ref{sec:DmesonSel}. 
 
 Eight variations of cut selections are considered, {} looser sets and {} tighter sets of cuts. The variations are choosen so that they vary \Dzero reconstruction efficiency to high enough extent so that a possible imperfection in MC simulation can be probed. Though at high \ptd\ the selection criteria are already rather loose.
 Raw \Dzero-jet \pt\ distributions with these different cut sets and corresponding \Dzero-jet efficiencies are shown in Fig.~\ref{fig:JetPtRawSys_Dzero}, and ratios to the default set of cuts in Fig.~\ref{fig:JetPtRawSysRatio_Dzero}.
@@ -1530,30 +1754,7 @@ The summary of all uncertainties, including statistical uncertainties are listed
 \caption{\Dzero-jet: Summary of all uncertainties.}
      \label{tab:UncSum_Dzero}
 \begin{center}
-%    \begin{tabular}{lrrrrrrr}
-%    \hline
-%Source & \multicolumn{6}{c}{Uncertainty (\%)} \\ \hline
-%\ptchjet\ (\GeVc) & 5 - 6 & 6 - 8 & 8 - 10 & 10 - 14 & 14 - 20 & 20 - 30 & 30 - 50 \\ \hline
-%Raw Yield Extraction & 3 & 2 & 2.5 & 2.5 & 3 & 6 & 7 \\
-%Reflections & 2 & 3 & 2 & 2 & 2 & 3 & 3 \\
-%Side-Band and Signal ranges & 2 & 2 & 2 & 2 & 4.5 & 5.5 & 6 \\
-%B Feed-Down & 6 & 6 & 8.5 & 8.5 & 12 & 13.5 & 14 \\
-%Unfolding: priors & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\
-%Unfolding: ranges, SVD & 6& 3 & 3& 3& 3& 3& 8\\
-%$p_T$ shape of MC ({\it from D-Meson}) & 0& 0& 0& 0& 0& 0& 0\\
-%Tracking Eff. ({\it from D-Meson}) & 3& 3& 3& 3& 3& 3& 3\\
-%Tracking Eff. (Jet Energy Scale) & 1& 1& 1& 2& 3& 4& 7\\
-%Selection Cuts & 1 & 2 & 2 & 2 & 6 & 6 & 11 \\
-%\hline
 %Total Systematic Uncertainty &10 & 9 &10.5 &10.5 &15.5 &18 &23  \\
-%\hline
-%Normalization Uncertainty & \multicolumn{7}{c}{ 5 (Lum); 0.04 (BR)} \\
-%\hline
-%Statistical & 4 & 3 & 5 & 5 & 8 & 15 & 27 \\
-%\hline
-%    \end{tabular}
-%    \end{center}
-%    \end{table}
     \begin{tabular}{lrrrrrrr}
     \hline
 Source & \multicolumn{6}{c}{Uncertainty (\%)} \\ \hline
@@ -1561,21 +1762,19 @@ Source & \multicolumn{6}{c}{Uncertainty (\%)} \\ \hline
 Raw Yield Extraction (Multi-trial)& 3 & 2 & 2.5 & 2.5 & 3 & 6 & 7 \\
 Reflections & 2 & 3 & 2 & 2 & 2 & 3 & 3\\
 B Feed-Down (x-section) & 6 & 6 & 8.5 & 8.5 & 12 & 13.5 & 14\\
-B Feed-Down ($R_{pPb})$ & $\pm$ 2 & $\pm$1 & +3, -1 & +2,-1 & +3,-1 & $\pm$1 & +2,-3\\
+	    {\color{OliveGreen} B Feed-Down ($R_{\text{pPb}})$} & {\color{OliveGreen}$\pm$ 2} &{\color{OliveGreen} $\pm$1} & {\color{OliveGreen}+3, -1 }& {\color{OliveGreen}+2,-1 }& {\color{OliveGreen}+3,-1} & {\color{OliveGreen}$\pm$1} &{\color{OliveGreen} +2,-3}\\
 Side-Band and Signal ranges & 2 & 2 & 2 & 2 & 4.5 & 5.5 & 6\\
-%{Unfolding: Bayes, SVD, few var} & 6 & 3 & 3 & 3 & 3 & 3 & 8\\
 Unfolding: Bayes & 2 & 0 & 0 & 0 & 0 & 0 & 0\\
 Unfolding: SVD & 6 & 2.5 & 5 & 4 & 4 & 1 & 9\\
 Unfolding: priors & 1 & 1 & 1 & 1 & 1 & 1 & 1\\
-$p_T$ shape of MC ({\it taken from D-Meson}) & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
-Tracking Eff. ({\it taken from D-Meson}) & 3 & 3 & 3 & 3 & 3 & 3 & 3 \\
-%Tracking Eff. (Jet Energy Scale) & 0.5  & 0.77 & 1.13 & 1.67 & 2.6 & 4& 7\\
+	    $p_\text{T}$ shape of MC ({\it taken from D2H}) & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+Tracking Eff. ({\it taken from D2H}) & 3 & 3 & 3 & 3 & 3 & 3 & 3 \\
 Tracking Eff. (Jet Energy Scale) & 1  & 1 & 1 & 2 & 3 & 4& 7\\
 Selection Cuts & 1 & 2 & 2 & 2 & 6 & 6 & 6 \\
 \hline
 Total Systematic Uncertainty  & 10 & 9 & 11 & 11 & 16 & 18 & 20   \\
 \hline
-Normalization Uncertainty & \multicolumn{6}{c}{  5 (Lum) to be updated; 0.04 (BR) } \\
+Normalization Uncertainty & \multicolumn{6}{c}{  2.1 (Lum) ; 0.04 (BR) } \\
 \hline %9.84392e+08
 Statistical & 4 & 3 & 5 & 5 & 8  & 15 & 27\\
 \hline
@@ -1584,19 +1783,15 @@ Statistical & 4 & 3 & 5 & 5 & 8  & 15 & 27\\
     \end{table}
     
 
-
-
+\subsubsection{Systematic Uncertainties for $R_{\text{pPb}}$}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%              RESULTS              %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \section{Results}
 
-
-This Section contains a summary of the results.
-The  $D$-jet \pt-differential cross-section in \pp\ collisions at $\s=5.02$~TeV  with all corrections applied (reconstruction efficiency, B feed-down subtraction, unfolding for detector momentum resolution);
+This section contains a summary of the results for the  $D$-jet \pt-differential cross-section in \pp\ collisions at $\s=5.02$~TeV  with all corrections applied (reconstruction efficiency, B feed-down subtraction, unfolding for detector momentum resolution).
 The cross-section is calculated according to the following formula:
 \begin{equation}
 \frac{{\rm d}^2\sigma}{{\rm d}\eta {\rm d}\pt}=\frac{1}{L_{\rm int}f_{\rm BR}} \frac{1}{\epsilon \times A}  \frac{ \frac{1}{2} N_{\rm D-jets}(\ptjet)}{ \Delta\ptjet\Delta\eta},
@@ -1608,13 +1803,13 @@ ratio of the D-meson decay channel used in the analysis, $N_{\rm D-jets}(\ptjet)
 
 
 
-The $D^{0}$-tagged jet \pt\ differential cross section in \pp\ collisions at $\s=5.02$~TeV compared to PYTHIA+POWHEG prediction is shown in Fig~\ref{fig:pPbJetPt_final_D0}. 
+The $D^{0}$-tagged jet \pt\ differential cross section in \pp\ collisions at $\s=5.02$~TeV compared to POWHEG+PYTHIA6 prediction is shown in Fig~\ref{fig:pPbJetPt_final_D0}. 
 %{\color{red} WE NEED POWHEG+PYTHIA6 SIMULATION WITH VARIATIONS}
 \begin{figure}[bth]
 \centering
 %\includegraphics[width=.6\textwidth]{pPbcuts_2sig/prelim/finalSpectra/plots/JetPtSpectra_final}
-\includegraphics[width=.6\textwidth]{PF_approval/JetPtSpectra_final}
-\caption{Unfolded \Dzero-jet\ spectrum in \pp\ collisions at $\s=5.02$~TeV compared to PYTHIA+POWHEG simulations, with the simulation uncertainty.}
+\includegraphics[width=.6\textwidth]{PF_approval/2018-09-28-JetPtSpectra_final}
+\caption{Unfolded \Dzero-jet\ spectrum in \pp\ collisions at $\s=5.02$~TeV compared to POWHEG+PYTHIA6 simulations, with the simulation uncertainty.}
 \label{fig:pPbJetPt_final_D0}
 \end{figure}
 
@@ -1677,7 +1872,7 @@ The systematic uncertainties are obtained by taking the largest upward and downw
 \begin{figure}[bth]
 \begin{center}
 %\includegraphics[width=.6\textwidth]{pPbcuts_2sig/prelim/RpPb_pPbcuts}
-\includegraphics[width=.6\textwidth]{PF_approval/RpPb_pPbcuts}
+\includegraphics[width=.6\textwidth]{PF_approval/2018-09-28-RpPb_pPbcuts}
 \caption{\Dzero-jet cross section in \pp\ at $\s=5.02$~TeV as a function of \ptchjet\ compared with \Dzero-jet cross section in \pPb\ at $\s=5.02$~TeV.} 
 \label{fig:PromptD0JetPtSpectrum_pp_pPb}
 \end{center}
@@ -1685,12 +1880,12 @@ The systematic uncertainties are obtained by taking the largest upward and downw
 
 
 
-\section{Nuclear Modification Factor ($R_{pPb}$)}
+\section{Nuclear Modification Factor ($R_{\text{pPb}}$)}
 
 \begin{figure}[bth]
 \centering
 %\includegraphics[width=.6\textwidth]{pPbcuts_2sig/prelim/RpPb_pPbcuts_ratio}
-\includegraphics[width=.6\textwidth]{PF_approval/RpPb_pPbcuts_ratio}
+\includegraphics[width=.6\textwidth]{PF_approval/2018-09-28-RpPb_pPbcuts_ratio}
 \caption{\Dzero-jet\ $R_{pPb}$}
 \label{fig:SysUnce_Dzero}
 \end{figure}
