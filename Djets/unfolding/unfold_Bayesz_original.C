@@ -82,7 +82,6 @@ outDir+=Form("/Bayes/Jetbin_%d_%d",(int)fptbinsJetA[(int)zjetbin-1], (int)fptbin
 gSystem->Exec(Form("mkdir  %s",outDir.Data()));
 gSystem->Exec(Form("mkdir  %s/plots",outDir.Data()));
 
-
 TString outName = "unfoldedSpectrum";
 	//outName += "Bayes";
 	//outName += regBayes;
@@ -133,24 +132,24 @@ LoadDetectorMatrix(detRMfile.Data(),"hZ2d","hZGen","hZRec",0);
 
         TF1* fPriorFunction;
         if(isPrior) {
-					fPriorFunction = getPriorFunction(isPrior, priorhisto,priorType, rawspectrum);
-					priorhisto->SetTitle("");
-					priorhisto->GetXaxis()->SetTitle("z_{||, ch}");
-					TCanvas* cPrior = new TCanvas("cPrior0", "cPrior0", 800, 600);
-					cPrior->SetLogy();
-					TH1D* histoPrior=(TH1D*)priorhisto->Clone();
-					histoPrior->Draw();
-					if(priorType == 8) rawspectrum->Draw();
-					fPriorFunction->Draw("same");
+		fPriorFunction = getPriorFunction(isPrior, priorhisto,priorType, rawspectrum);
+		priorhisto->SetTitle("");
+		priorhisto->GetXaxis()->SetTitle("z_{||, ch}");
+		TCanvas* cPrior = new TCanvas("cPrior0", "cPrior0", 800, 600);
+		cPrior->SetLogy();
+		TH1D* histoPrior=(TH1D*)priorhisto->Clone();
+		histoPrior->Draw();
+		if(priorType == 8) rawspectrum->Draw();
+		fPriorFunction->Draw("same");
 
-					cPrior->SaveAs(Form("%s/plots/%s_prior.pdf",outDir.Data(),outName.Data()));
-					cPrior->SaveAs(Form("%s/plots/%s_prior.png",outDir.Data(),outName.Data()));
-				}
+		cPrior->SaveAs(Form("%s/plots/%s_prior.pdf",outDir.Data(),outName.Data()));
+		cPrior->SaveAs(Form("%s/plots/%s_prior.png",outDir.Data(),outName.Data()));
+	}
 
     TH1D *hNormY;TH1D *hNormYa4;
-		TFile *outFile2 = new TFile(Form("%s/alljetz2D/outTest.root",outDir.Data()),"recreate");//deleteme
-    priorhisto->Write();//deleteme
-    fMatrixProd->Write();//deleteme
+//    TFile *outFile2 = new TFile(Form("%s/alljetz2D/outTest.root",outDir.Data()),"recreate");//deleteme
+//    priorhisto->Write();//deleteme
+//    fMatrixProd->Write();//deleteme
     // weighting the matrix
 		if (fDoWeighting) {
         cout << "==== weighting ==== " << endl;
@@ -166,14 +165,14 @@ LoadDetectorMatrix(detRMfile.Data(),"hZ2d","hZGen","hZRec",0);
 				WeightMatrixY(fMatrixProd,hNormY,fdivide);
 	}
 
-    fMatrixProd->Write("fMatrixProdafter");//deleteme
-    outFile2->Close();//deleteme
+//    fMatrixProd->Write("fMatrixProdafter");//deleteme
+//    outFile2->Close();//deleteme
     TH1D* hProjYeff=(TH1D*)fMatrixProd->ProjectionY("hProjYeff");
     TH1D* hProjXeff=(TH1D*)fMatrixProd->ProjectionX("hProjXeff");
-		TFile *outFile3 = new TFile(Form("%s/alljetz2D/outTest3.root",outDir.Data()),"recreate");//deleteme
-    hProjYeff->Write("hProjYeff");//deleteme
-    hProjXeff->Write("hProjXeff");//deleteme
-    outFile3->Close();//deleteme
+//		TFile *outFile3 = new TFile(Form("%s/alljetz2D/outTest3.root",outDir.Data()),"recreate");//deleteme
+//    hProjYeff->Write("hProjYeff");//deleteme
+//    hProjXeff->Write("hProjXeff");//deleteme
+//    outFile3->Close();//deleteme
 
     TH2D* Matrix = Rebin2D("Matrix", fMatrixProd, fptbinsZMeasN, fptbinsZMeasA, fptbinsZFinalN, fptbinsZFinalA,0);
     TH1D* hProjXeffRebin=(TH1D*)hProjXeff->Rebin(fptbinsZMeasN, "hProjXeffRebin", fptbinsZMeasA);
@@ -996,7 +995,7 @@ TF1* getPriorFunction(int prior, TH1D* spect, int priorType = 0, TH1D* rawspectr
 
 	//PriorFunction = new TF1("PriorFunction","[0]*pow(1+(sqrt([1]*[1]+x*x)-[1])/([2]*[3]),-1*[2])",0,50);
 	//PriorFunction->SetParameters(10,0.14,6.6,0.145);/
-TF1*   PriorFunction = new TF1("PriorFunction","[0]* pow(x,-[1]) * exp(-[1]*[2]/x)",fitlo,fithi);
+        TF1*   PriorFunction = new TF1("PriorFunction","[0]* pow(x,-[1]) * exp(-[1]*[2]/x)",fitlo,fithi);
 
 		PriorFunction->SetParLimits(1,2,8);
     		if(priorType == 0) 	{ PriorFunction->FixParameter(1,4.6); PriorFunction->FixParameter(2,4);}
