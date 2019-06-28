@@ -1,10 +1,10 @@
 //
 //  Execute with:
   //  gSystem->SetIncludePath("-I. -I$ALICE_ROOT/include -I$ALICE_PHYSICS/include -I$ALICE_ROOT/ANALYSIS/macros -I$ROOTSYS/include");
-//  gROOT->LoadMacro("AliDJetRawYieldUncertaintyLocal.cxx++")
-//  .L ExtractDJetRawYieldUncertainty.C
-//  EvaluateBinPerBinUncertainty(...) //to be done for each pT bin in which you have a mass spectrum
-//  ExtractDJetRawYieldUncertainty(...) //to build the uncertainty for the various bins of the jet pT spectrum
+  //  gROOT->LoadMacro("AliDJetRawYieldUncertaintyLocal.cxx++")
+  //  .L ExtractDJetRawYieldUncertainty.C
+  //  EvaluateBinPerBinUncertainty(...) //to be done for each pT bin in which you have a mass spectrum
+  //  ExtractDJetRawYieldUncertainty(...) //to build the uncertainty for the various bins of the jet pT spectrum
 
 
 double sigmajet[] = {0,0};

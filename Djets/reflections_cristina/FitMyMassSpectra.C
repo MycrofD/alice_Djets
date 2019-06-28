@@ -47,7 +47,7 @@ Double_t ptlims[nPtBins+1]={1.,2.,3.,4.,5.,6.,7.,8.,10.,12.,16.,24.,36.,50.};
 Int_t rebin[nPtBins]=      {6, 8, 8,10, 8, 10,10,10,10,12, 16, 24,30};
 
 Float_t fixSoverRefAt[nPtBins]={-1.,-1.,-1.,-1.,-1.,-1.,-1.,-1.,-1.,-1.,-1.,-1.,-1}; //for data 0-36
-Float_t minRangeFit[nPtBins]={1.72,1.72,1.72,1.72,1.72,1.72,1.72,1.72,1.72,1.72,1.68.,1.68,1.68};
+Float_t minRangeFit[nPtBins]={1.72,1.72,1.72,1.72,1.72,1.72,1.72,1.72,1.72,1.72,1.68,1.68,1.68};
 Float_t maxRangeFit[nPtBins]={2.05,2.05,2.05,2.05,2.05,2.05,2.05,2.05,2.05,2.05,2.15,2.1,2.1};
 Float_t sigmaRef[nPtBins]={0.009,0.010,0.011,0.011,0.013,0.013,0.013,0.014,0.014,0.017,0.021,0.022,0.24};
 Float_t massRangeForCounting[nPtBins]={0.03,0.03,0.03,0.035,0.05,0.05,0.05,0.055,0.055,0.06,0.08,0.08,0.08}; // GeV 0-24
@@ -73,7 +73,7 @@ Bool_t LoadD0toKpiHistos(TObjArray* listFiles, TH1F** hMass, const char *CutsTyp
 
 
 
-void FitMassSpectra(Int_t analysisType=kD0toKpi,
+void FitMyMassSpectra(Int_t analysisType=kD0toKpi,
 		    TString fileNameb="AnalysisResults_b.root", 
 		    TString fileNamec="AnalysisResults_c.root", 
 		    TString fileNamed="AnalysisResults_d.root",
