@@ -13,12 +13,12 @@
 //fRpar = 0.4;
 //Rpar = 4;
 
-double jetptmin = 5, jetptmax = 30; // for D pT spectra
+double jetptmin = 5, jetptmax = 50; // for D pT spectra
 double jetEta = 0.9-fRpar;
 int BFDsim;
 
-
-
+TH1* GetInputSimHistJet(TString inFile, TH1 *hPt, bool isEff, TString effFilePrompt, TString effFileNonPrompt,bool isDptcut);
+TH1* GetInputSimHistD(TString inFile, TH1 *hPt, bool isjetptcut);
 //quark: 1 = beauty, 0 = charm
 void getSimSpectra(
 TString simFile = "./",
@@ -57,7 +57,7 @@ void getSimSpectra(TString simFile, int simNr,
     simFile += ".root";
 
     TH1D *hPt;
-    if(jet) hPt = (TH1D*) GetInputSimHistJet(simFile.Data(),hPt, isEff, effFilePrompt.Data(), effFileNonPrompt.Data(),isDptcut,quark,simNr);
+    if(jet) hPt = (TH1D*) GetInputSimHistJet(simFile.Data(),hPt, isEff, effFilePrompt.Data(), effFileNonPrompt.Data(),isDptcut);
     else hPt = (TH1D*) GetInputSimHistD(simFile.Data(),hPt,isjetptcut);
 
     TString out = outFileDir;
@@ -97,30 +97,22 @@ TH1* GetInputHist(TString inFile, string histName,TH1 *hh){
     return hh;
 }
 
-TH1* GetInputSimHistJet(TString inFile, TH1 *hPt, bool isEff, TString effFilePrompt, TString effFileNonPrompt,bool isDptcut, int isNPrompt, int SimNr){
+TH1* GetInputSimHistJet(TString inFile, TH1 *hPt, bool isEff, TString effFilePrompt, TString effFileNonPrompt,bool isDptcut){
 
     TFile *fileInput = new TFile(inFile,"read");
     if(!fileInput){
-      std::cout << "File " << fileInput << " cannot be opened! check your file path!" << std::endl; return kFALSE;
+      std::cout << "File " << fileInput << " cannot be opened! check your file path!" << std::endl; return NULL;
     }
 
     TList* dir=(TList*)fileInput->Get("AliAnalysisTaskDmesonJets_histos");
     if(!dir) {
       std::cout << "Error in getting dir! Exiting..." << std::endl;
-      return kFALSE;
+      return NULL;
     }
-
-    TH1D *hxsection;
-    if(!isNPrompt)	hxsection = (TH1D*)dir->FindObject("fHistXsection");
-    else { 
-          if(SimNr == 11)  hxsection = (TH1D*)dir->FindObject("fHistXsection");
-          else hxsection = (TH1D*)dir->FindObject("fHistXsectionVsPtHard");
-          //else hxsection = (TH1D*)dir->FindObject("fHistXsection");
-    }   
- 
+    TH1D *hxsection = (TH1D*)dir->FindObject("fHistXsection");
     if(!hxsection) {
       std::cout << "Error in getting x-section hist! Exiting..." << std::endl;
-      return kFALSE;
+      return NULL;
     }
     double xsection = hxsection->GetMean(2);
     double events = (double)hxsection->GetEntries();
@@ -134,6 +126,7 @@ TH1* GetInputSimHistJet(TString inFile, TH1 *hPt, bool isEff, TString effFilePro
     AliAnalysisTaskDmesonJets::AliJetInfoSummary *brJet = 0;
     tree->SetBranchAddress("DmesonJet",&brD);
     tree->SetBranchAddress(Form("Jet_AKTChargedR0%d0_pt_scheme",Rpar),&brJet);
+    cout<<"RPAR================"<<Rpar<<endl;
 
     if(!tree || !brD || !brJet) {
       std::cout << "Error in setting the tree/branch names! Exiting..." << std::endl;
@@ -195,7 +188,7 @@ hPt->Scale(scaling);
 
  if(!hPt) {
    std::cout << "Error in extracting the mass plot! Exiting..." << std::endl;
-   return kFALSE;
+   return NULL;
  }
 
 return hPt;
@@ -207,7 +200,7 @@ TH1* GetInputSimHistD(TString inFile, TH1 *hPt, bool isjetptcut){
 
     TFile *fileInput = new TFile(inFile,"read");
     if(!fileInput){
-      std::cout << "File " << fileInput << " cannot be opened! check your file path!" << std::endl; return kFALSE;
+      std::cout << "File " << fileInput << " cannot be opened! check your file path!" << std::endl; return NULL;
     }
 
     TList* dir=(TList*)fileInput->Get("AliAnalysisTaskDmesonJets_histos");
@@ -275,7 +268,7 @@ void setHistoDetails(TH1 *hh, Color_t color, Style_t Mstyle, Width_t width, stri
     hh->SetLineWidth(2);
     hh->SetMarkerSize(1.1);
     hh->SetName(name.c_str());
-    hh->SetTitle();
+    hh->SetTitle("");
     hh->GetXaxis()->SetTitle("p_{T}^{ch,jet} (GeV/c)");
 }
 
