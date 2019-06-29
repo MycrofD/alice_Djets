@@ -73,10 +73,12 @@
     TH3D* hInvMassptD;
     TH1F* hReflRS;
 
-    setHistoDetails(TH1 *h, Color_t color, Style_t Mstyle, Width_t width);
+    void setHistoDetails(TH1 *h, int scale, Color_t color, Style_t Mstyle, Size_t size);//, Width_t width);
+    void SaveCanvas(TCanvas *c, TString name = "tmp");
     Bool_t rawJetSpectra(TString outdir, TString prod);
     void  saveSpectraPlots(TString outdir,TString prod);
     void  saveFitParams(TString outdir,TString prod);
-    Bool_t SetReflection(AliHFInvMassFitter* &fitter, Int_t iBin, Float_t fLeftFitRange, Float_t fRightFitRange,Float_t &RS);
+    Bool_t SetReflection(AliHFInvMassFitter* &fitter, Float_t fLeftFitRange, Float_t fRightFitRange,Float_t &RS, Int_t iBin);
+    Bool_t SetReflection(AliHFInvMassFitter* &fitter, Float_t fLeftFitRange, Float_t fRightFitRange,Float_t &RS, Int_t ptmin, Int_t ptmax);
 
 #endif
