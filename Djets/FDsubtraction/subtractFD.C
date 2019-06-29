@@ -24,7 +24,7 @@ void SaveCanvas(TCanvas *c, TString name = "tmp");
 
 
 void subtractFD(
-TString roounfoldpwd = "",
+TString roounfoldpwd = "$HOME/ALICE_HeavyFlavour/RooUnfold-1.1.1/libRooUnfold",
 TString dataFile = "JetPtSpectra_SB_FASTwoSDD_eff_ptD3.root",
 TString dataAnalysisFile = "",
 TString simDir = "../simulations/POWHEG/out/",
