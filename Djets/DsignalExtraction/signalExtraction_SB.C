@@ -201,7 +201,7 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
     hInvMassptD->GetXaxis()->SetTitleSize(0.06);
     hInvMassptD->GetXaxis()->SetTitleOffset(0.9);
     hInvMassptD->GetYaxis()->SetTitle("p_{T}^{jet}");
-    hInvMassptD->SetTitle();
+    hInvMassptD->SetTitle("hInvMassptD");
 
     TPaveText *pvProd = new TPaveText(0.8,0.25,0.98,0.3,"brNDC");
     pvProd->SetFillStyle(0);
@@ -894,8 +894,8 @@ void  saveFitParams(TString outdir,TString prod){
     }
 
 }
-void setHistoDetails(TH1 *h, int scale, Color_t color, Style_t Mstyle, Size_t size = 0.9, Width_t width=2){
-
+void setHistoDetails(TH1 *h, int scale, Color_t color, Style_t Mstyle, Size_t size ){
+    Width_t width=2;
     if(scale)h->Scale(1,"width");
     h->SetMarkerStyle(Mstyle);
     h->SetMarkerColor(color);

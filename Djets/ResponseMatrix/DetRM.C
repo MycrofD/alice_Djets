@@ -17,14 +17,13 @@ bool postfix = 0, TString listName = "FD", bool isprefix=0 )
 
     TFile *File = new TFile(datafile,"read");
     TDirectoryFile* dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
-        TString histName;
+    TString histName;
         if(!isprefix){
                 if(fDmesonSpecie) histName = "histosDStarMBN";
                 else histName = "histosD0MBN";}
         else{
                 if(fDmesonSpecie) histName = "histosDStarMBN";
                 else histName = "histosD0";}
-
 
     float jetmin = 0, jetmax = 60;
     float Dptmin = fptbinsDA[0], Dptmax = fptbinsDA[fptbinsDN];
@@ -48,8 +47,8 @@ bool postfix = 0, TString listName = "FD", bool isprefix=0 )
     TH1F *hPtJetRec;
 
 
-        for(int i=0; i<NDMC; i++){
-           if(!isprefix){
+    for(int i=0; i<NDMC; i++){
+        if(!isprefix){
                 if(postfix) { 
 			histList[i] =  (TList*)dir->Get(Form("%s%d%sMCrec",histName.Data(),i,listName.Data())); }
                 else {
@@ -111,7 +110,7 @@ bool postfix = 0, TString listName = "FD", bool isprefix=0 )
 	}
 
 
-    hPtJet2d->SetTitle();
+    hPtJet2d->SetTitle("");
     hPtJet2d->SetName("hPtJet2d");
     hPtJet2d->GetXaxis()->SetTitle("p_{T,ch jet}^{rec.} (GeV/#it{c})");
     hPtJet2d->GetYaxis()->SetTitle("p_{T,ch jet}^{gen.} (GeV/#it{c})");
