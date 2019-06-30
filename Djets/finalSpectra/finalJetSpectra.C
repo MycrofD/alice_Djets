@@ -39,11 +39,11 @@ bool isSimSys = 1, isSys = 1, isSim = 1;
 TString sysUncDir;
 
 void finalJetSpectra(
-TString dataFile = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning/unfolding_Bayes_3/unfoldedSpectrum_unfoldedJetSpectrum.root",
-TString dataAnalysisFile = "/home/basia/Work/alice/analysis/pPb_run2/D0jet/outData/AnalysisResults_LHC16R03.root",
-TString simDir = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts/Simulations/Prompt",
-TString outSpectraDir = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning/unfolding_Bayes_3/finalSpectra",
-TString sysDir = "/home/basia/Work/alice/analysis/pPb_run2/DzeroR03_RefDPt3PythiaEff_BaseCuts/Default_jetMeas3_50_jetTrue3_50_ppbinning/systematics",
+TString dataFile = ".root",
+TString dataAnalysisFile = ".root",
+TString simDir = "/Prompt",
+TString outSpectraDir = "/unfolding_Bayes_3/finalSpectra",
+TString sysDir = "/systematics",
 bool issys = 1,
 bool issim = 1,
 bool simsys = 1,
