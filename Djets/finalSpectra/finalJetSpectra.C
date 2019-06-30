@@ -12,7 +12,7 @@ double dy = 2*jetEta;
 double *sysCutVar, *systuncP;
 double DTrackEff = 0.03;
 double globalUnc = 0.038;
-int fptbinsJetFinalN;
+//int fptbinsJetFinalN;
 Double_t *xAxis;
 double plotmin = 5, plotmax=50;
 
@@ -325,13 +325,14 @@ void getSystematics(TString inDir, TString outPlotDir) {
     "Unfolding: ranges,SVD",
     "Bkg. Fluctuation Matrix",
     "Track. Eff. (D meson)"
-  }
+  };
 
   TCanvas *cUnc = new TCanvas("cUnc","cUnc",1200,800);
   TH1F *hist[nfiles+1];
-  //double **sysUnc = new double[fptbinsJetFinalN];
-  //for(int i=0; i<fptbinsJetFinalN; i++)  sysUnc[i] = new int[nfiles+1];
+  //double *sysUnc = new double[fptbinsJetFinalN];
   double sysUnc[fptbinsJetFinalN][nfiles+1];
+//  for(int i=0; i<fptbinsJetFinalN; i++) 
+//	  sysUnc[i] = new double[nfiles+1];
 
   hist[nfiles] = new TH1F("histUncN","Systematic uncertanties",fptbinsJetFinalN, xAxis);
   hist[0] = new TH1F("histUnc0","Systematic uncertanties",fptbinsJetFinalN, xAxis);
@@ -553,7 +554,6 @@ void drawFinal(TString outPlotDir){
     CentralPointsStatisticalUncertainty__1->GetXaxis()->SetTitleSize(0.035);
     CentralPointsStatisticalUncertainty__1->GetXaxis()->SetTitleFont(42);
    //CentralPointsStatisticalUncertainty__1->GetYaxis()->SetTitle("#frac{d^{2}#sigma}{d#it{p}_{T}d#it{#eta}} [mb (GeV/#it{c})^{-1}]");
-    CentralPointsStatisticalUncertainty__1->GetYaxis()->SetTitle("#frac{d^{2}#sigma}{d#it{p}_{T}d#it{#eta}} mb (GeV/#it{c})^{-1}");
     CentralPointsStatisticalUncertainty__1->GetYaxis()->SetLabelFont(43);
     CentralPointsStatisticalUncertainty__1->GetYaxis()->SetLabelSize(22);
     CentralPointsStatisticalUncertainty__1->GetYaxis()->SetTitleSize(26);
@@ -565,42 +565,42 @@ void drawFinal(TString outPlotDir){
     CentralPointsStatisticalUncertainty__1->GetZaxis()->SetTitleFont(42);
     CentralPointsStatisticalUncertainty__1->Draw("axis");
 
-   // dat syst. unc.
-if(isSys){
-   TGraphAsymmErrors *grae = (TGraphAsymmErrors*) grsys->Clone("grae"); // = new TGraphAsymmErrors(6);
-   grae->SetName("CentralPointsSystematicUncertainty_copy");
-   grae->SetTitle("Bayes, iter=4, prior=ResponseTruth Systematics");
+    // dat syst. unc.
+    TGraphAsymmErrors *grae = (TGraphAsymmErrors*) grsys->Clone("grae"); // = new TGraphAsymmErrors(6);
+    if(isSys){
+        grae->SetName("CentralPointsSystematicUncertainty_copy");
+        grae->SetTitle("Bayes, iter=4, prior=ResponseTruth Systematics");
 
-   ci = TColor::GetColor("#cccccc");
-   grae->SetFillColor(ci);
-   grae->SetLineColor(ci);
+        ci = TColor::GetColor("#cccccc");
+        grae->SetFillColor(ci);
+        grae->SetLineColor(ci);
 
-   //=== data uncertantity from grae
-   TH1F *Graph_central_syst_unc1 = new TH1F("Graph_central_syst_unc1","Bayes, iter=4, prior=ResponseTruth Systematics",100,2.5,52.5);
-   Graph_central_syst_unc1->SetMinimum(4.779682e-05);
-   Graph_central_syst_unc1->SetMaximum(0.02142993);
-   Graph_central_syst_unc1->SetDirectory(0);
-   Graph_central_syst_unc1->SetStats(0);
+        //=== data uncertantity from grae
+        TH1F *Graph_central_syst_unc1 = new TH1F("Graph_central_syst_unc1","Bayes, iter=4, prior=ResponseTruth Systematics",100,2.5,52.5);
+        Graph_central_syst_unc1->SetMinimum(4.779682e-05);
+        Graph_central_syst_unc1->SetMaximum(0.02142993);
+        Graph_central_syst_unc1->SetDirectory(0);
+        Graph_central_syst_unc1->SetStats(0);
 
-   ci = TColor::GetColor("#000099");
-   Graph_central_syst_unc1->SetLineColor(ci);
-   Graph_central_syst_unc1->GetXaxis()->SetTitle("#it{p}_{T,ch jet} (GeV/#it{c})");
-   Graph_central_syst_unc1->GetXaxis()->SetLabelFont(42);
-   Graph_central_syst_unc1->GetXaxis()->SetLabelSize(0.035);
-   Graph_central_syst_unc1->GetXaxis()->SetTitleSize(0.035);
-   Graph_central_syst_unc1->GetXaxis()->SetTitleFont(42);
-   Graph_central_syst_unc1->GetYaxis()->SetTitle("#frac{d^{2}#sigma}{d#it{p}_{T}d#it{#eta}} [mb (GeV/#it{c})^{-1}]");
-   Graph_central_syst_unc1->GetYaxis()->SetLabelFont(42);
-   Graph_central_syst_unc1->GetYaxis()->SetLabelSize(0.035);
-   Graph_central_syst_unc1->GetYaxis()->SetTitleSize(0.035);
-   Graph_central_syst_unc1->GetYaxis()->SetTitleFont(42);
-   Graph_central_syst_unc1->GetZaxis()->SetLabelFont(42);
-   Graph_central_syst_unc1->GetZaxis()->SetLabelSize(0.035);
-   Graph_central_syst_unc1->GetZaxis()->SetTitleSize(0.035);
-   Graph_central_syst_unc1->GetZaxis()->SetTitleFont(42);
-   grae->SetHistogram(Graph_central_syst_unc1);
-   grae->Draw("2");
- }
+        ci = TColor::GetColor("#000099");
+        Graph_central_syst_unc1->SetLineColor(ci);
+        Graph_central_syst_unc1->GetXaxis()->SetTitle("#it{p}_{T,ch jet} (GeV/#it{c})");
+        Graph_central_syst_unc1->GetXaxis()->SetLabelFont(42);
+        Graph_central_syst_unc1->GetXaxis()->SetLabelSize(0.035);
+        Graph_central_syst_unc1->GetXaxis()->SetTitleSize(0.035);
+        Graph_central_syst_unc1->GetXaxis()->SetTitleFont(42);
+        Graph_central_syst_unc1->GetYaxis()->SetTitle("#frac{d^{2}#sigma}{d#it{p}_{T}d#it{#eta}} [mb (GeV/#it{c})^{-1}]");
+        Graph_central_syst_unc1->GetYaxis()->SetLabelFont(42);
+        Graph_central_syst_unc1->GetYaxis()->SetLabelSize(0.035);
+        Graph_central_syst_unc1->GetYaxis()->SetTitleSize(0.035);
+        Graph_central_syst_unc1->GetYaxis()->SetTitleFont(42);
+        Graph_central_syst_unc1->GetZaxis()->SetLabelFont(42);
+        Graph_central_syst_unc1->GetZaxis()->SetLabelSize(0.035);
+        Graph_central_syst_unc1->GetZaxis()->SetTitleSize(0.035);
+        Graph_central_syst_unc1->GetZaxis()->SetTitleFont(42);
+        grae->SetHistogram(Graph_central_syst_unc1);
+        grae->Draw("2");
+    }
 
    // Central data
    TH1D *CentralPointsStatisticalUncertainty__2 = (TH1D*) hData_binned->Clone("CentralPointsStatisticalUncertainty__2"); // = new
@@ -718,7 +718,7 @@ if(isSim){
 
    if(isSys){
 
-     entry=leg->AddEntry("CentralPointsSystematicUncertainty_copy","Syst. unc. (data)","f");
+     entry=leg->AddEntry("CentralPointsSystematicUncertainty_copy","Syst. Unc. (data)","f");
      ci = TColor::GetColor("#cccccc");
      entry->SetFillColor(ci);
      entry->SetFillStyle(1001);
@@ -744,7 +744,7 @@ if(isSim){
      entry->SetMarkerSize(1.2);
      entry->SetTextFont(43);
      if(isSimSys) {
-       entry=leg->AddEntry("theorySyst_copy","Syst. unc. (theory)","f");
+       entry=leg->AddEntry("theorySyst_copy","Syst. Unc. (theory)","f");
        entry->SetFillColor(1);
        entry->SetLineColor(ci);
        entry->SetLineStyle(1);
@@ -765,11 +765,10 @@ if(isSim){
    pt->SetTextSize(22);
    //TText *text = pt->AddText("ALICE Preliminary");
    TText *text = new TText;
-   text = pt->AddText("ALICE Preliminary");
    if(fSystem) text = pt->AddText("p-Pb, #sqrt{#it{s}_{NN}} = 5.02 TeV");
    else text = pt->AddText("pp, #sqrt{#it{s}} = 5.02 TeV");
-   text = pt->AddText(Form("charged jets, anti-#it{k}_{T}, #it{R} = 0.%d, |#it{#eta}_{lab}^{jet}| < 0.%d",Rpar,9-Rpar));
-   text = pt->AddText(Form ("with D^{0}, %d < #it{p}_{T,D^{0}} < %d GeV/#it{c}",(int)fptbinsDA[0],(int)fptbinsDA[fptbinsDN]));
+   text = pt->AddText(Form("Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.%d, |#it{#eta}_{lab}^{jet}| < 0.%d",Rpar,9-Rpar));
+   text = pt->AddText(Form ("with D^{0}, %d < #it{p}_{T,D} < %d GeV/#it{c}",(int)fptbinsDA[0],(int)fptbinsDA[fptbinsDN]));
    pt->Draw();
 
    // does nothing
@@ -807,7 +806,7 @@ if(isSim){
    FinalSpectrum->cd();
 
 // ------------>Primitives in pad: FinalSpectrum_2
-   FinalSpectrum_2 = new TPad("FinalSpectrum_2", "FinalSpectrum_2",0,0,1,0.35);
+   TPad* FinalSpectrum_2 = new TPad("FinalSpectrum_2", "FinalSpectrum_2",0,0,1,0.35);
    FinalSpectrum_2->Draw();
    FinalSpectrum_2->cd();
    FinalSpectrum_2->Range(-1.986821e-07,-0.9209589,33.33333,2.49);
@@ -996,8 +995,8 @@ if(isSys) {
    FinalSpectrum->cd();
    FinalSpectrum->SetSelected(FinalSpectrum);
 
-//   FinalSpectrum->SaveAs(Form("%s/JetPtSpectra_final.png",outPlotDir.Data()));
-//   FinalSpectrum->SaveAs(Form("%s/JetPtSpectra_final.pdf",outPlotDir.Data()));
-//   FinalSpectrum->SaveAs(Form("%s/JetPtSpectra_final.eps",outPlotDir.Data()));
+   FinalSpectrum->SaveAs(Form("%s/JetPtSpectra_final.png",outPlotDir.Data()));
+   FinalSpectrum->SaveAs(Form("%s/JetPtSpectra_final.pdf",outPlotDir.Data()));
+   FinalSpectrum->SaveAs(Form("%s/JetPtSpectra_final.eps",outPlotDir.Data()));
 
 }
