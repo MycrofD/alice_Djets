@@ -280,17 +280,19 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         TH1F *hmassfit = (TH1F*)hh->Clone("hmassfit");
         if(fDmesonSpecie) hmassfit->SetMaximum(hmassfit->GetMaximum()*1.3);
 
-	double hmin = minf;
-	if (minf< hmassfit->GetBinLowEdge(2)){
-	        hmin = hmassfit->GetBinLowEdge(2);}
-        //float hmax = TMath::Min(maxf,hmassfit->GetBinLowEdge(hmassfit->GetNbinsX()));
-	double hmax = maxf;
-	if (maxf > hmassfit->GetBinLowEdge(hmassfit->GetNbinsX())){
-		hmax = hmassfit->GetBinLowEdge(hmassfit->GetNbinsX());
-	}
-	cout<<hmin<<minf<<endl;
-	cout<<hmax<<maxf<<endl;
-	cout<<"=================+++++++++++++++++++++++======="<<endl;
+        float hmin = TMath::Max(minf,hmassfit->GetBinLowEdge(2));
+        float hmax = TMath::Min(maxf,hmassfit->GetBinLowEdge(hmassfit->GetNbinsX()));
+//	double hmin = minf;
+//	if (minf< hmassfit->GetBinLowEdge(2)){
+//	        hmin = hmassfit->GetBinLowEdge(2);}
+//        //float hmax = TMath::Min(maxf,hmassfit->GetBinLowEdge(hmassfit->GetNbinsX()));
+//	double hmax = maxf;
+//	if (maxf > hmassfit->GetBinLowEdge(hmassfit->GetNbinsX())){
+//		hmax = hmassfit->GetBinLowEdge(hmassfit->GetNbinsX());
+//	}
+//	cout<<hmin<<minf<<endl;
+//	cout<<hmax<<maxf<<endl;
+	cout<<"================    YES    =+++++++++++++++++++++++======="<<endl;
        // AliHFMassFitter* fitterp=new AliHFMassFitter((TH1F*)hmassfit,hmin,hmax,1,fbkgtype,0);
         AliHFInvMassFitter* fitterp = new AliHFInvMassFitter((TH1F*)hmassfit,hmin,hmax,fbkgtype,0);
         fitterp->SetInitialGaussianMean(fDmass);
