@@ -65,6 +65,8 @@ TString histBase = "unfoldedSpectrum"
     for(int k=0; k<fptbinsJetFinalN+1; k++) xAxis[k] = fptbinsJetFinalA[k];
     systuncP = new double[fptbinsJetFinalN];
 //    for(int k=0; k<fptbinsJetFinalN; k++) systuncP[k] = 0.15;
+//    systuncErr_pp[ptbinsN] = {0.104599235179,0.0886904729946,0.114415907985,0.111763142404,0.15895282319,0.180252600536,0.199602104197};
+//    sysUncErr_pp[ptbinsN] = {0.104599395179,0.0886906329946,0.114416067985,0.111763302404,0.15895298319,0.180252760536,0.199602264197};//with BR 0.04% incl
 systuncP[0]=0.104599395179;
 systuncP[1]=0.0886906329946;
 systuncP[2]=0.114416067985;
