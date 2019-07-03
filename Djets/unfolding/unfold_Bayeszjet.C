@@ -94,6 +94,7 @@ void unfold_Bayeszjet(
         data2D[binjet]+=Form("/Jetbin_%d_%d",(int)fJetptbinsA[binjet], (int)fJetptbinsA[binjet+1]);
         data2D[binjet]+="/plots/JetPtSpectrum_FDsub.root";
         //reading 2D DetRM: need to create 2D RM file in ResponseMatrix folder
+	//no, we are creating RM here itself
     }
     for (int binjet=0; binjet < fJetptbinsN; binjet++){
         //cout<<fJetptbinsA[binjet]<<endl;
