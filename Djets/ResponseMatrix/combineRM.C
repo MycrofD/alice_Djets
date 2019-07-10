@@ -20,10 +20,22 @@ TH2D * hMtxDpt = NULL;
 TH2D * hMtxRe = NULL;
 TH2D * hMtxPro = NULL;
 
+int LoadDetectorMatrix(TString fn, TString mxname, TString tsname, TString msname, bool norm = 1, TString spostfix="") ;
+int LoadBackgroundMatrix(TString fn, TString mxname) ;
+TH2D * ProductMatrix(TH2D * MtxA, TH2D * MtxB) ;
+void WeightMatrixY(TH2D * Mtx, TH1D * h, bool divide) ;
+int MtxPlots(TString outDir, TString outName) ;
+TH2D * NormMatrixY(const char* name, TH2D * Mtx) ;
+void NormMatrixY(TH2D * Mtx) ;
+TH2D * Rebin2D(const char* name, TH2D *h, int nx, const double *binx, int ny, const double *biny, bool crop) ;
+int MtxPlots(TString outDir, TString outName, TH2D* fMatrixProd) ;
+void plotSlice(TVirtualPad * p, TH2D * hMtxPP, TH2D * hMtxDpt, TH2D * hMtxRe, TH2D * hMtxPro, const double ptmin, const double ptmax);
+
+
 void combineRM (
 bool isPrompt = 1,
 TString outDir = "combinedMatrix",
-TString detRMFile,
+TString detRMFile="",
 bool useDeltaPt = 1,
 TString bkgRMFile = "matrix.root",
 bool fDoWeighting = 1,
@@ -88,7 +100,7 @@ if (!fMeasSpectrum) { Error("Unfold", "No reconstructed spectrum!"); return 0; }
   fMatrixProd->GetYaxis()->SetTitle("p_{T,ch jet}^{gen.} (GeV/#it{c})");
 	fMatrixProd->SetTitle("Combined Matrix");
 
-  if(fSystem) MtxPlots(outDir,"probability");
+  if(fSystem) MtxPlots(outDir,"probability",fMatrixProd);
 
   hMtxPro = (TH2D*)fMatrixProd->Clone("hMtxPro");
   NormMatrixY(hMtxPro);
@@ -214,8 +226,8 @@ if (!fMeasSpectrum) { Error("Unfold", "No reconstructed spectrum!"); return 0; }
   MatrixProb->GetYaxis()->SetRangeUser(3,fptbinsJetTrueA[fptbinsJetTrueN]);
 
 
-  double shift = 0.41;
-  TPaveText *pvJet = new TPaveText(0.5,0.66-shift,0.9,0.7-shift,"brNDC");
+  shift = 0.41;
+  pvJet = new TPaveText(0.5,0.66-shift,0.9,0.7-shift,"brNDC");
   pvJet->SetFillStyle(0);
   pvJet->SetBorderSize(0);
   pvJet->SetTextFont(42);
@@ -223,7 +235,7 @@ if (!fMeasSpectrum) { Error("Unfold", "No reconstructed spectrum!"); return 0; }
   pvJet->SetTextAlign(11);
   pvJet->AddText(Form("Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.%d",Rpar));
 
-  TPaveText *pvD = new TPaveText(0.5,0.61-shift,0.9,0.65-shift,"brNDC");
+  pvD = new TPaveText(0.5,0.61-shift,0.9,0.65-shift,"brNDC");
   pvD->SetFillStyle(0);
   pvD->SetBorderSize(0);
   pvD->SetTextFont(42);
@@ -238,7 +250,7 @@ if (!fMeasSpectrum) { Error("Unfold", "No reconstructed spectrum!"); return 0; }
     else pvD->AddText("With B #rightarrow D^{0} #rightarrow K^{-}#pi^{+}");
   }
 
-  TPaveText *pv3 = new TPaveText(0.5,0.56-shift,0.9,0.6-shift,"brNDC");
+  pv3 = new TPaveText(0.5,0.56-shift,0.9,0.6-shift,"brNDC");
   pv3->SetFillStyle(0);
   pv3->SetBorderSize(0);
   pv3->SetTextFont(42);
@@ -397,10 +409,10 @@ int LoadBackgroundMatrix(TString fn, TString mxname) {
 
 
 /// Plot probability matrices
-int MtxPlots(TString outDir, TString outName) {
+int MtxPlots(TString outDir, TString outName, TH2D* fMatrixProd) {
 
 	TString tag = "tag";
-	if (!fMatrixPP) { Error("MtxPlots","No unfolding matrix present."); return kErr; }
+	if (!fMatrixPP) { Error("MtxPlots","No unfolding matrix present."); return 1;}//kErr; }
 
 	// Probabilities
 	TCanvas *cMtx=new TCanvas("ProbMtx", "Probability matrices",50,50,800,800);
@@ -424,7 +436,7 @@ int MtxPlots(TString outDir, TString outName) {
 		//if(!fMatrixProd)
 	//	TH2D *fMatrixProd = getResponseMatrix( fMatrixDeltaPt );
 
-		if (!fMatrixProd) { Error("MtxPlots", "Error getting product matrix!"); return kErr; }
+		if (!fMatrixProd) { Error("MtxPlots", "Error getting product matrix!"); return 1;}//kErr; }
 
 		hMtxRe = (TH2D*)NormMatrixY("hMtxRe"+tag,fMatrixProd);
 
@@ -461,7 +473,7 @@ int MtxPlots(TString outDir, TString outName) {
 
 
 /// Plot probability matrices
-int plotSlice(TVirtualPad * p, TH2D * hMtxPP, TH2D * hMtxDpt, TH2D * hMtxRe, TH2D * hMtxPro, const double ptmin, const double ptmax) {
+void plotSlice(TVirtualPad * p, TH2D * hMtxPP, TH2D * hMtxDpt, TH2D * hMtxRe, TH2D * hMtxPro, const double ptmin, const double ptmax) {
 
 	TH1D * hSliceDpt = NULL;
 	TH1D * hSlicePP = NULL;

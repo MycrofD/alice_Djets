@@ -4,13 +4,16 @@
  //  barbara.antonina.trzeciak@cern.ch
  //-----------------------------------------------------------------------
 
- const int     fptbinsDN = 12;
- double        fptbinsDA[fptbinsDN+1] = { 1,2,3,4,5,6,7,8,10,12,16,24,36 };
+ //const int     fptbinsDN = 12;
+ //double        fptbinsDA[fptbinsDN+1] = { 1,2,3,4,5,6,7,8,10,12,16,24,36 };
+
+#include "config.h"
 
 void signalExtraction_refl(
   TString data = "$HOME/Work/alice/analysis/pp5TeV/D0jet/outMC/AnalysisResults_fast_R03_D0MC_def.root",
   TString out = "$HOME/Work/alice/analysis/pp5TeV/D0jet/outMC/reflections",
-  bool postfix = 1, TString listName = "cut2",
+  bool postfix = 1,
+  TString listName = "cut2",
   bool isMoreFiles = 0,
   TString prod = "kl"   // for more than 1 file, for one file leave it empty)
 )
@@ -39,18 +42,18 @@ void signalExtraction_refl(
 
     TH2D *hInvMassptDSig, *hInvMassptDRefl;
     if(!isMoreFiles) {
-      datafile = data;
-      File = new TFile(datafile,"read");
-      if(!File) { cout << "==== WRONG FILE WITH DATA =====\n\n"; return ;}
-      dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
+        datafile = data;
+        File = new TFile(datafile,"read");
+        if(!File) { cout << "==== WRONG FILE WITH DATA =====\n\n"; return ;}
+        dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
 
-      for(int i=0;i<3; i++){
-          if(postfix) histList =  (TList*)dir->Get(Form("%s%d%sMCrec",histName.Data(),i,listName.Data()));
-          else histList =  (TList*)dir->Get(Form("%s%dMCrec",histName.Data(),i));
-          sparse = (THnSparseF*)histList->FindObject("hsDphiz");
-          sparse->GetAxis(0)->SetRangeUser(zmin,zmax);
-          sparse->GetAxis(1)->SetRangeUser(jetmin,jetmax);
-          if(i==0) {
+        for(int i=0;i<2; i++){
+            if(postfix) histList =  (TList*)dir->Get(Form("%s%d%sMCrec",histName.Data(),i,listName.Data()));
+            else histList =  (TList*)dir->Get(Form("%s%dMCrec",histName.Data(),i));
+            sparse = (THnSparseF*)histList->FindObject("hsDphiz");
+            sparse->GetAxis(0)->SetRangeUser(zmin,zmax);
+            sparse->GetAxis(1)->SetRangeUser(jetmin,jetmax);
+            if(i==0) {
             hInvMassptDSig = (TH2D*)sparse->Projection(2,6);
             hInvMassptDRefl = (TH2D*)sparse->Projection(2,7);
           }
@@ -70,6 +73,7 @@ void signalExtraction_refl(
           dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
 
           for(int i=0;i<2; i++){
+		  cout<<"-----------YO------------"<<endl;
               if(postfix) histList =  (TList*)dir->Get(Form("%s%d%sMCrec",histName.Data(),i,listName.Data()));
               else histList =  (TList*)dir->Get(Form("%s%dMCrec",histName.Data(),i));
               sparse = (THnSparseF*)histList->FindObject("hsDphiz");
@@ -170,12 +174,14 @@ void signalExtraction_refl(
 
     // --------------------------------------------------------
     // ----------- write to output file
-    TFile *ofile = new TFile(Form("%s/reflectionTemplates_%s.root",outdir.Data(), postfix ? listName.Data() : "pPb" ),"RECREATE");
+    //TString jetname= Form("R0%d",(int)Rpar);
+    //TFile *ofile = new TFile(Form("%s/reflectionTemplates_%s_%s.root",outdir.Data(), postfix ? listName.Data() : "pp",jetname.Data() ),"RECREATE");
+    TFile *ofile = new TFile(Form("%s/reflectionTemplates_%s.root",outdir.Data(), postfix ? listName.Data() : "pp" ),"RECREATE");
     for(int i=0; i<fptbinsDN; i++){
-      hsig[i]->Write();
-      hrefl[i]->Write();
-      hFitReflNewTemp[i]->Write();
-      ratio[i]->Write();
+        hsig[i]->Write();
+        hrefl[i]->Write();
+        hFitReflNewTemp[i]->Write();
+        ratio[i]->Write();
     }
     ofile->Close();
     // --------------------------------------------------------
