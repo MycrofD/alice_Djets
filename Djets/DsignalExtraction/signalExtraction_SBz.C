@@ -37,37 +37,37 @@ double refScale = 1.5;// 0(0.5) or 1(1.5)
 int refpc = 1;
 
 void signalExtraction_SBz(
-//  TString data = "$HOME/Work/alice/analysis/out/AnalysisResults.root",
-  TString data = "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/trial_437.root",
-  bool isEff = 0,
-  //TString efffile ="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts/Default/efficiency/DjetEff_prompt_jetpt5_50.root",
-  TString efffile ="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts/Default/efficiency/DjetEff_prompt_jetpt",
-  bool isRef = 0,
-  TString refFile = "test.root",
-  bool postfix = 0,
-  TString listName = "Cut",
-//  TString out = "signalExtraction",
-  TString out = "/media/jackbauer/data/z_out/signalExtraction",
-  bool save = 1,
-  bool isMoreFiles = 0,
-  TString prod = "kl",   // for more than 1 file, for one file leave it empty)
-  bool isprefix=0,
-  TString saveDir="Feb28",
+//  TString data = "$HOME/Work/alice/analysis/out/AnalysisResults.root"
+  TString data = "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/trial_437.root"
+  ,bool isEff = 0
+  //TString efffile ="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts/Default/efficiency/DjetEff_prompt_jetpt5_50.root"
+  ,TString efffile ="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts/Default/efficiency/DjetEff_prompt_jetpt"
+  ,bool isRef = 0
+  ,TString refFile = "test.root"
+  ,bool postfix = 0
+  ,TString listName = "Cut"
+//  TString out = "signalExtraction"
+  ,TString out = "/media/jackbauer/data/z_out/signalExtraction"
+  ,bool save = 1
+  ,bool isMoreFiles = 0
+  ,TString prod = "kl"   // for more than 1 file, for one file leave it empty)
+  ,bool isprefix=0
+  ,TString saveDir="Feb28"
 //raw yield systematics configs follow// also remember to turn bool rawsys on
-  int boundSigma = 0,
-  double fsigmafactor = 1,
-  bool fixedMass = 0,
-  int bkgType=0,
-  double minfSys=1.71,
-  double maxfSys=2.1,
-  int fMassBinWidthFactor=2,
-  int sysNum=1,
+  ,int boundSigma = 0
+  ,double fsigmafactor = 1
+  ,bool fixedMass = 0
+  ,int bkgType=0
+  ,double minfSys=1.71
+  ,double maxfSys=2.1
+  ,int fMassBinWidthFactor=2
+  ,int sysNum=1
 //SB systematics configs follow
-  Float_t sigmaSignal = 2,
-  Float_t sigmaBkgll=-9,
-  Float_t sigmaBkglh=-4,
-  Float_t sigmaBkgrl=4,
-  Float_t sigmaBkgrh=9
+  ,Float_t sigmaSignal = 2
+  ,Float_t sigmaBkgll=-9
+  ,Float_t sigmaBkglh=-4
+  ,Float_t sigmaBkgrl=4
+  ,Float_t sigmaBkgrh=9
 )
 {
 cout<<"MC closure is -------------------"<<MCclosure<<endl;

@@ -269,7 +269,7 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
 
 		hRatioS->SetMinimum(hRatioS->GetMinimum("nostack"));
 		hRatioS->Draw("nostackhist");
-//		hRatioS->GetXaxis()->SetTitle("p_{T, ch.jet}");
+		hRatioS->GetXaxis()->SetTitle("p_{T, ch.jet}");
 		gPad->BuildLegend(0.55,0.65,0.9,0.9,"");
     //legRatio2->Draw("same");
 
@@ -309,7 +309,7 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
 		hRatioUnfS->SetMinimum(hRatioUnfS->GetMinimum("nostack"));
 		//hRatioUnfS->SetMaximum(hRatioUnfS->GetMaximum("nostack")*0.8);
 		hRatioUnfS->Draw("nostackhist");
-//		hRatioUnfS->GetXaxis()->SetTitle("p_{T, ch.jet}");
+		hRatioUnfS->GetXaxis()->SetTitle("p_{T, ch.jet}");
 		gPad->BuildLegend(0.55,0.65,0.9,0.9,"");
     line->Draw("same");
 
@@ -331,22 +331,22 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
     folded[regBayes-1]->SetName("foldedSpectrum");
     fRawRebin->SetName("fRawRebin");
 
-		TH1F *hUnfolded_Unc = (TH1F*)fUnfoldedBayes[regBayes-1]->Clone("hUnfolded_Unc");
-		hUnfolded_Unc->GetYaxis()->SetTitle("Rel. unc.");
-		hUnfolded_Unc->SetLineColor(kGreen+1);
-		hUnfolded_Unc->SetMarkerColor(kGreen+1);
+	TH1F *hUnfolded_Unc = (TH1F*)fUnfoldedBayes[regBayes-1]->Clone("hUnfolded_Unc");
+	hUnfolded_Unc->GetYaxis()->SetTitle("Rel. unc.");
+	hUnfolded_Unc->SetLineColor(kGreen+1);
+	hUnfolded_Unc->SetMarkerColor(kGreen+1);
 
-		for(int j=1; j<=fUnfoldedBayes[regBayes-1]->GetNbinsX();j++){
-								double err;
-								if(fUnfoldedBayes[regBayes-1]->GetBinContent(j)) err = fUnfoldedBayes[regBayes-1]->GetBinError(j)/fUnfoldedBayes[regBayes-1]->GetBinContent(j);
-								else err = 0;
-								hUnfolded_Unc->SetBinContent(j,err);
-								hUnfolded_Unc->SetBinError(j,0);
-		}
+	for(int j=1; j<=fUnfoldedBayes[regBayes-1]->GetNbinsX();j++){
+	    double err;
+	    if(fUnfoldedBayes[regBayes-1]->GetBinContent(j)) err = fUnfoldedBayes[regBayes-1]->GetBinError(j)/fUnfoldedBayes[regBayes-1]->GetBinContent(j);
+	    else err = 0;
+	    hUnfolded_Unc->SetBinContent(j,err);
+	    hUnfolded_Unc->SetBinError(j,0);
+	}
 
-		hUnfolded_Unc->SetTitle("");
-		hUnfolded_Unc->SetMaximum(hUnfolded_Unc->GetMaximum()*1.2);
-		hUnfolded_Unc->SetMinimum(0);
+	hUnfolded_Unc->SetTitle("");
+	hUnfolded_Unc->SetMaximum(hUnfolded_Unc->GetMaximum()*1.2);
+	hUnfolded_Unc->SetMinimum(0);
 
     TFile *outSpectra = new TFile(Form("%s/%s_unfoldedJetSpectrum.root",outDir.Data(),outName.Data()),"recreate");
 		//TFile *outSpectra = new TFile(Form("%s/%s_unfoldedJetSpectrum.root",outDir.Data(),outName.Data()),"recreate");

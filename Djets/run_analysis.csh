@@ -21,8 +21,8 @@ fi
 roounfoldpwd=$HOME/ALICE_HeavyFlavour/RooUnfold-1.1.1/libRooUnfold
 
 currDir=`pwd`
-#outputdirectorybase=$HOME/Work/alice/analysis/pp5TeV/D0jet/results_APW/DzeroR03Check_
-outputdirectorybase=$HOME/Work/alice/analysis/pp5TeV/D0jet/results_APW/DzeroR03_
+outputdirectorybase=$HOME/Work/alice/analysis/pp5TeV/D0jet/results_APW/DzeroR03Check_
+#outputdirectorybase=$HOME/Work/alice/analysis/pp5TeV/D0jet/results_APW/DzeroR03_
 outputdirectory=${outputdirectorybase}pPbCuts
 #outputdirectory=${outputdirectorybase}cuts2
 outputdirectorySignal=Default
@@ -36,15 +36,15 @@ simFilesDir=/home/jackbauer/ALICE_HeavyFlavour/work/Djets/out/outMC/all
 bkgRMDir=$currDir/ResponseMatrix/BkgRM03
 
 # ========== file names
-#analysisdatafile=AnalysisResults_437_trial.root
-analysisdatafile=trial_437.root
+analysisdatafile=AnalysisResults_437_trial.root
+#analysisdatafile=trial_437.root
 #analysisdatafile=AnalysisResults_503_R04.root
 #analysisdatafile=AnalysisResults_504_R06.root
 isMoreFiles=0                                     # 1 if there are more input files to be read
 prod=kl                                           # if there are more input files to be read
 reflfile=reflectionTemplates_pp.root
-#effMCfile=AnalysisResults_414.root
-effMCfile=AnalysisResults_634_pp5TeV_z.root
+effMCfile=AnalysisResults_414.root
+#effMCfile=AnalysisResults_634_pp5TeV_z.root
 #effMCfile=AnalysisResults_642_pp5TeV_z.root
 #effMCfile=AnalysisResults_683_ppMC_R06.root
 MCfile=$effMCfile #AnalysisResults_fast_R03_D0MC_def.root
