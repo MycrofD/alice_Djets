@@ -24,13 +24,13 @@ bin_zjet=$1 # change the bin number you want to use here.
 		# 1 through x mean all bins of jet pt
 		# The arguments here are passed from zrun_main.csh
 #----- Flags for all analysis steps
-flagEff=1 #1 Getting efficiencies and MC sigmas in different jetpt intervals for all Dpt bins
-flagRef=1 #2 Reflections for different jetpt intervals for all Dpt bins
-flagSBs=1 #3 Side Band subtraction method
+flagEff=0 #1 Getting efficiencies and MC sigmas in different jetpt intervals for all Dpt bins
+flagRef=0 #2 Reflections for different jetpt intervals for all Dpt bins
+flagSBs=0 #3 Side Band subtraction method
 flagSim=0 #4 Simulation for non-prompt and prompt D-jets
-flagRes=1 #5 Response matrix
-flagBFD=1 #6 B-feed down subtraction
-flagUnf=1 #7 Unfolding
+flagRes=0 #5 Response matrix
+flagBFD=0 #6 B-feed down subtraction
+flagUnf=0 #7 Unfolding
 #-----
 finerunfold=0
 boundSigma=0	# if needed to fit certain Dpt bins with a bounded sigma: sigma +/- some fraction of this sigma
@@ -90,7 +90,7 @@ cat $conffile_z2 >> configDzero_ppz.h
 
 # Output directory
 OUT=${EOS_local}/media/jackbauer/data/z_out/R_0$R
-OUT=${OUT}_1D
+#OUT=${OUT}_1D
 if [ $boundSigma -eq 1 ]; then
  OUT=${OUT}_boundSigma1
 elif [ $boundSigma -eq 2 ]; then
@@ -102,7 +102,8 @@ fi
 ##-----------------------------------------------------
 if [ $R -eq 3 ]; then
  data=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/trial_437.root
- effFile=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/AnalysisResults_634_pp5TeV_z.root
+ #effFile=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/AnalysisResults_634_pp5TeV_z.root
+ effFile=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/AnalysisResults_414.root
 elif [ $R -eq 4 ]; then
  data=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/AnalysisResults_503_R04.root
  effFile=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/AnalysisResults_642_pp5TeV_z.root
