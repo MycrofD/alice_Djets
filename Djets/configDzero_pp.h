@@ -51,7 +51,7 @@ enum DMesonSpecies {kD0toKpi, kDStarD0pi};
 
     //====== D pT bins ---- set up your D pT bins ======
     const int     fptbinsDN = 10;
-    double        fptbinsDA[fptbinsDN+1] = { 3,4,5,6,7,8,10,12,16,24,36 };
+    double        fptbinsDA[fptbinsDN+1] = {3,4,5,6,7,8,10,12,16,24,36 };
     //====== jet pT bins ---- set up your jet pT bins ======
     const int     fptbinsJetTrueN = 9;
     double        fptbinsJetTrueA[fptbinsJetTrueN+1] = { 3,4,5,6,8,10,14,20,30,50 };
@@ -68,8 +68,8 @@ enum DMesonSpecies {kD0toKpi, kDStarD0pi};
     Float_t       fsigmaSignal = 2;                  //-----! sigma for the signal region
     Float_t       fsigmaBkg[] = {-9,-4,4,9};         //-----! sigma for the SB region (both left and right side from the fit)
     Float_t       fDmass = 1.864, fDsigma = 0.010;   //-----! initial values for D mass and sigma
-    //double       minf = 1.71, maxf = 2.1;           //-----! min/mass of the inv. mass distributions
-    double       minf = 1.72, maxf = 2.01;           //-----! min/mass of the inv. mass distributions
+    double       minf = 1.71, maxf = 2.1;           //-----! min/mass of the inv. mass distributions
+    //double       minf = 1.72, maxf = 2.01;           //-----! min/mass of the inv. mass distributions
     Int_t         fRebinMass = 2;                    //-----! rebining of the inv. mass distributions
 
     Int_t fColors[] = {1,2,8,4,kOrange-1,6,kGray+1,kCyan+1,kMagenta+2,kGreen+3,kViolet+5,kYellow+2};
