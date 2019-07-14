@@ -299,20 +299,23 @@ void unfold_Bayeszjet(
             //     cout<<i<<"--"<<j<<endl;//"--"<<k<<"--"<<m<<endl;
             //     //eventcount+=1;
             // }
-            if(DR_center<2 || DG_center<2){
+            //if(jR_center<3 || jG_center<3){
+            //      measurement_ok = kFALSE;
+            //}
+            if(DG_center<2){
                   measurement_ok = kFALSE;
             }
-            else if((DR_center<3 || DG_center<3) && jG_center>=7 ){
+            else if(DG_center<3 && jG_center>=7 ){
                   measurement_ok = kFALSE;
             }
-            else if((DR_center<5 || DG_center<5) && jG_center>=10 ){
+            else if(DG_center<5 && jG_center>=10 ){
                   measurement_ok = kFALSE;
             }
             if (measurement_ok){
                 response.Fill(zR_center,jR_center,zG_center,jG_center,weight);
 		respcount+=1;
 		//--drawing response matrices.
-		//--we need 4x4 squares for each jetptxjetpt intervals. 
+		//--we need 4x4 squares for each jetpt x jetpt intervals. 
 		//--each square should have 10x10 squares for each zxz bins.
 		if(jR_center>fJetptbinsA[0] && jR_center<=fJetptbinsA[1]){
 		    if(jG_center>fJetptbinsA[0] && jG_center<=fJetptbinsA[1]){
@@ -590,6 +593,7 @@ void unfold_Bayeszjet(
     cUnfolded->SaveAs(Form("%s/plots/%s_unfSpectra.png",outDir.Data(),outName.Data()));
     cUnfolded->SaveAs(Form("%s/plots/%s_unfSpectra.svg",outDir.Data(),outName.Data()));
 
+
     /***********************************
     // FD systematics
     ************************************/
@@ -626,34 +630,35 @@ void unfold_Bayeszjet(
     TH1D *hDataProjectXDo[4];
     TH1D *UnfProjectXScaleDo[4];
     //************************************
-    TFile *unfold2DoutFile = new TFile(Form("%s/alljetz2D/unfold2DoutFile%s.root",outDir.Data(),truebinnum.Data()),"recreate");
+    TFile *unfold2DoutFile = new TFile(Form("%s/alljetz2D/unfold2DoutFile%s_jetpt0.root",outDir.Data(),truebinnum.Data()),"recreate");
     for (int binjet=1; binjet<= fUnfoldedBayes[regBayes-1]->GetNbinsY(); binjet++){
-        UnfProjectX[binjet-1] = (TH1D*)fUnfoldedBayes[regBayes-1]->ProjectionX(Form("UnfProjectX_%d",binjet), binjet, binjet, "E");
-        hDataProjectX[binjet-1] = (TH1D*)hData2D->ProjectionX(Form("hDatarojectX_%d",binjet), binjet, binjet, "E");
+        UnfProjectX[binjet-1] = (TH1D*)fUnfoldedBayes[regBayes-1]->ProjectionX(Form("UnfProjectX_%d",binjet-1), binjet, binjet, "E");
+	//UnfProjectX[binjet-1]->SetName(Form("UnfProjectX_%d",binjet-1));
+        hDataProjectX[binjet-1] = (TH1D*)hData2D->ProjectionX(Form("hDataProjectX_%d",binjet-1), binjet, binjet, "E");
         UnfProjectXScale[binjet-1] = (TH1D*)UnfProjectX[binjet-1]->Clone();
         UnfProjectXScale[binjet-1]->Scale(1,"width");
-        UnfProjectX[binjet-1]     ->Write(Form("UnfProjectX_%d",binjet-1));
-        hDataProjectX[binjet-1]   ->Write(Form("hDataProjectX_%d",binjet-1));
-        //UnfProjectXScale[binjet-1]->Write(Form("UnfProjectXScale_%d",binjet-1));
-        UnfProjectXIterPre[binjet-1] = (TH1D*)fUnfoldedBayes[regBayes-2]->ProjectionX(Form("UnfProjectXIterPre_%d",binjet), binjet, binjet, "E");
-        UnfProjectXIterPre[binjet-1]     ->Write(Form("UnfProjectXIterPre_%d",binjet-1));
+        UnfProjectX[binjet-1]     ->Write();
+        hDataProjectX[binjet-1]   ->Write();
+        //UnfProjectXScale[binjet-1]->Write();
+        UnfProjectXIterPre[binjet-1] = (TH1D*)fUnfoldedBayes[regBayes-2]->ProjectionX(Form("UnfProjectXIterPre_%d",binjet-1), binjet, binjet, "E");
+        UnfProjectXIterPre[binjet-1]     ->Write();
         //************************************Unfolding systematics
-        UnfProjectXIterPost[binjet-1] = (TH1D*)fUnfoldedBayes[regBayes]->ProjectionX(Form("UnfProjectXIterPost_%d",binjet), binjet, binjet, "E");
-        UnfProjectXIterPost[binjet-1]     ->Write(Form("UnfProjectXIterPost_%d",binjet-1));
+        UnfProjectXIterPost[binjet-1] = (TH1D*)fUnfoldedBayes[regBayes]->ProjectionX(Form("UnfProjectXIterPost_%d",binjet-1), binjet, binjet, "E");
+        UnfProjectXIterPost[binjet-1]     ->Write();
         //************************************
         if(FDsys){
-            UnfProjectXUp[binjet-1] = (TH1D*)fUnfoldedBayesUp[regBayes-1]->ProjectionX(Form("UnfProjectXUp_%d",binjet), binjet, binjet, "E");
-            UnfProjectXDo[binjet-1] = (TH1D*)fUnfoldedBayesDo[regBayes-1]->ProjectionX(Form("UnfProjectXDo_%d",binjet), binjet, binjet, "E");
-            hDataProjectXUp[binjet-1] = (TH1D*)hData2DUp->ProjectionX(Form("hDataProjectXUp_%d",binjet), binjet, binjet, "E");
-            hDataProjectXDo[binjet-1] = (TH1D*)hData2DDo->ProjectionX(Form("hDataProjectXDo_%d",binjet), binjet, binjet, "E");
+            UnfProjectXUp[binjet-1] = (TH1D*)fUnfoldedBayesUp[regBayes-1]->ProjectionX(Form("UnfProjectXUp_%d",binjet-1), binjet, binjet, "E");
+            UnfProjectXDo[binjet-1] = (TH1D*)fUnfoldedBayesDo[regBayes-1]->ProjectionX(Form("UnfProjectXDo_%d",binjet-1), binjet, binjet, "E");
+            hDataProjectXUp[binjet-1] = (TH1D*)hData2DUp->ProjectionX(Form("hDataProjectXUp_%d",binjet-1), binjet, binjet, "E");
+            hDataProjectXDo[binjet-1] = (TH1D*)hData2DDo->ProjectionX(Form("hDataProjectXDo_%d",binjet-1), binjet, binjet, "E");
             UnfProjectXScaleUp[binjet-1] = (TH1D*)UnfProjectXUp[binjet-1]->Clone();
             UnfProjectXScaleDo[binjet-1] = (TH1D*)UnfProjectXDo[binjet-1]->Clone();
             UnfProjectXScaleUp[binjet-1]->Scale(1,"width");
             UnfProjectXScaleDo[binjet-1]->Scale(1,"width");
-            UnfProjectXUp[binjet-1]     ->Write(Form("UnfProjectXUp_%d",binjet-1));
-            hDataProjectXUp[binjet-1]   ->Write(Form("hDataProjectXUp_%d",binjet-1));
-            UnfProjectXDo[binjet-1]     ->Write(Form("UnfProjectXDo_%d",binjet-1));
-            hDataProjectXDo[binjet-1]   ->Write(Form("hDataProjectXDo_%d",binjet-1));
+            UnfProjectXUp[binjet-1]     ->Write();
+            hDataProjectXUp[binjet-1]   ->Write();
+            UnfProjectXDo[binjet-1]     ->Write();
+            hDataProjectXDo[binjet-1]   ->Write();
         }
         for(int binz=1;binz<=fUnfoldedBayesScale->GetNbinsX();binz++){
             fUnfoldedBayesScale->SetBinContent(binz,binjet,UnfProjectXScale[binjet-1]->GetBinContent(binz));
@@ -676,15 +681,16 @@ void unfold_Bayeszjet(
     fUnfoldedBayesScale->GetXaxis()->SetTitle("z_{||}^{ch}");
     fUnfoldedBayesScale->Draw("colz");
     fUnfoldedBayesScale->Draw("TEXT SAME");
-	  cUnfoldedScale->SaveAs(Form("%s/plots/%s_unfSpectraScale.pdf",outDir.Data(),outName.Data()));
-	  cUnfoldedScale->SaveAs(Form("%s/plots/%s_unfSpectraScale.png",outDir.Data(),outName.Data()));
-	  cUnfoldedScale->SaveAs(Form("%s/plots/%s_unfSpectraScale.svg",outDir.Data(),outName.Data()));
+    cUnfoldedScale->SaveAs(Form("%s/plots/%s_unfSpectraScale.pdf",outDir.Data(),outName.Data()));
+    cUnfoldedScale->SaveAs(Form("%s/plots/%s_unfSpectraScale.png",outDir.Data(),outName.Data()));
+    cUnfoldedScale->SaveAs(Form("%s/plots/%s_unfSpectraScale.svg",outDir.Data(),outName.Data()));
+
 
     if (BayesTrueRangeSys){
       TFile *unfold2DoutFileRangeSys = new TFile(Form("%s/alljetz2D/unfold2DoutFileRangeSys_%s.root",outDir.Data(),truebinnum.Data()),"recreate");
       for (int binjet=1; binjet<= fUnfoldedBayes[regBayes-1]->GetNbinsY(); binjet++){
-        UnfProjectX[binjet-1] = (TH1D*)fUnfoldedBayes[regBayes-1]->ProjectionX(Form("UnfProjectX_%d",binjet), binjet, binjet, "E");
-        UnfProjectX[binjet-1] ->Write(Form("UnfProjectX_%d",binjet-1));
+        UnfProjectX[binjet-1] = (TH1D*)fUnfoldedBayes[regBayes-1]->ProjectionX(Form("UnfProjectX_%d",binjet-1), binjet, binjet, "E");
+        UnfProjectX[binjet-1] ->Write();
       }
       unfold2DoutFileRangeSys->Close();
     }
