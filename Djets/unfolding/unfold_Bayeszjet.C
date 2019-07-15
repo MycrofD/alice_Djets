@@ -299,10 +299,10 @@ void unfold_Bayeszjet(
             //     cout<<i<<"--"<<j<<endl;//"--"<<k<<"--"<<m<<endl;
             //     //eventcount+=1;
             // }
-            //if(jR_center<3 || jG_center<3){
-            //      measurement_ok = kFALSE;
-            //}
-            if(DG_center<2){
+            if(jR_center<3 || jG_center<3){
+                  measurement_ok = kFALSE;
+            }
+            else if(DG_center<2){
                   measurement_ok = kFALSE;
             }
             else if(DG_center<3 && jG_center>=7 ){
@@ -630,7 +630,7 @@ void unfold_Bayeszjet(
     TH1D *hDataProjectXDo[4];
     TH1D *UnfProjectXScaleDo[4];
     //************************************
-    TFile *unfold2DoutFile = new TFile(Form("%s/alljetz2D/unfold2DoutFile%s_jetpt0.root",outDir.Data(),truebinnum.Data()),"recreate");
+    TFile *unfold2DoutFile = new TFile(Form("%s/alljetz2D/unfold2DoutFile%s.root",outDir.Data(),truebinnum.Data()),"recreate");
     for (int binjet=1; binjet<= fUnfoldedBayes[regBayes-1]->GetNbinsY(); binjet++){
         UnfProjectX[binjet-1] = (TH1D*)fUnfoldedBayes[regBayes-1]->ProjectionX(Form("UnfProjectX_%d",binjet-1), binjet, binjet, "E");
 	//UnfProjectX[binjet-1]->SetName(Form("UnfProjectX_%d",binjet-1));
