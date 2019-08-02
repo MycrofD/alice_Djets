@@ -232,17 +232,6 @@ void unfold_Bayeszjet(
         }
     }//end of NDMC for loop //hZjetRecGen->SaveAs("proj.root");
 
-   // /**************************
-   // #### was for MC closure. To show how gen level looks like
-   // **************************/
-   // TH2D *hZjetGen = (TH2D*)hZjetRecGen->Projection(3,2,"E");
-   // //TH2D *hZjetGen = (TH2D*)hZjetRecGen->Projection(1,0,"E");
-   // TH2D *hZjetGenRebin = Rebin2D("hZjetGenRebin", hZjetGen, fptbinsZGenN, fptbinsZGenA, fJetptbinsGenN, fJetptbinsGenA, 0);
-   // TCanvas* cZGen = new TCanvas();
-   // cZGen->SetLogz();
-   // //hZjetGenRebin->Draw("colz");
-   // //hZjetGenRebin->Draw("TEXT SAME");
-   // //WeightMatrixY1Y2(hZjetRecGen,hZjetGen);
 
     /***************************
     #### unfolding settings ####
@@ -279,10 +268,73 @@ void unfold_Bayeszjet(
     TH2D *dResZ14 = new TH2D("dRes14","jet 7-10 GeV",10,0,1,10,0,1 );
     TH2D *dResZ15 = new TH2D("dRes15","jet 10-15 GeV",10,0,1,10,0,1 );
     TH2D *dResZ16 = new TH2D("dRes16","jet 15-50 GeV",10,0,1,10,0,1 );
+ /*    
     //----------- fill 4D histo response matrix
     // Code compression
-//    TH2D* dResZ = 
+    
+     TH2D* dResZ[16];
+     int respcount = 0;
+     int display = 0;
+    if(DptcutTrue){
+        for (int z = 0; z < hZjetRecGenD->GetNbins();z++) {
+            int coord[DnDim]={0,0,0,0,0,0};
+            double content = hZjetRecGenD->GetBinContent(z,coord);
+            //int Ddim[DnDim]   = {zRec,jetRec,zGen,jetGen,DRec,DGen};//for extacting 6D info from THnSparse
+            int i = coord[0], j = coord[1], k = coord[2], m = coord[3], n = coord[4], p = coord[5];
+            double weight = content;
+            double zR_center = hZjetRecGenD->GetAxis(0)->GetBinCenter(i);
+            double jR_center = hZjetRecGenD->GetAxis(1)->GetBinCenter(j);
+            double zG_center = hZjetRecGenD->GetAxis(2)->GetBinCenter(k);
+            double jG_center = hZjetRecGenD->GetAxis(3)->GetBinCenter(m);
+            double DR_center = hZjetRecGenD->GetAxis(4)->GetBinCenter(n);
+            double DG_center = hZjetRecGenD->GetAxis(5)->GetBinCenter(p);
 
+            bool measurement_ok = kTRUE;
+            if(DG_center<2){
+                measurement_ok = kFALSE;
+            }
+            //if((DR_center<3 || DG_center<3) && jG_center>=7 ){
+            if(( DG_center<3) && jG_center>=7 ){
+                measurement_ok = kFALSE;
+            }
+            //if((DR_center<5 || DG_center<5) && jG_center>=10 ){
+            if((DG_center<5) && jG_center>=10 ){
+                measurement_ok = kFALSE;
+            }
+            if (measurement_ok){
+                response.Fill(zR_center,jR_center,zG_center,jG_center,weight);
+		respcount+=1;
+		//--drawing response matrices.
+		//--we need 4x4 squares for each jetpt x jetpt intervals. 
+		//--each square should have 10x10 squares for each zxz bins.
+		//- - - this doesn't seem smart enough. there should be a smarter way
+		for (int jRc = 0; jRc < 4; jRc++){
+		    for (int jGc = 0; jGc < 4; jGc++){
+			    //binval+=1;cout<<binval<<endl;
+		        if(jR_center>fJetptbinsA[jRc] && jR_center<=fJetptbinsA[jRc+1]){
+		            if(jG_center>fJetptbinsA[jGc] && jG_center<=fJetptbinsA[jGc+1]){
+		                binval = dResZ[4*jRc+jGc]->GetBinContent(dResZ[4*jRc+jGc]->GetXaxis()->FindBin(zG_center), dResZ[4*jRc+jGc]->GetXaxis()->FindBin(zR_center));
+		                binval+=1;display +=1;
+		                dResZ[4*jRc+jGc]->SetBinContent(dResZ[4*jRc+jGc]->GetXaxis()->FindBin(zR_center),dResZ[4*jRc+jGc]->GetYaxis()->FindBin(zG_center),binval);
+			        continue;
+			    }
+		        }
+		    }
+		}
+            }
+        }
+    }
+     
+	TCanvas *cResMat2 = new TCanvas("ResponseMatrix3","ResponseMatrix3",950,800);
+	cResMat2->Divide(4,4);
+	//int trialcheck=0;
+	//for (int rmat=0; rmat<4; rmat++){
+	//    for (int cmat=0; cmat<4; cmat++){
+        //        cResMat2->cd(rmat+cmat+1);
+	//	//dResZ[(3-rmat)*4 + cmat ]->Draw("");
+	//    }
+	//}
+*/
 
     //
     //----------- fill 4D histo response matrix
@@ -444,6 +496,8 @@ void unfold_Bayeszjet(
             //}//cout<<i<<"-"<<j<<"-"<<k<<"-"<<m<<endl;
         }
     }
+
+/* checking to shorten the code
     else{
         for (int z = 0; z< hZjetRecGen->GetNbins();z++) {
             int coord[nDim]={0,0,0,0};
@@ -470,95 +524,13 @@ void unfold_Bayeszjet(
             // }//cout<<i<<"-"<<j<<"-"<<k<<"-"<<m<<endl;
         }
     }
-		
-	cout<<respcount<<"------"<<display<<endl;
-    dResZ14->SetTitle("Jet 7-10 GeV");dResZ14->SetTitleSize(0.2);
-        
-//        double total = dResZ1->Integral() + dResZ2->Integral() + dResZ3->Integral() + dResZ4->Integral()
-//	       	+ dResZ5->Integral() + dResZ6->Integral() + dResZ7->Integral() + dResZ8->Integral() 
-//		+ dResZ9->Integral() + dResZ10->Integral() + dResZ11->Integral() + dResZ12->Integral() 
-//		+ dResZ13->Integral() + dResZ14->Integral() + dResZ15->Integral() + dResZ16->Integral();
-//	
-//	for (int ir = 1; ir<=10; ir++){
-//	    for (int ic = 1; ic<= 10; ic++){
-//		dResZ1 ->SetBinContent(ir,ic,dResZ1 ->GetBinContent(ir,ic)/total);
-//		dResZ2 ->SetBinContent(ir,ic,dResZ2 ->GetBinContent(ir,ic)/total);
-//		dResZ3 ->SetBinContent(ir,ic,dResZ3 ->GetBinContent(ir,ic)/total);
-//		dResZ4 ->SetBinContent(ir,ic,dResZ4 ->GetBinContent(ir,ic)/total);
-//		dResZ5 ->SetBinContent(ir,ic,dResZ5 ->GetBinContent(ir,ic)/total);
-//		dResZ6 ->SetBinContent(ir,ic,dResZ6 ->GetBinContent(ir,ic)/total);
-//		dResZ7 ->SetBinContent(ir,ic,dResZ7 ->GetBinContent(ir,ic)/total);
-//		dResZ8 ->SetBinContent(ir,ic,dResZ8 ->GetBinContent(ir,ic)/total);
-//		dResZ9 ->SetBinContent(ir,ic,dResZ9 ->GetBinContent(ir,ic)/total);
-//		dResZ10->SetBinContent(ir,ic,dResZ10->GetBinContent(ir,ic)/total);
-//		dResZ11->SetBinContent(ir,ic,dResZ11->GetBinContent(ir,ic)/total);
-//		dResZ12->SetBinContent(ir,ic,dResZ12->GetBinContent(ir,ic)/total);
-//		dResZ13->SetBinContent(ir,ic,dResZ13->GetBinContent(ir,ic)/total);
-//		dResZ14->SetBinContent(ir,ic,dResZ14->GetBinContent(ir,ic)/total);
-//		dResZ15->SetBinContent(ir,ic,dResZ15->GetBinContent(ir,ic)/total);
-//		dResZ16->SetBinContent(ir,ic,dResZ16->GetBinContent(ir,ic)/total);
-//	    }
-//		cout<<"================+"<<endl;
-//	}
-//	
-//	
-//	dResZ1->Scale(1.0/dResZ1->Integral());
-//	dResZ2->Scale(1.0/dResZ2->Integral());
-//	dResZ3->Scale(1.0/dResZ3->Integral());
-//	dResZ4->Scale(1.0/dResZ4->Integral());
-//	dResZ5->Scale(1.0/dResZ5->Integral());
-//	dResZ6->Scale(1.0/dResZ6->Integral());
-//	dResZ7->Scale(1.0/dResZ7->Integral());
-//	dResZ8->Scale(1.0/dResZ8->Integral());
-//	dResZ9->Scale(1.0/dResZ9->Integral());
-//	dResZ10->Scale(1.0/dResZ10->Integral());
-//	dResZ11->Scale(1.0/dResZ11->Integral());
-//	dResZ12->Scale(1.0/dResZ12->Integral());
-//	dResZ13->Scale(1.0/dResZ13->Integral());
-//	dResZ14->Scale(1.0/dResZ14->Integral());
-//	dResZ15->Scale(1.0/dResZ15->Integral());
-//	dResZ16->Scale(1.0/dResZ16->Integral());
-	
-	//h->GetZaxis()->SetRangeUser(0.9, 1.1)
 
-	TCanvas *cResMat = new TCanvas("ResponseMatrix","ResponseMatrix",800,800);
-	cResMat->Divide(4,4);
-	/*
-        double zmax = 1;
-        dResZ1 ->GetZaxis()->SetRangeUser(0,zmax);
-        dResZ2 ->GetZaxis()->SetRangeUser(0,zmax);
-        dResZ3 ->GetZaxis()->SetRangeUser(0,zmax);
-        dResZ4 ->GetZaxis()->SetRangeUser(0,zmax);
-        dResZ5 ->GetZaxis()->SetRangeUser(0,zmax);
-        dResZ6 ->GetZaxis()->SetRangeUser(0,zmax);
-        dResZ7 ->GetZaxis()->SetRangeUser(0,zmax);
-        dResZ8 ->GetZaxis()->SetRangeUser(0,zmax);
-        dResZ9 ->GetZaxis()->SetRangeUser(0,zmax);
-        dResZ10->GetZaxis()->SetRangeUser(0,zmax);
-        dResZ11->GetZaxis()->SetRangeUser(0,zmax);
-        dResZ12->GetZaxis()->SetRangeUser(0,zmax);
-        dResZ13->GetZaxis()->SetRangeUser(0,zmax);
-        dResZ14->GetZaxis()->SetRangeUser(0,zmax);
-        dResZ15->GetZaxis()->SetRangeUser(0,zmax);
-        dResZ16->GetZaxis()->SetRangeUser(0,zmax);
 */
-	cResMat->cd(13);dResZ1 ->Draw("colz");
-	cResMat->cd(14);dResZ2 ->Draw("colz");
-	cResMat->cd(15);dResZ3 ->Draw("colz");
-	cResMat->cd(16);dResZ4 ->Draw("colz");
-	cResMat->cd(9) ;dResZ5 ->Draw("colz");
-	cResMat->cd(10);dResZ6 ->Draw("colz");
-	cResMat->cd(11);dResZ7 ->Draw("colz");
-	cResMat->cd(12);dResZ8 ->Draw("colz");
-	cResMat->cd(5) ;dResZ9 ->Draw("colz");
-	cResMat->cd(6) ;dResZ10->Draw("colz");
-	cResMat->cd(7) ;dResZ11->Draw("colz");
-	cResMat->cd(8) ;dResZ12->Draw("colz");
-	cResMat->cd(1) ;dResZ13->Draw("colz");
-	cResMat->cd(2) ;dResZ14->Draw("colz");
-	cResMat->cd(3) ;dResZ15->Draw("colz");
-	cResMat->cd(4) ;dResZ16->Draw("colz");
-
+		
+cout<<respcount<<"------"<<display<<endl;
+/*
+dResZ14->SetTitle("Jet 7-10 GeV");dResZ14->SetTitleSize(0.2);
+        
 
 	TCanvas *cResMat2 = new TCanvas("ResponseMatrix2","ResponseMatrix2",950,800);
 	cResMat2->Divide(4,4);
@@ -578,7 +550,7 @@ void unfold_Bayeszjet(
 	cResMat2->cd(2) ;dResZ14->Draw("");
 	cResMat2->cd(3) ;dResZ15->Draw("");
 	cResMat2->cd(4) ;dResZ16->Draw("");
-
+*/
     //THnD *responseplot = (THnD*)response.Hresponse();
     //TH2D *responseplot1 = (TH2D*)responseplot->Projection(0,1);
     TH2D *fUnfoldedBayes[NTrials];
