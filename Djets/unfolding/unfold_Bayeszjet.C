@@ -210,6 +210,7 @@ void unfold_Bayeszjet(
         sparseMC[i] = (THnSparseD*)histList[i]->FindObject("ResponseMatrix");
         //sparseMC[i]->GetAxis(5)->SetRangeUser(fptbinsZGenA[0],fptbinsZGenA[fptbinsZGenN]);
         sparseMC[i]->GetAxis(1)->SetRangeUser(fJetptbinsGenA[0],fJetptbinsGenA[fJetptbinsGenN]);
+        sparseMC[i]->GetAxis(4)->SetRangeUser(-0.9+fRpar,0.9-fRpar);//pseudo-rapidity cuts
         sparseMC[i]->GetAxis(9)->SetRangeUser(-0.9+fRpar,0.9-fRpar);//pseudo-rapidity cuts
 
         //----- getting min and max of each dimension.... //is it necessary?
@@ -253,28 +254,38 @@ void unfold_Bayeszjet(
     double binval = 0;
 
     TH2D *dResZ1  = new TH2D("dRes1" ,"" ,10,0,1,10,0,1 );
-    dResZ1->GetYaxis()->SetTitle("Reco: jet pt 5-7 GeV");
- //   dResZ1->SetTitleSize(0.4,"Y");
+    dResZ1->GetYaxis()->SetTitle("Rec: jet 5-7 GeV");
+//    dResZ1->SetTitleOffset(1.2,"Y");
+//    dResZ1->SetTitleSize(1,"Y");
     TH2D *dResZ2  = new TH2D("dRes2" ,"" ,10,0,1,10,0,1 );
     TH2D *dResZ3  = new TH2D("dRes3" ,"" ,10,0,1,10,0,1 );
     TH2D *dResZ4  = new TH2D("dRes4" ,"" ,10,0,1,10,0,1 );
+    dResZ4->SetTitleSize(0.6,"XYZ");
+    dResZ4->SetTitleOffset(0.45,"XYZ");
     dResZ4->GetXaxis()->SetTitle("z gen");
     dResZ4->GetYaxis()->SetTitle("z reco");
     TH2D *dResZ5  = new TH2D("dRes5" ,"" ,10,0,1,10,0,1 );
-    dResZ5->GetYaxis()->SetTitle("jet pt 7-10 GeV");
+    dResZ5->GetYaxis()->SetTitle("jet 7-10 GeV");
     TH2D *dResZ6  = new TH2D("dRes6" ,"" ,10,0,1,10,0,1 );
     TH2D *dResZ7  = new TH2D("dRes7" ,"" ,10,0,1,10,0,1 );
     TH2D *dResZ8  = new TH2D("dRes8" ,"" ,10,0,1,10,0,1 );
     TH2D *dResZ9  = new TH2D("dRes9" ,"" ,10,0,1,10,0,1 );
-    dResZ9->GetYaxis()->SetTitle("jet pt 10-15 GeV");
+    dResZ9->GetYaxis()->SetTitle("jet 10-15 GeV");
     TH2D *dResZ10 = new TH2D("dRes10","" ,10,0,1,10,0,1 );
     TH2D *dResZ11 = new TH2D("dRes11","" ,10,0,1,10,0,1 );
     TH2D *dResZ12 = new TH2D("dRes12","" ,10,0,1,10,0,1 );
-    TH2D *dResZ13 = new TH2D("dRes13","Gen: jet pt 5-7  GeV",10,0,1,10,0,1 );
+    TH2D *dResZ13 = new TH2D("dRes13","Gen: jet 5-7  GeV",10,0,1,10,0,1 );
     dResZ13->GetYaxis()->SetTitle("jet pt 15-50 GeV");
-    TH2D *dResZ14 = new TH2D("dRes14","jet pt 7-10 GeV",10,0,1,10,0,1 );
-    TH2D *dResZ15 = new TH2D("dRes15","jet pt 10-15 GeV",10,0,1,10,0,1 );
-    TH2D *dResZ16 = new TH2D("dRes16","jet pt 15-50 GeV",10,0,1,10,0,1 );
+    TH2D *dResZ14 = new TH2D("dRes14","jet 7-10 GeV",10,0,1,10,0,1 );
+    TH2D *dResZ15 = new TH2D("dRes15","jet 10-15 GeV",10,0,1,10,0,1 );
+    TH2D *dResZ16 = new TH2D("dRes16","jet 15-50 GeV",10,0,1,10,0,1 );
+    //----------- fill 4D histo response matrix
+    // Code compression
+//    TH2D* dResZ = 
+
+
+    //
+    //----------- fill 4D histo response matrix
 
     int respcount = 0;
     int display = 0;
@@ -299,16 +310,19 @@ void unfold_Bayeszjet(
             //     cout<<i<<"--"<<j<<endl;//"--"<<k<<"--"<<m<<endl;
             //     //eventcount+=1;
             // }
-            if(jR_center<3 || jG_center<3){
+            //if(jR_center<5 || jG_center<5){
+            //      measurement_ok = kFALSE;
+            //}
+            //if(DR_center<2 || DG_center<2){
+            if(DG_center<2){
                   measurement_ok = kFALSE;
             }
-            else if(DG_center<2){
+            //if((DR_center<3 || DG_center<3) && jG_center>=7 ){
+            if(( DG_center<3) && jG_center>=7 ){
                   measurement_ok = kFALSE;
             }
-            else if(DG_center<3 && jG_center>=7 ){
-                  measurement_ok = kFALSE;
-            }
-            else if(DG_center<5 && jG_center>=10 ){
+            //if((DR_center<5 || DG_center<5) && jG_center>=10 ){
+            if((DG_center<5) && jG_center>=10 ){
                   measurement_ok = kFALSE;
             }
             if (measurement_ok){
@@ -458,51 +472,52 @@ void unfold_Bayeszjet(
     }
 		
 	cout<<respcount<<"------"<<display<<endl;
+    dResZ14->SetTitle("Jet 7-10 GeV");dResZ14->SetTitleSize(0.2);
         
-        //double total = dResZ1->Integral() + dResZ2->Integral() + dResZ3->Integral() + dResZ4->Integral()
-	//       	+ dResZ5->Integral() + dResZ6->Integral() + dResZ7->Integral() + dResZ8->Integral() 
-	//	+ dResZ9->Integral() + dResZ10->Integral() + dResZ11->Integral() + dResZ12->Integral() 
-	//	+ dResZ13->Integral() + dResZ14->Integral() + dResZ15->Integral() + dResZ16->Integral();
-	//
-	//for (int ir = 1; ir<=10; ir++){
-	//    for (int ic = 1; ic<= 10; ic++){
-	//	dResZ1 ->SetBinContent(ir,ic,dResZ1 ->GetBinContent(ir,ic)/total);
-	//	dResZ2 ->SetBinContent(ir,ic,dResZ2 ->GetBinContent(ir,ic)/total);
-	//	dResZ3 ->SetBinContent(ir,ic,dResZ3 ->GetBinContent(ir,ic)/total);
-	//	dResZ4 ->SetBinContent(ir,ic,dResZ4 ->GetBinContent(ir,ic)/total);
-	//	dResZ5 ->SetBinContent(ir,ic,dResZ5 ->GetBinContent(ir,ic)/total);
-	//	dResZ6 ->SetBinContent(ir,ic,dResZ6 ->GetBinContent(ir,ic)/total);
-	//	dResZ7 ->SetBinContent(ir,ic,dResZ7 ->GetBinContent(ir,ic)/total);
-	//	dResZ8 ->SetBinContent(ir,ic,dResZ8 ->GetBinContent(ir,ic)/total);
-	//	dResZ9 ->SetBinContent(ir,ic,dResZ9 ->GetBinContent(ir,ic)/total);
-	//	dResZ10->SetBinContent(ir,ic,dResZ10->GetBinContent(ir,ic)/total);
-	//	dResZ11->SetBinContent(ir,ic,dResZ11->GetBinContent(ir,ic)/total);
-	//	dResZ12->SetBinContent(ir,ic,dResZ12->GetBinContent(ir,ic)/total);
-	//	dResZ13->SetBinContent(ir,ic,dResZ13->GetBinContent(ir,ic)/total);
-	//	dResZ14->SetBinContent(ir,ic,dResZ14->GetBinContent(ir,ic)/total);
-	//	dResZ15->SetBinContent(ir,ic,dResZ15->GetBinContent(ir,ic)/total);
-	//	dResZ16->SetBinContent(ir,ic,dResZ16->GetBinContent(ir,ic)/total);
-	//    }
-	//	cout<<"================+"<<endl;
-	//}
-	//
-	
-	//dResZ1->Scale(1.0/dResZ1->Integral());
-	//dResZ2->Scale(1.0/dResZ2->Integral());
-	//dResZ3->Scale(1.0/dResZ3->Integral());
-	//dResZ4->Scale(1.0/dResZ4->Integral());
-	//dResZ5->Scale(1.0/dResZ5->Integral());
-	//dResZ6->Scale(1.0/dResZ6->Integral());
-	//dResZ7->Scale(1.0/dResZ7->Integral());
-	//dResZ8->Scale(1.0/dResZ8->Integral());
-	//dResZ9->Scale(1.0/dResZ9->Integral());
-	//dResZ10->Scale(1.0/dResZ10->Integral());
-	//dResZ11->Scale(1.0/dResZ11->Integral());
-	//dResZ12->Scale(1.0/dResZ12->Integral());
-	//dResZ13->Scale(1.0/dResZ13->Integral());
-	//dResZ14->Scale(1.0/dResZ14->Integral());
-	//dResZ15->Scale(1.0/dResZ15->Integral());
-	//dResZ16->Scale(1.0/dResZ16->Integral());
+//        double total = dResZ1->Integral() + dResZ2->Integral() + dResZ3->Integral() + dResZ4->Integral()
+//	       	+ dResZ5->Integral() + dResZ6->Integral() + dResZ7->Integral() + dResZ8->Integral() 
+//		+ dResZ9->Integral() + dResZ10->Integral() + dResZ11->Integral() + dResZ12->Integral() 
+//		+ dResZ13->Integral() + dResZ14->Integral() + dResZ15->Integral() + dResZ16->Integral();
+//	
+//	for (int ir = 1; ir<=10; ir++){
+//	    for (int ic = 1; ic<= 10; ic++){
+//		dResZ1 ->SetBinContent(ir,ic,dResZ1 ->GetBinContent(ir,ic)/total);
+//		dResZ2 ->SetBinContent(ir,ic,dResZ2 ->GetBinContent(ir,ic)/total);
+//		dResZ3 ->SetBinContent(ir,ic,dResZ3 ->GetBinContent(ir,ic)/total);
+//		dResZ4 ->SetBinContent(ir,ic,dResZ4 ->GetBinContent(ir,ic)/total);
+//		dResZ5 ->SetBinContent(ir,ic,dResZ5 ->GetBinContent(ir,ic)/total);
+//		dResZ6 ->SetBinContent(ir,ic,dResZ6 ->GetBinContent(ir,ic)/total);
+//		dResZ7 ->SetBinContent(ir,ic,dResZ7 ->GetBinContent(ir,ic)/total);
+//		dResZ8 ->SetBinContent(ir,ic,dResZ8 ->GetBinContent(ir,ic)/total);
+//		dResZ9 ->SetBinContent(ir,ic,dResZ9 ->GetBinContent(ir,ic)/total);
+//		dResZ10->SetBinContent(ir,ic,dResZ10->GetBinContent(ir,ic)/total);
+//		dResZ11->SetBinContent(ir,ic,dResZ11->GetBinContent(ir,ic)/total);
+//		dResZ12->SetBinContent(ir,ic,dResZ12->GetBinContent(ir,ic)/total);
+//		dResZ13->SetBinContent(ir,ic,dResZ13->GetBinContent(ir,ic)/total);
+//		dResZ14->SetBinContent(ir,ic,dResZ14->GetBinContent(ir,ic)/total);
+//		dResZ15->SetBinContent(ir,ic,dResZ15->GetBinContent(ir,ic)/total);
+//		dResZ16->SetBinContent(ir,ic,dResZ16->GetBinContent(ir,ic)/total);
+//	    }
+//		cout<<"================+"<<endl;
+//	}
+//	
+//	
+//	dResZ1->Scale(1.0/dResZ1->Integral());
+//	dResZ2->Scale(1.0/dResZ2->Integral());
+//	dResZ3->Scale(1.0/dResZ3->Integral());
+//	dResZ4->Scale(1.0/dResZ4->Integral());
+//	dResZ5->Scale(1.0/dResZ5->Integral());
+//	dResZ6->Scale(1.0/dResZ6->Integral());
+//	dResZ7->Scale(1.0/dResZ7->Integral());
+//	dResZ8->Scale(1.0/dResZ8->Integral());
+//	dResZ9->Scale(1.0/dResZ9->Integral());
+//	dResZ10->Scale(1.0/dResZ10->Integral());
+//	dResZ11->Scale(1.0/dResZ11->Integral());
+//	dResZ12->Scale(1.0/dResZ12->Integral());
+//	dResZ13->Scale(1.0/dResZ13->Integral());
+//	dResZ14->Scale(1.0/dResZ14->Integral());
+//	dResZ15->Scale(1.0/dResZ15->Integral());
+//	dResZ16->Scale(1.0/dResZ16->Integral());
 	
 	//h->GetZaxis()->SetRangeUser(0.9, 1.1)
 
@@ -545,7 +560,7 @@ void unfold_Bayeszjet(
 	cResMat->cd(4) ;dResZ16->Draw("colz");
 
 
-	TCanvas *cResMat2 = new TCanvas("ResponseMatrix2","ResponseMatrix2",800,800);
+	TCanvas *cResMat2 = new TCanvas("ResponseMatrix2","ResponseMatrix2",950,800);
 	cResMat2->Divide(4,4);
 	cResMat2->cd(13);dResZ1 ->Draw("");
 	cResMat2->cd(14);dResZ2 ->Draw("");
@@ -630,7 +645,7 @@ void unfold_Bayeszjet(
     TH1D *hDataProjectXDo[4];
     TH1D *UnfProjectXScaleDo[4];
     //************************************
-    TFile *unfold2DoutFile = new TFile(Form("%s/alljetz2D/unfold2DoutFile%s.root",outDir.Data(),truebinnum.Data()),"recreate");
+    TFile *unfold2DoutFile = new TFile(Form("%s/alljetz2D/unfold2DoutFile%sAPW.root",outDir.Data(),truebinnum.Data()),"recreate");
     for (int binjet=1; binjet<= fUnfoldedBayes[regBayes-1]->GetNbinsY(); binjet++){
         UnfProjectX[binjet-1] = (TH1D*)fUnfoldedBayes[regBayes-1]->ProjectionX(Form("UnfProjectX_%d",binjet-1), binjet, binjet, "E");
 	//UnfProjectX[binjet-1]->SetName(Form("UnfProjectX_%d",binjet-1));
