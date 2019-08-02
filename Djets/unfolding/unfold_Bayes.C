@@ -236,7 +236,7 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
         hRatio[ivar] = (TH1D*) folded[ivar]->Clone(Form("hRatio%d",ivar));
         hRatio[ivar]->Divide(hBaseMeasure);
         hRatio[ivar]->GetYaxis()->SetTitle("refolded/measured");
-				hRatio[ivar]->SetTitle(Form("Reg=%d",ivar+1));
+	hRatio[ivar]->SetTitle(Form("Reg=%d",ivar+1));
         //hRatio[ivar]->GetYaxis()->SetRangeUser(0,3.5);
         //hRatio[ivar]->SetTitle();
 
@@ -244,10 +244,10 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
         hRatio[ivar]->SetMarkerColor(colortable[ivar]);
         hRatio[ivar]->SetMarkerSize(0);
         hRatio[ivar]->SetLineColor(colortable[ivar]);
-				hRatio[ivar]->SetLineStyle(linesytle[ivar]);
-				hRatio[ivar]->SetLineWidth(2);
+	hRatio[ivar]->SetLineStyle(linesytle[ivar]);
+	hRatio[ivar]->SetLineWidth(2);
 
-				int counter = 0;
+	int counter = 0;
         for(int kk=1; kk<fptbinsJetMeasN; kk++){
                 double val = fabs(1-hRatio[ivar]->GetBinContent(kk));
                 //cout << "==val: " << val << endl;
