@@ -1,3 +1,6 @@
+//------------------------------------------------------------------------------
+// This file is modified in a script. And therefore, editing here is fruitless.
+//------------------------------------------------------------------------------
 //-----------------------------------------------------------------------
 //  Author B.Trzeciak
 //  Utrecht University
@@ -28,16 +31,21 @@
 #include "RooUnfoldSvd.h"
 #include "RooUnfoldBinByBin.h"*/
 
+TString roounfoldpwd = "$HOME/ALICE_HeavyFlavour/RooUnfold-1.1.1/libRooUnfold";
+
 enum DMesonSpecies {kD0toKpi, kDStarD0pi};
 
+TString OUTDIRECTORY="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_cutTight/DzeroR03_def_437_old0";
     // ========================== Prepare your config ============================================
+
+    const int     fJetptbinsN = 4;
+    double        fJetptbinsA[fJetptbinsN+1] = { 5.0, 7.0, 10.0, 15.0, 50.0};
+    //
     int           fSystem = 0;            //-----! 0: pp, 1: p-Pb, Pb-Pb -- set up system
     TString       fSystemS = "pp, #sqrt{#it{s}} = 5.02 TeV";
     DMesonSpecies fDmesonSpecie = kD0toKpi;
     TString       fDmesonDsc = "Dzero";
     TString       fDmesonS = "D^{0}";
-    const double  fRpar = 0.3;           //-----! jet R parameter for your studies (the one that you use in your jet finder!)
-    const int     Rpar = 3;
     const int     ND = 4;                //-----!  change these numbers based on how many D mesons you analyse in data !
     const int     NDMC = 2;              //-----!  change these numbers based on how many D mesons you analyse in MC !
 
@@ -47,44 +55,34 @@ enum DMesonSpecies {kD0toKpi, kDStarD0pi};
     const double  BRDstar = 0.0257;
     const double  BRDzero = 0.0389;
     const int     APb = 208;
-
-    //====== D pT bins ---- set up your D pT bins ======
-//    const int     fptbinsDN = 12;
-//    double        fptbinsDA[fptbinsDN+1] = {1,2,3,4,5,6,7,8,10,12,16,24,36 };
-//---------//---------//---------//---------//---------//---------
-//---------new sugested binning
-//----------------5-7 Jet pt
-    const int     fptbinsDN = 6;
-    double        fptbinsDA[fptbinsDN+1] = {1,2,3,4,5,6,7};// 5-7 Jetpt
-//----------------7-10 Jet pt
-//    const int     fptbinsDN = 6;
-//    double        fptbinsDA[fptbinsDN+1] = {1,2,3,4,5,6,7,8,10};// 7-10 Jetpt
-//----------------10-16 Jet pt
-//    const int     fptbinsDN = 8;
-//    double        fptbinsDA[fptbinsDN+1] = {1,2,3,4,5,6,7,8,10,12,16};// 10-16 Jetpt
-//----------------16-36 Jet pt
-//    const int     fptbinsDN = 10;
-//    double        fptbinsDA[fptbinsDN+1] = {1,2,3,4,5,6,7,8,10,12,16,24,36};// 16-36 Jetpt// 
-//----------------36-50 Jet pt
-//    const int     fptbinsDN = 3;
-//    double        fptbinsDA[fptbinsDN+1] = {12,16,24,36 };// 36-50 Jetpt
+const double  fRpar = 0.4;
+const int  Rpar = 4;
+const int fBsimN = 11;
+const int fCsimN = 11;
+int zjetbin = 9;
+double        fptbinsDA[] = {5,8,10,12,16,24,36};
+ const int     fptbinsZFinalN = 6;
+ double        fptbinsZFinalA[fptbinsZFinalN+1] = {0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+ double fdplotmin = 20, dataplotmax = 20000;
+    const int     fptbinsDN = sizeof(fptbinsDA)/sizeof(fptbinsDA[0])-1;
 
     //====== jet pT bins --- set up your jet pT bins ======
-//    const int 	  fptbinsJetN = 3;
-//    double	  fptbinsJetA[fptbinsJetN+1] = {3.0, 16.0, 36.0, 50.0};
-//    const int 	  fptbinsJetN = 5;
-//    double	  fptbinsJetA[fptbinsJetN+1] = {3.0, 6.0, 10.0, 16.0, 36.0, 50.0};
-    const int 	  fptbinsJetN = 5;
-    double	  fptbinsJetA[fptbinsJetN+1] = {5.0, 7.0, 10.0, 16.0, 36.0, 50.0};
-//---------new suggested binning end
-//---------//---------//---------//---------//---------//---------
+    //const int 	  fptbinsJetN = 3;
+    //double	  fptbinsJetA[fptbinsJetN+1] = {5.0, 7.0, 10.0, 16.0, 36.0, 50.0};
+    double	  fptbinsJetA[] = {5.0, 7.0, 10.0, 15.0, 36.0, 5.0, 15.0, 30.0, 15.0, 50.0, 10.0, 16.0, 36.0,5.0,50.0, 3.0, 5.0};
+    
+    const int     fptbinsJetN = sizeof(fptbinsJetA)/sizeof(fptbinsJetA[0])-1;
+
+    //---------//---------//---------//---------//---------//---------
     //====== z bins ---- set up your z (momentum fraction) bins ======
-    const int     fptbinsZTrueN = 9;
-    double        fptbinsZTrueA[fptbinsZTrueN+1] = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
-    const int     fptbinsZMeasN = 9;
-    double        fptbinsZMeasA[fptbinsZMeasN+1] = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
-    const int     fptbinsZFinalN = 9;
-    double        fptbinsZFinalA[fptbinsZFinalN+1] = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+    const int     fptbinsZTrueNN = 10;
+    double        fptbinsZTrueAA[fptbinsZTrueNN+1] = {0.0,0.1,0.2,0.3,0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.02};
+    const int     fptbinsZTrueN = 6;
+    double        fptbinsZTrueA[fptbinsZTrueN+1] = {0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.02};
+    const int     fptbinsZMeasN = 6;
+    double        fptbinsZMeasA[fptbinsZMeasN+1] = {0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.02};
+//    const int     fptbinsZFinalN = 5;
+//    double        fptbinsZFinalA[fptbinsZFinalN+1] = {0.4, 0.6, 0.7, 0.8, 0.9, 1.02};
     //====== z range ---- set up your min, max z ======
     double        zmin = -2., zmax = 2.; // for D-jet pT spectrum
 
@@ -93,7 +91,7 @@ enum DMesonSpecies {kD0toKpi, kDStarD0pi};
     Int_t         fbkgtype = 0;                      //-----! kExpo=0, kLin=1, kPol2=2, kNoBk=3, kPow=4, kPowEx=5
     Float_t       fsigmaSignal = 2;                  //-----! sigma for the signal region
     Float_t       fsigmaBkg[] = {-9,-4,4,9};         //-----! sigma for the SB region (both left and right side from the fit)
-    Float_t       fDmass = 1.864, fDsigma = 0.010;   //-----! initial values for D mass and sigma
+    Float_t       fDmass = 1.86484, fDsigma = 0.010;   //-----! initial values for D mass and sigma
     //Float_t       fDsigmafix[fptbinsDN] = {0.01,0.011,0.01175,0.0125,0.013,0.0135,0.0145,0.016,0.0175,0.0185};   //-----! initial values for D mass and sigma
     double       minf = 1.71, maxf = 2.1;           //-----! min/mass of the inv. mass distributions
     Int_t         fRebinMass = 2;                    //-----! rebining of the inv. mass distributions
@@ -102,40 +100,37 @@ enum DMesonSpecies {kD0toKpi, kDStarD0pi};
     Int_t fMarkers[] = {20,21,22,23,24,25,26,27,28,29,30,32,33,34};
 
 
-    ///============== POWHEG simulations ============================
+    //============== POWHEG simulations ============================
     //======= set up here names of your simulation files =======
-/*
     TString fRunB[] = {
-      "AnalysisResults_FastSim_powheg+pythia6_beauty_150593961473",
-      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504284947",
-      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504259653",
-      "AnalysisResults_FastSim_powheg+pythia6_beauty_1506803374"
-    };
-*/
-    TString fRunB[] = {
-      "AnalysisResults_FastSim_powheg+pythia6_beauty_150593961473"	//central
-,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504284947"	//R1F05
-,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504259653"	//R05F1
-,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1506803374"	//R2F1
-,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504296768"	//R1F2
-,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504212024"	//R05F05
-,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504318569"	//R2F2
-,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504202511"	//mb5
-,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504197966"	//mb4.5
-,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504197460"	//pdf 21200
-,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504199953"	//pdf 10800
-,
-      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1536649348"//evtgen
+//Event Gen
+       "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1536649348"//evtgen central
+////POWHEG+PYTHIA6
+////,      "AnalysisResults_FastSim_powheg+pythia6_beauty_150593961473"	//central R=0.3
+,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1554981915"	//central R=0.3,0.4,0.6
+//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504284947"	//R1F05
+//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504259653"	//R05F1
+//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1506803374"	//R2F1
+//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504296768"	//R1F2
+//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504212024"	//R05F05
+//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504318569"	//R2F2
+//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504202511"	//mb5
+//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504197966"	//mb4.5
+//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504197460"	//pdf 21200
+//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504199953"	//pdf 10800
+//Event Gen
+,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1549115009"//mb4.5
+,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1549110628"//mb5
+,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1549275841"//F2R2
+,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1549119403"//F1R05
+,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1549019046"//uF=0.5 , uR=0.5
+,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1549035201"//uF=0.5 , uR=1
+,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1549219132"//uF= 2, uR=1
+,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1549203018"//uF=1 , uR=2
+,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1550591180"//PDF=21200
+//,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1550780125"//PDF=10042
     };
 
-/*
-    TString fDescB[] = {
-      "central",
-      "muR=1,muF=0.5" ,
-      "muR=0.5,muF=1",
-      "muR=2,muF=1"
-    };
-*/
     TString fDescB[] = {
       "central"
 ,      "muR=1,muF=0.5" 
@@ -148,12 +143,11 @@ enum DMesonSpecies {kD0toKpi, kDStarD0pi};
 ,      "m_{b}=4.5"
 ,      "PDF 21200"
 ,      "PDF 10800"
-,
-      "Evt gen"
+//,      "Evt gen"
     };
 
     TString fRunC[] = {
-//      "RAW_CHARM_POWHEG"
+// POWHEG+Pythia6 hvq
       "AnalysisResults_FastSim_powheg+pythia6_charm_central"
 ,"AnalysisResults_FastSim_powheg+pythia6_charm_m13_1536595965"
 ,"AnalysisResults_FastSim_powheg+pythia6_charm_m17_1536655729"
@@ -163,6 +157,30 @@ enum DMesonSpecies {kD0toKpi, kDStarD0pi};
 ,"AnalysisResults_FastSim_powheg+pythia6_charm_F05R05_1535894261"
 ,"AnalysisResults_FastSim_powheg+pythia6_charm_F1R05_1536598175"
 ,"AnalysisResults_FastSim_powheg+pythia6_charm_F05R1_1536604800"
+//// POWHEG+Pythia6 dijets
+//,"AnalysisResults_FastSim_powheg+pythia6_dijet_bb160_1553275404"
+//,"AnalysisResults_FastSim_powheg+pythia6_dijet_central_1553968405"
+//,"AnalysisResults_FastSim_powheg+pythia6_dijet_F1R2_1557481772"
+//,"AnalysisResults_FastSim_powheg+pythia6_dijet_F1R05_1556385744"
+//,"AnalysisResults_FastSim_powheg+pythia6_dijet_F2R1_1557918376"
+//,"AnalysisResults_FastSim_powheg+pythia6_dijet_F2R2_1560328228"
+//,"AnalysisResults_FastSim_powheg+pythia6_dijet_F05R1_1558465083"
+//,"AnalysisResults_FastSim_powheg+pythia6_dijet_F05R05_1556195307"
+//,"AnalysisResults_FastSim_powheg+pythia6_dijet_mc13_1554197229"
+//,"AnalysisResults_FastSim_powheg+pythia6_dijet_mc17_1558464708"
+//,"AnalysisResults_FastSim_powheg+pythia6_dijet_PDF212_1561024691"
+//Pythia6
+,"AnalysisResults_FastSim_pythia6_charm_1552224706"
+//,"AnalysisResults_FastSim_pythia6_dijet_1552223980"
+//,"AnalysisResults_FastSim_pythia6_mb_1563284959"
+//Pythia8
+,"AnalysisResults_FastSim_pythia8_charm_1552144258"
+//,"AnalysisResults_FastSim_pythia8_dijet_1552144719"
+//,"AnalysisResults_FastSim_pythia8_mb_1563297890"
+////Herwig
+//,"AnalysisResults_FastSim_herwig_charm_lo_1548973692"
+//,"AnalysisResults_FastSim_herwig_dijet_lo_1563298593"
+//,"AnalysisResults_FastSim_herwig_mb_1551799518"
     };
     TString fDescC[] = {
       "central"
@@ -175,6 +193,3 @@ enum DMesonSpecies {kD0toKpi, kDStarD0pi};
 ,      "muR=1,muF=0.5"
 ,      "muR=0.5,muF=1"
     };
-const Int_t fBsimN = 12;
-const Int_t fCsimN = 9;
-TString OUTDIRECTORY="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_cutTight/DzeroR03_def_437_old0";
