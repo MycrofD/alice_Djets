@@ -3,18 +3,20 @@
     //====== jet pT bins --- set up your jet pT bins ======
     //const int 	  fptbinsJetN = 3;
     //double	  fptbinsJetA[fptbinsJetN+1] = {5.0, 7.0, 10.0, 16.0, 36.0, 50.0};
-    double	  fptbinsJetA[] = {5.0, 7.0, 10.0, 15.0, 36.0, 5.0, 15.0, 30.0, 15.0, 50.0, 10.0, 16.0, 36.0,5.0,50.0};
+    double	  fptbinsJetA[] = {5.0, 7.0, 10.0, 15.0, 36.0, 5.0, 15.0, 30.0, 15.0, 50.0, 10.0, 16.0, 36.0,5.0,50.0, 3.5, 5.0,3.0,4.25,5.0};
     
     const int     fptbinsJetN = sizeof(fptbinsJetA)/sizeof(fptbinsJetA[0])-1;
 
     //---------//---------//---------//---------//---------//---------
     //====== z bins ---- set up your z (momentum fraction) bins ======
+    const int     fptbinsZTrueNN=10;
+    double        fptbinsZTrueAA[fptbinsZTrueNN+1]={0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.02};
     const int     fptbinsZTrueN = 6;
     double        fptbinsZTrueA[fptbinsZTrueN+1] = {0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.02};
     const int     fptbinsZMeasN = 6;
     double        fptbinsZMeasA[fptbinsZMeasN+1] = {0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.02};
-//    const int     fptbinsZFinalN = 5;
-//    double        fptbinsZFinalA[fptbinsZFinalN+1] = {0.4, 0.6, 0.7, 0.8, 0.9, 1.02};
+    const int     fptbinsZFinalN = 6;
+    double        fptbinsZFinalA[fptbinsZFinalN+1] = {0.4,0.5, 0.6, 0.7, 0.8, 0.9, 1.02};
     //====== z range ---- set up your min, max z ======
     double        zmin = -2., zmax = 2.; // for D-jet pT spectrum
 
@@ -79,7 +81,7 @@
     };
 
     TString fRunC[] = {
-//      "RAW_CHARM_POWHEG"
+// POWHEG+Pythia6 hvq
       "AnalysisResults_FastSim_powheg+pythia6_charm_central"
 ,"AnalysisResults_FastSim_powheg+pythia6_charm_m13_1536595965"
 ,"AnalysisResults_FastSim_powheg+pythia6_charm_m17_1536655729"
@@ -89,6 +91,30 @@
 ,"AnalysisResults_FastSim_powheg+pythia6_charm_F05R05_1535894261"
 ,"AnalysisResults_FastSim_powheg+pythia6_charm_F1R05_1536598175"
 ,"AnalysisResults_FastSim_powheg+pythia6_charm_F05R1_1536604800"
+//// POWHEG+Pythia6 dijets
+//,"AnalysisResults_FastSim_powheg+pythia6_dijet_bb160_1553275404"
+//,"AnalysisResults_FastSim_powheg+pythia6_dijet_central_1553968405"
+//,"AnalysisResults_FastSim_powheg+pythia6_dijet_F1R2_1557481772"
+//,"AnalysisResults_FastSim_powheg+pythia6_dijet_F1R05_1556385744"
+//,"AnalysisResults_FastSim_powheg+pythia6_dijet_F2R1_1557918376"
+//,"AnalysisResults_FastSim_powheg+pythia6_dijet_F2R2_1560328228"
+//,"AnalysisResults_FastSim_powheg+pythia6_dijet_F05R1_1558465083"
+//,"AnalysisResults_FastSim_powheg+pythia6_dijet_F05R05_1556195307"
+//,"AnalysisResults_FastSim_powheg+pythia6_dijet_mc13_1554197229"
+//,"AnalysisResults_FastSim_powheg+pythia6_dijet_mc17_1558464708"
+//,"AnalysisResults_FastSim_powheg+pythia6_dijet_PDF212_1561024691"
+//Pythia6
+,"AnalysisResults_FastSim_pythia6_charm_1552224706"
+//,"AnalysisResults_FastSim_pythia6_dijet_1552223980"
+//,"AnalysisResults_FastSim_pythia6_mb_1563284959"
+//Pythia8
+,"AnalysisResults_FastSim_pythia8_charm_1552144258"
+//,"AnalysisResults_FastSim_pythia8_dijet_1552144719"
+//,"AnalysisResults_FastSim_pythia8_mb_1563297890"
+////Herwig
+//,"AnalysisResults_FastSim_herwig_charm_lo_1548973692"
+//,"AnalysisResults_FastSim_herwig_dijet_lo_1563298593"
+//,"AnalysisResults_FastSim_herwig_mb_1551799518"
     };
     TString fDescC[] = {
       "central"

@@ -15,10 +15,13 @@
 
 //====================== global =========================
 double plotmin = fptbinsZMeasA[0], plotmax =  fptbinsZMeasA[fptbinsZMeasN];
+TString jetpttitle[5] = {"3-5","5-7", "7-10","10-15","15-50"};
 // to fill the response matrix
-bool BayesTrueRangeSys=1;
-const int fJetptbinsGenN=9; TString truebinnum="";
-double fJetptbinsGenA[fJetptbinsGenN+1]={0,2,3,4,5,7,10,15,50,60};
+bool BayesParameterSys=1;
+const int fJetptbinsGenN=6; TString truebinnum="";
+const int fJetptbinsGenNN=7;
+double fJetptbinsGenA[fJetptbinsGenN+1]={0,5,7,10,15,50,100};
+double fJetptbinsGenAA[fJetptbinsGenNN+1]={0,3,5,7,10,15,50,100};
 //const int fJetptbinsGenN=6; TString truebinnum="550";
 //double fJetptbinsGenA[fJetptbinsGenN+1]={5,7,10,15,50,50};
 //const int fJetptbinsGenN=8; TString truebinnum="360";
@@ -58,7 +61,7 @@ void unfold_Bayeszjet(
   TString outDir = "out", // output directory
   const int regBayes = 5,  // default reg. parameter for the bayes unfolding
   bool isPrior = 0,  // if to use prior different than the true spectrum from the sim
-  int priorType = 1,   // if isPrior == 1, choose type of the prior
+  int priorType = 1,   // if isPrior == 1, choose type of the prior prior 1 is steep, prior 2 is gentle
   bool useDeltaPt = 1,  // if to use a separate bkg. fluctuation matrix
   bool isFDUpSpec = 0,
   bool isFDDownSpec = 0,
@@ -182,9 +185,10 @@ void unfold_Bayeszjet(
 
     TList *histList[NDMC];THnSparseD *sparseMC[NDMC];THnSparseD *sparsereco[NDMC];
     //--- Empty 2D histograms to define binning of response matrix at reco and gen level --------------------
+    
     TH2D* hZjetRRebin = new TH2D("hRecRebin","hRecRebin", fptbinsZMeasN, fptbinsZMeasA, fJetptbinsN, fJetptbinsA);
     hZjetRRebin->Sumw2();
-    TH2D* hZjetGRebin = new TH2D("hGenRebin","hGenRebin", fptbinsZFinalN, fptbinsZFinalA, fJetptbinsN, fJetptbinsA);
+    TH2D* hZjetGRebin = new TH2D("hGenRebin","hGenRebin", fptbinsZFinalN, fptbinsZFinalA, fJetptbinsGenN, fJetptbinsGenA);
     hZjetGRebin->Sumw2();
 
     //---- Reading from the ResponseMatrix of each D meson in a loop
@@ -206,10 +210,11 @@ void unfold_Bayeszjet(
         }
 
         sparseMC[i] = (THnSparseD*)histList[i]->FindObject("ResponseMatrix");
-        sparseMC[i]->GetAxis(1)->SetRangeUser(fJetptbinsGenA[0],fJetptbinsGenA[fJetptbinsGenN]);
+        //sparseMC[i]->GetAxis(1)->SetRangeUser(fJetptbinsGenA[0],fJetptbinsGenA[fJetptbinsGenN]);
         sparseMC[i]->GetAxis(4)->SetRangeUser(-0.9+fRpar,0.9-fRpar);//pseudo-rapidity cuts
         sparseMC[i]->GetAxis(9)->SetRangeUser(-0.9+fRpar,0.9-fRpar);//pseudo-rapidity cuts
 
+        
         //----- getting min and max of each dimension.... //is it necessary?
         for (int idim=0; idim< sparseMC[i]->GetNdimensions(); idim++){
         	auto axis = sparseMC[i]->GetAxis(i);
@@ -229,6 +234,11 @@ void unfold_Bayeszjet(
         }
     }//end of NDMC for loop //hZjetRecGen->SaveAs("proj.root");
 
+    cout<<hZjetRecGenD->GetAxis(0)->GetXmin()<<endl;
+    cout<<hZjetRecGenD->GetAxis(1)->GetXmin()<<endl;
+    cout<<hZjetRecGenD->GetAxis(2)->GetXmin()<<endl;
+//    cout<<hZjetRecGenD->GetAxis(1)->GetXmax()<<endl;
+//    return;
 
     /***************************
     #### unfolding settings ####
@@ -238,105 +248,7 @@ void unfold_Bayeszjet(
     //----------- fill 4D histo response matrix
     //int eventcount = 0;
     double binval = 0;
-
-    TH2D *dResZ1  = new TH2D("dRes1" ,"" ,10,0,1,10,0,1 );
-    dResZ1->GetYaxis()->SetTitle("Rec: jet 5-7 GeV");
-//    dResZ1->SetTitleOffset(1.2,"Y");
-//    dResZ1->SetTitleSize(1,"Y");
-    TH2D *dResZ2  = new TH2D("dRes2" ,"" ,10,0,1,10,0,1 );
-    TH2D *dResZ3  = new TH2D("dRes3" ,"" ,10,0,1,10,0,1 );
-    TH2D *dResZ4  = new TH2D("dRes4" ,"" ,10,0,1,10,0,1 );
-    dResZ4->SetTitleSize(0.6,"XYZ");
-    dResZ4->SetTitleOffset(0.45,"XYZ");
-    dResZ4->GetXaxis()->SetTitle("z gen");
-    dResZ4->GetYaxis()->SetTitle("z reco");
-    TH2D *dResZ5  = new TH2D("dRes5" ,"" ,10,0,1,10,0,1 );
-    dResZ5->GetYaxis()->SetTitle("jet 7-10 GeV");
-    TH2D *dResZ6  = new TH2D("dRes6" ,"" ,10,0,1,10,0,1 );
-    TH2D *dResZ7  = new TH2D("dRes7" ,"" ,10,0,1,10,0,1 );
-    TH2D *dResZ8  = new TH2D("dRes8" ,"" ,10,0,1,10,0,1 );
-    TH2D *dResZ9  = new TH2D("dRes9" ,"" ,10,0,1,10,0,1 );
-    dResZ9->GetYaxis()->SetTitle("jet 10-15 GeV");
-    TH2D *dResZ10 = new TH2D("dRes10","" ,10,0,1,10,0,1 );
-    TH2D *dResZ11 = new TH2D("dRes11","" ,10,0,1,10,0,1 );
-    TH2D *dResZ12 = new TH2D("dRes12","" ,10,0,1,10,0,1 );
-    TH2D *dResZ13 = new TH2D("dRes13","Gen: jet 5-7  GeV",10,0,1,10,0,1 );
-    dResZ13->GetYaxis()->SetTitle("jet pt 15-50 GeV");
-    TH2D *dResZ14 = new TH2D("dRes14","jet 7-10 GeV",10,0,1,10,0,1 );
-    TH2D *dResZ15 = new TH2D("dRes15","jet 10-15 GeV",10,0,1,10,0,1 );
-    TH2D *dResZ16 = new TH2D("dRes16","jet 15-50 GeV",10,0,1,10,0,1 );
- /*    
     //----------- fill 4D histo response matrix
-    // Code compression
-    
-     TH2D* dResZ[16];
-     int respcount = 0;
-     int display = 0;
-    if(DptcutTrue){
-        for (int z = 0; z < hZjetRecGenD->GetNbins();z++) {
-            int coord[DnDim]={0,0,0,0,0,0};
-            double content = hZjetRecGenD->GetBinContent(z,coord);
-            //int Ddim[DnDim]   = {zRec,jetRec,zGen,jetGen,DRec,DGen};//for extacting 6D info from THnSparse
-            int i = coord[0], j = coord[1], k = coord[2], m = coord[3], n = coord[4], p = coord[5];
-            double weight = content;
-            double zR_center = hZjetRecGenD->GetAxis(0)->GetBinCenter(i);
-            double jR_center = hZjetRecGenD->GetAxis(1)->GetBinCenter(j);
-            double zG_center = hZjetRecGenD->GetAxis(2)->GetBinCenter(k);
-            double jG_center = hZjetRecGenD->GetAxis(3)->GetBinCenter(m);
-            double DR_center = hZjetRecGenD->GetAxis(4)->GetBinCenter(n);
-            double DG_center = hZjetRecGenD->GetAxis(5)->GetBinCenter(p);
-
-            bool measurement_ok = kTRUE;
-            if(DG_center<2){
-                measurement_ok = kFALSE;
-            }
-            //if((DR_center<3 || DG_center<3) && jG_center>=7 ){
-            if(( DG_center<3) && jG_center>=7 ){
-                measurement_ok = kFALSE;
-            }
-            //if((DR_center<5 || DG_center<5) && jG_center>=10 ){
-            if((DG_center<5) && jG_center>=10 ){
-                measurement_ok = kFALSE;
-            }
-            if (measurement_ok){
-                response.Fill(zR_center,jR_center,zG_center,jG_center,weight);
-		respcount+=1;
-		//--drawing response matrices.
-		//--we need 4x4 squares for each jetpt x jetpt intervals. 
-		//--each square should have 10x10 squares for each zxz bins.
-		//- - - this doesn't seem smart enough. there should be a smarter way
-		for (int jRc = 0; jRc < 4; jRc++){
-		    for (int jGc = 0; jGc < 4; jGc++){
-			    //binval+=1;cout<<binval<<endl;
-		        if(jR_center>fJetptbinsA[jRc] && jR_center<=fJetptbinsA[jRc+1]){
-		            if(jG_center>fJetptbinsA[jGc] && jG_center<=fJetptbinsA[jGc+1]){
-		                binval = dResZ[4*jRc+jGc]->GetBinContent(dResZ[4*jRc+jGc]->GetXaxis()->FindBin(zG_center), dResZ[4*jRc+jGc]->GetXaxis()->FindBin(zR_center));
-		                binval+=1;display +=1;
-		                dResZ[4*jRc+jGc]->SetBinContent(dResZ[4*jRc+jGc]->GetXaxis()->FindBin(zR_center),dResZ[4*jRc+jGc]->GetYaxis()->FindBin(zG_center),binval);
-			        continue;
-			    }
-		        }
-		    }
-		}
-            }
-        }
-    }
-     
-	TCanvas *cResMat2 = new TCanvas("ResponseMatrix3","ResponseMatrix3",950,800);
-	cResMat2->Divide(4,4);
-	//int trialcheck=0;
-	//for (int rmat=0; rmat<4; rmat++){
-	//    for (int cmat=0; cmat<4; cmat++){
-        //        cResMat2->cd(rmat+cmat+1);
-	//	//dResZ[(3-rmat)*4 + cmat ]->Draw("");
-	//    }
-	//}
-*/
-
-    //
-    //----------- fill 4D histo response matrix
-
-    int respcount = 0;
     int display = 0;
     if(DptcutTrue){
         for (int z = 0; z < hZjetRecGenD->GetNbins();z++) {
@@ -352,149 +264,42 @@ void unfold_Bayeszjet(
             double DR_center = hZjetRecGenD->GetAxis(4)->GetBinCenter(n);
             double DG_center = hZjetRecGenD->GetAxis(5)->GetBinCenter(p);
 
+            if(isPrior){
+                if(priorType==1){
+                weight = weight*zG_center*jG_center;}
+                else if(priorType==2){
+                weight = weight/(zG_center*jG_center);}
+                else weight = weight;
+            }
             bool measurement_ok = kTRUE;
-            //if (i==0 || j ==0 || k ==0 || m == 0){
-            // if (i_center<0 || j_center<0){
-            //     measurement_ok = kFALSE;
-            //     cout<<i<<"--"<<j<<endl;//"--"<<k<<"--"<<m<<endl;
-            //     //eventcount+=1;
-            // }
-            //if(jR_center<5 || jG_center<5){
-            //      measurement_ok = kFALSE;
-            //}
-            //if(DR_center<2 || DG_center<2){
-            if(DG_center<2){
+            if(DR_center<1 || DG_center<1){
+            //if(DG_center<2){
+                  measurement_ok = kFALSE;
+            }
+            if((DG_center<2 && jG_center>=4.25 )||(DR_center<2 && jR_center>=4.25 )){
+            //if(( DG_center<3) && jG_center>=7 ){
                   measurement_ok = kFALSE;
             }
             //if((DR_center<3 || DG_center<3) && jG_center>=7 ){
-            if(( DG_center<3) && jG_center>=7 ){
+            if((DG_center<3 && jG_center>=7 )||(DR_center<3 && jR_center>=7 )){
+            //if(( DG_center<3) && jG_center>=7 ){
                   measurement_ok = kFALSE;
             }
             //if((DR_center<5 || DG_center<5) && jG_center>=10 ){
-            if((DG_center<5) && jG_center>=10 ){
+            if((DG_center<5 && jG_center>=10 )||(DR_center<5 && jR_center>=10) ){
+            //if((DG_center<5) && jG_center>=10 ){
                   measurement_ok = kFALSE;
             }
             if (measurement_ok){
                 response.Fill(zR_center,jR_center,zG_center,jG_center,weight);
-		respcount+=1;
-		//--drawing response matrices.
-		//--we need 4x4 squares for each jetpt x jetpt intervals. 
-		//--each square should have 10x10 squares for each zxz bins.
-		if(jR_center>fJetptbinsA[0] && jR_center<=fJetptbinsA[1]){
-		    if(jG_center>fJetptbinsA[0] && jG_center<=fJetptbinsA[1]){
-		    	binval = dResZ1->GetBinContent(dResZ1->GetXaxis()->FindBin(zG_center), dResZ1->GetXaxis()->FindBin(zR_center));
-		    	binval+=1;
-			display +=1;
-		    	dResZ1->SetBinContent(dResZ1->GetXaxis()->FindBin(zR_center),dResZ1->GetYaxis()->FindBin(zG_center),binval);
-		    }
-		    else if(jG_center>fJetptbinsA[1] && jG_center<=fJetptbinsA[2]){
-		    	binval = dResZ2->GetBinContent(dResZ2->GetXaxis()->FindBin(zG_center), dResZ2->GetXaxis()->FindBin(zR_center));
-		    	binval+=1;
-			display +=1;
-		    	dResZ2->SetBinContent(dResZ2->GetXaxis()->FindBin(zR_center),dResZ2->GetYaxis()->FindBin(zG_center),binval);
-		    }
-		    else if(jG_center>fJetptbinsA[2] && jG_center<=fJetptbinsA[3]){
-		    	binval = dResZ3->GetBinContent(dResZ3->GetXaxis()->FindBin(zG_center), dResZ3->GetXaxis()->FindBin(zR_center));
-		    	binval+=1;
-			display +=1;
-		    	dResZ3->SetBinContent(dResZ3->GetXaxis()->FindBin(zR_center),dResZ3->GetYaxis()->FindBin(zG_center),binval);
-		    }
-		    else if(jG_center>fJetptbinsA[3] && jG_center<=fJetptbinsA[4]){
-		    	binval = dResZ4->GetBinContent(dResZ4->GetXaxis()->FindBin(zG_center), dResZ4->GetXaxis()->FindBin(zR_center));
-		    	binval+=1;
-			display +=1;
-		    	dResZ4->SetBinContent(dResZ4->GetXaxis()->FindBin(zR_center),dResZ4->GetYaxis()->FindBin(zG_center),binval);
-		    }
-
-		}
-		else if(jR_center>fJetptbinsA[1] && jR_center<=fJetptbinsA[2]){
-		    if(jG_center>fJetptbinsA[0] && jG_center<=fJetptbinsA[1]){
-		    	binval = dResZ5->GetBinContent(dResZ5->GetXaxis()->FindBin(zG_center), dResZ5->GetXaxis()->FindBin(zR_center));
-		    	binval+=1;
-			display +=1;
-		    	dResZ5->SetBinContent(dResZ5->GetXaxis()->FindBin(zR_center),dResZ5->GetYaxis()->FindBin(zG_center),binval);
-		    }
-		    else if(jG_center>fJetptbinsA[1] && jG_center<=fJetptbinsA[2]){
-		    	binval = dResZ6->GetBinContent(dResZ6->GetXaxis()->FindBin(zG_center), dResZ6->GetXaxis()->FindBin(zR_center));
-		    	binval+=1;
-			display +=1;
-		    	dResZ6->SetBinContent(dResZ6->GetXaxis()->FindBin(zR_center),dResZ6->GetYaxis()->FindBin(zG_center),binval);
-		    }
-		    else if(jG_center>fJetptbinsA[2] && jG_center<=fJetptbinsA[3]){
-		    	binval = dResZ7->GetBinContent(dResZ7->GetXaxis()->FindBin(zG_center), dResZ7->GetXaxis()->FindBin(zR_center));
-		    	binval+=1;
-			display +=1;
-		    	dResZ7->SetBinContent(dResZ7->GetXaxis()->FindBin(zR_center),dResZ7->GetYaxis()->FindBin(zG_center),binval);
-		    }
-		    else if(jG_center>fJetptbinsA[3] && jG_center<=fJetptbinsA[4]){
-		    	binval = dResZ8->GetBinContent(dResZ8->GetXaxis()->FindBin(zG_center), dResZ8->GetXaxis()->FindBin(zR_center));
-		    	binval+=1;
-			display +=1;
-		    	dResZ8->SetBinContent(dResZ8->GetXaxis()->FindBin(zR_center),dResZ8->GetYaxis()->FindBin(zG_center),binval);
-		    }
-
-		}
-		else if(jR_center>fJetptbinsA[2] && jR_center<=fJetptbinsA[3]){
-		    if(jG_center>fJetptbinsA[0] && jG_center<=fJetptbinsA[1]){
-		    	binval = dResZ9->GetBinContent(dResZ9->GetXaxis()->FindBin(zG_center), dResZ9->GetXaxis()->FindBin(zR_center));
-		    	binval+=1;
-			display +=1;
-		    	dResZ9->SetBinContent(dResZ9->GetXaxis()->FindBin(zR_center),dResZ9->GetYaxis()->FindBin(zG_center),binval);
-		    }
-		    else if(jG_center>fJetptbinsA[1] && jG_center<=fJetptbinsA[2]){
-		    	binval = dResZ10->GetBinContent(dResZ10->GetXaxis()->FindBin(zG_center), dResZ10->GetXaxis()->FindBin(zR_center));
-		    	binval+=1;
-			display +=1;
-		    	dResZ10->SetBinContent(dResZ10->GetXaxis()->FindBin(zR_center),dResZ10->GetYaxis()->FindBin(zG_center),binval);
-		    }
-		    else if(jG_center>fJetptbinsA[2] && jG_center<=fJetptbinsA[3]){
-		    	binval = dResZ11->GetBinContent(dResZ11->GetXaxis()->FindBin(zG_center), dResZ11->GetXaxis()->FindBin(zR_center));
-		    	binval+=1;
-			display +=1;
-		    	dResZ11->SetBinContent(dResZ11->GetXaxis()->FindBin(zR_center),dResZ11->GetYaxis()->FindBin(zG_center),binval);
-		    }
-		    else if(jG_center>fJetptbinsA[3] && jG_center<=fJetptbinsA[4]){
-		    	binval = dResZ12->GetBinContent(dResZ12->GetXaxis()->FindBin(zG_center), dResZ12->GetXaxis()->FindBin(zR_center));
-		    	binval+=1;
-			display +=1;
-		    	dResZ12->SetBinContent(dResZ12->GetXaxis()->FindBin(zR_center),dResZ12->GetYaxis()->FindBin(zG_center),binval);
-		    }
-
-		}
-		else if(jR_center>fJetptbinsA[3] && jR_center<=fJetptbinsA[4]){
-		    if(jG_center>fJetptbinsA[0] && jG_center<=fJetptbinsA[1]){
-		    	binval = dResZ13->GetBinContent(dResZ13->GetXaxis()->FindBin(zG_center), dResZ13->GetXaxis()->FindBin(zR_center));
-		    	binval+=1;
-			display +=1;
-		    	dResZ13->SetBinContent(dResZ13->GetXaxis()->FindBin(zR_center),dResZ13->GetYaxis()->FindBin(zG_center),binval);
-		    }
-		    else if(jG_center>fJetptbinsA[1] && jG_center<=fJetptbinsA[2]){
-		    	binval = dResZ14->GetBinContent(dResZ14->GetXaxis()->FindBin(zG_center), dResZ14->GetXaxis()->FindBin(zR_center));
-		    	binval+=1;
-			display +=1;
-		    	dResZ14->SetBinContent(dResZ14->GetXaxis()->FindBin(zR_center),dResZ14->GetYaxis()->FindBin(zG_center),binval);
-		    }
-		    else if(jG_center>fJetptbinsA[2] && jG_center<=fJetptbinsA[3]){
-		    	binval = dResZ15->GetBinContent(dResZ15->GetXaxis()->FindBin(zG_center), dResZ15->GetXaxis()->FindBin(zR_center));
-		    	binval+=1;
-			display +=1;
-		    	dResZ15->SetBinContent(dResZ15->GetXaxis()->FindBin(zR_center),dResZ15->GetYaxis()->FindBin(zG_center),binval);
-		    }
-		    else if(jG_center>fJetptbinsA[3] && jG_center<=fJetptbinsA[4]){
-		    	binval = dResZ16->GetBinContent(dResZ16->GetXaxis()->FindBin(zG_center), dResZ16->GetXaxis()->FindBin(zR_center));
-		    	binval+=1;
-			display +=1;
-		    	dResZ16->SetBinContent(dResZ16->GetXaxis()->FindBin(zR_center),dResZ16->GetYaxis()->FindBin(zG_center),binval);
-		    }
-	        }
             }
             //else{
-            //    response.Miss(k_center,m_center,weight);
+            //    response.Miss(zG_center,jG_center,weight);
             //}//cout<<i<<"-"<<j<<"-"<<k<<"-"<<m<<endl;
         }
     }
 
-/* checking to shorten the code
+// checking to shorten the code
     else{
         for (int z = 0; z< hZjetRecGen->GetNbins();z++) {
             int coord[nDim]={0,0,0,0};
@@ -522,42 +327,7 @@ void unfold_Bayeszjet(
         }
     }
 
-*/
 		
-cout<<respcount<<"------"<<display<<endl;
-
-dResZ14->SetTitle("Jet 7-10 GeV");dResZ14->SetTitleSize(0.2);
-        
-
-	TCanvas *cResMat2 = new TCanvas("ResponseMatrix2","ResponseMatrix2",950,800);
-	cResMat2->Divide(4,4);
-
-	//for (int rmat=0; rmat<4; rmat++){
-	//    for (int cmat=0; cmat<4; cmat++){
-        //        cResMat2->cd(rmat+cmat+1);
-	//	//dResZ[(3-rmat)*4 + cmat ]->Draw("");
-	//    }
-	//}
-
-	cResMat2->cd(13);dResZ1 ->Draw("");
-	cResMat2->cd(14);dResZ2 ->Draw("");
-	cResMat2->cd(15);dResZ3 ->Draw("");
-	cResMat2->cd(16);dResZ4 ->Draw("");
-	cResMat2->cd(9) ;dResZ5 ->Draw("");
-	cResMat2->cd(10);dResZ6 ->Draw("");
-	cResMat2->cd(11);dResZ7 ->Draw("");
-	cResMat2->cd(12);dResZ8 ->Draw("");
-	cResMat2->cd(5) ;dResZ9 ->Draw("");
-	cResMat2->cd(6) ;dResZ10->Draw("");
-	cResMat2->cd(7) ;dResZ11->Draw("");
-	cResMat2->cd(8) ;dResZ12->Draw("");
-	cResMat2->cd(1) ;dResZ13->Draw("");
-	cResMat2->cd(2) ;dResZ14->Draw("");
-	cResMat2->cd(3) ;dResZ15->Draw("");
-	cResMat2->cd(4) ;dResZ16->Draw("");
-
-    //THnD *responseplot = (THnD*)response.Hresponse();
-    //TH2D *responseplot1 = (TH2D*)responseplot->Projection(0,1);
     TH2D *fUnfoldedBayes[NTrials];
     TH2D *folded[NTrials];
     TString outName = "unfoldedSpectrum";
@@ -607,26 +377,117 @@ dResZ14->SetTitle("Jet 7-10 GeV");dResZ14->SetTitleSize(0.2);
     // FD systematics end
     ************************************/
 
+    //*********************************
+    // Kinematic efficiency begins
+    //*********************************/
+    TH2D* kineEffCut  = new TH2D("hkineEffCut","hkineEffCut", fptbinsZTrueN, fptbinsZTrueA, fJetptbinsGenNN, fJetptbinsGenAA);
+    kineEffCut->Sumw2();
+    TH2D* kineEffFull  = new TH2D("hkineEffFull","hkineEffFull", fptbinsZTrueN, fptbinsZTrueA, fJetptbinsGenNN, fJetptbinsGenAA);
+    kineEffFull->Sumw2();
+    TH2D* kineEffCutAll  = new TH2D("hkineEffCuta","hkineEffCuta", fptbinsZTrueNN, fptbinsZTrueAA, fJetptbinsGenNN, fJetptbinsGenAA);
+    kineEffCutAll->Sumw2();
+    TH2D* kineEffFullAll  = new TH2D("hkineEffFulla","hkineEffFulla", fptbinsZTrueNN, fptbinsZTrueAA, fJetptbinsGenNN, fJetptbinsGenAA);
+    kineEffFullAll->Sumw2();
+    if(DptcutTrue){
+        for (int z = 0; z < hZjetRecGenD->GetNbins();z++) {
+            int coord[DnDim]={0,0,0,0,0,0};
+            double content = hZjetRecGenD->GetBinContent(z,coord);
+            //int Ddim[DnDim]   = {zRec,jetRec,zGen,jetGen,DRec,DGen};//for extacting 6D info from THnSparse
+            int i = coord[0], j = coord[1], k = coord[2], m = coord[3], n = coord[4], p = coord[5];
+            double weight = content;
+            double zR_center = hZjetRecGenD->GetAxis(0)->GetBinCenter(i);
+            double jR_center = hZjetRecGenD->GetAxis(1)->GetBinCenter(j);
+            double zG_center = hZjetRecGenD->GetAxis(2)->GetBinCenter(k);
+            double jG_center = hZjetRecGenD->GetAxis(3)->GetBinCenter(m);
+            double DR_center = hZjetRecGenD->GetAxis(4)->GetBinCenter(n);
+            double DG_center = hZjetRecGenD->GetAxis(5)->GetBinCenter(p);
+
+            if(isPrior){
+                if(priorType==1){
+                weight = weight*zG_center*jG_center;}
+                else if(priorType==2){
+                weight = weight/(zG_center*jG_center);}
+                else weight = weight;
+            }
+            bool measurement_ok = kTRUE;
+            //if(DR_center<1 || DG_center<1){
+            if(DR_center<1){
+            //if(DG_center<2){
+                  measurement_ok = kFALSE;
+            }
+            //if((DG_center<2 && jG_center>=4.25 )||(DR_center<2 && jR_center>=4.25 )){
+            if((DR_center<2 && jR_center>=4.25 )){
+            //if(( DG_center<3) && jG_center>=7 ){
+                  measurement_ok = kFALSE;
+            }
+            //if((DR_center<3 || DG_center<3) && jG_center>=7 ){
+            //if((DG_center<3 && jG_center>=7 )||(DR_center<3 && jR_center>=7 )){
+            if((DR_center<3 && jR_center>=7 )){
+            //if(( DG_center<3) && jG_center>=7 ){
+                  measurement_ok = kFALSE;
+            }
+            //if((DR_center<5 || DG_center<5) && jG_center>=10 ){
+            //if((DG_center<5 && jG_center>=10 )||(DR_center<5 && jR_center>=10) ){
+            if((DR_center<5 && jR_center>=10) ){
+            //if((DG_center<5) && jG_center>=10 ){
+                  measurement_ok = kFALSE;
+            }
+            if (measurement_ok){
+                kineEffFull->Fill(zG_center,jG_center,weight);
+                kineEffFullAll->Fill(zG_center,jG_center,weight);
+            }
+            if(jR_center<3 || jR_center>50 || zR_center<0.4){
+            //if((DG_center<5) && jG_center>=10 ){
+                  measurement_ok = kFALSE;
+            }
+            if (measurement_ok){
+                kineEffCut->Fill(zG_center,jG_center,weight);
+                kineEffCutAll->Fill(zG_center,jG_center,weight);
+            }
+            //else{
+            //    response.Miss(zG_center,jG_center,weight);
+            //}//cout<<i<<"-"<<j<<"-"<<k<<"-"<<m<<endl;
+        }
+    }
+    TCanvas* cKine = new TCanvas("hKine","hKine",800,600);
+    TH2D* hKine = (TH2D*) kineEffCut->Clone();
+    hKine->Divide(kineEffFull);
+    hKine->GetYaxis()->SetRangeUser(3,50);
+    hKine->GetXaxis()->SetRangeUser(0.4,1.02);
+    hKine->Draw("colz");
+    hKine->Draw("TEXT same");
+    TCanvas* cKineA = new TCanvas("hKinea","hKinea",800,600);
+    TH2D* hKineAll = (TH2D*) kineEffCutAll->Clone();
+    hKineAll->Divide(kineEffFullAll);
+    hKineAll->GetYaxis()->SetRangeUser(3,50);
+    hKineAll->GetXaxis()->SetRangeUser(0.4,1.02);
+    hKineAll->Draw("colz");
+    hKineAll->Draw("TEXT same");
+//    return;
+    //*********************************
+    // Kinematic efficiency end
+    //*********************************/
+
     TH2D *fUnfoldedBayesScale = (TH2D*)fUnfoldedBayes[regBayes-1]->Clone();
-    TH1D *UnfProjectX[4];
-    TH1D *hDataProjectX[4];
-    TH1D *UnfProjectXScale[4];
+    TH1D *UnfProjectX[fJetptbinsN];
+    TH1D *hDataProjectX[fJetptbinsN];
+    TH1D *UnfProjectXScale[fJetptbinsN];
     //************************************Unfolding systematics
-    TH1D *UnfProjectXIterPre[4];
-    TH1D *UnfProjectXIterPost[4];
+    TH1D *UnfProjectXIterPre[fJetptbinsN];
+    TH1D *UnfProjectXIterPost[fJetptbinsN];
     //************************************
-    TH1D *UnfProjectXUp[4];
-    TH1D *hDataProjectXUp[4];
-    TH1D *UnfProjectXScaleUp[4];
-    TH1D *UnfProjectXDo[4];
-    TH1D *hDataProjectXDo[4];
-    TH1D *UnfProjectXScaleDo[4];
+    TH1D *UnfProjectXUp[fJetptbinsN];
+    TH1D *hDataProjectXUp[fJetptbinsN];
+    TH1D *UnfProjectXScaleUp[fJetptbinsN];
+    TH1D *UnfProjectXDo[fJetptbinsN];
+    TH1D *hDataProjectXDo[fJetptbinsN];
+    TH1D *UnfProjectXScaleDo[fJetptbinsN];
     //************************************
     // Saving response matrix    *********
     //************************************
 
     TH2D* respobj = (TH2D*)response.Hresponse()->Clone();
-    TFile *responseobject = new TFile(Form("%s/alljetz2D/responseobject.root",outDir.Data()),"recreate");
+    TFile *responseobject = new TFile(Form("%s/alljetz2D/responseobject%s.root",outDir.Data(),  isPrior?Form("%d",priorType):""  ),"recreate");
     //response.SetName("responseNow");
     respobj->SetName("responseNow");
     response.Write();
@@ -636,17 +497,17 @@ dResZ14->SetTitle("Jet 7-10 GeV");dResZ14->SetTitleSize(0.2);
     responseobject->Close();
     TCanvas *cRespon = new TCanvas("","",800,600);
     TH2D* respobjP = (TH2D*)respobj->Clone();
-    respobjP->Scale(1.0/respobj->Integral());
+    //respobjP->Scale(1.0/respobj->Integral());
     cRespon->SetLogz();
     respobjP->Draw("colz");
-    cRespon->SaveAs(Form("%s/alljetz2D/responseobj.pdf",outDir.Data()));
-
+    //respobjP->Draw();
+    cRespon->SaveAs(Form("%s/alljetz2D/responseobj%s.pdf",outDir.Data(), isPrior?Form("%d",priorType):"" ));
 
     //************************************
-    TFile *unfold2DoutFile = new TFile(Form("%s/alljetz2D/unfold2DoutFile%sAPW.root",outDir.Data(),truebinnum.Data()),"recreate");
+    TFile *unfold2DoutFile = new TFile(Form("%s/alljetz2D/unfold2DoutFile%sAPW%s.root",outDir.Data(),truebinnum.Data(), isPrior?Form("%d",priorType):"" ),"recreate");
     for (int binjet=1; binjet<= fUnfoldedBayes[regBayes-1]->GetNbinsY(); binjet++){
         UnfProjectX[binjet-1] = (TH1D*)fUnfoldedBayes[regBayes-1]->ProjectionX(Form("UnfProjectX_%d",binjet-1), binjet, binjet, "E");
-	//UnfProjectX[binjet-1]->SetName(Form("UnfProjectX_%d",binjet-1));
+	    //UnfProjectX[binjet-1]->SetName(Form("UnfProjectX_%d",binjet-1));
         hDataProjectX[binjet-1] = (TH1D*)hData2D->ProjectionX(Form("hDataProjectX_%d",binjet-1), binjet, binjet, "E");
         UnfProjectXScale[binjet-1] = (TH1D*)UnfProjectX[binjet-1]->Clone();
         UnfProjectXScale[binjet-1]->Scale(1,"width");
@@ -673,7 +534,7 @@ dResZ14->SetTitle("Jet 7-10 GeV");dResZ14->SetTitleSize(0.2);
             UnfProjectXDo[binjet-1]     ->Write();
             hDataProjectXDo[binjet-1]   ->Write();
         }
-        for(int binz=1;binz<=fUnfoldedBayesScale->GetNbinsX();binz++){
+        for(int binz=1;binz<=fUnfoldedBayes[regBayes-1]->GetNbinsX();binz++){
             fUnfoldedBayesScale->SetBinContent(binz,binjet,UnfProjectXScale[binjet-1]->GetBinContent(binz));
             fUnfoldedBayesScale->SetBinError(binz,binjet,UnfProjectXScale[binjet-1]->GetBinError(binz));
             if(FDsys){
@@ -687,6 +548,8 @@ dResZ14->SetTitle("Jet 7-10 GeV");dResZ14->SetTitleSize(0.2);
         }
     }
     unfold2DoutFile->Close();
+    // Plotting scaled 2D unfolded spectrum
+    // ------------------------------------
     TCanvas *cUnfoldedScale = new TCanvas("cUnfoldedScale", "cUnfoldedScale", 800, 600);
     cUnfoldedScale->SetLogz();
     fUnfoldedBayesScale->SetTitle("z-jet p_{T} spectrum (after unfolding)");
@@ -698,15 +561,192 @@ dResZ14->SetTitle("Jet 7-10 GeV");dResZ14->SetTitleSize(0.2);
     cUnfoldedScale->SaveAs(Form("%s/plots/%s_unfSpectraScale.png",outDir.Data(),outName.Data()));
     cUnfoldedScale->SaveAs(Form("%s/plots/%s_unfSpectraScale.svg",outDir.Data(),outName.Data()));
 
-
-    if (BayesTrueRangeSys){
-      TFile *unfold2DoutFileRangeSys = new TFile(Form("%s/alljetz2D/unfold2DoutFileRangeSys_%s.root",outDir.Data(),truebinnum.Data()),"recreate");
+    // Bayesian Parameter Systematics
+    // ------------------------------
+    if (BayesParameterSys){
+      TFile *unfold2DoutFileRangeSys = new TFile(Form("%s/alljetz2D/unfold2DoutFileRegBayesSys%s.root",outDir.Data(), Form("%d",regBayes) ),"recreate");
       for (int binjet=1; binjet<= fUnfoldedBayes[regBayes-1]->GetNbinsY(); binjet++){
         UnfProjectX[binjet-1] = (TH1D*)fUnfoldedBayes[regBayes-1]->ProjectionX(Form("UnfProjectX_%d",binjet-1), binjet, binjet, "E");
         UnfProjectX[binjet-1] ->Write();
       }
       unfold2DoutFileRangeSys->Close();
+
+      TFile *unfold2DoutFileRangeSys1 = new TFile(Form("%s/alljetz2D/unfold2DoutFileRegBayesSys%s.root",outDir.Data(), Form("%d",regBayes-1) ),"recreate");
+      for (int binjet=1; binjet<= fUnfoldedBayes[regBayes-2]->GetNbinsY(); binjet++){
+        UnfProjectX[binjet-1] = (TH1D*)fUnfoldedBayes[regBayes-2]->ProjectionX(Form("UnfProjectX_%d",binjet-1), binjet, binjet, "E");
+        UnfProjectX[binjet-1] ->Write();
+      }
+      unfold2DoutFileRangeSys1->Close();
+
+      TFile *unfold2DoutFileRangeSys2 = new TFile(Form("%s/alljetz2D/unfold2DoutFileRegBayesSys%s.root",outDir.Data(), Form("%d",regBayes+1) ),"recreate");
+      for (int binjet=1; binjet<= fUnfoldedBayes[regBayes+1]->GetNbinsY(); binjet++){
+        UnfProjectX[binjet-1] = (TH1D*)fUnfoldedBayes[regBayes+1]->ProjectionX(Form("UnfProjectX_%d",binjet-1), binjet, binjet, "E");
+        UnfProjectX[binjet-1] ->Write();
+      }
+      unfold2DoutFileRangeSys2->Close();
     }
+
+
+    // Unfolded/Measured/Folded spectra comparison
+    // ----------------------------------
+    int databinnum = 2; int unfoldbinnum = 1;
+    //
+    TH2D* fUnfoldPlot = (TH2D*)fUnfoldedBayes[regBayes-1]->Clone();
+    fUnfoldPlot->SetLineColor(kRed+2);
+    fUnfoldPlot->SetLineWidth(4);
+    TCanvas *cUnFoldedFold = new TCanvas("UnFoldedMeasuredFolded","UnFolded,Measured,Folded", 1400, 900);
+    TLegend *lUnFoldedFold = new TLegend(0.25,0.25, 0.85, 0.85);
+    cUnFoldedFold->Divide(3,2);
+    cUnFoldedFold->SetLogz();
+    for (int binjet=1; binjet< fUnfoldedBayes[regBayes-1]->GetNbinsY(); binjet++){
+        /***********************************
+        ############# Unfolding ##################
+        ************************************/
+        cUnFoldedFold->cd(binjet);
+
+        TH1D* hData2Dplot = (TH1D*)hData2D->ProjectionX("",binjet+2,binjet+2,"E")->Clone();
+        //hData2Dplot->SetLineColor(kBlack);
+        hData2Dplot->SetLineWidth(2);
+        hData2Dplot->SetMarkerStyle(20);
+        hData2Dplot->SetMarkerSize(1);
+        hData2Dplot->Draw();
+        if(binjet<5){
+        hData2Dplot->SetTitle(Form("Jet pt: %s GeV/c",jetpttitle[binjet].Data()));}
+        else{
+        hData2Dplot->SetTitle(Form("%s",jetpttitle[binjet].Data()));}
+        //fUnfoldedBayes[regBayes-1]->SetLineColor(kRed+2);
+        //fUnfoldedBayes[regBayes-1]->ProjectionX("",binjet+2,binjet+2,"E")->Draw("same");
+    TH1D* h2 = (TH1D*)fUnfoldPlot->ProjectionX("",binjet+1,binjet+1,"E")->Clone();
+    h2->SetLineColor(kRed+2);
+    h2->SetLineWidth(2);
+    h2->SetMarkerStyle(20);
+    h2->SetMarkerColor(kRed+2);
+        h2->Draw("same");
+        //fUnfoldPlot->ProjectionX("",binjet+2,binjet+2,"E")->Draw("same");
+        folded[regBayes-1]->SetLineColor(kGreen+2);
+        folded[regBayes-1]->ProjectionX("",binjet+2,binjet+2,"E")->Draw("same");
+        //kine efficiency
+        TH1D* hKineUnf = (TH1D*)hKine->ProjectionX("",binjet+2,binjet+2)->Clone();
+        TH1D* hUnfoldKine = (TH1D*)fUnfoldPlot->ProjectionX("",binjet+1,binjet+1)->Clone();
+        hUnfoldKine->Divide(hKineUnf);
+        hUnfoldKine->SetLineColor(kOrange+2);
+        hUnfoldKine->SetMarkerStyle(21);
+        hUnfoldKine->Draw("same");
+    }
+    cUnFoldedFold->cd(fUnfoldedBayes[regBayes-1]->GetNbinsY()+1);
+        TH1D* hData2Dplot = (TH1D*)hData2D->ProjectionX("",3,3,"E")->Clone();
+        hData2Dplot->SetLineWidth(2);
+        //fUnfoldedBayes[regBayes-1]->SetLineColor(kRed+2);
+        //fUnfoldedBayes[regBayes-1]->SetLineWidth(2);
+        folded[regBayes-1]->SetLineColor(kGreen+2);
+        folded[regBayes-1]->SetLineWidth(2);
+        lUnFoldedFold->AddEntry(hData2Dplot,"Measured","l");
+        lUnFoldedFold->AddEntry(fUnfoldPlot,Form("Unfolded, iter=%d",regBayes),"l");
+        lUnFoldedFold->AddEntry(folded[regBayes-1],"Folded","l");
+    lUnFoldedFold->Draw("same");
+    // Unfolded/Measured spectra comparison
+    // ----------------------------------
+    TCanvas *cUnFolded = new TCanvas("UnFoldedMeasured","UnFolded/Measured", 1400, 900);
+    cUnFolded->Divide(3,2);
+    cUnFolded->SetLogz();
+    for (int binjet=1; binjet< fUnfoldedBayes[regBayes-1]->GetNbinsY(); binjet++){
+        /***********************************
+        ############# Unfolding ##################
+        ************************************/
+        cUnFolded->cd(binjet);
+
+        TH1D* hData2Dplot = (TH1D*)hData2D->ProjectionX("",binjet+databinnum,binjet+databinnum,"E")->Clone();
+        //hData2Dplot->SetLineColor(kBlack);
+        hData2Dplot->SetLineWidth(2);
+        hData2Dplot->SetMarkerStyle(20);
+        hData2Dplot->SetMarkerSize(1);
+        hData2Dplot->Draw();
+        hData2Dplot->SetTitle(Form("Jet pt: %s GeV/c",jetpttitle[binjet].Data()));
+        for(int ivar=0; ivar<NTrials; ivar++){//changes
+            fUnfoldedBayes[ivar]->SetLineColor(colortable[ivar]);
+            fUnfoldedBayes[ivar]->ProjectionX("",binjet+unfoldbinnum,binjet+unfoldbinnum,"E")->Draw("same");
+        }
+    }
+    TLegend *lUnFolded = new TLegend(0.25,0.25, 0.85, 0.85);
+    cUnFolded->cd(fUnfoldedBayes[regBayes-1]->GetNbinsY()+1);
+    for(int ivar=0; ivar<NTrials; ivar++){//changes
+        TH1D* hRatio = (TH1D*)fUnfoldedBayes[ivar]->ProjectionX("",1,1,"E");
+        hRatio->SetLineColor(colortable[ivar]);
+        lUnFolded->AddEntry(hRatio,Form("Bayes iter = %d",ivar+1),"l");
+    }
+    lUnFolded->Draw();
+
+    // Folded/Measured spectra comparison
+    // ----------------------------------
+    TCanvas *cFolded = new TCanvas("FoldedMeasured","Folded/Measured", 1400, 900);
+    cFolded->Divide(3,2);
+    for (int binjet=1; binjet<= fUnfoldedBayes[regBayes-1]->GetNbinsY(); binjet++){
+        /***********************************
+        ############# folding ##################
+        ************************************/
+        cFolded->cd(binjet);
+
+        TH1D* hData2Dplot = (TH1D*)hData2D->ProjectionX("",binjet+databinnum,binjet+databinnum,"E")->Clone();
+        //hData2Dplot->SetLineColor(kBlack);
+        hData2Dplot->SetLineWidth(2);
+        hData2Dplot->SetMarkerStyle(20);
+        hData2Dplot->SetMarkerSize(1);
+        hData2Dplot->Draw();
+        hData2Dplot->SetTitle(Form("Jet pt: %s GeV/c",jetpttitle[binjet].Data()));
+        for(int ivar=0; ivar<NTrials; ivar++){//changes
+            folded[ivar]->SetLineColor(colortable[ivar]);
+            folded[ivar]->ProjectionX("",binjet+databinnum,binjet+databinnum,"E")->Draw("same");
+        }
+    }
+    TLegend *lFolded2 = new TLegend(0.25,0.25, 0.85, 0.85);
+    cFolded->cd(fUnfoldedBayes[regBayes-1]->GetNbinsY());
+    for(int ivar=0; ivar<NTrials; ivar++){//changes
+        TH1D* hRatio = (TH1D*)folded[ivar]->ProjectionX("",1,1,"E");
+        hRatio->SetLineColor(colortable[ivar]);
+        lFolded2->AddEntry(hRatio,Form("Bayes iter = %d",ivar+1),"l");
+    }
+    lFolded2->Draw();
+
+    // Folded/Measured spectra comparison ratio
+    // ----------------------------------------
+    TLine *lm = new TLine(0.4, 1, 1.02, 1);
+    lm->SetLineStyle(2);
+
+    TCanvas *cFoldedR = new TCanvas("FoldedMeasuredRatio","Folded/Measured Ratio", 1400, 900);
+    cFoldedR->Divide(3,2);
+    TH1D* hRatio[fUnfoldedBayes[regBayes-1]->GetNbinsY()][NTrials];
+    for (int binjet=1; binjet<= fUnfoldedBayes[regBayes-1]->GetNbinsY(); binjet++){
+        //TLegend *lFoldedR = new TLegend(0.65,0.65, 0.85, 0.85);
+        /***********************************
+        ############# folding ##################
+        ************************************/
+        cFoldedR->cd(binjet);
+        TH1D* hDbase = (TH1D*)hData2D->ProjectionX("",binjet+databinnum,binjet+databinnum,"E");
+        for(int ivar=0; ivar<NTrials; ivar++){//changes
+            hRatio[binjet-1][ivar] = (TH1D*)folded[ivar]->ProjectionX("",binjet+databinnum,binjet+databinnum,"E");
+            hRatio[binjet-1][ivar]->Divide(hDbase);
+            hRatio[binjet-1][ivar]->SetLineColor(colortable[ivar]);
+            for (int binN=1; binN <=hRatio[binjet-1][ivar]->GetNbinsX(); binN++){
+                hRatio[binjet-1][ivar]->SetBinError(binN,0);
+            }
+            hRatio[binjet-1][ivar]->SetTitle(Form("Jet pt: %s GeV/c",jetpttitle[binjet].Data()));
+            if(!ivar)hRatio[binjet-1][ivar]->Draw();
+            else hRatio[binjet-1][ivar]->Draw("same");
+            hRatio[binjet-1][ivar]->GetYaxis()->SetRangeUser(0.92,1.08);
+            //lFoldedR->AddEntry(hRatio,Form("Bayes iter = %d",ivar+1),"l");
+        }
+        //lFoldedR->Draw("same");
+        lm->Draw("same");
+    }
+    TLegend *lFoldedR2 = new TLegend(0.25,0.25, 0.85, 0.85);
+    cFoldedR->cd(fUnfoldedBayes[regBayes-1]->GetNbinsY());
+    for(int ivar=0; ivar<NTrials; ivar++){//changes
+        TH1D* hRatio = (TH1D*)folded[ivar]->ProjectionX("",1,1,"E");
+        hRatio->SetLineColor(colortable[ivar]);
+        lFoldedR2->AddEntry(hRatio,Form("Bayes iter = %d",ivar+1),"l");
+    }
+    lFoldedR2->Draw();
+    
 return;
 }
 
