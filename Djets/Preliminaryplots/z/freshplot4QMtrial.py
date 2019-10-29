@@ -68,17 +68,17 @@ def TGRAPH(n,xvalues1,yvalues1,xerr1,yerr1do,yerr1up,xedges,color):
 #######################################################################
 
 xsec = 1    ## if xsec == 0, it is probability, else xsec
-R = 6       ## JET RADIUS
-jetbin = 1  ## JET PT interval: 0,1,2,3,4 don't use 0
+R = 4       ## JET RADIUS
+jetbin = 4  ## JET PT interval: 0,1,2,3,4 don't use 0
 if R == 4:
-    yups = [2.9,2.5,2.0,1.8] ## x-sec upper limit, this times the max
+    yups = [2.2,2.3,2.2,2.2] ## x-sec upper limit, this times the max
     ylimitRs = [[0.01,1.5],[0.05,1.5],[0.21,1.7],[0.1,2.7]]
-    ylimits = [[-0.1,5.4], [-0.1,5.4], [-0.1,5.4], [-0.1,5.4]] ## Probability upper limit
+    ylimits = [[-0.15,5.6], [-0.15,5.6], [-0.15,5.6], [-0.15,5.6]] ## Probability upper limit
     yupsR = [0.55,0.55,0.55,0.55] ## prob upperlimit ratio, 1 +/- this
 elif R == 6: 
-    yups = [2.0,2.0,2.0,2.4]
+    yups = [2.2,2.2,2.2,2.8]
     ylimitRs = [[0.01,1.5],[0.01,1.5],[0.01,1.5],[0.1,2.7]]
-    ylimits = [[-0.1,4.4], [-0.1,4.4], [-0.1,4.4], [-0.1,4.4]] ## Probability upper limit
+    ylimits = [[-0.15,4.9], [-0.15,4.9], [-0.15,4.9], [-0.15,4.9]] ## Probability upper limit
     yupsR = [0.71,0.71,0.51,1.35] ## prob upperlimit ratio, 1 +/- this
 
 ylimitR = ylimitRs[jetbin-1]
@@ -89,12 +89,12 @@ YUPR = yupsR[jetbin-1]
 
 ############## Y axis title
 #ytitletops = ['Probability','#frac{d^{3}#sigma}{dz_{||}^{ch} dp_{T} d#it{#eta}}']
-ytitletops = ['probability density','#frac{d^{2}#it{#sigma}}{d#it{z}_{||}^{ch} d#it{#eta}} mb']
+ytitletops = ['Probability Density','#frac{d^{2}#it{#sigma}}{d#it{z}_{||}^{ch} d#it{#eta}} (mb)']
 ytitletop = ytitletops[xsec]
 ytitletopsize=ylabeltopsize=0.05 #ylabeltopsize=0.05
 ytopoffset=1.50
 if xsec == 0:
-    ytopoffset = 1.3
+    ytopoffset = 1.2
 
 ytitlebot='theory / data'
 ytitlebotsize=ylabelbotsize=0.09 #=0.09
@@ -103,7 +103,7 @@ ybotoffset = 0.69
 xlabelsize=0.085
 xtitlesize=0.13
 ############## X axis title
-xtitle = '#it{z}_{||}^{ch. jet}'
+xtitle = '#it{z}_{||}^{ch}'
 ############## jetpt bin legend
 jetbintitles = ['5 < #it{p}_{T,ch jet} < 7 GeV/#it{c}', '7 < #it{p}_{T,ch jet} < 10 GeV/#it{c}','10 < #it{p}_{T,ch jet} < 15 GeV/#it{c}','15 < #it{p}_{T,ch jet} < 50 GeV/#it{c}']
 jetbintitle = jetbintitles[jetbin-1]
@@ -271,7 +271,7 @@ c1 = RT.TCanvas('c1','c1',800,20,700,700)
 #l1 = RT.TLegend(0.5,0.07,0.8,0.27,'','NB NDC')
 l1 = RT.TLegend(0.61,0.63,0.87,0.87,'','NB NDC')
 l1.SetBorderSize(0)
-p1 = RT.TPaveText(0.18,0.64,0.52,0.9,'NB NDC')
+p1 = RT.TPaveText(0.18,0.57,0.52,0.9,'NB NDC')
 
 horizonMargin=0.022; linezero = RT.TLine(0.4+horizonMargin, 0, 1-horizonMargin, 0);
 linezero.SetLineColor(RT.kWhite)
@@ -283,12 +283,12 @@ p1.SetTextFont(43);
 p1.SetTextSize(18);
 
 p1.AddText('ALICE Preliminary')
-p1.AddText('pp, #sqrt{#it{s}} = 5.02 TeV, #it{R}=0.'+str(R)+', |#it{#eta}_{lab}^{jet}| < 0.'+str(9-R))
-#p1.AddText('charged jets, anti-#it{k}_{T} #it{R} = 0.'+str(R)+', |#it{#eta}_{lab}^{jet}| < 0.'+str(9-R))
+p1.AddText('pp, #sqrt{#it{s}} = 5.02 TeV')
+p1.AddText('charged jets, anti-#it{k}_{T}, #it{R}=0.'+str(R)+', |#it{#eta}_{lab}^{jet}|<0.'+str(9-R))
 #p1.AddText('#it{R} = 0.'+str(R)+', |#it{#eta}_{lab}^{jet}| < 0.'+str(9-R))
-p1.AddText(jetbintitle)
 #p1.AddText('with D^{0} ,  '+str(Ddo[jetbin-1])+' < #it{p}_{T,D} < '+str(Dup[jetbin-1])+' GeV/#it{c}')
-p1.AddText(''+str(Ddo[jetbin-1])+' < #it{p}_{T,D^{0}} < '+str(Dup[jetbin-1])+' GeV/#it{c}')
+p1.AddText('with D^{0}, '+str(Ddo[jetbin-1])+' < #it{p}_{T,D^{0}} < '+str(Dup[jetbin-1])+' GeV/#it{c}')
+p1.AddText(jetbintitle)
 #p1.AddText(' < #it{p}_{T,ch jet} <  GeV/#it{c}')
 #p1.AddText(jetbintitle)
 #p1.AddEntry()
@@ -323,8 +323,9 @@ gr2 = TGRAPH(numbincenters,xvalues1,yvalues2,xerr1,yerr2do,yerr2up,xedges,cidsys
 gr2.SetFillStyle(1001)
 #transcol = RT.GetColorTransparent(cidsys,0.35)
 transcol=cidsys
-gr2.SetFillColor(transcol)
+gr2.SetFillColorAlpha(transcol,0.7)
 gr2.SetLineWidth(0) #1504
+gr2.SetLineColorAlpha(cidsys,0) #1504
 
 mgT.Add(gr2)
 mgT.Add(gr1)
@@ -368,9 +369,10 @@ mgB.SetTitle('')
 gr1b = TGRAPH(numbincenters,xvalues1,yvalues1R,xerr1,yerr1doR,yerr1upR,xedges,colors[0])
 gr1b.SetFillStyle(0)
 gr2b = TGRAPH(numbincenters,xvalues1,yvalues2R,xerr1,syspercentDo,syspercentUp,xedges,colors[0])
-gr2b.SetLineWidth(0) #1504
 gr2b.SetFillStyle(1001)
-gr2b.SetFillColorAlpha(cidsys,0.35)
+gr2b.SetFillColorAlpha(cidsys,0.70)
+gr2b.SetLineWidth(0) #1504
+gr2b.SetLineColorAlpha(cidsys,0) #1504
 
 mgB.Add(gr2b) #data systematics
 mgB.Add(gr1b) #theory systematics
@@ -392,9 +394,15 @@ hTR0[0].Draw('same')  #Data central
 ######### DRAWING THE CANVAS
 c1.Update()
 c1.Draw()
-c1.SaveAs(str(R)+'_'+str(xsec)+'_'+str(jetbin)+'.pdf')
-c1.SaveAs(str(R)+'_'+str(xsec)+'_'+str(jetbin)+'.png')
+c1.SaveAs('QM_JIRA_linear_29Oct/pdf/'+str(R)+'_'+str(xsec)+'_'+str(jetbin)+'.pdf')
+c1.SaveAs('QM_JIRA_linear_29Oct/eps/'+str(R)+'_'+str(xsec)+'_'+str(jetbin)+'.eps')
+c1.SaveAs('QM_JIRA_linear_29Oct/png/'+str(R)+'_'+str(xsec)+'_'+str(jetbin)+'.png')
 
+######### SAVING IN A ROOT FILE
+yerr2doROOT = histData.Clone('yerr2doROOT')
+yerr2upROOT = histData.Clone('yerr2upROOT')
+for i in range(len(yerr2do)):
+    yerr2doROOT.SetBinContent(i+1,yerr2do[i]);yerr2upROOT.SetBinContent(i+1,yerr2up[i])
 
 savefile = RT.TFile(str(R)+'_'+str(xsec)+'_'+str(jetbin)+'.root', 'RECREATE')
 histData.Write('histData')
@@ -407,8 +415,8 @@ hT1[5].Write('hT5')
 hT1[6].Write('hT6')
 hT1[7].Write('hT7')
 hT1[8].Write('hT8')
+yerr2doROOT.Write('yerr2doROOT')
+yerr2upROOT.Write('yerr2upROOT')
 savefile.Close()
-
-print(len(hT1))
 
 input()
