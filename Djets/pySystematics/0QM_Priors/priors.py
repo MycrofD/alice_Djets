@@ -6,12 +6,29 @@ import numpy as np
 import scipy as sp
 from rootpy.io import root_open
 import array
+import sys
 
 from matplotlib import colors as mcolors
 ##----------------------------------------------------------------
 from ROOT import TCanvas, TLegend, TLine
 ##----------------------------------------------------------------
 #--------------------------------------------------
+# For R=0.4 and 0.6, apparently unfolding made 6 histograms 0-5 at that time. Now if you run,
+# it's making 5 histograms 0-4
+# So for R=0.2 we have 0-4. And thus jetbin+2 was changed to jetbin+1 only for dataprior files
+
+
+## for R04 and R06, hDataProjectX_4 was corresponding to hUnfProjectX_3
+## Rerun unfolding for R04 and R06 to get new better settings as is happening for R02
+
+
+
+
+if len(sys.argv)==1:
+    print("   === Usage example: python priors.py R jetbin ")
+    print("   === e.g.: python priors.py 02 1")
+    exit()
+
 # reading bin contents
 def BinValues(myhist):
     c = []
@@ -43,13 +60,16 @@ binupedges = np.array([0.4,0.6,0.7,0.8,0.9,1.0])
 fptbinsZN = 5
 fptbinsZlh = [0.4,0.6,0.7,0.8,0.9,1.02]
 
-Rtitle = '04'
-jetbin = 3
+Rtitle = str(sys.argv[1]) #'02'
+jetbin = int(sys.argv[2]) #1
 jetbintitle=['5-7 GeV', '7-10 GeV', '10-15 GeV', '15-50 GeV']
 jetbinname=['5_7', '7_10', '10_15', '15_50']
 
 #R='04_34'
-R=Rtitle+'_34'
+if Rtitle == '02':
+    R=Rtitle+'_finaltry'
+else:
+    R=Rtitle+'_34'
 priorType=['','1','2','3','4','5','6','7','8']
 
 RTColors = [RT.kRed+2, RT.kGreen+2, RT.kBlue+2, RT.kOrange+2, RT.kViolet+2, RT.kYellow+2, RT.kCyan+2, RT.kAzure+2, RT.kMagenta-6]
@@ -89,7 +109,7 @@ cp.Update()
 wait = input()
 ############## PRIORS V DATA Plot
 ############## -----------------------------
-exec("dataprior = datafile[0].hDataProjectX_%s"%(jetbin+2))
+exec("dataprior = datafile[0].hDataProjectX_%s"%(jetbin+1))
 dataprior = dataprior.Rebin(fptbinsZN,'dataprior',array.array('d',fptbinsZlh))
 dataprior.Scale(1,'width')
 dataprior.Scale(1/dataprior.Integral())
@@ -101,7 +121,7 @@ cpd.SetLogy()
 for i in range(len(priorType)):
     exec("hpD%s = priorfile[i].hGenRebin.Clone('hpD%s')"%(i,i))
     exec("hpD%s.GetXaxis().SetRangeUser(0.4,1.02)"%(i))
-    exec("hpd%s = hpD%s.ProjectionX('hpd%s',jetbin+2,jetbin+2,'E')"%(i,i,i))
+    exec("hpd%s = hpD%s.ProjectionX('hpd%s',jetbin+1,jetbin+1,'E')"%(i,i,i)) 
     exec("hpd%s.Scale(1,'width')"%(i))
     exec("hpd%s.Scale(1/hpd%s.Integral())"%(i,i))
     exec("hpd%s.SetLineColor(RTColors[i])"%(i))
@@ -162,8 +182,8 @@ lR2.Draw('same')
 cpdR2.Update()
 wait = input()
 print("eeyes")
-exit()
-print("nnnes")
+#exit()
+#print("nnnes")
 
 
 ############## TCANVAS showing different prior-unfolded spectra ratio
