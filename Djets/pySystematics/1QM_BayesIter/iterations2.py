@@ -1,4 +1,4 @@
-import os, os.path
+import os, os.path, sys
 import matplotlib.pyplot as plt
 import ROOT as RT
 import rootpy as rp
@@ -11,6 +11,12 @@ from matplotlib import colors as mcolors
 from ROOT import TCanvas
 ##----------------------------------------------------------------
 #--------------------------------------------------
+if len(sys.argv)==1:
+    print("   === Usage example: python iterations2.py R jetbin ")
+    print("   === e.g.: python iterations2.py 02 1")
+    exit()
+
+
 # reading bin contents
 def BinValues(myhist):
     c = []
@@ -40,12 +46,18 @@ def FinalRMS(histarrays, defaulthist): # needs array of arrays, i.e. array of TH
 binlowedges = np.array([0.0,0.4,0.6,0.7,0.8,0.9])
 binupedges = np.array([0.4,0.6,0.7,0.8,0.9,1.0])
 
-Rtitle = '04'
-jetbin = 3
+Rtitle = str(sys.argv[1]) #'02'
+jetbin = int(sys.argv[2]) #1
 jetbintitle=['5-7 GeV', '7-10 GeV', '10-15 GeV', '15-50 GeV']
 jetbinname=['5_7', '7_10', '10_15', '15_50']
 
 R=Rtitle+'_34'
+#R='04_34'
+if Rtitle == '02':
+    R=Rtitle+'_finaltry'
+else:
+    R=Rtitle+'_34'
+
 regbayes=['5','4','6']
 
 hist = []
@@ -85,7 +97,7 @@ plt.ylabel('Deviation from default Bayes Iter = 5')
 plt.title('R=%s, jet $p_{T}$: %s'%(Rtitle, jetbintitle[jetbin]))
 axes = plt.gca()
 axes.set_xlim(0.4,1.0)
-axes.set_ylim(0.97,1.05)
+axes.set_ylim(0.97,1.25)
 #plt.show()
 plt.savefig('RegParams%s%s.pdf'%(Rtitle,jetbinname[jetbin]))
 plt.savefig('RegParams%s%s.png'%(Rtitle,jetbinname[jetbin]))
@@ -105,7 +117,7 @@ plt.title('R=%s, jet $p_{T}$: %s'%(Rtitle, jetbintitle[jetbin]))
 plt.grid()
 axes = plt.gca()
 axes.set_xlim(0.4,1.0)
-axes.set_ylim(0,4)
+axes.set_ylim(0,6)
 #plt.show()
 plt.savefig('RegParamsRMS%s%s.pdf'%(Rtitle,jetbinname[jetbin]))
 plt.savefig('RegParamsRMS%s%s.png'%(Rtitle,jetbinname[jetbin]))
