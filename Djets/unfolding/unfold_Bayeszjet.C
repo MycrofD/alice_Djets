@@ -15,14 +15,17 @@
 
 //====================== global =========================
 double plotmin = fptbinsZMeasA[0], plotmax =  fptbinsZMeasA[fptbinsZMeasN];
-TString jetpttitle[5] = {"3-5","5-7", "7-10","10-15","15-50"};
+TString jetpttitle[5] = {"2-5","5-7", "7-10","10-15","15-50"};
 // to fill the response matrix
 bool BayesParameterSys=1;
 const int fJetptbinsGenNN=7;
-double fJetptbinsGenAA[fJetptbinsGenNN+1]={0,3,5,7,10,15,50,100};
+double fJetptbinsGenAA[fJetptbinsGenNN+1]={0,2,5,7,10,15,50,100};
          //const int fJetptbinsGenN=6; TString truebinnum="";
          //double fJetptbinsGenA[fJetptbinsGenN+1]={0,5,7,10,15,50,100};
-         const int fJetptbinsGenN=5; TString truebinnum="250";
+         const int fJetptbinsGenN=5; 
+         TString truebinnum="";
+         //TString truebinnum="JES4";
+         //TString truebinnum="0350";
          double fJetptbinsGenA[fJetptbinsGenN+1]={2,5,7,10,15,50};
          //const int fJetptbinsGenN=8; TString truebinnum="360";
          //double fJetptbinsGenA[fJetptbinsGenN+1]={3,4,5,7,10,15,50,60};
@@ -249,7 +252,7 @@ void unfold_Bayeszjet(
     //int eventcount = 0;
     double binval = 0;
     //----------- fill 4D histo response matrix
-    int display = 0;
+    //int display = 0;
     if(DptcutTrue){
         for (int z = 0; z < hZjetRecGenD->GetNbins();z++) {
             int coord[DnDim]={0,0,0,0,0,0};
@@ -288,10 +291,11 @@ void unfold_Bayeszjet(
                 else weight = weight;
             }
             bool measurement_ok = kTRUE;
-            if(DR_center<2 || DG_center<2 || jR_center<2){
+            //if(DR_center<2 || DG_center<2 || jR_center<2){
+            if(DR_center<2 || DG_center<2 || jR_center<fJetptbinsA[0]){
                   measurement_ok = kFALSE;
             }
-            if((DG_center<2 && jG_center>=2 )||(DR_center<2 && jR_center>=2 )){
+            if((DG_center<2 && jG_center>=2 )||(DR_center<2 && jR_center>=fJetptbinsA[0] )){
                   measurement_ok = kFALSE;
             }
             if((DG_center<2 && jG_center>=5 )||(DR_center<2 && jR_center>=5 )){
@@ -328,12 +332,6 @@ void unfold_Bayeszjet(
             double jG_center = hZjetRecGen->GetAxis(3)->GetBinCenter(m);
 
             bool measurement_ok = kTRUE;
-            //if (i==0 || j ==0 || k ==0 || m == 0){
-            // if (i_center<0 || j_center<0){
-            //     measurement_ok = kFALSE;
-            //     cout<<i<<"--"<<j<<endl;//"--"<<k<<"--"<<m<<endl;
-            //     //eventcount+=1;
-            // }
             if (measurement_ok){
                 response.Fill(zR_center,jR_center,zG_center,jG_center,weight);
             }
@@ -394,7 +392,7 @@ void unfold_Bayeszjet(
     ************************************/
 
     //*********************************
-    // Kinematic efficiency begins
+    // Kinematic efficiency begins. post unfolding
     //*********************************/
     TH2D* kineEffCut  = new TH2D("hkineEffCut","hkineEffCut", fptbinsZFinalN, fptbinsZFinalA, fJetptbinsGenN, fJetptbinsGenA);
     kineEffCut->Sumw2();
@@ -438,38 +436,32 @@ void unfold_Bayeszjet(
                 else weight = weight;
             }
             bool measurement_ok = kTRUE;
-            if(DR_center<1 || DG_center<1 || jR_center<2){
-            //if(DR_center<1){
-            //if(DG_center<2){
+            //if(DR_center<2 || DG_center<2 || jR_center<2){
+            //dptmins = {2,3,5,5}
+            if(DR_center<2 || DG_center<2 || jR_center<fJetptbinsA[0]){
                   measurement_ok = kFALSE;
             }
-            //if((DG_center<2 && jG_center>=4.25 )||(DR_center<2 && jR_center>=4.25 )){
-            if((DG_center<2 && jG_center>=2 )||(DR_center<2 && jR_center>=2 )){
-            //if(( DG_center<3) && jG_center>=7 ){
+            if((DG_center<2 && jG_center>=2 )||(DR_center<2 && jR_center>=fJetptbinsA[0] )){
                   measurement_ok = kFALSE;
             }
             if((DG_center<2 && jG_center>=5 )||(DR_center<2 && jR_center>=5 )){
-            //if((DR_center<2 && jR_center>=4.25 )){
                   measurement_ok = kFALSE;
             }
-            //if((DR_center<3 || DG_center<3) && jG_center>=7 ){
             if((DG_center<3 && jG_center>=7 )||(DR_center<3 && jR_center>=7 )){
-            //if((DR_center<3 && jR_center>=7 )){
-            //if(( DG_center<3) && jG_center>=7 ){
                   measurement_ok = kFALSE;
             }
-            //if((DR_center<5 || DG_center<5) && jG_center>=10 ){
             if((DG_center<5 && jG_center>=10 )||(DR_center<5 && jR_center>=10) ){
-            //if((DR_center<5 && jR_center>=10) ){
-            //if((DG_center<5) && jG_center>=10 ){
                   measurement_ok = kFALSE;
             }
             if (measurement_ok){
                 kineEffFull->Fill(zG_center,jG_center,weight);
                 kineEffFullAll->Fill(zG_center,jG_center,weight);
             }
-            if(jR_center<3 || jR_center>50 || zR_center<0.4){
-            //if((DG_center<5) && jG_center>=10 ){
+            if((DR_center>36 || jR_center>50 || zR_center<0.4 )){
+                  measurement_ok = kFALSE;
+            }
+            //if(jR_center<3 || jR_center>50 || zR_center<0.4){
+            if(jR_center<fJetptbinsA[0] || jR_center>fJetptbinsA[fJetptbinN+1] || zR_center<fptbinsZMeasA[0]){
                   measurement_ok = kFALSE;
             }
             if (measurement_ok){
@@ -495,7 +487,8 @@ void unfold_Bayeszjet(
     TCanvas* cKineA = new TCanvas("hKinea","hKinea",800,600);
     TH2D* hKineAll = (TH2D*) kineEffCutAll->Clone();
     hKineAll->Divide(kineEffFullAll);
-    hKineAll->GetYaxis()->SetRangeUser(3,50);
+    //hKineAll->GetYaxis()->SetRangeUser(2,50);//3,50
+    hKineAll->GetYaxis()->SetRangeUser(fJetptbinsA[0],fJetptbinsA[fJetptbinN+1]);
     hKineAll->GetXaxis()->SetRangeUser(0.4,1.02);
 
     hKineAll->SetTitle("");
@@ -529,7 +522,7 @@ void unfold_Bayeszjet(
     TH2D* respMeas = (TH2D*)response.Hmeasured()->Clone();
     respTruth->Scale(1/response.Htruth()->Integral());
     respMeas->Scale(1/response.Hmeasured()->Integral());
-    TFile *responseobject = new TFile(Form("%s/alljetz2D/responseobject%s.root",outDir.Data(),  isPrior?Form("%d",priorType):""  ),"recreate");
+    TFile *responseobject = new TFile(Form("%s/alljetz2D/responseobject%s%s.root",outDir.Data(), truebinnum.Data(), isPrior?Form("%d",priorType):""  ),"recreate");
     //response.SetName("responseNow");
     respobj->SetName("responseNow");
     response.Write();
@@ -569,7 +562,7 @@ void unfold_Bayeszjet(
     axisV7->SetLabelFont(43);    axisV7->SetLabelSize(15);    axisV7->SetLabelOffset(0.03);    axisV7->Draw();
     TGaxis *axisV8 = new TGaxis(0, 32, 0, 36, 0.6, 1.0, 4, "-L");
     axisV8->SetLabelFont(43);    axisV8->SetLabelSize(15);    axisV8->SetLabelOffset(0.03);    axisV8->Draw();
-    TGaxis *axisV9 = new TGaxis(0, 0, 0, 6, 0, 5, 1, "-L");
+    TGaxis *axisV9 = new TGaxis(0, 0, 0, 6, 2, 5, 1, "-L");
     axisV9->SetLabelFont(43);    axisV9->SetLabelSize(19);    axisV9->SetLabelOffset(0.05);    axisV9->Draw();
     TGaxis *axisV10 = new TGaxis(0, 12, 0, 18, 7, 10, 1, "-L");
     axisV10->SetLabelFont(43);    axisV10->SetLabelSize(19);    axisV10->SetLabelOffset(0.06);    axisV10->Draw();
@@ -589,18 +582,18 @@ void unfold_Bayeszjet(
     axisH5->SetLabelFont(43);    axisH5->SetLabelSize(15);    axisH5->SetLabelOffset(0.005);    axisH5->Draw();
     TGaxis *axisH6 = new TGaxis(30, 0, 36, 0, 0.4, 1.0, 3, "-+L");
     axisH6->SetLabelFont(43);    axisH6->SetLabelSize(15);    axisH6->SetLabelOffset(0.02);    axisH6->Draw();
-    TGaxis *axisH7 = new TGaxis(0, 0, 6, 0, 3, 4.25, 1, "-+L");
+    TGaxis *axisH7 = new TGaxis(0, 0, 6, 0, 3, 5, 1, "-+L");
     axisH7->SetLabelFont(43);    axisH7->SetLabelSize(19);    axisH7->SetLabelOffset(0.04);    axisH7->Draw();
-    TGaxis *axisH8 = new TGaxis(12, 0, 18, 0, 5, 7, 1, "-+L");
+    TGaxis *axisH8 = new TGaxis(12, 0, 18, 0, 7, 10, 1, "-+L");
     axisH8->SetLabelFont(43);    axisH8->SetLabelSize(19);    axisH8->SetLabelOffset(0.04);    axisH8->Draw();
-    TGaxis *axisH9 = new TGaxis(24, 0, 30, 0, 10, 15, 1, "-+L");
+    TGaxis *axisH9 = new TGaxis(24, 0, 30, 0, 15, 50, 1, "-+L");
     axisH9->SetLabelFont(43);    axisH9->SetLabelSize(19);    axisH9->SetLabelOffset(0.04);    axisH9->Draw();
-    TGaxis *axisH10 = new TGaxis(30, 0, 36, 0, 15, 50, 1, "-+L");
-    axisH10->SetLabelFont(43);    axisH10->SetLabelSize(19);    axisH10->SetLabelOffset(0.04);   axisH10->Draw();
+//    TGaxis *axisH10 = new TGaxis(30, 0, 36, 0, 15, 50, 1, "-+L");
+//    axisH10->SetLabelFont(43);    axisH10->SetLabelSize(19);    axisH10->SetLabelOffset(0.04);   axisH10->Draw();
     //respobjP->Draw();
-    cRespon->SaveAs(Form("%s/alljetz2D/responseobj%s.pdf",outDir.Data(), isPrior?Form("%d",priorType):"" ));
+    cRespon->SaveAs(Form("%s/alljetz2D/responseobj%s%s.pdf",outDir.Data(), truebinnum.Data(), isPrior?Form("%d",priorType):"" ));
     //cRespon->SaveAs(Form("%s/alljetz2D/responseobj%s.png",outDir.Data(), isPrior?Form("%d",priorType):"" ));
-    cRespon->SaveAs(Form("%s/alljetz2D/responseobj%s.svg",outDir.Data(), isPrior?Form("%d",priorType):"" ));
+    cRespon->SaveAs(Form("%s/alljetz2D/responseobj%s%s.svg",outDir.Data(), truebinnum.Data(), isPrior?Form("%d",priorType):"" ));
 
 
     //************************************
@@ -679,8 +672,8 @@ void unfold_Bayeszjet(
       unfold2DoutFileRangeSys1->Close();
 
       TFile *unfold2DoutFileRangeSys2 = new TFile(Form("%s/alljetz2D/unfold2DoutFileRegBayesSys%s.root",outDir.Data(), Form("%d",regBayes+1) ),"recreate");
-      for (int binjet=1; binjet<= fUnfoldedBayes[regBayes+1]->GetNbinsY(); binjet++){
-        UnfProjectX[binjet-1] = (TH1D*)fUnfoldedBayes[regBayes+1]->ProjectionX(Form("UnfProjectX_%d",binjet-1), binjet, binjet, "E");
+      for (int binjet=1; binjet<= fUnfoldedBayes[regBayes]->GetNbinsY(); binjet++){
+        UnfProjectX[binjet-1] = (TH1D*)fUnfoldedBayes[regBayes]->ProjectionX(Form("UnfProjectX_%d",binjet-1), binjet, binjet, "E");
         UnfProjectX[binjet-1] ->Write();
       }
       unfold2DoutFileRangeSys2->Close();
@@ -689,7 +682,8 @@ void unfold_Bayeszjet(
 
     // Unfolded/Measured/Folded spectra comparison
     // ----------------------------------
-    int databinnum = 2; int unfoldbinnum = 1; //if(){}
+    //int databinnum = 2; int unfoldbinnum = 1; //if(){}
+    int databinnum = 0; int unfoldbinnum = 0; //if(){}
     //
     TH2D* fUnfoldPlot = (TH2D*)fUnfoldedBayes[regBayes-1]->Clone();
     fUnfoldPlot->SetLineColor(kRed+2);
@@ -698,26 +692,27 @@ void unfold_Bayeszjet(
     TLegend *lUnFoldedFold = new TLegend(0.25,0.25, 0.85, 0.85);
     cUnFoldedFold->Divide(3,2);
     cUnFoldedFold->SetLogz();
-    for (int binjet=1; binjet< fUnfoldedBayes[regBayes-1]->GetNbinsY(); binjet++){
+    for (int binjet=1; binjet<= fUnfoldedBayes[regBayes-1]->GetNbinsY(); binjet++){
         /***********************************
         ############# Unfolding ##################
         ************************************/
         cUnFoldedFold->cd(binjet);
 
-        TH1D* hData2Dplot = (TH1D*)hData2D->ProjectionX("",binjet+2,binjet+2,"E")->Clone();
+        TH1D* hData2Dplot = (TH1D*)hData2D->ProjectionX("",binjet+databinnum,binjet+databinnum,"E")->Clone();
         //hData2Dplot->SetLineColor(kBlack);
         hData2Dplot->SetLineWidth(2);
         hData2Dplot->SetMarkerStyle(20);
         hData2Dplot->SetMarkerSize(1);
         hData2Dplot->Scale(1,"width");
         hData2Dplot->Draw();
-        if(binjet<5){
-        hData2Dplot->SetTitle(Form("Jet pt: %s GeV/c",jetpttitle[binjet].Data()));}
-        else{
-        hData2Dplot->SetTitle(Form("%s",jetpttitle[binjet].Data()));}
+        //if(binjet<5){
+        //hData2Dplot->SetTitle(Form("Jet pt: %s GeV/c",jetpttitle[binjet-1].Data()));}
+        //else
+        {
+        hData2Dplot->SetTitle(Form("Jet pt: %s GeV/c",jetpttitle[binjet-1].Data()));}
         //fUnfoldedBayes[regBayes-1]->SetLineColor(kRed+2);
         //fUnfoldedBayes[regBayes-1]->ProjectionX("",binjet+2,binjet+2,"E")->Draw("same");
-    TH1D* h2 = (TH1D*)fUnfoldPlot->ProjectionX("",binjet+1,binjet+1,"E")->Clone();
+    TH1D* h2 = (TH1D*)fUnfoldPlot->ProjectionX("",binjet+unfoldbinnum,binjet+unfoldbinnum,"E")->Clone();
     h2->SetLineColor(kRed+2);
     h2->SetLineWidth(2);
     h2->SetMarkerStyle(20);
@@ -725,13 +720,13 @@ void unfold_Bayeszjet(
         h2->Scale(1,"width");
         h2->Draw("same");
         //fUnfoldPlot->ProjectionX("",binjet+2,binjet+2,"E")->Draw("same");
-        TH1D* hfold = (TH1D*)folded[regBayes-1]->ProjectionX("",binjet+2,binjet+2,"E")->Clone();
+        TH1D* hfold = (TH1D*)folded[regBayes-1]->ProjectionX("",binjet+databinnum,binjet+databinnum,"E")->Clone();
         hfold->SetLineColor(kGreen+2);
         hfold->Scale(1,"width");
         hfold->Draw("same");
         //kine efficiency
-        TH1D* hKineUnf = (TH1D*)hKine->ProjectionX("",binjet+1,binjet+1)->Clone();
-        TH1D* hUnfoldKine = (TH1D*)fUnfoldPlot->ProjectionX("",binjet+1,binjet+1)->Clone();
+        TH1D* hKineUnf = (TH1D*)hKine->ProjectionX("",binjet+unfoldbinnum,binjet+unfoldbinnum)->Clone();
+        TH1D* hUnfoldKine = (TH1D*)fUnfoldPlot->ProjectionX("",binjet+unfoldbinnum,binjet+unfoldbinnum)->Clone();
         hUnfoldKine->Divide(hKineUnf);
         hUnfoldKine->SetLineColor(kOrange+1);
         hUnfoldKine->SetMarkerColor(kOrange+1);
@@ -763,6 +758,7 @@ void unfold_Bayeszjet(
     cUnFoldedFold->SaveAs(Form("%s/alljetz2D/unfoldMeasFold.pdf",outDir.Data()));
     cUnFoldedFold->SaveAs(Form("%s/alljetz2D/unfoldMeasFold.png",outDir.Data()));
     cUnFoldedFold->SaveAs(Form("%s/alljetz2D/unfoldMeasFold.svg",outDir.Data()));
+return;
     // Unfolded/Measured spectra comparison
     // ----------------------------------
     TCanvas *cUnFolded = new TCanvas("UnFoldedMeasured","UnFolded/Measured", 1400, 900);
@@ -796,7 +792,7 @@ void unfold_Bayeszjet(
     lUnFolded->Draw();
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-databinnum += -2; //delete
+//databinnum += -2; //delete
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Folded/Measured spectra comparison
     // ----------------------------------
