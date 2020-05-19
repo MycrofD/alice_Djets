@@ -51,7 +51,7 @@ int linesytle[] = {1,2,3,4,5,6,7,8,9,10,11,12,13};
 /*****************************************************
  ############ begining of the macro ##################
  *****************************************************/
-void unfold_Bayeszjet(
+void unfold_Bayeszjet2(
   //TString roounfoldpwd = "",
   TString listName = "FD",
   bool isPrompt=1,
@@ -123,14 +123,10 @@ void unfold_Bayeszjet(
         // combining those 1D projections into a 2D histogram
         // --------------------------------------------------
         for (Int_t binz=0; binz < fptbinsZMeasN+1; binz++){
-            double cont  = fRawSpec2Dproj[binjet]->GetBinContent(binz);
-            double contS = fRawSpec2DprojScale->GetBinContent(binz);
-            double contErr = fRawSpec2Dproj[binjet]->GetBinError(binz);
-            double contErrS = fRawSpec2DprojScale->GetBinError(binz);
-            hData2D->SetBinContent(binz,binjet+1,cont);
-            hData2DS->SetBinContent(binz,binjet+1,contS);
-            hData2D->SetBinError(binz,binjet+1,contErr);
-            hData2DS->SetBinError(binz,binjet+1,contErrS);
+            double cont  = fRawSpec2Dproj[binjet]->GetBinContent(binz); double contS = fRawSpec2DprojScale->GetBinContent(binz);
+            double contErr = fRawSpec2Dproj[binjet]->GetBinError(binz); double contErrS = fRawSpec2DprojScale->GetBinError(binz);
+            hData2D->SetBinContent(binz,binjet+1,cont); hData2DS->SetBinContent(binz,binjet+1,contS); 
+            hData2D->SetBinError(binz,binjet+1,contErr);hData2DS->SetBinError(binz,binjet+1,contErrS);
             if(FDsys){
                 double contUp  = fRawSpec2DprojUp[binjet]->GetBinContent(binz);
                 double contErrUp = fRawSpec2DprojUp[binjet]->GetBinError(binz);
@@ -240,8 +236,6 @@ void unfold_Bayeszjet(
     cout<<hZjetRecGenD->GetAxis(0)->GetXmin()<<endl;
     cout<<hZjetRecGenD->GetAxis(1)->GetXmin()<<endl;
     cout<<hZjetRecGenD->GetAxis(2)->GetXmin()<<endl;
-//    cout<<hZjetRecGenD->GetAxis(1)->GetXmax()<<endl;
-//    return;
 
     /***************************
     #### unfolding settings ####
@@ -249,10 +243,6 @@ void unfold_Bayeszjet(
     RooUnfold::ErrorTreatment errorTreatment = RooUnfold::kCovariance;
     RooUnfoldResponse response (hZjetRRebin, hZjetGRebin);
     //----------- fill 4D histo response matrix
-    //int eventcount = 0;
-    double binval = 0;
-    //----------- fill 4D histo response matrix
-    //int display = 0;
     if(DptcutTrue){
         for (int z = 0; z < hZjetRecGenD->GetNbins();z++) {
             int coord[DnDim]={0,0,0,0,0,0};
@@ -268,59 +258,35 @@ void unfold_Bayeszjet(
             double DG_center = hZjetRecGenD->GetAxis(5)->GetBinCenter(p);
 
             if(isPrior){
-                if(priorType==1){
-                weight = weight*zG_center*jG_center;}
-                else if(priorType==2){
-                weight = weight/(zG_center*jG_center);}
-                else if(priorType==3){
-                weight = weight/(zG_center);}
-                else if(priorType==4){
-                weight = weight*(zG_center);}
-                else if(priorType==5){
-                weight = weight/(jG_center);}
-                else if(priorType==6){
-                weight = weight*(jG_center);}
-                else if(priorType==7){
-                weight = weight*(zG_center/jG_center);}
-                else if(priorType==8){
-                weight = weight*(jG_center/zG_center);}
-                else if(priorType==9){
-                weight = 10*weight/(zG_center);}
-                else if(priorType==10){
-                weight = 0.1*weight*(zG_center);}
+                if(priorType==1){weight = weight*zG_center*jG_center;}
+                else if(priorType==2){weight = weight/(zG_center*jG_center);}
+                else if(priorType==3){weight = weight/(zG_center);}
+                else if(priorType==4){weight = weight*(zG_center);}
+                else if(priorType==5){weight = weight/(jG_center);}
+                else if(priorType==6){weight = weight*(jG_center);}
+                else if(priorType==7){weight = weight*(zG_center/jG_center);}
+                else if(priorType==8){weight = weight*(jG_center/zG_center);}
+                else if(priorType==9){weight = 10*weight/(zG_center);}
+                else if(priorType==10){weight = 0.1*weight*(zG_center);}
                 else weight = weight;
             }
             bool measurement_ok = kTRUE;
             //if(DR_center<2 || DG_center<2 || jR_center<2){
-            if(DR_center<2 || DG_center<2 || jR_center<fJetptbinsA[0]){
-                  measurement_ok = kFALSE;
-            }
-            if((DG_center<2 && jG_center>=2 )||(DR_center<2 && jR_center>=fJetptbinsA[0] )){
-                  measurement_ok = kFALSE;
-            }
-            if((DG_center<2 && jG_center>=5 )||(DR_center<2 && jR_center>=5 )){
-                  measurement_ok = kFALSE;
-            }
-            if((DG_center<3 && jG_center>=7 )||(DR_center<3 && jR_center>=7 )){
-                  measurement_ok = kFALSE;
-            }
-            if((DG_center<5 && jG_center>=10 )||(DR_center<5 && jR_center>=10) ){
-                  measurement_ok = kFALSE;
-            }
-            if((DR_center>36 || jR_center>50 || zR_center<0.4 )){
-                  measurement_ok = kFALSE;
-            }
-            if (measurement_ok){
-                response.Fill(zR_center,jR_center,zG_center,jG_center,weight);
-            }
-            //else{
-            //    response.Miss(zG_center,jG_center,weight);
-            //}//cout<<i<<"-"<<j<<"-"<<k<<"-"<<m<<endl;
+            //fDptRangesA[] = {2,3,5,5,36};
+            if( DR_center<fDptRangesA[0] || DG_center< fDptRangesA[0] || jR_center<fJetptbinsA[0]){measurement_ok = kFALSE;}
+            if((DG_center<fDptRangesA[0] && jG_center>=fJetptbinsA[0] )||(DR_center<fDptRangesA[0] && jR_center>=fJetptbinsA[0] )) {measurement_ok = kFALSE;}
+            if((DG_center<fDptRangesA[0] && jG_center>=fJetptbinsA[1] )||(DR_center<fDptRangesA[0] && jR_center>=fJetptbinsA[1] )) {measurement_ok = kFALSE;}
+            if((DG_center<fDptRangesA[1] && jG_center>=fJetptbinsA[2] )||(DR_center<fDptRangesA[1] && jR_center>=fJetptbinsA[2] )) {measurement_ok = kFALSE;}
+            if((DG_center<fDptRangesA[2] && jG_center>=fJetptbinsA[3] )||(DR_center<fDptRangesA[2] && jR_center>=fJetptbinsA[3] )) {measurement_ok = kFALSE;}
+            if((DR_center>fDptRangesA[4] || jR_center> fJetptbinsA[5]  || zR_center<0.4 ))  {measurement_ok = kFALSE;}
+            if (measurement_ok){response.Fill(zR_center,jR_center,zG_center,jG_center,weight);}
         }
     }
 
 // checking to shorten the code
     else{
+        cout<<"No response!!"<<endl;
+        return;
         for (int z = 0; z< hZjetRecGen->GetNbins();z++) {
             int coord[nDim]={0,0,0,0};
             double content = hZjetRecGen->GetBinContent(z,coord);
@@ -335,25 +301,18 @@ void unfold_Bayeszjet(
             if (measurement_ok){
                 response.Fill(zR_center,jR_center,zG_center,jG_center,weight);
             }
-            // else{
-            //     response.Miss(k_center,m_center,weight);
-            // }//cout<<i<<"-"<<j<<"-"<<k<<"-"<<m<<endl;
+            // else{response.Miss(k_center,m_center,weight);}//cout<<i<<"-"<<j<<"-"<<k<<"-"<<m<<endl;
         }
     }
 
-		
-    TH2D *fUnfoldedBayes[NTrials];
-    TH2D *folded[NTrials];
-    TString outName = "unfoldedSpectrum";
-    TCanvas* cUnfolded = new TCanvas("cUnfolded","cUnfolded",800,600);
-    cUnfolded->SetLogz();
-    TLegend* leg =  new TLegend(0.15,0.5,0.30,0.85);
-    leg->SetBorderSize(0);
+    TH2D *fUnfoldedBayes[NTrials]; TH2D *folded[NTrials]; TString outName = "unfoldedSpectrum";
+    TCanvas* cUnfolded = new TCanvas("cUnfolded","cUnfolded",800,600); cUnfolded->SetLogz();
+    TLegend* leg =  new TLegend(0.15,0.5,0.30,0.85); leg->SetBorderSize(0);
     //------------ do unfolding NTrials times ------------
     for(Int_t ivar=0; ivar<NTrials; ivar++){//changes
-        /***********************************
+        /*****************************************
         ############# unfolding ##################
-        ************************************/
+        *****************************************/
         RooUnfoldBayes unfold (&response, hData2D, ivar+1);
         fUnfoldedBayes[ivar] = (TH2D*)unfold.Hreco();
         folded[ivar] = (TH2D*)response.ApplyToTruth(fUnfoldedBayes[ivar]);
@@ -369,22 +328,15 @@ void unfold_Bayeszjet(
     cUnfolded->SaveAs(Form("%s/plots/%s_unfSpectra.png",outDir.Data(),outName.Data()));
     cUnfolded->SaveAs(Form("%s/plots/%s_unfSpectra.svg",outDir.Data(),outName.Data()));
 
-
     /***********************************
     // FD systematics begin
     ************************************/
-    TH2D *fUnfoldedBayesUp[NTrials];
-    TH2D *foldedUp[NTrials];
-    TH2D *fUnfoldedBayesDo[NTrials];
-    TH2D *foldedDo[NTrials];
+    TH2D *fUnfoldedBayesUp[NTrials]; TH2D *foldedUp[NTrials]; TH2D *fUnfoldedBayesDo[NTrials]; TH2D *foldedDo[NTrials];
     if(FDsys){
         for(int ivar=0; ivar<NTrials; ivar++){//changes
-            RooUnfoldBayes unfoldUp (&response, hData2DUp, ivar+1);
-            RooUnfoldBayes unfoldDo (&response, hData2DDo, ivar+1);
-            fUnfoldedBayesUp[ivar] = (TH2D*)unfoldUp.Hreco();
-            fUnfoldedBayesDo[ivar] = (TH2D*)unfoldDo.Hreco();
-            foldedUp[ivar] = (TH2D*)response.ApplyToTruth(fUnfoldedBayesUp[ivar]);
-            foldedDo[ivar] = (TH2D*)response.ApplyToTruth(fUnfoldedBayesDo[ivar]);
+            RooUnfoldBayes unfoldUp (&response, hData2DUp, ivar+1); RooUnfoldBayes unfoldDo (&response, hData2DDo, ivar+1);
+            fUnfoldedBayesUp[ivar] = (TH2D*)unfoldUp.Hreco(); fUnfoldedBayesDo[ivar] = (TH2D*)unfoldDo.Hreco();
+            foldedUp[ivar] = (TH2D*)response.ApplyToTruth(fUnfoldedBayesUp[ivar]); foldedDo[ivar] = (TH2D*)response.ApplyToTruth(fUnfoldedBayesDo[ivar]);
         }
     }
     /***********************************
@@ -394,14 +346,10 @@ void unfold_Bayeszjet(
     //*********************************
     // Kinematic efficiency begins. post unfolding
     //*********************************/
-    TH2D* kineEffCut  = new TH2D("hkineEffCut","hkineEffCut", fptbinsZFinalN, fptbinsZFinalA, fJetptbinsGenN, fJetptbinsGenA);
-    kineEffCut->Sumw2();
-    TH2D* kineEffFull  = new TH2D("hkineEffFull","hkineEffFull", fptbinsZFinalN, fptbinsZFinalA, fJetptbinsGenN, fJetptbinsGenA);
-    kineEffFull->Sumw2();
-    TH2D* kineEffCutAll  = new TH2D("hkineEffCuta","hkineEffCuta", fptbinsZTrueNN, fptbinsZTrueAA, fJetptbinsGenNN, fJetptbinsGenAA);
-    kineEffCutAll->Sumw2();
-    TH2D* kineEffFullAll  = new TH2D("hkineEffFulla","hkineEffFulla", fptbinsZTrueNN, fptbinsZTrueAA, fJetptbinsGenNN, fJetptbinsGenAA);
-    kineEffFullAll->Sumw2();
+    TH2D* kineEffCut  = new TH2D("hkineEffCut","hkineEffCut", fptbinsZFinalN, fptbinsZFinalA, fJetptbinsGenN, fJetptbinsGenA); kineEffCut->Sumw2();
+    TH2D* kineEffFull  = new TH2D("hkineEffFull","hkineEffFull", fptbinsZFinalN, fptbinsZFinalA, fJetptbinsGenN, fJetptbinsGenA); kineEffFull->Sumw2();
+    TH2D* kineEffCutAll  = new TH2D("hkineEffCuta","hkineEffCuta", fptbinsZTrueNN, fptbinsZTrueAA, fJetptbinsGenNN, fJetptbinsGenAA); kineEffCutAll->Sumw2();
+    TH2D* kineEffFullAll  = new TH2D("hkineEffFulla","hkineEffFulla", fptbinsZTrueNN, fptbinsZTrueAA, fJetptbinsGenNN, fJetptbinsGenAA); kineEffFullAll->Sumw2();
     if(DptcutTrue){
         for (int z = 0; z < hZjetRecGenD->GetNbins();z++) {
             int coord[DnDim]={0,0,0,0,0,0};
@@ -417,60 +365,32 @@ void unfold_Bayeszjet(
             double DG_center = hZjetRecGenD->GetAxis(5)->GetBinCenter(p);
 
             if(isPrior){
-                if(priorType==1){
-                weight = weight*zG_center*jG_center;}
-                else if(priorType==2){
-                weight = weight/(zG_center*jG_center);}
-                else if(priorType==3){
-                weight = weight/(zG_center);}
-                else if(priorType==4){
-                weight = weight*(zG_center);}
-                else if(priorType==5){
-                weight = weight/(jG_center);}
-                else if(priorType==6){
-                weight = weight*(jG_center);}
-                else if(priorType==7){
-                weight = weight*(zG_center/jG_center);}
-                else if(priorType==8){
-                weight = weight*(jG_center/zG_center);}
+                if(priorType==1){weight = weight*zG_center*jG_center;}
+                else if(priorType==2){weight = weight/(zG_center*jG_center);}
+                else if(priorType==3){weight = weight/(zG_center);}
+                else if(priorType==4){weight = weight*(zG_center);}
+                else if(priorType==5){weight = weight/(jG_center);}
+                else if(priorType==6){weight = weight*(jG_center);}
+                else if(priorType==7){weight = weight*(zG_center/jG_center);}
+                else if(priorType==8){weight = weight*(jG_center/zG_center);}
                 else weight = weight;
             }
             bool measurement_ok = kTRUE;
             //if(DR_center<2 || DG_center<2 || jR_center<2){
-            //dptmins = {2,3,5,5}
-            if(DR_center<2 || DG_center<2 || jR_center<fJetptbinsA[0]){
-                  measurement_ok = kFALSE;
-            }
-            if((DG_center<2 && jG_center>=2 )||(DR_center<2 && jR_center>=fJetptbinsA[0] )){
-                  measurement_ok = kFALSE;
-            }
-            if((DG_center<2 && jG_center>=5 )||(DR_center<2 && jR_center>=5 )){
-                  measurement_ok = kFALSE;
-            }
-            if((DG_center<3 && jG_center>=7 )||(DR_center<3 && jR_center>=7 )){
-                  measurement_ok = kFALSE;
-            }
-            if((DG_center<5 && jG_center>=10 )||(DR_center<5 && jR_center>=10) ){
-                  measurement_ok = kFALSE;
-            }
-            if (measurement_ok){
-                kineEffFull->Fill(zG_center,jG_center,weight);
-                kineEffFullAll->Fill(zG_center,jG_center,weight);
-            }
-            if((DR_center>36 || jR_center>50 || zR_center<0.4 )){
-                  measurement_ok = kFALSE;
-            }
+            //fDptRangesA[] = {2,3,5,5,36};
+            if( DR_center<fDptRangesA[0] || DG_center< fDptRangesA[0] || jR_center<fJetptbinsA[0]){measurement_ok = kFALSE;}
+            if((DG_center<fDptRangesA[0] && jG_center>=fJetptbinsA[0] )||(DR_center<fDptRangesA[0] && jR_center>=fJetptbinsA[0] )){measurement_ok = kFALSE;}
+            if((DG_center<fDptRangesA[0] && jG_center>=fJetptbinsA[1] )||(DR_center<fDptRangesA[0] && jR_center>=fJetptbinsA[1] )){measurement_ok = kFALSE;}
+            if((DG_center<fDptRangesA[1] && jG_center>=fJetptbinsA[2] )||(DR_center<fDptRangesA[1] && jR_center>=fJetptbinsA[2] )){measurement_ok = kFALSE;}
+            if((DG_center<fDptRangesA[2] && jG_center>=fJetptbinsA[3] )||(DR_center<fDptRangesA[2] && jR_center>=fJetptbinsA[3] )){measurement_ok = kFALSE;}
+            if (measurement_ok){ kineEffFull->Fill(zG_center,jG_center,weight); kineEffFullAll->Fill(zG_center,jG_center,weight);}
+            if((DR_center>fDptRangesA[4] || jR_center>fJetptbinsA[5] || zR_center<0.4 )){measurement_ok = kFALSE;}
             //if(jR_center<3 || jR_center>50 || zR_center<0.4){
-            if(jR_center<fJetptbinsA[0] || jR_center>fJetptbinsA[fJetptbinN+1] || zR_center<fptbinsZMeasA[0]){
-                  measurement_ok = kFALSE;
-            }
+            if(jR_center<fJetptbinsA[0] || jR_center>fJetptbinsA[fJetptbinN+1] || zR_center<fptbinsZMeasA[0]){measurement_ok = kFALSE;}
             if (measurement_ok){
                 kineEffCut->Fill(zG_center,jG_center,weight);
                 kineEffCutAll->Fill(zG_center,jG_center,weight);
             }
-            //else{
-            //    response.Miss(zG_center,jG_center,weight);
-            //}//cout<<i<<"-"<<j<<"-"<<k<<"-"<<m<<endl;
         }
     }
     TCanvas* cKine = new TCanvas("hKine","hKine",800,600);
@@ -546,48 +466,27 @@ void unfold_Bayeszjet(
     respobjP->GetXaxis()->SetTitleOffset(1.5);
     respobjP->Draw("colz");
     //setting axes and labels properly---------
-    TGaxis *axisV1 = new TGaxis(0, 0, 0, 1, 0.0, 0.4, 1, "-L");
-    axisV1->SetLabelFont(43);    axisV1->SetLabelSize(15);    axisV1->SetLabelOffset(0.03);    axisV1->Draw();
-    TGaxis *axisV2 = new TGaxis(0, 1, 0, 2, 0.4, 0.6, 1, "-L");
-    axisV2->SetLabelFont(43);    axisV2->SetLabelSize(15);    axisV2->SetLabelOffset(0.03);    axisV2->Draw();
-    TGaxis *axisV3 = new TGaxis(0, 2, 0, 6, 0.6, 1.0, 4, "-L");
-    axisV3->SetLabelFont(43);    axisV3->SetLabelSize(15);    axisV3->SetLabelOffset(0.03);    axisV3->Draw();
-    TGaxis *axisV4 = new TGaxis(0, 8, 0, 12, 0.6, 1.0, 4, "-L");
-    axisV4->SetLabelFont(43);    axisV4->SetLabelSize(15);    axisV4->SetLabelOffset(0.03);    axisV4->Draw();
-    TGaxis *axisV5 = new TGaxis(0, 14, 0, 18, 0.6, 1.0, 4, "-L");
-    axisV5->SetLabelFont(43);    axisV5->SetLabelSize(15);    axisV5->SetLabelOffset(0.03);    axisV5->Draw();
-    TGaxis *axisV6 = new TGaxis(0, 20, 0, 24, 0.6, 1.0, 4, "-L");
-    axisV6->SetLabelFont(43);    axisV6->SetLabelSize(15);    axisV6->SetLabelOffset(0.03);    axisV6->Draw();
-    TGaxis *axisV7 = new TGaxis(0, 26, 0, 30, 0.6, 1.0, 4, "-L");
-    axisV7->SetLabelFont(43);    axisV7->SetLabelSize(15);    axisV7->SetLabelOffset(0.03);    axisV7->Draw();
-    TGaxis *axisV8 = new TGaxis(0, 32, 0, 36, 0.6, 1.0, 4, "-L");
-    axisV8->SetLabelFont(43);    axisV8->SetLabelSize(15);    axisV8->SetLabelOffset(0.03);    axisV8->Draw();
-    TGaxis *axisV9 = new TGaxis(0, 0, 0, 6, 2, 5, 1, "-L");
-    axisV9->SetLabelFont(43);    axisV9->SetLabelSize(19);    axisV9->SetLabelOffset(0.05);    axisV9->Draw();
-    TGaxis *axisV10 = new TGaxis(0, 12, 0, 18, 7, 10, 1, "-L");
-    axisV10->SetLabelFont(43);    axisV10->SetLabelSize(19);    axisV10->SetLabelOffset(0.06);    axisV10->Draw();
-    TGaxis *axisV11 = new TGaxis(0, 24, 0, 30, 15, 50, 1, "-L");
-    axisV11->SetLabelFont(43);    axisV11->SetLabelSize(19);    axisV11->SetLabelOffset(0.06);    axisV11->Draw();
-    TGaxis *axisV12 = new TGaxis(0, 30, 0, 36, 50, 100, 1, "-L");
-    axisV12->SetLabelFont(43);    axisV12->SetLabelSize(19);    axisV12->SetLabelOffset(0.06);    axisV12->Draw();
-    TGaxis *axisH1 = new TGaxis(0, 0, 6, 0, 0.4, 1.0, 3, "-+L");
-    axisH1->SetLabelFont(43);    axisH1->SetLabelSize(15);    axisH1->SetLabelOffset(0.005);    axisH1->Draw();
-    TGaxis *axisH2 = new TGaxis(6, 0, 12, 0, 0.4, 1.0, 3, "-+L");
-    axisH2->SetLabelFont(43);    axisH2->SetLabelSize(15);    axisH2->SetLabelOffset(0.02);    axisH2->Draw();
-    TGaxis *axisH3 = new TGaxis(12, 0, 18, 0, 0.4, 1.0, 3, "-+L");
-    axisH3->SetLabelFont(43);    axisH3->SetLabelSize(15);    axisH3->SetLabelOffset(0.005);    axisH3->Draw();
-    TGaxis *axisH4 = new TGaxis(18, 0, 24, 0, 0.4, 1.0, 3, "-+L");
-    axisH4->SetLabelFont(43);    axisH4->SetLabelSize(15);    axisH4->SetLabelOffset(0.02);    axisH4->Draw();
-    TGaxis *axisH5 = new TGaxis(24, 0, 30, 0, 0.4, 1.0, 3, "-+L");
-    axisH5->SetLabelFont(43);    axisH5->SetLabelSize(15);    axisH5->SetLabelOffset(0.005);    axisH5->Draw();
-    TGaxis *axisH6 = new TGaxis(30, 0, 36, 0, 0.4, 1.0, 3, "-+L");
-    axisH6->SetLabelFont(43);    axisH6->SetLabelSize(15);    axisH6->SetLabelOffset(0.02);    axisH6->Draw();
-    TGaxis *axisH7 = new TGaxis(0, 0, 6, 0, 3, 5, 1, "-+L");
-    axisH7->SetLabelFont(43);    axisH7->SetLabelSize(19);    axisH7->SetLabelOffset(0.04);    axisH7->Draw();
-    TGaxis *axisH8 = new TGaxis(12, 0, 18, 0, 7, 10, 1, "-+L");
-    axisH8->SetLabelFont(43);    axisH8->SetLabelSize(19);    axisH8->SetLabelOffset(0.04);    axisH8->Draw();
-    TGaxis *axisH9 = new TGaxis(24, 0, 30, 0, 15, 50, 1, "-+L");
-    axisH9->SetLabelFont(43);    axisH9->SetLabelSize(19);    axisH9->SetLabelOffset(0.04);    axisH9->Draw();
+    TGaxis *axisV1 = new TGaxis(0, 0, 0, 1, 0.0, 0.4, 1, "-L");axisV1->SetLabelFont(43);axisV1->SetLabelSize(15);axisV1->SetLabelOffset(0.03);axisV1->Draw();
+    TGaxis *axisV2 = new TGaxis(0, 1, 0, 2, 0.4, 0.6, 1, "-L");axisV2->SetLabelFont(43);    axisV2->SetLabelSize(15);    axisV2->SetLabelOffset(0.03);    axisV2->Draw();
+    TGaxis *axisV3 = new TGaxis(0, 2, 0, 6, 0.6, 1.0, 4, "-L");axisV3->SetLabelFont(43);    axisV3->SetLabelSize(15);    axisV3->SetLabelOffset(0.03);    axisV3->Draw();
+    TGaxis *axisV4 = new TGaxis(0, 8, 0, 12, 0.6, 1.0, 4, "-L");axisV4->SetLabelFont(43);    axisV4->SetLabelSize(15);    axisV4->SetLabelOffset(0.03);    axisV4->Draw();
+    TGaxis *axisV5 = new TGaxis(0, 14, 0, 18, 0.6, 1.0, 4, "-L");axisV5->SetLabelFont(43);    axisV5->SetLabelSize(15);    axisV5->SetLabelOffset(0.03);    axisV5->Draw();
+    TGaxis *axisV6 = new TGaxis(0, 20, 0, 24, 0.6, 1.0, 4, "-L");axisV6->SetLabelFont(43);    axisV6->SetLabelSize(15);    axisV6->SetLabelOffset(0.03);    axisV6->Draw();
+    TGaxis *axisV7 = new TGaxis(0, 26, 0, 30, 0.6, 1.0, 4, "-L");axisV7->SetLabelFont(43);    axisV7->SetLabelSize(15);    axisV7->SetLabelOffset(0.03);    axisV7->Draw();
+    TGaxis *axisV8 = new TGaxis(0, 32, 0, 36, 0.6, 1.0, 4, "-L");axisV8->SetLabelFont(43);    axisV8->SetLabelSize(15);    axisV8->SetLabelOffset(0.03);    axisV8->Draw();
+    TGaxis *axisV9 = new TGaxis(0, 0, 0, 6, 2, 5, 1, "-L");axisV9->SetLabelFont(43);    axisV9->SetLabelSize(19);    axisV9->SetLabelOffset(0.05);    axisV9->Draw();
+    TGaxis *axisV10 = new TGaxis(0, 12, 0, 18, 7, 10, 1, "-L");axisV10->SetLabelFont(43);    axisV10->SetLabelSize(19);    axisV10->SetLabelOffset(0.06);    axisV10->Draw();
+    TGaxis *axisV11 = new TGaxis(0, 24, 0, 30, 15, 50, 1, "-L");axisV11->SetLabelFont(43);    axisV11->SetLabelSize(19);    axisV11->SetLabelOffset(0.06);    axisV11->Draw();
+    TGaxis *axisV12 = new TGaxis(0, 30, 0, 36, 50, 100, 1, "-L");axisV12->SetLabelFont(43);    axisV12->SetLabelSize(19);    axisV12->SetLabelOffset(0.06);    axisV12->Draw();
+    TGaxis *axisH1 = new TGaxis(0, 0, 6, 0, 0.4, 1.0, 3, "-+L");axisH1->SetLabelFont(43);    axisH1->SetLabelSize(15);    axisH1->SetLabelOffset(0.005);    axisH1->Draw();
+    TGaxis *axisH2 = new TGaxis(6, 0, 12, 0, 0.4, 1.0, 3, "-+L");axisH2->SetLabelFont(43);    axisH2->SetLabelSize(15);    axisH2->SetLabelOffset(0.02);    axisH2->Draw();
+    TGaxis *axisH3 = new TGaxis(12, 0, 18, 0, 0.4, 1.0, 3, "-+L");axisH3->SetLabelFont(43);    axisH3->SetLabelSize(15);    axisH3->SetLabelOffset(0.005);    axisH3->Draw();
+    TGaxis *axisH4 = new TGaxis(18, 0, 24, 0, 0.4, 1.0, 3, "-+L");axisH4->SetLabelFont(43);    axisH4->SetLabelSize(15);    axisH4->SetLabelOffset(0.02);    axisH4->Draw();
+    TGaxis *axisH5 = new TGaxis(24, 0, 30, 0, 0.4, 1.0, 3, "-+L");axisH5->SetLabelFont(43);    axisH5->SetLabelSize(15);    axisH5->SetLabelOffset(0.005);    axisH5->Draw();
+    TGaxis *axisH6 = new TGaxis(30, 0, 36, 0, 0.4, 1.0, 3, "-+L");axisH6->SetLabelFont(43);    axisH6->SetLabelSize(15);    axisH6->SetLabelOffset(0.02);    axisH6->Draw();
+    TGaxis *axisH7 = new TGaxis(0, 0, 6, 0, 3, 5, 1, "-+L");axisH7->SetLabelFont(43);    axisH7->SetLabelSize(19);    axisH7->SetLabelOffset(0.04);    axisH7->Draw();
+    TGaxis *axisH8 = new TGaxis(12, 0, 18, 0, 7, 10, 1, "-+L");axisH8->SetLabelFont(43);    axisH8->SetLabelSize(19);    axisH8->SetLabelOffset(0.04);    axisH8->Draw();
+    TGaxis *axisH9 = new TGaxis(24, 0, 30, 0, 15, 50, 1, "-+L");axisH9->SetLabelFont(43);    axisH9->SetLabelSize(19);    axisH9->SetLabelOffset(0.04);    axisH9->Draw();
 //    TGaxis *axisH10 = new TGaxis(30, 0, 36, 0, 15, 50, 1, "-+L");
 //    axisH10->SetLabelFont(43);    axisH10->SetLabelSize(19);    axisH10->SetLabelOffset(0.04);   axisH10->Draw();
     //respobjP->Draw();
@@ -912,6 +811,13 @@ TH1D *LoadRawSpec(TString fn, TString sname, TString spostfix="") {
   fRawSpectrum->Sumw2();
   return fRawSpectrum;
 }
+//----
+//void setRespAxis(TGaxis *gaxis){
+//    gaxis->SetLabelFont(43);
+//    gaxis->SetLabelSize(15);
+//    gaxis->SetLabelOffset(0.03);
+//    gaxis->Draw();
+//}
 /// Weigh matrix along y1(Gen Z) and y2(Gen jetpt)
 //THnSparseD *WeightMatrixY1Y2(THnSparseD *hZjetRecGen, TH2D *hZjetGen){
 //  for (int j = 1; j <= )
