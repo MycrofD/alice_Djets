@@ -20,17 +20,12 @@ TString jetpttitle[5] = {"2-5","5-7", "7-10","10-15","15-50"};
 bool BayesParameterSys=1;
 const int fJetptbinsGenNN=7;
 double fJetptbinsGenAA[fJetptbinsGenNN+1]={0,2,5,7,10,15,50,100};
-         //const int fJetptbinsGenN=6; TString truebinnum="";
-         //double fJetptbinsGenA[fJetptbinsGenN+1]={0,5,7,10,15,50,100};
          const int fJetptbinsGenN=5; 
          TString truebinnum="";
          //TString truebinnum="JES4";
          //TString truebinnum="0350";
          double fJetptbinsGenA[fJetptbinsGenN+1]={2,5,7,10,15,50};
          //const int fJetptbinsGenN=8; TString truebinnum="360";
-         //double fJetptbinsGenA[fJetptbinsGenN+1]={3,4,5,7,10,15,50,60};
-         //const int fJetptbinsGenN=7; TString truebinnum="350";
-         //double fJetptbinsGenA[fJetptbinsGenN+1]={3,4,5,7,10,15,50};
 const int nDim    = 4;//the four dimensions
 //int dim[nDim]     = {0,1,5,6};//for extacting 4D info from THnSparse
 const int DnDim   = 6;//the six dimensions
@@ -51,8 +46,7 @@ int linesytle[] = {1,2,3,4,5,6,7,8,9,10,11,12,13};
 /*****************************************************
  ############ begining of the macro ##################
  *****************************************************/
-void unfold_Bayeszjet2(
-  //TString roounfoldpwd = "",
+void unfold_Bayeszjet(
   TString listName = "FD",
   bool isPrompt=1,
   bool postfix=0,
@@ -272,13 +266,13 @@ void unfold_Bayeszjet2(
             }
             bool measurement_ok = kTRUE;
             //if(DR_center<2 || DG_center<2 || jR_center<2){
-            //fDptRangesA[] = {2,3,5,5,36};
+            //fDptRangesA[] = {2,2,3,5,5};//fDptRangesAUp[] = {5,7,10,15,36};
             if( DR_center<fDptRangesA[0] || DG_center< fDptRangesA[0] || jR_center<fJetptbinsA[0]){measurement_ok = kFALSE;}
             if((DG_center<fDptRangesA[0] && jG_center>=fJetptbinsA[0] )||(DR_center<fDptRangesA[0] && jR_center>=fJetptbinsA[0] )) {measurement_ok = kFALSE;}
-            if((DG_center<fDptRangesA[0] && jG_center>=fJetptbinsA[1] )||(DR_center<fDptRangesA[0] && jR_center>=fJetptbinsA[1] )) {measurement_ok = kFALSE;}
-            if((DG_center<fDptRangesA[1] && jG_center>=fJetptbinsA[2] )||(DR_center<fDptRangesA[1] && jR_center>=fJetptbinsA[2] )) {measurement_ok = kFALSE;}
-            if((DG_center<fDptRangesA[2] && jG_center>=fJetptbinsA[3] )||(DR_center<fDptRangesA[2] && jR_center>=fJetptbinsA[3] )) {measurement_ok = kFALSE;}
-            if((DR_center>fDptRangesA[4] || jR_center> fJetptbinsA[5]  || zR_center<0.4 ))  {measurement_ok = kFALSE;}
+            if((DG_center<fDptRangesA[1] && jG_center>=fJetptbinsA[1] )||(DR_center<fDptRangesA[1] && jR_center>=fJetptbinsA[1] )) {measurement_ok = kFALSE;}
+            if((DG_center<fDptRangesA[2] && jG_center>=fJetptbinsA[2] )||(DR_center<fDptRangesA[2] && jR_center>=fJetptbinsA[2] )) {measurement_ok = kFALSE;}
+            if((DG_center<fDptRangesA[3] && jG_center>=fJetptbinsA[3] )||(DR_center<fDptRangesA[3] && jR_center>=fJetptbinsA[3] )) {measurement_ok = kFALSE;}
+            if((DR_center>fDptRangesAUp[4] || jR_center> fJetptbinsA[5]  || zR_center<0.4 ))  {measurement_ok = kFALSE;}
             if (measurement_ok){response.Fill(zR_center,jR_center,zG_center,jG_center,weight);}
         }
     }
@@ -304,11 +298,95 @@ void unfold_Bayeszjet2(
             // else{response.Miss(k_center,m_center,weight);}//cout<<i<<"-"<<j<<"-"<<k<<"-"<<m<<endl;
         }
     }
+    //********************************************************
+    // Kinematic efficiency begins. for pre and post unfolding
+    //********************************************************/
+    TH2D* kineEffCutPre  = new TH2D("hkineEffCutPre","hkineEffCutPre", fptbinsZMeasN, fptbinsZMeasA, fJetptbinsN, fJetptbinsA); kineEffCutPre->Sumw2();
+    TH2D* kineEffFulPre  = new TH2D("hkineEffFulPre","hkineEffFulPre", fptbinsZMeasN, fptbinsZMeasA, fJetptbinsN, fJetptbinsA); kineEffFulPre->Sumw2();
+    TH2D* kineEffCutPos  = new TH2D("hkineEffCutPos","hkineEffCutPos", fptbinsZFinalN, fptbinsZFinalA, fJetptbinsGenN, fJetptbinsGenA); kineEffCutPos->Sumw2();
+    TH2D* kineEffFulPos  = new TH2D("hkineEffFulPos","hkineEffFulPos", fptbinsZFinalN, fptbinsZFinalA, fJetptbinsGenN, fJetptbinsGenA); kineEffFulPos->Sumw2();
+    if(DptcutTrue){
+        for (int z = 0; z < hZjetRecGenD->GetNbins();z++) {
+            int coord[DnDim]={0,0,0,0,0,0};
+            double content = hZjetRecGenD->GetBinContent(z,coord);
+            //int Ddim[DnDim]   = {zRec,jetRec,zGen,jetGen,DRec,DGen};//for extacting 6D info from THnSparse
+            int i = coord[0], j = coord[1], k = coord[2], m = coord[3], n = coord[4], p = coord[5];
+            double weight = content;
+            double zR_center = hZjetRecGenD->GetAxis(0)->GetBinCenter(i);
+            double jR_center = hZjetRecGenD->GetAxis(1)->GetBinCenter(j);
+            double zG_center = hZjetRecGenD->GetAxis(2)->GetBinCenter(k);
+            double jG_center = hZjetRecGenD->GetAxis(3)->GetBinCenter(m);
+            double DR_center = hZjetRecGenD->GetAxis(4)->GetBinCenter(n);
+            double DG_center = hZjetRecGenD->GetAxis(5)->GetBinCenter(p);
 
+            if(isPrior){
+                if(priorType==1){weight = weight*zG_center*jG_center;}
+                else if(priorType==2){weight = weight/(zG_center*jG_center);}
+                else if(priorType==3){weight = weight/(zG_center);}
+                else if(priorType==4){weight = weight*(zG_center);}
+                else if(priorType==5){weight = weight/(jG_center);}
+                else if(priorType==6){weight = weight*(jG_center);}
+                else if(priorType==7){weight = weight*(zG_center/jG_center);}
+                else if(priorType==8){weight = weight*(jG_center/zG_center);}
+                else weight = weight;
+            }
+            //if(RMrecoeff){weight = weight*(1/eff);}//need to define RMrecoeff, eff
+            bool measurement_ok = kTRUE; bool measurement_pre = kTRUE; bool measurement_pos = kTRUE;
+            double effunfold = content;//it is not just content but content * 1/efficiency.
+            //fDptRangesA[] = {2,2,3,5,5};//fDptRangesAUp[] = {5,7,10,15,36};old://fDptRangesA[] = {2,3,5,5,36};
+            if( DR_center<fDptRangesA[0] || DG_center< fDptRangesA[0] || jR_center<fJetptbinsA[0]){measurement_ok = kFALSE;}
+            if((DG_center<fDptRangesA[0] && jG_center>=fJetptbinsA[0])||(DR_center<fDptRangesA[0] && jR_center>=fJetptbinsA[0] )) {measurement_ok = kFALSE;}
+            if((DG_center<fDptRangesA[1] && jG_center>=fJetptbinsA[1])||(DR_center<fDptRangesA[1] && jR_center>=fJetptbinsA[1] )) {measurement_ok = kFALSE;}
+            if((DG_center<fDptRangesA[2] && jG_center>=fJetptbinsA[2])||(DR_center<fDptRangesA[2] && jR_center>=fJetptbinsA[2] )) {measurement_ok = kFALSE;}
+            if((DG_center<fDptRangesA[3] && jG_center>=fJetptbinsA[3])||(DR_center<fDptRangesA[3] && jR_center>=fJetptbinsA[3] )) {measurement_ok = kFALSE;}
+
+            if (measurement_ok){ kineEffFulPre->Fill(zR_center,jR_center,effunfold);kineEffFulPos->Fill(zG_center,jG_center,weight);}
+            measurement_pre = measurement_pos = measurement_ok; 
+            //pre unfolding kine eff--
+            if(DG_center>fDptRangesAUp[4] || jG_center>fJetptbinsA[fJetptbinsN] || jG_center<fJetptbinsA[0] || zG_center<fptbinsZMeasA[0]){measurement_pre = kFALSE;}
+            //post unfolding kine eff--
+            if(DR_center>fDptRangesAUp[4] || jR_center>fJetptbinsA[fJetptbinsN] || jR_center<fJetptbinsA[0] || zR_center<fptbinsZMeasA[0]){measurement_pos = kFALSE;}
+            if (measurement_pre){ kineEffCutPre->Fill(zR_center,jR_center,effunfold); }
+            if (measurement_pos){ kineEffCutPos->Fill(zG_center,jG_center,weight   ); }
+        }
+    }
+    TCanvas* cKinePre = new TCanvas("hKinePre","hKinePre",800,600);
+    TH2D* hKinePre = (TH2D*) kineEffFulPre->Clone();
+    hKinePre->Divide(kineEffCutPre,kineEffFulPre,1,1,"B");
+    hKinePre->SetTitle("KineEffPre");
+    hKinePre->Draw("colz");
+    hKinePre->Draw("TEXT same");
+    cKinePre  ->SaveAs(Form("%s/alljetz2D/cKinePre.pdf",outDir.Data()));
+    cKinePre  ->SaveAs(Form("%s/alljetz2D/cKinePre.png",outDir.Data()));
+    cKinePre  ->SaveAs(Form("%s/alljetz2D/cKinePre.svg",outDir.Data()));
+    
+    TCanvas* cKinePos = new TCanvas("hKinePos","hKinePos",800,600);
+    TH2D* hKinePos = (TH2D*) kineEffCutPos->Clone();
+    hKinePos->Divide(kineEffCutPos,kineEffFulPos,1,1,"B");
+    hKinePos->SetTitle("KineEffPos");
+    hKinePos->Draw("colz");
+    hKinePos->Draw("TEXT same");
+    cKinePos  ->SaveAs(Form("%s/alljetz2D/cKinePos.pdf",outDir.Data()));
+    cKinePos  ->SaveAs(Form("%s/alljetz2D/cKinePos.png",outDir.Data()));
+    cKinePos  ->SaveAs(Form("%s/alljetz2D/cKinePos.svg",outDir.Data()));
+
+//    //Drawing the post unfolding kine eff (this is inefficient way to draw.. try to remove this later)
+//    TCanvas* cKineA = new TCanvas("hKinea","hKinea",800,600); TH2D* hKineAll = (TH2D*) kineEffCutAll->Clone(); hKineAll->Divide(kineEffFullAll); //hKineAll->GetYaxis()->SetRangeUser(2,50);//3,50
+//    hKineAll->GetYaxis()->SetRangeUser(fJetptbinsA[0],fJetptbinsA[fJetptbinsN+1]); hKineAll->GetXaxis()->SetRangeUser(0.4,1.02); hKineAll->SetTitle(""); hKineAll->Draw("colz"); hKineAll->Draw("TEXT same");
+    //----
+
+    //*********************************
+    // Kinematic efficiency end
+    //*********************************/
+
+    //*********************************
+    // Execution of unfolding
+    // *******************************/
     TH2D *fUnfoldedBayes[NTrials]; TH2D *folded[NTrials]; TString outName = "unfoldedSpectrum";
     TCanvas* cUnfolded = new TCanvas("cUnfolded","cUnfolded",800,600); cUnfolded->SetLogz();
     TLegend* leg =  new TLegend(0.15,0.5,0.30,0.85); leg->SetBorderSize(0);
     //------------ do unfolding NTrials times ------------
+    hData2D->Multiply(hData2D,hKinePre,1,1,"B");
     for(Int_t ivar=0; ivar<NTrials; ivar++){//changes
         /*****************************************
         ############# unfolding ##################
@@ -343,80 +421,6 @@ void unfold_Bayeszjet2(
     // FD systematics end
     ************************************/
 
-    //*********************************
-    // Kinematic efficiency begins. post unfolding
-    //*********************************/
-    TH2D* kineEffCut  = new TH2D("hkineEffCut","hkineEffCut", fptbinsZFinalN, fptbinsZFinalA, fJetptbinsGenN, fJetptbinsGenA); kineEffCut->Sumw2();
-    TH2D* kineEffFull  = new TH2D("hkineEffFull","hkineEffFull", fptbinsZFinalN, fptbinsZFinalA, fJetptbinsGenN, fJetptbinsGenA); kineEffFull->Sumw2();
-    TH2D* kineEffCutAll  = new TH2D("hkineEffCuta","hkineEffCuta", fptbinsZTrueNN, fptbinsZTrueAA, fJetptbinsGenNN, fJetptbinsGenAA); kineEffCutAll->Sumw2();
-    TH2D* kineEffFullAll  = new TH2D("hkineEffFulla","hkineEffFulla", fptbinsZTrueNN, fptbinsZTrueAA, fJetptbinsGenNN, fJetptbinsGenAA); kineEffFullAll->Sumw2();
-    if(DptcutTrue){
-        for (int z = 0; z < hZjetRecGenD->GetNbins();z++) {
-            int coord[DnDim]={0,0,0,0,0,0};
-            double content = hZjetRecGenD->GetBinContent(z,coord);
-            //int Ddim[DnDim]   = {zRec,jetRec,zGen,jetGen,DRec,DGen};//for extacting 6D info from THnSparse
-            int i = coord[0], j = coord[1], k = coord[2], m = coord[3], n = coord[4], p = coord[5];
-            double weight = content;
-            double zR_center = hZjetRecGenD->GetAxis(0)->GetBinCenter(i);
-            double jR_center = hZjetRecGenD->GetAxis(1)->GetBinCenter(j);
-            double zG_center = hZjetRecGenD->GetAxis(2)->GetBinCenter(k);
-            double jG_center = hZjetRecGenD->GetAxis(3)->GetBinCenter(m);
-            double DR_center = hZjetRecGenD->GetAxis(4)->GetBinCenter(n);
-            double DG_center = hZjetRecGenD->GetAxis(5)->GetBinCenter(p);
-
-            if(isPrior){
-                if(priorType==1){weight = weight*zG_center*jG_center;}
-                else if(priorType==2){weight = weight/(zG_center*jG_center);}
-                else if(priorType==3){weight = weight/(zG_center);}
-                else if(priorType==4){weight = weight*(zG_center);}
-                else if(priorType==5){weight = weight/(jG_center);}
-                else if(priorType==6){weight = weight*(jG_center);}
-                else if(priorType==7){weight = weight*(zG_center/jG_center);}
-                else if(priorType==8){weight = weight*(jG_center/zG_center);}
-                else weight = weight;
-            }
-            bool measurement_ok = kTRUE;
-            //if(DR_center<2 || DG_center<2 || jR_center<2){
-            //fDptRangesA[] = {2,3,5,5,36};
-            if( DR_center<fDptRangesA[0] || DG_center< fDptRangesA[0] || jR_center<fJetptbinsA[0]){measurement_ok = kFALSE;}
-            if((DG_center<fDptRangesA[0] && jG_center>=fJetptbinsA[0] )||(DR_center<fDptRangesA[0] && jR_center>=fJetptbinsA[0] )){measurement_ok = kFALSE;}
-            if((DG_center<fDptRangesA[0] && jG_center>=fJetptbinsA[1] )||(DR_center<fDptRangesA[0] && jR_center>=fJetptbinsA[1] )){measurement_ok = kFALSE;}
-            if((DG_center<fDptRangesA[1] && jG_center>=fJetptbinsA[2] )||(DR_center<fDptRangesA[1] && jR_center>=fJetptbinsA[2] )){measurement_ok = kFALSE;}
-            if((DG_center<fDptRangesA[2] && jG_center>=fJetptbinsA[3] )||(DR_center<fDptRangesA[2] && jR_center>=fJetptbinsA[3] )){measurement_ok = kFALSE;}
-            if (measurement_ok){ kineEffFull->Fill(zG_center,jG_center,weight); kineEffFullAll->Fill(zG_center,jG_center,weight);}
-            if((DR_center>fDptRangesA[4] || jR_center>fJetptbinsA[5] || zR_center<0.4 )){measurement_ok = kFALSE;}
-            //if(jR_center<3 || jR_center>50 || zR_center<0.4){
-            if(jR_center<fJetptbinsA[0] || jR_center>fJetptbinsA[fJetptbinN+1] || zR_center<fptbinsZMeasA[0]){measurement_ok = kFALSE;}
-            if (measurement_ok){
-                kineEffCut->Fill(zG_center,jG_center,weight);
-                kineEffCutAll->Fill(zG_center,jG_center,weight);
-            }
-        }
-    }
-    TCanvas* cKine = new TCanvas("hKine","hKine",800,600);
-    TH2D* hKine = (TH2D*) kineEffCut->Clone();
-    hKine->Divide(kineEffCut,kineEffFull,1,1,"B");
-    
-    hKine->SetTitle("");
-    hKine->Draw("colz");
-    hKine->Draw("TEXT same");
-//    hKine->SaveAs(Form("%s/plots/_hKine.pdf",outDir.Data()));
-//    hKine->SaveAs(Form("%s/plots/_hKine.png",outDir.Data()));
-//    hKine->SaveAs(Form("%s/plots/_hKine.svg",outDir.Data()));
-
-    TCanvas* cKineA = new TCanvas("hKinea","hKinea",800,600);
-    TH2D* hKineAll = (TH2D*) kineEffCutAll->Clone();
-    hKineAll->Divide(kineEffFullAll);
-    //hKineAll->GetYaxis()->SetRangeUser(2,50);//3,50
-    hKineAll->GetYaxis()->SetRangeUser(fJetptbinsA[0],fJetptbinsA[fJetptbinN+1]);
-    hKineAll->GetXaxis()->SetRangeUser(0.4,1.02);
-
-    hKineAll->SetTitle("");
-    hKineAll->Draw("colz");
-    hKineAll->Draw("TEXT same");
-//
-    //*********************************
-    // Kinematic efficiency end
     //*********************************/
 
     TH2D *fUnfoldedBayesScale = (TH2D*)fUnfoldedBayes[regBayes-1]->Clone();
@@ -578,7 +582,6 @@ void unfold_Bayeszjet2(
       unfold2DoutFileRangeSys2->Close();
     }
 
-
     // Unfolded/Measured/Folded spectra comparison
     // ----------------------------------
     //int databinnum = 2; int unfoldbinnum = 1; //if(){}
@@ -624,7 +627,7 @@ void unfold_Bayeszjet2(
         hfold->Scale(1,"width");
         hfold->Draw("same");
         //kine efficiency
-        TH1D* hKineUnf = (TH1D*)hKine->ProjectionX("",binjet+unfoldbinnum,binjet+unfoldbinnum)->Clone();
+        TH1D* hKineUnf = (TH1D*)hKinePos->ProjectionX("",binjet+unfoldbinnum,binjet+unfoldbinnum)->Clone();
         TH1D* hUnfoldKine = (TH1D*)fUnfoldPlot->ProjectionX("",binjet+unfoldbinnum,binjet+unfoldbinnum)->Clone();
         hUnfoldKine->Divide(hKineUnf);
         hUnfoldKine->SetLineColor(kOrange+1);
@@ -646,7 +649,7 @@ void unfold_Bayeszjet2(
         lUnFoldedFold->AddEntry(fUnfoldPlot,Form("Unfolded, iter=%d",regBayes),"l");
         lUnFoldedFold->AddEntry(hfoldD,"Folded","l");
         
-        TH1D* hKineUnf1 = (TH1D*)hKine->ProjectionX("",2,2)->Clone();
+        TH1D* hKineUnf1 = (TH1D*)hKinePos->ProjectionX("",2,2)->Clone();
         TH1D* hUnfoldKine1 = (TH1D*)fUnfoldPlot->ProjectionX("",2,2)->Clone();
         hUnfoldKine1->Divide(hKineUnf1);
         hUnfoldKine1->SetLineColor(kOrange+1);
@@ -657,7 +660,7 @@ void unfold_Bayeszjet2(
     cUnFoldedFold->SaveAs(Form("%s/alljetz2D/unfoldMeasFold.pdf",outDir.Data()));
     cUnFoldedFold->SaveAs(Form("%s/alljetz2D/unfoldMeasFold.png",outDir.Data()));
     cUnFoldedFold->SaveAs(Form("%s/alljetz2D/unfoldMeasFold.svg",outDir.Data()));
-return;
+
     // Unfolded/Measured spectra comparison
     // ----------------------------------
     TCanvas *cUnFolded = new TCanvas("UnFoldedMeasured","UnFolded/Measured", 1400, 900);
