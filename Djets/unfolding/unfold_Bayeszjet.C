@@ -231,6 +231,13 @@ void unfold_Bayeszjet(
     cout<<hZjetRecGenD->GetAxis(1)->GetXmin()<<endl;
     cout<<hZjetRecGenD->GetAxis(2)->GetXmin()<<endl;
 
+    //********************************************************
+    // Kinematic efficiency histos
+    //********************************************************/
+    TH2D* kineEffCutPre  = new TH2D("hkineEffCutPre","hkineEffCutPre", fptbinsZMeasN,  fptbinsZMeasA,  fJetptbinsN, fJetptbinsA); kineEffCutPre->Sumw2();
+    TH2D* kineEffFulPre  = new TH2D("hkineEffFulPre","hkineEffFulPre", fptbinsZMeasN,  fptbinsZMeasA,  fJetptbinsN, fJetptbinsA); kineEffFulPre->Sumw2();
+    TH2D* kineEffCutPos  = new TH2D("hkineEffCutPos","hkineEffCutPos", fptbinsZFinalN, fptbinsZFinalA, fJetptbinsN, fJetptbinsA); kineEffCutPos->Sumw2();
+    TH2D* kineEffFulPos  = new TH2D("hkineEffFulPos","hkineEffFulPos", fptbinsZFinalN, fptbinsZFinalA, fJetptbinsN, fJetptbinsA); kineEffFulPos->Sumw2();
     /***************************
     #### unfolding settings ####
     ***************************/
@@ -264,92 +271,33 @@ void unfold_Bayeszjet(
                 else if(priorType==10){weight = 0.1*weight*(zG_center);}
                 else weight = weight;
             }
-            bool measurement_ok = kTRUE;
-            //if(DR_center<2 || DG_center<2 || jR_center<2){
-            //fDptRangesA[] = {2,2,3,5,5};//fDptRangesAUp[] = {5,7,10,15,36};
-            if( DR_center<fDptRangesA[0] || DG_center< fDptRangesA[0] || jR_center<fJetptbinsA[0]){measurement_ok = kFALSE;}
-            if((DG_center<fDptRangesA[0] && jG_center>=fJetptbinsA[0] )||(DR_center<fDptRangesA[0] && jR_center>=fJetptbinsA[0] )) {measurement_ok = kFALSE;}
-            if((DG_center<fDptRangesA[1] && jG_center>=fJetptbinsA[1] )||(DR_center<fDptRangesA[1] && jR_center>=fJetptbinsA[1] )) {measurement_ok = kFALSE;}
-            if((DG_center<fDptRangesA[2] && jG_center>=fJetptbinsA[2] )||(DR_center<fDptRangesA[2] && jR_center>=fJetptbinsA[2] )) {measurement_ok = kFALSE;}
-            if((DG_center<fDptRangesA[3] && jG_center>=fJetptbinsA[3] )||(DR_center<fDptRangesA[3] && jR_center>=fJetptbinsA[3] )) {measurement_ok = kFALSE;}
-            if((DR_center>fDptRangesAUp[4] || jR_center> fJetptbinsA[5]  || zR_center<0.4 ))  {measurement_ok = kFALSE;}
-            if (measurement_ok){response.Fill(zR_center,jR_center,zG_center,jG_center,weight);}
-        }
-    }
-
-// checking to shorten the code
-    else{
-        cout<<"No response!!"<<endl;
-        return;
-        for (int z = 0; z< hZjetRecGen->GetNbins();z++) {
-            int coord[nDim]={0,0,0,0};
-            double content = hZjetRecGen->GetBinContent(z,coord);
-            int i = coord[0], j = coord[1], k = coord[2], m = coord[3];
-            double weight = content;
-            double zR_center = hZjetRecGen->GetAxis(0)->GetBinCenter(i);
-            double jR_center = hZjetRecGen->GetAxis(1)->GetBinCenter(j);
-            double zG_center = hZjetRecGen->GetAxis(2)->GetBinCenter(k);
-            double jG_center = hZjetRecGen->GetAxis(3)->GetBinCenter(m);
-
-            bool measurement_ok = kTRUE;
-            if (measurement_ok){
-                response.Fill(zR_center,jR_center,zG_center,jG_center,weight);
-            }
-            // else{response.Miss(k_center,m_center,weight);}//cout<<i<<"-"<<j<<"-"<<k<<"-"<<m<<endl;
-        }
-    }
-    //********************************************************
-    // Kinematic efficiency begins. for pre and post unfolding
-    //********************************************************/
-    TH2D* kineEffCutPre  = new TH2D("hkineEffCutPre","hkineEffCutPre", fptbinsZMeasN, fptbinsZMeasA, fJetptbinsN, fJetptbinsA); kineEffCutPre->Sumw2();
-    TH2D* kineEffFulPre  = new TH2D("hkineEffFulPre","hkineEffFulPre", fptbinsZMeasN, fptbinsZMeasA, fJetptbinsN, fJetptbinsA); kineEffFulPre->Sumw2();
-    TH2D* kineEffCutPos  = new TH2D("hkineEffCutPos","hkineEffCutPos", fptbinsZFinalN, fptbinsZFinalA, fJetptbinsGenN, fJetptbinsGenA); kineEffCutPos->Sumw2();
-    TH2D* kineEffFulPos  = new TH2D("hkineEffFulPos","hkineEffFulPos", fptbinsZFinalN, fptbinsZFinalA, fJetptbinsGenN, fJetptbinsGenA); kineEffFulPos->Sumw2();
-    if(DptcutTrue){
-        for (int z = 0; z < hZjetRecGenD->GetNbins();z++) {
-            int coord[DnDim]={0,0,0,0,0,0};
-            double content = hZjetRecGenD->GetBinContent(z,coord);
-            //int Ddim[DnDim]   = {zRec,jetRec,zGen,jetGen,DRec,DGen};//for extacting 6D info from THnSparse
-            int i = coord[0], j = coord[1], k = coord[2], m = coord[3], n = coord[4], p = coord[5];
-            double weight = content;
-            double zR_center = hZjetRecGenD->GetAxis(0)->GetBinCenter(i);
-            double jR_center = hZjetRecGenD->GetAxis(1)->GetBinCenter(j);
-            double zG_center = hZjetRecGenD->GetAxis(2)->GetBinCenter(k);
-            double jG_center = hZjetRecGenD->GetAxis(3)->GetBinCenter(m);
-            double DR_center = hZjetRecGenD->GetAxis(4)->GetBinCenter(n);
-            double DG_center = hZjetRecGenD->GetAxis(5)->GetBinCenter(p);
-
-            if(isPrior){
-                if(priorType==1){weight = weight*zG_center*jG_center;}
-                else if(priorType==2){weight = weight/(zG_center*jG_center);}
-                else if(priorType==3){weight = weight/(zG_center);}
-                else if(priorType==4){weight = weight*(zG_center);}
-                else if(priorType==5){weight = weight/(jG_center);}
-                else if(priorType==6){weight = weight*(jG_center);}
-                else if(priorType==7){weight = weight*(zG_center/jG_center);}
-                else if(priorType==8){weight = weight*(jG_center/zG_center);}
-                else weight = weight;
-            }
             //if(RMrecoeff){weight = weight*(1/eff);}//need to define RMrecoeff, eff
             bool measurement_ok = kTRUE; bool measurement_pre = kTRUE; bool measurement_pos = kTRUE;
             double effunfold = content;//it is not just content but content * 1/efficiency.
-            //fDptRangesA[] = {2,2,3,5,5};//fDptRangesAUp[] = {5,7,10,15,36};old://fDptRangesA[] = {2,3,5,5,36};
-            if( DR_center<fDptRangesA[0] || DG_center< fDptRangesA[0] || jR_center<fJetptbinsA[0]){measurement_ok = kFALSE;}
-            if((DG_center<fDptRangesA[0] && jG_center>=fJetptbinsA[0])||(DR_center<fDptRangesA[0] && jR_center>=fJetptbinsA[0] )) {measurement_ok = kFALSE;}
-            if((DG_center<fDptRangesA[1] && jG_center>=fJetptbinsA[1])||(DR_center<fDptRangesA[1] && jR_center>=fJetptbinsA[1] )) {measurement_ok = kFALSE;}
-            if((DG_center<fDptRangesA[2] && jG_center>=fJetptbinsA[2])||(DR_center<fDptRangesA[2] && jR_center>=fJetptbinsA[2] )) {measurement_ok = kFALSE;}
-            if((DG_center<fDptRangesA[3] && jG_center>=fJetptbinsA[3])||(DR_center<fDptRangesA[3] && jR_center>=fJetptbinsA[3] )) {measurement_ok = kFALSE;}
+            //fDptRangesA[] = {2,2,3,5,5};//fDptRangesAUp[] = {5,7,10,15,36};
+            if( DR_center<fDptRangesA[0] || DG_center< fDptRangesA[0] ){measurement_ok = kFALSE;}
+            else if((DG_center<fDptRangesA[0] && jG_center>=fJetptbinsA[0] )||(DR_center<fDptRangesA[0] && jR_center>=fJetptbinsA[0] )) {measurement_ok = kFALSE;}
+            else if((DG_center<fDptRangesA[1] && jG_center>=fJetptbinsA[1] )||(DR_center<fDptRangesA[1] && jR_center>=fJetptbinsA[1] )) {measurement_ok = kFALSE;}
+            else if((DG_center<fDptRangesA[2] && jG_center>=fJetptbinsA[2] )||(DR_center<fDptRangesA[2] && jR_center>=fJetptbinsA[2] )) {measurement_ok = kFALSE;}
+            else if((DG_center<fDptRangesA[3] && jG_center>=fJetptbinsA[3] )||(DR_center<fDptRangesA[3] && jR_center>=fJetptbinsA[3] )) {measurement_ok = kFALSE;}
+            else if((DG_center<fDptRangesA[4] && jG_center>=fJetptbinsA[4] )||(DR_center<fDptRangesA[4] && jR_center>=fJetptbinsA[4] )) {measurement_ok = kFALSE;}
 
             if (measurement_ok){ kineEffFulPre->Fill(zR_center,jR_center,effunfold);kineEffFulPos->Fill(zG_center,jG_center,weight);}
             measurement_pre = measurement_pos = measurement_ok; 
             //pre unfolding kine eff--
             if(DG_center>fDptRangesAUp[4] || jG_center>fJetptbinsA[fJetptbinsN] || jG_center<fJetptbinsA[0] || zG_center<fptbinsZMeasA[0]){measurement_pre = kFALSE;}
+            if (measurement_pre){ kineEffCutPre->Fill(zR_center,jR_center,effunfold); }
             //post unfolding kine eff--
             if(DR_center>fDptRangesAUp[4] || jR_center>fJetptbinsA[fJetptbinsN] || jR_center<fJetptbinsA[0] || zR_center<fptbinsZMeasA[0]){measurement_pos = kFALSE;}
-            if (measurement_pre){ kineEffCutPre->Fill(zR_center,jR_center,effunfold); }
             if (measurement_pos){ kineEffCutPos->Fill(zG_center,jG_center,weight   ); }
+
+            if((DR_center>fDptRangesAUp[4] || jR_center> fJetptbinsA[5] || zR_center<fptbinsZMeasA[0]))  {measurement_ok = kFALSE;}
+            if (measurement_ok){response.Fill(zR_center,jR_center,zG_center,jG_center,weight);}
         }
-    }
+    }else{cout<<"No response!!"<<endl;return;}
+    //********************************************************
+    // Kinematic efficiency begins. for pre and post unfolding
+    //********************************************************/
     TCanvas* cKinePre = new TCanvas("hKinePre","hKinePre",800,600);
     TH2D* hKinePre = (TH2D*) kineEffFulPre->Clone();
     hKinePre->Divide(kineEffCutPre,kineEffFulPre,1,1,"B");
