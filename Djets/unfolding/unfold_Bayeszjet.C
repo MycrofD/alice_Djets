@@ -298,7 +298,7 @@ void unfold_Bayeszjet(
     //********************************************************
     // Kinematic efficiency begins. for pre and post unfolding
     //********************************************************/
-    TCanvas* cKinePre = new TCanvas("hKinePre","hKinePre",800,600);
+    TCanvas* cKinePre = new TCanvas("cKinePre","cKinePre",800,600);
     TH2D* hKinePre = (TH2D*) kineEffFulPre->Clone();
     hKinePre->Divide(kineEffCutPre,kineEffFulPre,1,1,"B");
     hKinePre->SetTitle("KineEffPre");
@@ -318,10 +318,9 @@ void unfold_Bayeszjet(
     cKinePos  ->SaveAs(Form("%s/alljetz2D/cKinePos.png",outDir.Data()));
     cKinePos  ->SaveAs(Form("%s/alljetz2D/cKinePos.svg",outDir.Data()));
 
-//    //Drawing the post unfolding kine eff (this is inefficient way to draw.. try to remove this later)
-//    TCanvas* cKineA = new TCanvas("hKinea","hKinea",800,600); TH2D* hKineAll = (TH2D*) kineEffCutAll->Clone(); hKineAll->Divide(kineEffFullAll); //hKineAll->GetYaxis()->SetRangeUser(2,50);//3,50
-//    hKineAll->GetYaxis()->SetRangeUser(fJetptbinsA[0],fJetptbinsA[fJetptbinsN+1]); hKineAll->GetXaxis()->SetRangeUser(0.4,1.02); hKineAll->SetTitle(""); hKineAll->Draw("colz"); hKineAll->Draw("TEXT same");
-    //----
+    //setting errors to zero
+    for(int i=0;i<=hKinePre->GetNbinsY();i++){for(int j=0;j<=hKinePre->GetNbinsX();j++){hKinePre->SetBinError(j,i,0);}}
+    for(int i=0;i<=hKinePos->GetNbinsY();i++){for(int j=0;j<=hKinePos->GetNbinsX();j++){hKinePos->SetBinError(j,i,0);}}
 
     //*********************************
     // Kinematic efficiency end
@@ -614,19 +613,18 @@ void unfold_Bayeszjet(
     TCanvas *cUnFolded = new TCanvas("UnFoldedMeasured","UnFolded/Measured", 1400, 900);
     cUnFolded->Divide(3,2);
     cUnFolded->SetLogz();
-    for (int binjet=1; binjet< fUnfoldedBayes[regBayes-1]->GetNbinsY(); binjet++){
+    for (int binjet=1; binjet< fUnfoldedBayes[regBayes-1]->GetNbinsY()+1; binjet++){
         /***********************************
-        ############# Unfolding ##################
+        ############# Unfolding comparison
         ************************************/
         cUnFolded->cd(binjet);
-
         TH1D* hData2Dplot = (TH1D*)hData2D->ProjectionX("",binjet+databinnum,binjet+databinnum,"E")->Clone();
         //hData2Dplot->SetLineColor(kBlack);
         hData2Dplot->SetLineWidth(2);
         hData2Dplot->SetMarkerStyle(20);
         hData2Dplot->SetMarkerSize(1);
         hData2Dplot->Draw();
-        hData2Dplot->SetTitle(Form("Jet pt: %s GeV/c",jetpttitle[binjet].Data()));
+        hData2Dplot->SetTitle(Form("Jet pt: %s GeV/c",jetpttitle[binjet-1].Data()));
         for(int ivar=0; ivar<NTrials; ivar++){//changes
             fUnfoldedBayes[ivar]->SetLineColor(colortable[ivar]);
             fUnfoldedBayes[ivar]->ProjectionX("",binjet+unfoldbinnum,binjet+unfoldbinnum,"E")->Draw("same");
