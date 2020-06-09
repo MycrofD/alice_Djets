@@ -179,16 +179,6 @@ prod=kl
 #isprefix=0 #we have at eff settings too
 saveDir=Z0to102
 
-##for running custom cxx macros from AliPhysics
-##gInterpreter->ProcessLine(".x AliHFInvMassFitterDJET.cxx++g");
-#if [ $flagSBs -eq 1 ]; then
-#root -l -b << EOF
-#gInterpreter->ProcessLine(".x AliHFInvMassFitterDJET.cxx++g");
-#.L signalExtraction_SBz.C
-#signalExtraction_SBz("$data", $isEff, "$prompteff", $isRef, "$refFile", $ispostfix, "$listName", "$out", $save, $isMoreFiles, "$prod", $isprefix, "$saveDir", $boundSigma)
-#EOF
-#fi
-
 if [ $flagSBs -eq 1 ]; then
  root -l -b -q signalExtraction_SBz.C'("'$data'", '$isEff', "'$prompteff'", '$isRef', "'$refFile'", '$ispostfix', "'$listName'", "'$out'", '$save', '$isMoreFiles', "'$prod'", '$isprefix', "'$saveDir'", '$boundSigma')'
 fi
@@ -203,6 +193,34 @@ if [ $flagSim -eq 1 ]; then
  bash zrun_sim.csh $OUT $fBsimN $fCsimN $effFilePrompt $effFileNonPrompt $isEff $isBsim
  cd ../DsignalExtraction
 fi
+
+###################################################################
+#simFilesDir=/home/jackbauer/ALICE_HeavyFlavour/work/Djets/out/outMC/allR/
+#BFDSimDirOut=$OUT/SimFiles/BFeedDown
+#if [ ! -d "$BFDSimDirOut" ] || [ $isBsim -eq 1 ]; then                                                                                                                                                             
+#
+# cd ../POWHEGSim
+## 1: simulation file directory;
+## 2: number of simulation files $fBsimN = $count
+## 3: quark type: 0: charm, 1: beauty
+## 4: zfrac:: 1:D-jet z spectrum, 0:D-meson pT spectrum
+## 5: if D meson pT cut applied (for D-jet pT spectrum case), if yes the lower and upper values from the D-meson pT bins from the config file are taken                                                             
+## 6: if efficiency applied (for B simulations, ratio of non-prompt/prompt efficiency)                                                                                                                              
+## 7: prompt efficiency file
+## 8: non-prompt efficiency file
+## 9: directory for the output files                                                                                                                                                                                
+#
+#count=0
+#while [ $count -lt $fBsimN ]
+#do
+#    root -l -b -q getSimSpectra_z.C'("'$simFilesDir'",'$count',1,1,1,'$isEff', "'$effFilePrompt'","'$effFileNonPrompt'","'$BFDSimDirOut'")'
+#    ((count++))
+#done
+#
+##plot all the variations
+#fi
+###################################################################
+
 ## Response
 ##------------------------
 #dataFile=/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/AnalysisResults_414_z.root
@@ -250,4 +268,14 @@ if [ $flagUnf -eq 1 ]; then
  bash zrun_unfold.csh $dataUnfoldInDir $detRMFilePrompt $bkgRMFile $unfoldingDirOut $regPar $isPrior $priorType $isBkgRM $isFDUpSys $isFDDownSys
  cd ../DsignalExtraction
 fi
+
+##for running custom cxx macros from AliPhysics
+##gInterpreter->ProcessLine(".x AliHFInvMassFitterDJET.cxx++g");
+#if [ $flagSBs -eq 1 ]; then
+#root -l -b << EOF
+#gInterpreter->ProcessLine(".x AliHFInvMassFitterDJET.cxx++g");
+#.L signalExtraction_SBz.C
+#signalExtraction_SBz("$data", $isEff, "$prompteff", $isRef, "$refFile", $ispostfix, "$listName", "$out", $save, $isMoreFiles, "$prod", $isprefix, "$saveDir", $boundSigma)
+#EOF
+#fi
 
