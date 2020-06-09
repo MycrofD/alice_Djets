@@ -16,17 +16,14 @@ OUT=${EOS_local}/media/jackbauer/data/z_out/R_0$R
 #OUT=${OUT}_25
 OUT=${OUT}_finaltry
 
-##################################### THINGS TO CHANGE
-flagCUT=0
-cutfileNo=0
 #####################################
 source zrun_settings.csh
 ######### for FD
 signalExtractionDir=$OUT/signalExtraction/plots
 FDsubtractionDir=$OUT/FDsubtraction
 simDir=$OUT/SimFiles/BFeedDown
-isprefix=0
-ispostfix=0
+#isprefix=0 #in settings
+#ispostfix=0#in settings
 DjetEff=1
 efffile=$OUT/efficiency/DjetEff_prompt_jetpt
 ######### other unfolding parameters
