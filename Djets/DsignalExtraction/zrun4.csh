@@ -28,16 +28,14 @@ flagEff=1 #1 Getting efficiencies and MC sigmas in different jetpt intervals for
 flagRef=1 #2 Reflections for different jetpt intervals for all Dpt bins
 flagSBs=1 #3 Side Band subtraction method
 flagSim=0 #4 Simulation for non-prompt and prompt D-jets
-flagRes=0 #5 Response matrix
-flagBFD=0 #6 B-feed down subtraction
-
-flagUnf=0 #7 Unfolding
 #-----
 flagJES=0
+# change flagCUT in zrun_settings.csh
 #-----
-# remember to change ND (number of Dmesons in config file)
-flagCUT=0 # 
-# and also change flagCUT in zrun4D.csh
+#DO NOT TOUCH
+flagRes=0 #5 Response matrix
+flagBFD=0 #6 B-feed down subtraction.. will also be done elsewhere
+flagUnf=0 #7 Unfolding #not done here.. 4D unfolding is done separately.
 #-----
 finerunfold=0
 boundSigma=6 #also see bin_zjet=24	# if needed to fit certain Dpt bins with a bounded sigma: sigma +/- some fraction of this sigma
@@ -80,13 +78,6 @@ elif [ $bin_zjet -eq 2 ]; then #7-10
  echo " double fdplotmin = 800, dataplotmax = 100000;" >> configDzero_ppz.h
 elif [ $bin_zjet -eq 3 ]; then #10-15
  echo "double        fptbinsDA[] = {5,6,7,8,10,12,15};" >> configDzero_ppz.h
-# if [ $finerunfold -eq 0 ]; then #10-15
-#  echo " const int     fptbinsZFinalN = 5;" >> configDzero_ppz.h
-#  echo " double        fptbinsZFinalA[fptbinsZFinalN+1] = {0.4, 0.6, 0.7, 0.8, 0.9, 1.02};" >> configDzero_ppz.h
-# elif [ $finerunfold -eq 1 ]; then #10-15
-#  echo " const int     fptbinsZFinalN = 6;" >> configDzero_ppz.h
-#  echo " double        fptbinsZFinalA[fptbinsZFinalN+1] = {0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.02};" >> configDzero_ppz.h
-# fi
  echo " double fdplotmin = 100, dataplotmax = 40000;" >> configDzero_ppz.h
 elif [ $bin_zjet -eq 6 ]; then #5-15
  echo "double        fptbinsDA[] = {2,3,4,5,6,7,8,10,12,15};" >> configDzero_ppz.h
@@ -125,66 +116,12 @@ elif [ $boundSigma -eq 3 ]; then
 fi
 ## Getting data and MC files
 ##-----------------------------------------------------
-if [ $R -eq 2 ]; then
- data=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/AnalysisResults_632_R02.root 
- effFile=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/AnalysisResults_868_R02ppMC.root
-elif [ $R -eq 3 ]; then
- data=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/trial_437.root
- #effFile=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/AnalysisResults_634_pp5TeV_z.root
- effFile=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/AnalysisResults_454.root
-elif [ $R -eq 4 ]; then
- data=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/AnalysisResults_503_R04.root
- #effFile=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/AnalysisResults_642_pp5TeV_z.root # default
- effFile=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/CutSys/AnalysisResults_R04_693_cutsys.root 
- effFileJES=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/newMC_JES/AnalysisResults_R04_JES4_722.root #JES 4%
-
- dataCUT=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/CutSys/AnalysisResults_R04_515_cutsys.root 
- effCUT=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/CutSys/AnalysisResults_R04_693_cutsys.root 
- dataCUT2=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/CutSys/AnalysisResults_584_R04ppcuts.root  
- effCUT2=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/CutSys/AnalysisResults_803_R04ppMCcuts.root 
-elif [ $R -eq 6 ]; then
- data=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/AnalysisResults_504_R06.root
- effFile=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/AnalysisResults_683_ppMC_R06.root
- effFileJES=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/newMC_JES/AnalysisResults_R06_721.root #JES 4%
-
- dataCUT=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/CutSys/AnalysisResults_R06_522_cutsys.root 
- effCUT=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet_pp5TeV_z/cutsystematics_z/AnalysisResultsR06MC_cuts719.root 
- dataCUT2=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/CutSys/AnalysisResults_587_R06ppcuts.root  
- effCUT2=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/CutSys/AnalysisResults_811_R06_cutsys2.root
-fi
-## Changing datafiles and MC files for cut selection studies
-##-----------------------------------------------------------
-# cut test
-# effFile=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/AnalysisResults_443.root
-cutfileNo=0
-if [ $flagCUT -eq 1 ]; then
- data=${dataCUT2}
- effFile=${effCUT2} 
- if [ $cutfileNo -eq 1 ]; then
-  OUT=${OUT}_cutsysLL1
- elif [ $cutfileNo -eq 2 ]; then
-  OUT=${OUT}_cutsysLL2
- elif [ $cutfileNo -eq 3 ]; then
-  OUT=${OUT}_cutsysLL3
- elif [ $cutfileNo -eq 4 ]; then
-  OUT=${OUT}_cutsysTT2
- elif [ $cutfileNo -eq 0 ]; then
-  OUT=${OUT}_cutsysDeDe
- elif [ $cutfileNo -eq 5 ]; then
-  data=${dataCUT}
-  effFile=${effCUT} 
-  OUT=${OUT}_cutsysT3
- elif [ $cutfileNo -eq 6 ]; then
-  data=${dataCUT}
-  effFile=${effCUT} 
-  OUT=${OUT}_cutsysDe
- fi
-fi
+source zrun_settings.csh
 
 ## Getting Efficiencies for each bin of jet pt interval
 ##-----------------------------------------------------------
-isprefix=1
-postfix=1 #we have at signalextraction settings too
+#isprefix=1 # we have in zrun_settings.csh (THE MAIN ONE)
+#ispostfix=1 #we have at signalextraction settings too
 
 listName="" #SQ2 3 5 6
 if [ $flagCUT -eq 1 ]; then
@@ -210,8 +147,8 @@ isPrompt=1
 outDir=$OUT/efficiency
 if [ $flagEff -eq 1 ]; then
  cd ../efficiency
- root -l -b -q DjetEfficiency_z.C'(1, "'$effFile'","'$outDir'", 0, '$postfix', "'$listName'", '$isprefix')'
- root -l -b -q DjetEfficiency_z.C'(0, "'$effFile'","'$outDir'", 0, '$postfix', "'$listName'", '$isprefix')'
+ root -l -b -q DjetEfficiency_z.C'(1, "'$effFile'","'$outDir'", 0, '$ispostfix', "'$listName'", '$isprefix')'
+ root -l -b -q DjetEfficiency_z.C'(0, "'$effFile'","'$outDir'", 0, '$ispostfix', "'$listName'", '$isprefix')'
  cd ../DsignalExtraction
 fi
 ## Reflections
@@ -229,7 +166,7 @@ isEff=$flagEff
 efffile=$outDir/DjetEff_prompt_jetpt
 isRef=$flagRef
 refFile=$outRefl/reflectionTemplates_pp_
-#postfix=0 #we have at efficiency settings too
+#ispostfix=0 #we have at efficiency settings too
 #listName=Cut # we have at eff settings too
 if [ $flagRef -eq 1 ]; then
  out=$OUT/signalExtraction
@@ -248,12 +185,12 @@ saveDir=Z0to102
 #root -l -b << EOF
 #gInterpreter->ProcessLine(".x AliHFInvMassFitterDJET.cxx++g");
 #.L signalExtraction_SBz.C
-#signalExtraction_SBz("$data", $isEff, "$efffile", $isRef, "$refFile", $postfix, "$listName", "$out", $save, $isMoreFiles, "$prod", $isprefix, "$saveDir", $boundSigma)
+#signalExtraction_SBz("$data", $isEff, "$efffile", $isRef, "$refFile", $ispostfix, "$listName", "$out", $save, $isMoreFiles, "$prod", $isprefix, "$saveDir", $boundSigma)
 #EOF
 #fi
 
 if [ $flagSBs -eq 1 ]; then
- root -l -b -q signalExtraction_SBz.C'("'$data'", '$isEff', "'$efffile'", '$isRef', "'$refFile'", '$postfix', "'$listName'", "'$out'", '$save', '$isMoreFiles', "'$prod'", '$isprefix', "'$saveDir'", '$boundSigma')'
+ root -l -b -q signalExtraction_SBz.C'("'$data'", '$isEff', "'$efffile'", '$isRef', "'$refFile'", '$ispostfix', "'$listName'", "'$out'", '$save', '$isMoreFiles', "'$prod'", '$isprefix', "'$saveDir'", '$boundSigma')'
 fi
 ## B-feed down simulation
 ##-----------------------
