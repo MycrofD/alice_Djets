@@ -49,7 +49,7 @@ int linesytle[] = {1,2,3,4,5,6,7,8,9,10,11,12,13};
 void unfold_Bayeszjet(
   TString listName = "FD",
   bool isPrompt=1,
-  bool postfix=0,
+  bool ispostfix=0,
   bool isprefix=0,
   TString effFile = "",
   TString datafile = "file.root",
@@ -62,11 +62,7 @@ void unfold_Bayeszjet(
   bool useDeltaPt = 1,  // if to use a separate bkg. fluctuation matrix
   bool isFDUpSpec = 0,
   bool isFDDownSpec = 0,
-  bool fDoWeighting = 1,
-  bool fdivide = 1,
-  bool overflow = 1,  // if to use overflow in the unfolding
-  const int NTrials = 10,//10,  //number of total trials
-  bool debug = 0
+  const int NTrials = 10//10,  //number of total trials
 )
 {
     bool FDsys = 1;
@@ -187,7 +183,7 @@ void unfold_Bayeszjet(
     //---- Reading from the ResponseMatrix of each D meson in a loop
     for(int i=0; i<NDMC; i++){
         if(!isprefix){
-            if(postfix) {
+            if(ispostfix) {
                 histList[i] =  (TList*)dir->Get(Form("%s%d%sMCrec",histName.Data(),i,listName.Data())); }
             else {
                 if(isPrompt) histList[i] =  (TList*)dir->Get(Form("%s%dMCrec",histName.Data(),i));
@@ -195,7 +191,7 @@ void unfold_Bayeszjet(
             }
         }
         else{
-            if(postfix) {
+            if(ispostfix) {
                 if(isPrompt){ histList[i] =  (TList*)dir->Get(Form("%s%sMBN%dMCrec",histName.Data(),listName.Data(),i)); }
                 else{    histList[i] =  (TList*)dir->Get(Form("%s%sMBN%dFDMCrec",histName.Data(),listName.Data(),i)); }
             }
@@ -271,9 +267,7 @@ void unfold_Bayeszjet(
                 else if(priorType==10){weight = 0.1*weight*(zG_center);}
                 else weight = weight;
             }
-            //if(RMrecoeff){weight = weight*(1/eff);}//need to define RMrecoeff, eff
             bool measurement_ok = kTRUE; bool measurement_pre = kTRUE; bool measurement_pos = kTRUE;
-            double effunfold = content;//it is not just content but content * 1/efficiency.
             //fDptRangesA[] = {2,2,3,5,5};//fDptRangesAUp[] = {5,7,10,15,36};
             if( DR_center<fDptRangesA[0] || DG_center< fDptRangesA[0] ){measurement_ok = kFALSE;}
             else if((DG_center<fDptRangesA[0] && jG_center>=fJetptbinsA[0] )||(DR_center<fDptRangesA[0] && jR_center>=fJetptbinsA[0] )) {measurement_ok = kFALSE;}
@@ -282,17 +276,28 @@ void unfold_Bayeszjet(
             else if((DG_center<fDptRangesA[3] && jG_center>=fJetptbinsA[3] )||(DR_center<fDptRangesA[3] && jR_center>=fJetptbinsA[3] )) {measurement_ok = kFALSE;}
             else if((DG_center<fDptRangesA[4] && jG_center>=fJetptbinsA[4] )||(DR_center<fDptRangesA[4] && jR_center>=fJetptbinsA[4] )) {measurement_ok = kFALSE;}
 
-            if (measurement_ok){ kineEffFulPre->Fill(zR_center,jR_center,effunfold);kineEffFulPos->Fill(zG_center,jG_center,weight);}
-            measurement_pre = measurement_pos = measurement_ok; 
+            if (measurement_ok){ kineEffFulPre->Fill(zR_center,jR_center,weight);kineEffFulPos->Fill(zG_center,jG_center,weight);}
+            measurement_pre = measurement_pos = measurement_ok;//reseting kine eff booleans
             //pre unfolding kine eff--
             if(DG_center>fDptRangesAUp[4] || jG_center>fJetptbinsA[fJetptbinsN] || jG_center<fJetptbinsA[0] || zG_center<fptbinsZMeasA[0]){measurement_pre = kFALSE;}
-            if (measurement_pre){ kineEffCutPre->Fill(zR_center,jR_center,effunfold); }
+            if (measurement_pre){ kineEffCutPre->Fill(zR_center,jR_center,weight); }
             //post unfolding kine eff--
             if(DR_center>fDptRangesAUp[4] || jR_center>fJetptbinsA[fJetptbinsN] || jR_center<fJetptbinsA[0] || zR_center<fptbinsZMeasA[0]){measurement_pos = kFALSE;}
             if (measurement_pos){ kineEffCutPos->Fill(zG_center,jG_center,weight   ); }
-
+            //actual unfolding response now
             if((DR_center>fDptRangesAUp[4] || jR_center> fJetptbinsA[5] || zR_center<fptbinsZMeasA[0]))  {measurement_ok = kFALSE;}
-            if (measurement_ok){response.Fill(zR_center,jR_center,zG_center,jG_center,weight);}
+            if (measurement_ok){
+                //if(DjetEff){
+                //    double eff_c = 1;
+                //    if     (jR_center>fJetptbinsA[0] && jR_center<=fJetptbinsA[1]){eff_c=effHists[0]->GetBinContent(effHists[0]->GetXaxis()->FindBin(DR_center));}
+                //    else if(jR_center>fJetptbinsA[1] && jR_center<=fJetptbinsA[2]){eff_c=effHists[1]->GetBinContent(effHists[1]->GetXaxis()->FindBin(DR_center));}
+                //    else if(jR_center>fJetptbinsA[2] && jR_center<=fJetptbinsA[3]){eff_c=effHists[2]->GetBinContent(effHists[2]->GetXaxis()->FindBin(DR_center));}
+                //    else if(jR_center>fJetptbinsA[3] && jR_center<=fJetptbinsA[4]){eff_c=effHists[3]->GetBinContent(effHists[3]->GetXaxis()->FindBin(DR_center));}
+                //    else if(jR_center>fJetptbinsA[4] && jR_center<=fJetptbinsA[5]){eff_c=effHists[4]->GetBinContent(effHists[4]->GetXaxis()->FindBin(DR_center));}
+                //    weight = weight/eff_c;
+                //}
+                response.Fill(zR_center,jR_center,zG_center,jG_center,weight);
+            }
         }
     }else{cout<<"No response!!"<<endl;return;}
     //********************************************************

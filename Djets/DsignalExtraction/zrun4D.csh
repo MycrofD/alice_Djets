@@ -27,6 +27,8 @@ simDir=$OUT/SimFiles/BFeedDown
 DjetEff=1
 efffile=$OUT/efficiency/DjetEff_prompt_jetpt
 ######### other unfolding parameters
+listName="FD"
+isPrompt=1#this parameter can be used to make a common response macro for FD and unfolding
 detRMFilePrompt=$OUT/ResponseMatrix/DetMatrix_prompt
 bkgRMFile=$OUT/ResponseMatrix/DetMatrix_
 unfoldingDir=$OUT/unfolding
@@ -36,9 +38,8 @@ priorType=1 #1 to 8
 isBkgRM=0
 isFDUpSys=0
 isFDDownSys=0
+NTrials=10
 
-isPrompt=1
-listName="FD"
 
 ## B FEED DOWN=================================
 if [ $doBFD -eq 1 ]; then
@@ -51,11 +52,11 @@ fi
 ## UNFOLDING=================================
 if [ $doUnfold -eq 1 ]; then
  cd ../unfolding
-  root -l  unfold_Bayeszjet.C'("'$listName'",'$isPrompt','$ispostfix','$isprefix',"'$effFile'","'$FDsubtractionDir'","'$detRMFilePrompt'","'$bkgRMFile'","'$unfoldingDir'",'$regPar',0,'$priorType','$isBkgRM','$isFDUpSys','$isFDDownSys')'
+  root -l  unfold_Bayeszjet.C'("'$listName'",'$isPrompt','$ispostfix','$isprefix',"'$effFile'","'$FDsubtractionDir'","'$detRMFilePrompt'","'$bkgRMFile'","'$unfoldingDir'",'$regPar',0,'$priorType','$isBkgRM','$isFDUpSys','$isFDDownSys','$NTrials')'
 
  if [ $isPrior -eq 1 ]; then
   for thing in 1 2 3 4 5 6 7 8; do #these are priors
-   root -l  unfold_Bayeszjet.C'("'$listName'",'$isPrompt','$ispostfix','$isprefix',"'$effFile'","'$FDsubtractionDir'","'$detRMFilePrompt'","'$bkgRMFile'","'$unfoldingDir'",'$regPar','$isPrior','$priorType','$isBkgRM','$isFDUpSys','$isFDDownSys')'
+   root -l  unfold_Bayeszjet.C'("'$listName'",'$isPrompt','$ispostfix','$isprefix',"'$effFile'","'$FDsubtractionDir'","'$detRMFilePrompt'","'$bkgRMFile'","'$unfoldingDir'",'$regPar','$isPrior','$priorType','$isBkgRM','$isFDUpSys','$isFDDownSys','$NTrials')'
   done
  fi
  cd ../DsignalExtraction
