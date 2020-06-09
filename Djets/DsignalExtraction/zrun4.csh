@@ -15,6 +15,7 @@
 # in turn, runs this file 'zrun.csh'
 
 EOS_local=$3
+R=$2		# Jet radius, fed as an argument from zrun_main.csh 
 #/eos/user/a/amohanty/
 
 ## Writing the configDzero_pp.h file: Setting up D pT bins
@@ -42,7 +43,6 @@ boundSigma=6 #also see bin_zjet=24	# if needed to fit certain Dpt bins with a bo
 if [ $bin_zjet -eq 24 ]; then #2-5
  boundSigma=0
 fi
-R=$2		# Jet radius, fed as an argument from zrun_main.csh 
 fBsimN=10 #11	# number of non-prompt sim files
 fCsimN=1 #9#11	# number of prompt sim files
 unoriginal_tag=unoriginal	# adding a tag that says the next file zrun.csh is not the original file to be edited, rather this is
@@ -162,8 +162,8 @@ fi
 ## Signal Extraction Side Bands, with/without efficiency correction
 ##---------------------------------------------------------
 isEff=$flagEff
-#efffile=/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts/Default/efficiency/DjetEff_prompt_jetpt5_50.root
-efffile=$outDir/DjetEff_prompt_jetpt
+#prompteff=/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts/Default/efficiency/DjetEff_prompt_jetpt5_50.root
+prompteff=$outDir/DjetEff_prompt_jetpt #also there in settings. needs to be cleaned
 isRef=$flagRef
 refFile=$outRefl/reflectionTemplates_pp_
 #ispostfix=0 #we have at efficiency settings too
@@ -185,17 +185,17 @@ saveDir=Z0to102
 #root -l -b << EOF
 #gInterpreter->ProcessLine(".x AliHFInvMassFitterDJET.cxx++g");
 #.L signalExtraction_SBz.C
-#signalExtraction_SBz("$data", $isEff, "$efffile", $isRef, "$refFile", $ispostfix, "$listName", "$out", $save, $isMoreFiles, "$prod", $isprefix, "$saveDir", $boundSigma)
+#signalExtraction_SBz("$data", $isEff, "$prompteff", $isRef, "$refFile", $ispostfix, "$listName", "$out", $save, $isMoreFiles, "$prod", $isprefix, "$saveDir", $boundSigma)
 #EOF
 #fi
 
 if [ $flagSBs -eq 1 ]; then
- root -l -b -q signalExtraction_SBz.C'("'$data'", '$isEff', "'$efffile'", '$isRef', "'$refFile'", '$ispostfix', "'$listName'", "'$out'", '$save', '$isMoreFiles', "'$prod'", '$isprefix', "'$saveDir'", '$boundSigma')'
+ root -l -b -q signalExtraction_SBz.C'("'$data'", '$isEff', "'$prompteff'", '$isRef', "'$refFile'", '$ispostfix', "'$listName'", "'$out'", '$save', '$isMoreFiles', "'$prod'", '$isprefix', "'$saveDir'", '$boundSigma')'
 fi
 ## B-feed down simulation
 ##-----------------------
 ##/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/POWHEGSimulations/fastSim_pp5TeV
-effFilePrompt=$efffile
+effFilePrompt=$prompteff
 effFileNonPrompt=$outDir/DjetEff_nonPrompt_jetpt
 isBsim=1
 if [ $flagSim -eq 1 ]; then
