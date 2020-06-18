@@ -33,9 +33,6 @@ ispostfix=0
 # remember to change ND (number of Dmesons in config file)
 flagCUT=0 # 
 cutfileNo=0
-#if [ $flagCUT -eq 1 ]; then
-#OUT=${OUT}_cutsysDeDe
-#fi 
 if [ $flagCUT -eq 1 ]; then
  data=${dataCUT2}
  effFile=${effCUT2}
@@ -49,8 +46,6 @@ if [ $flagCUT -eq 1 ]; then
   OUT=${OUT}_cutsysTT2
  elif [ $cutfileNo -eq 0 ]; then
   OUT=${OUT}_cutsysDeDe
-# elif [ $cutfileNo -eq 5 ]; then
-#  OUT=${OUT}_cutsysT3
  elif [ $cutfileNo -eq 5 ]; then  
   data=${dataCUT}
   effFile=${effCUT}
@@ -62,3 +57,4 @@ if [ $flagCUT -eq 1 ]; then
  fi
 fi
  
+##################################### THINGS TO CHANGE
