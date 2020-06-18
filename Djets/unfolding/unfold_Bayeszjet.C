@@ -14,26 +14,17 @@
 #include "../DsignalExtraction/configDzero_ppz.h"
 
 //====================== global =========================
-double plotmin = fptbinsZMeasA[0], plotmax =  fptbinsZMeasA[fptbinsZMeasN];
 TString jetpttitle[5] = {"2-5","5-7", "7-10","10-15","15-50"};
 // to fill the response matrix
 bool BayesParameterSys=1;
-const int fJetptbinsGenNN=7;
-double fJetptbinsGenAA[fJetptbinsGenNN+1]={0,2,5,7,10,15,50,100};
-         const int fJetptbinsGenN=5; 
          TString truebinnum="";
          //TString truebinnum="JES4";
          //TString truebinnum="0350";
-         double fJetptbinsGenA[fJetptbinsGenN+1]={2,5,7,10,15,50};
-         //const int fJetptbinsGenN=8; TString truebinnum="360";
-const int nDim    = 4;//the four dimensions
-//int dim[nDim]     = {0,1,5,6};//for extacting 4D info from THnSparse
 const int DnDim   = 6;//the six dimensions
 //int Ddim[DnDim]   = {0,1,5,6,2,7};//for extacting 6D info from THnSparse
 int zRec = 0, jetRec = 1, DRec = 2;
 int zGen = 5, jetGen = 6, DGen = 7; 
 int Ddim[DnDim]   = {zRec,jetRec,zGen,jetGen,DRec,DGen};//for extacting 6D info from THnSparse
-int dim[nDim]   = {zRec,jetRec,zGen,jetGen};//for extacting 4D info from THnSparse
 TH1D *fRawSpec2Dproj[fJetptbinsN];
 TH1D *fRawSpec2DprojUp[fJetptbinsN];//FD systematics
 TH1D *fRawSpec2DprojDo[fJetptbinsN];//FD systematics
@@ -47,19 +38,18 @@ int linesytle[] = {1,2,3,4,5,6,7,8,9,10,11,12,13};
  ############ begining of the macro ##################
  *****************************************************/
 void unfold_Bayeszjet(
-  TString listName = "FD",
-  bool isPrompt=1,
+  TString listName = "",
   bool ispostfix=0,
   bool isprefix=0,
+  bool DjetEff=1,
+  TString prompteff="",
   TString effFile = "",
   TString datafile = "file.root",
-  TString detRMfile = "detRM.root",
-  TString bkgRMfile = "bkgRM.root",
   TString outDir = "out", // output directory
   const int regBayes = 5,  // default reg. parameter for the bayes unfolding
   bool isPrior = 0,  // if to use prior different than the true spectrum from the sim
   int priorType = 1,   // if isPrior == 1, choose type of the prior prior 1 is steep, prior 2 is gentle
-  bool useDeltaPt = 1,  // if to use a separate bkg. fluctuation matrix
+  //bool useDeltaPt = 1,  // if to use a separate bkg. fluctuation matrix
   bool isFDUpSpec = 0,
   bool isFDDownSpec = 0,
   const int NTrials = 10//10,  //number of total trials
@@ -67,6 +57,7 @@ void unfold_Bayeszjet(
 {
     bool FDsys = 1;
     bool DptcutTrue=1;
+    bool fd1D = 0; bool fd2D = 1;
     //-----------------------------
     gStyle ->SetOptStat(0000);
     gSystem->Exec(Form("mkdir  %s",outDir.Data()));
@@ -82,71 +73,96 @@ void unfold_Bayeszjet(
     TH2* hData2DS = new TH2D("hFD_zjet", "hFD_zjet", fptbinsZMeasN, fptbinsZMeasA, fJetptbinsN, fJetptbinsA);
     TH2* hData2DUp = new TH2D("hFD_zjetUp", "hFD_zjetUp", fptbinsZMeasN, fptbinsZMeasA, fJetptbinsN, fJetptbinsA);
     TH2* hData2DDo = new TH2D("hFD_zjetDo", "hFD_zjetDo", fptbinsZMeasN, fptbinsZMeasA, fJetptbinsN, fJetptbinsA);
-    TString data2D[fJetptbinsN];
-    // ---------------------------------------
-    // reading data from each 1D
-    // ---------------------------------------
-    for (int binjet=0; binjet < fJetptbinsN; binjet++){
-        data2D[binjet]=Form("%s",datafile.Data());
-        data2D[binjet]+=Form("/Jetbin_%d_%d",(int)fJetptbinsA[binjet], (int)fJetptbinsA[binjet+1]);
-        data2D[binjet]+="/plots/JetPtSpectrum_FDsub.root";
-        //reading 2D DetRM: need to create 2D RM file in ResponseMatrix folder
-	//no, we are creating RM here in this macro itself
-    }
-    for (int binjet=0; binjet < fJetptbinsN; binjet++){
+
+    if(fd1D){
+        TString data2D[fJetptbinsN];
+
         // ---------------------------------------
-        // 1D projections of FD subtracted spectra
+        // reading data from each 1D
         // ---------------------------------------
-        //cout<<fJetptbinsA[binjet]<<endl;
-        fRawSpec2Dproj[binjet] = (TH1D*)LoadRawSpec(data2D[binjet].Data(),"hData_binned_sub");
-        TH1D *fRawSpec2DprojScale=(TH1D*)fRawSpec2Dproj[binjet]->Clone();
-        fRawSpec2DprojScale->Scale(1,"width");
-        if(FDsys){
-            fRawSpec2DprojUp[binjet] = (TH1D*)LoadRawSpec(data2D[binjet].Data(),"hData_binned_sub_up");
-            fRawSpec2DprojDo[binjet] = (TH1D*)LoadRawSpec(data2D[binjet].Data(),"hData_binned_sub_down");
-            TH1D *fRawSpec2DprojUpScale=(TH1D*)fRawSpec2DprojUp[binjet]->Clone();
-            TH1D *fRawSpec2DprojDoScale=(TH1D*)fRawSpec2DprojDo[binjet]->Clone();
-            fRawSpec2DprojUpScale->Scale(1,"width");
-            fRawSpec2DprojDoScale->Scale(1,"width");
+        for (int binjet=0; binjet < fJetptbinsN; binjet++){
+            data2D[binjet]=Form("%s",datafile.Data());
+            data2D[binjet]+=Form("/Jetbin_%d_%d",(int)fJetptbinsA[binjet], (int)fJetptbinsA[binjet+1]);
+            data2D[binjet]+="/plots/JetPtSpectrum_FDsub.root";
+            //reading 2D DetRM: need to create 2D RM file in ResponseMatrix folder
+    	//no, we are creating RM here in this macro itself
         }
-        // --------------------------------------------------
-        // combining those 1D projections into a 2D histogram
-        // --------------------------------------------------
-        for (Int_t binz=0; binz < fptbinsZMeasN+1; binz++){
-            double cont  = fRawSpec2Dproj[binjet]->GetBinContent(binz); double contS = fRawSpec2DprojScale->GetBinContent(binz);
-            double contErr = fRawSpec2Dproj[binjet]->GetBinError(binz); double contErrS = fRawSpec2DprojScale->GetBinError(binz);
-            hData2D->SetBinContent(binz,binjet+1,cont); hData2DS->SetBinContent(binz,binjet+1,contS); 
-            hData2D->SetBinError(binz,binjet+1,contErr);hData2DS->SetBinError(binz,binjet+1,contErrS);
+        for (int binjet=0; binjet < fJetptbinsN; binjet++){
+            // ---------------------------------------
+            // 1D projections of FD subtracted spectra
+            // ---------------------------------------
+            //cout<<fJetptbinsA[binjet]<<endl;
+            fRawSpec2Dproj[binjet] = (TH1D*)LoadRawSpec(data2D[binjet].Data(),"hData_binned_sub");
+            TH1D *fRawSpec2DprojScale=(TH1D*)fRawSpec2Dproj[binjet]->Clone();
+            fRawSpec2DprojScale->Scale(1,"width");
             if(FDsys){
-                double contUp  = fRawSpec2DprojUp[binjet]->GetBinContent(binz);
-                double contErrUp = fRawSpec2DprojUp[binjet]->GetBinError(binz);
-                hData2DUp->SetBinContent(binz,binjet+1,contUp);
-                hData2DUp->SetBinError(binz,binjet+1,contErrUp);
-                double contDo  = fRawSpec2DprojDo[binjet]->GetBinContent(binz);
-                double contErrDo = fRawSpec2DprojDo[binjet]->GetBinError(binz);
-                hData2DDo->SetBinContent(binz,binjet+1,contDo);
-                hData2DDo->SetBinError(binz,binjet+1,contErrDo);
+                fRawSpec2DprojUp[binjet] = (TH1D*)LoadRawSpec(data2D[binjet].Data(),"hData_binned_sub_up");
+                fRawSpec2DprojDo[binjet] = (TH1D*)LoadRawSpec(data2D[binjet].Data(),"hData_binned_sub_down");
+                TH1D *fRawSpec2DprojUpScale=(TH1D*)fRawSpec2DprojUp[binjet]->Clone();
+                TH1D *fRawSpec2DprojDoScale=(TH1D*)fRawSpec2DprojDo[binjet]->Clone();
+                fRawSpec2DprojUpScale->Scale(1,"width");
+                fRawSpec2DprojDoScale->Scale(1,"width");
+            }
+            // --------------------------------------------------
+            // combining those 1D projections into a 2D histogram
+            // --------------------------------------------------
+            for (Int_t binz=0; binz < fptbinsZMeasN+1; binz++){
+                double cont  = fRawSpec2Dproj[binjet]->GetBinContent(binz); double contS = fRawSpec2DprojScale->GetBinContent(binz);
+                double contErr = fRawSpec2Dproj[binjet]->GetBinError(binz); double contErrS = fRawSpec2DprojScale->GetBinError(binz);
+                hData2D->SetBinContent(binz,binjet+1,cont); hData2DS->SetBinContent(binz,binjet+1,contS); 
+                hData2D->SetBinError(binz,binjet+1,contErr);hData2DS->SetBinError(binz,binjet+1,contErrS);
+                if(FDsys){
+                    double contUp  = fRawSpec2DprojUp[binjet]->GetBinContent(binz);
+                    double contErrUp = fRawSpec2DprojUp[binjet]->GetBinError(binz);
+                    hData2DUp->SetBinContent(binz,binjet+1,contUp);
+                    hData2DUp->SetBinError(binz,binjet+1,contErrUp);
+                    double contDo  = fRawSpec2DprojDo[binjet]->GetBinContent(binz);
+                    double contErrDo = fRawSpec2DprojDo[binjet]->GetBinError(binz);
+                    hData2DDo->SetBinContent(binz,binjet+1,contDo);
+                    hData2DDo->SetBinError(binz,binjet+1,contErrDo);
+                }
             }
         }
+        // ---------------------------------------
+        // Saving the 2D data file.
+        // ---------------------------------------
+        TCanvas *cFD_2D = new TCanvas("Measured2D", "Measured2D", 800, 600);
+        cFD_2D  ->SetLogz();
+        hData2DS->SetTitle("z-jet p_{T} spectrum (before unfolding)");
+        hData2DS->GetYaxis()->SetTitle("jet p_{T}");
+        hData2DS->GetXaxis()->SetTitle("z_{||}^{ch}");
+        hData2DS->Draw("colz");
+        hData2DS->Draw("TEXT SAME");
+        cFD_2D  ->SaveAs(Form("%s/alljetz2D/FDdata2D.pdf",outDir.Data()));
+        cFD_2D  ->SaveAs(Form("%s/alljetz2D/FDdata2D.png",outDir.Data()));
+        cFD_2D  ->SaveAs(Form("%s/alljetz2D/FDdata2D.svg",outDir.Data()));
+        TFile *outFile = new TFile(Form("%s/alljetz2D/outFD.root",outDir.Data()),"recreate");
+        hData2D ->Write();//raw 2D
+        hData2DS->Write();//scaled 2D
+        outFile ->Close();
     }
-    // ---------------------------------------
-    // Saving the 2D data file.
-    // ---------------------------------------
-    TCanvas *cFD_2D = new TCanvas("Measured2D", "Measured2D", 800, 600);
-    cFD_2D  ->SetLogz();
-    hData2DS->SetTitle("z-jet p_{T} spectrum (before unfolding)");
-    hData2DS->GetYaxis()->SetTitle("jet p_{T}");
-    hData2DS->GetXaxis()->SetTitle("z_{||}^{ch}");
-    hData2DS->Draw("colz");
-    hData2DS->Draw("TEXT SAME");
-    cFD_2D  ->SaveAs(Form("%s/alljetz2D/FDdata2D.pdf",outDir.Data()));
-    cFD_2D  ->SaveAs(Form("%s/alljetz2D/FDdata2D.png",outDir.Data()));
-    cFD_2D  ->SaveAs(Form("%s/alljetz2D/FDdata2D.svg",outDir.Data()));
-    TFile *outFile = new TFile(Form("%s/alljetz2D/outFD.root",outDir.Data()),"recreate");
-    hData2D ->Write();//raw 2D
-    hData2DS->Write();//scaled 2D
-    outFile ->Close();
+    else if(fd2D){
+        TFile *fdsub  = TFile::Open(Form("%s/outFD_%d.root",datafile.Data(),(int)DjetEff));
+        TH2D* hdataTemp = (TH2D*)fdsub->Get("hData_sub");
+        TH2D* hdataTeUp = (TH2D*)fdsub->Get("hData_subup");
+        TH2D* hdataTeDo = (TH2D*)fdsub->Get("hData_subdo");
+        if(!hdataTemp || !hdataTeUp || !hdataTeDo){ cout<<"uh, oh!! no FD sub files!"<<endl;}
+        hData2D = (TH2D*)hdataTemp->Clone("hData2D");
+        hData2DUp = (TH2D*)hdataTemp->Clone("hData2DUp");
+        hData2DDo = (TH2D*)hdataTemp->Clone("hData2DDo");
+    }
+    else{cout<<"no FD subtracted file!"<<endl;return;}
     //===============================
+    // Extracting the files for charm efficiencies
+    // ==============================
+    TString promptefffiles[fJetptbinsN];
+    TH1D* effHists[fJetptbinsN];
+    for(int i=0;i<fJetptbinsN;i++){
+        promptefffiles[i]=prompteff+Form("%d_%d.root",(int)fJetptbinsA[i],(int)fJetptbinsA[i+1]);
+        TFile* fileEff=new TFile(promptefffiles[i].Data(),"read");
+        effHists[i]=(TH1D*)fileEff->Get("hEff_reb");
+    }
+    // ==============================
     // Time for Response Matrix in 2D
     //===============================
     //------ reading the MC (effFile)-------------------------
@@ -165,9 +181,6 @@ void unfold_Bayeszjet(
     pv2->AddText(Form("R=0.%d",Rpar));
 
     //--- Getting the THnSparse --------------------
-    THnSparseD *hZjetRecGen;THnSparseD *hZjetRG[NDMC]; // RecGen and RG[NDMC]
-    //THnSparseD *hZjetRecGen;THnSparseD *hZjetRecGen_D2;THnSparseD *hZjetRecGen_D3;THnSparseD *hZjetRecGen_D5;
-    //THnSparseD *hZjetRG_D2[NDMC];THnSparseD *hZjetRG_D3[NDMC];THnSparseD *hZjetRG_D5[NDMC];
     THnSparseD *hZjetRecGenD;
     THnSparseD *hZjetRGD[NDMC];
     //---- Storing the response matrix for drawing purposes ------------
@@ -177,29 +190,20 @@ void unfold_Bayeszjet(
     
     TH2D* hZjetRRebin = new TH2D("hRecRebin","hRecRebin", fptbinsZMeasN, fptbinsZMeasA, fJetptbinsN, fJetptbinsA);
     hZjetRRebin->Sumw2();
-    TH2D* hZjetGRebin = new TH2D("hGenRebin","hGenRebin", fptbinsZFinalN, fptbinsZFinalA, fJetptbinsGenN, fJetptbinsGenA);
+    TH2D* hZjetGRebin = new TH2D("hGenRebin","hGenRebin", fptbinsZFinalN, fptbinsZFinalA, fJetptbinsN, fJetptbinsA);
     hZjetGRebin->Sumw2();
 
     //---- Reading from the ResponseMatrix of each D meson in a loop
     for(int i=0; i<NDMC; i++){
         if(!isprefix){
-            if(ispostfix) {
-                histList[i] =  (TList*)dir->Get(Form("%s%d%sMCrec",histName.Data(),i,listName.Data())); }
-            else {
-                if(isPrompt) histList[i] =  (TList*)dir->Get(Form("%s%dMCrec",histName.Data(),i));
-                else histList[i] =  (TList*)dir->Get(Form("%s%dFDMCrec",histName.Data(),i));
-            }
+            if(!ispostfix) {histList[i] =  (TList*)dir->Get(Form("%s%dMCrec",histName.Data(),i));}
+            else{cout<<"-----rewrite stuff, blah blah, check again----------------"<<endl; return;}
         }
         else{
-            if(ispostfix) {
-                if(isPrompt){ histList[i] =  (TList*)dir->Get(Form("%s%sMBN%dMCrec",histName.Data(),listName.Data(),i)); }
-                else{    histList[i] =  (TList*)dir->Get(Form("%s%sMBN%dFDMCrec",histName.Data(),listName.Data(),i)); }
-            }
-            else { cout<<"-----postfix has to be true if prefix is true!! check again----------------"<<endl; return;       }
+            if(ispostfix) {histList[i] =  (TList*)dir->Get(Form("%s%sMBN%dMCrec",histName.Data(),listName.Data(),i));}
+            else{cout<<"-----rewrite stuff, blah blah, check again----------------"<<endl; return;}
         }
-
         sparseMC[i] = (THnSparseD*)histList[i]->FindObject("ResponseMatrix");
-        //sparseMC[i]->GetAxis(1)->SetRangeUser(fJetptbinsGenA[0],fJetptbinsGenA[fJetptbinsGenN]);
         sparseMC[i]->GetAxis(4)->SetRangeUser(-0.9+fRpar,0.9-fRpar);//pseudo-rapidity cuts
         sparseMC[i]->GetAxis(9)->SetRangeUser(-0.9+fRpar,0.9-fRpar);//pseudo-rapidity cuts
 
@@ -210,18 +214,15 @@ void unfold_Bayeszjet(
         	int min = 0; int max = axis->GetNbins()+1;
         	axis->SetRange(min,max);
         }
-        hZjetRG[i] = (THnSparseD*)sparseMC[i]->Projection(nDim,dim,"E");// Just z and jet components
         hZjetRGD[i] = (THnSparseD*)sparseMC[i]->Projection(DnDim,Ddim,"E");// z, jet and D components
         //-----
         if (!i){
-                hZjetRecGen = (THnSparseD*)hZjetRG[0]->Clone("hZjetRecGen");
                 hZjetRecGenD = (THnSparseD*)hZjetRGD[0]->Clone("hZjetRecGenD");
         }
         else {
-                hZjetRecGen->Add(hZjetRG[i]);
                 hZjetRecGenD->Add(hZjetRGD[i]);
         }
-    }//end of NDMC for loop //hZjetRecGen->SaveAs("proj.root");
+    }//end of NDMC for loop //hZjetRecGenD->SaveAs("proj.root");
 
     cout<<hZjetRecGenD->GetAxis(0)->GetXmin()<<endl;
     cout<<hZjetRecGenD->GetAxis(1)->GetXmin()<<endl;
@@ -230,10 +231,10 @@ void unfold_Bayeszjet(
     //********************************************************
     // Kinematic efficiency histos
     //********************************************************/
-    TH2D* kineEffCutPre  = new TH2D("hkineEffCutPre","hkineEffCutPre", fptbinsZMeasN,  fptbinsZMeasA,  fJetptbinsN, fJetptbinsA); kineEffCutPre->Sumw2();
-    TH2D* kineEffFulPre  = new TH2D("hkineEffFulPre","hkineEffFulPre", fptbinsZMeasN,  fptbinsZMeasA,  fJetptbinsN, fJetptbinsA); kineEffFulPre->Sumw2();
-    TH2D* kineEffCutPos  = new TH2D("hkineEffCutPos","hkineEffCutPos", fptbinsZFinalN, fptbinsZFinalA, fJetptbinsN, fJetptbinsA); kineEffCutPos->Sumw2();
-    TH2D* kineEffFulPos  = new TH2D("hkineEffFulPos","hkineEffFulPos", fptbinsZFinalN, fptbinsZFinalA, fJetptbinsN, fJetptbinsA); kineEffFulPos->Sumw2();
+    TH2D* kineEffCutRec  = new TH2D("hkineEffCutRec","hkineEffCutRec", fptbinsZMeasN,  fptbinsZMeasA,  fJetptbinsN, fJetptbinsA); kineEffCutRec->Sumw2();
+    TH2D* kineEffFulRec  = new TH2D("hkineEffFulRec","hkineEffFulRec", fptbinsZMeasN,  fptbinsZMeasA,  fJetptbinsN, fJetptbinsA); kineEffFulRec->Sumw2();
+    TH2D* kineEffCutGen  = new TH2D("hkineEffCutGen","hkineEffCutGen", fptbinsZFinalN, fptbinsZFinalA, fJetptbinsN, fJetptbinsA); kineEffCutGen->Sumw2();
+    TH2D* kineEffFulGen  = new TH2D("hkineEffFulGen","hkineEffFulGen", fptbinsZFinalN, fptbinsZFinalA, fJetptbinsN, fJetptbinsA); kineEffFulGen->Sumw2();
     /***************************
     #### unfolding settings ####
     ***************************/
@@ -276,56 +277,63 @@ void unfold_Bayeszjet(
             else if((DG_center<fDptRangesA[3] && jG_center>=fJetptbinsA[3] )||(DR_center<fDptRangesA[3] && jR_center>=fJetptbinsA[3] )) {measurement_ok = kFALSE;}
             else if((DG_center<fDptRangesA[4] && jG_center>=fJetptbinsA[4] )||(DR_center<fDptRangesA[4] && jR_center>=fJetptbinsA[4] )) {measurement_ok = kFALSE;}
 
-            if (measurement_ok){ kineEffFulPre->Fill(zR_center,jR_center,weight);kineEffFulPos->Fill(zG_center,jG_center,weight);}
+            if (measurement_ok){ kineEffFulRec->Fill(zR_center,jR_center,weight);kineEffFulGen->Fill(zG_center,jG_center,weight);}
             measurement_pre = measurement_pos = measurement_ok;//reseting kine eff booleans
             //pre unfolding kine eff--
-            if(DG_center>fDptRangesAUp[4] || jG_center>fJetptbinsA[fJetptbinsN] || jG_center<fJetptbinsA[0] || zG_center<fptbinsZMeasA[0]){measurement_pre = kFALSE;}
-            if (measurement_pre){ kineEffCutPre->Fill(zR_center,jR_center,weight); }
+            if(DG_center>fDptRangesAUp[4] || jG_center>fJetptbinsA[fJetptbinsN] || jG_center<fJetptbinsA[0] || zG_center<fptbinsZFinalA[0]){measurement_pre = kFALSE;}
+            if (measurement_pre){ kineEffCutRec->Fill(zR_center,jR_center,weight); }
             //post unfolding kine eff--
             if(DR_center>fDptRangesAUp[4] || jR_center>fJetptbinsA[fJetptbinsN] || jR_center<fJetptbinsA[0] || zR_center<fptbinsZMeasA[0]){measurement_pos = kFALSE;}
-            if (measurement_pos){ kineEffCutPos->Fill(zG_center,jG_center,weight   ); }
+            if (measurement_pos){ kineEffCutGen->Fill(zG_center,jG_center,weight   ); }
             //actual unfolding response now
             if((DR_center>fDptRangesAUp[4] || jR_center> fJetptbinsA[5] || zR_center<fptbinsZMeasA[0]))  {measurement_ok = kFALSE;}
             if (measurement_ok){
-                //if(DjetEff){
-                //    double eff_c = 1;
-                //    if     (jR_center>fJetptbinsA[0] && jR_center<=fJetptbinsA[1]){eff_c=effHists[0]->GetBinContent(effHists[0]->GetXaxis()->FindBin(DR_center));}
-                //    else if(jR_center>fJetptbinsA[1] && jR_center<=fJetptbinsA[2]){eff_c=effHists[1]->GetBinContent(effHists[1]->GetXaxis()->FindBin(DR_center));}
-                //    else if(jR_center>fJetptbinsA[2] && jR_center<=fJetptbinsA[3]){eff_c=effHists[2]->GetBinContent(effHists[2]->GetXaxis()->FindBin(DR_center));}
-                //    else if(jR_center>fJetptbinsA[3] && jR_center<=fJetptbinsA[4]){eff_c=effHists[3]->GetBinContent(effHists[3]->GetXaxis()->FindBin(DR_center));}
-                //    else if(jR_center>fJetptbinsA[4] && jR_center<=fJetptbinsA[5]){eff_c=effHists[4]->GetBinContent(effHists[4]->GetXaxis()->FindBin(DR_center));}
-                //    weight = weight/eff_c;
-                //}
+                if(DjetEff){
+                    double eff_c = 1;
+                    if     (jR_center>fJetptbinsA[0] && jR_center<=fJetptbinsA[1]){eff_c=effHists[0]->GetBinContent(effHists[0]->GetXaxis()->FindBin(DR_center));}
+                    else if(jR_center>fJetptbinsA[1] && jR_center<=fJetptbinsA[2]){eff_c=effHists[1]->GetBinContent(effHists[1]->GetXaxis()->FindBin(DR_center));}
+                    else if(jR_center>fJetptbinsA[2] && jR_center<=fJetptbinsA[3]){eff_c=effHists[2]->GetBinContent(effHists[2]->GetXaxis()->FindBin(DR_center));}
+                    else if(jR_center>fJetptbinsA[3] && jR_center<=fJetptbinsA[4]){eff_c=effHists[3]->GetBinContent(effHists[3]->GetXaxis()->FindBin(DR_center));}
+                    else if(jR_center>fJetptbinsA[4] && jR_center<=fJetptbinsA[5]){eff_c=effHists[4]->GetBinContent(effHists[4]->GetXaxis()->FindBin(DR_center));}
+                    weight = weight/eff_c;
+                }
                 response.Fill(zR_center,jR_center,zG_center,jG_center,weight);
             }
         }
     }else{cout<<"No response!!"<<endl;return;}
+//    for(Int_t recoID = 0;recoID < response.Hresponse()->GetNbinsX();recoID++){
+//        std::cout<<recoID+1<<" reco under "<<response.Hresponse()->GetBinContent(recoID+1,0)<<" over "<<response.Hresponse()->GetBinContent(recoID+1,response.Hresponse()->GetNbinsY()+1)<<std::endl;
+//    }
+//    for(Int_t recoID = 0;recoID < response.Hresponse()->GetNbinsY();recoID++){
+//        std::cout<<recoID+1<<" reco under "<<response.Hresponse()->GetBinContent(0,recoID+1)<<" over "<<response.Hresponse()->GetBinContent(response.Hresponse()->GetNbinsX()+1,recoID+1)<<std::endl;
+//    }
+//        return;
     //********************************************************
     // Kinematic efficiency begins. for pre and post unfolding
     //********************************************************/
-    TCanvas* cKinePre = new TCanvas("cKinePre","cKinePre",800,600);
-    TH2D* hKinePre = (TH2D*) kineEffFulPre->Clone();
-    hKinePre->Divide(kineEffCutPre,kineEffFulPre,1,1,"B");
-    hKinePre->SetTitle("KineEffPre");
-    hKinePre->Draw("colz");
-    hKinePre->Draw("TEXT same");
-    cKinePre  ->SaveAs(Form("%s/alljetz2D/cKinePre.pdf",outDir.Data()));
-    cKinePre  ->SaveAs(Form("%s/alljetz2D/cKinePre.png",outDir.Data()));
-    cKinePre  ->SaveAs(Form("%s/alljetz2D/cKinePre.svg",outDir.Data()));
+    TCanvas* cKineRec = new TCanvas("cKineRec","cKineRec",800,600);
+    TH2D* hKineRec = (TH2D*) kineEffFulRec->Clone();
+    hKineRec->Divide(kineEffCutRec,kineEffFulRec,1,1,"B");
+    hKineRec->SetTitle("KineEffRec");
+    hKineRec->Draw("colz");
+    hKineRec->Draw("TEXT same");
+    cKineRec  ->SaveAs(Form("%s/alljetz2D/cKineRec.pdf",outDir.Data()));
+    cKineRec  ->SaveAs(Form("%s/alljetz2D/cKineRec.png",outDir.Data()));
+    cKineRec  ->SaveAs(Form("%s/alljetz2D/cKineRec.svg",outDir.Data()));
     
-    TCanvas* cKinePos = new TCanvas("hKinePos","hKinePos",800,600);
-    TH2D* hKinePos = (TH2D*) kineEffCutPos->Clone();
-    hKinePos->Divide(kineEffCutPos,kineEffFulPos,1,1,"B");
-    hKinePos->SetTitle("KineEffPos");
-    hKinePos->Draw("colz");
-    hKinePos->Draw("TEXT same");
-    cKinePos  ->SaveAs(Form("%s/alljetz2D/cKinePos.pdf",outDir.Data()));
-    cKinePos  ->SaveAs(Form("%s/alljetz2D/cKinePos.png",outDir.Data()));
-    cKinePos  ->SaveAs(Form("%s/alljetz2D/cKinePos.svg",outDir.Data()));
+    TCanvas* cKineGen = new TCanvas("hKineGen","hKineGen",800,600);
+    TH2D* hKineGen = (TH2D*) kineEffCutGen->Clone();
+    hKineGen->Divide(kineEffCutGen,kineEffFulGen,1,1,"B");
+    hKineGen->SetTitle("KineEffGen");
+    hKineGen->Draw("colz");
+    hKineGen->Draw("TEXT same");
+    cKineGen  ->SaveAs(Form("%s/alljetz2D/cKineGen.pdf",outDir.Data()));
+    cKineGen  ->SaveAs(Form("%s/alljetz2D/cKineGen.png",outDir.Data()));
+    cKineGen  ->SaveAs(Form("%s/alljetz2D/cKineGen.svg",outDir.Data()));
 
     //setting errors to zero
-    for(int i=0;i<=hKinePre->GetNbinsY();i++){for(int j=0;j<=hKinePre->GetNbinsX();j++){hKinePre->SetBinError(j,i,0);}}
-    for(int i=0;i<=hKinePos->GetNbinsY();i++){for(int j=0;j<=hKinePos->GetNbinsX();j++){hKinePos->SetBinError(j,i,0);}}
+    for(int i=0;i<=hKineRec->GetNbinsY();i++){for(int j=0;j<=hKineRec->GetNbinsX();j++){hKineRec->SetBinError(j,i,0);}}
+    for(int i=0;i<=hKineGen->GetNbinsY();i++){for(int j=0;j<=hKineGen->GetNbinsX();j++){hKineGen->SetBinError(j,i,0);}}
 
     //*********************************
     // Kinematic efficiency end
@@ -338,7 +346,7 @@ void unfold_Bayeszjet(
     TCanvas* cUnfolded = new TCanvas("cUnfolded","cUnfolded",800,600); cUnfolded->SetLogz();
     TLegend* leg =  new TLegend(0.15,0.5,0.30,0.85); leg->SetBorderSize(0);
     //------------ do unfolding NTrials times ------------
-    hData2D->Multiply(hData2D,hKinePre,1,1,"B");
+    hData2D->Multiply(hData2D,hKineRec,1,1,"B");
     for(Int_t ivar=0; ivar<NTrials; ivar++){//changes
         /*****************************************
         ############# unfolding ##################
@@ -374,7 +382,6 @@ void unfold_Bayeszjet(
     ************************************/
 
     //*********************************/
-
     TH2D *fUnfoldedBayesScale = (TH2D*)fUnfoldedBayes[regBayes-1]->Clone();
     TH1D *UnfProjectX[fJetptbinsN];
     TH1D *hDataProjectX[fJetptbinsN];
@@ -440,7 +447,7 @@ void unfold_Bayeszjet(
     TGaxis *axisH4 = new TGaxis(18, 0, 24, 0, 0.4, 1.0, 3, "-+L");axisH4->SetLabelFont(43);    axisH4->SetLabelSize(15);    axisH4->SetLabelOffset(0.02);    axisH4->Draw();
     TGaxis *axisH5 = new TGaxis(24, 0, 30, 0, 0.4, 1.0, 3, "-+L");axisH5->SetLabelFont(43);    axisH5->SetLabelSize(15);    axisH5->SetLabelOffset(0.005);    axisH5->Draw();
     TGaxis *axisH6 = new TGaxis(30, 0, 36, 0, 0.4, 1.0, 3, "-+L");axisH6->SetLabelFont(43);    axisH6->SetLabelSize(15);    axisH6->SetLabelOffset(0.02);    axisH6->Draw();
-    TGaxis *axisH7 = new TGaxis(0, 0, 6, 0, 3, 5, 1, "-+L");axisH7->SetLabelFont(43);    axisH7->SetLabelSize(19);    axisH7->SetLabelOffset(0.04);    axisH7->Draw();
+    TGaxis *axisH7 = new TGaxis(0, 0, 6, 0, 2, 5, 1, "-+L");axisH7->SetLabelFont(43);    axisH7->SetLabelSize(19);    axisH7->SetLabelOffset(0.04);    axisH7->Draw();
     TGaxis *axisH8 = new TGaxis(12, 0, 18, 0, 7, 10, 1, "-+L");axisH8->SetLabelFont(43);    axisH8->SetLabelSize(19);    axisH8->SetLabelOffset(0.04);    axisH8->Draw();
     TGaxis *axisH9 = new TGaxis(24, 0, 30, 0, 15, 50, 1, "-+L");axisH9->SetLabelFont(43);    axisH9->SetLabelSize(19);    axisH9->SetLabelOffset(0.04);    axisH9->Draw();
 //    TGaxis *axisH10 = new TGaxis(30, 0, 36, 0, 15, 50, 1, "-+L");
@@ -579,7 +586,7 @@ void unfold_Bayeszjet(
         hfold->Scale(1,"width");
         hfold->Draw("same");
         //kine efficiency
-        TH1D* hKineUnf = (TH1D*)hKinePos->ProjectionX("",binjet+unfoldbinnum,binjet+unfoldbinnum)->Clone();
+        TH1D* hKineUnf = (TH1D*)hKineGen->ProjectionX("",binjet+unfoldbinnum,binjet+unfoldbinnum)->Clone();
         TH1D* hUnfoldKine = (TH1D*)fUnfoldPlot->ProjectionX("",binjet+unfoldbinnum,binjet+unfoldbinnum)->Clone();
         hUnfoldKine->Divide(hKineUnf);
         hUnfoldKine->SetLineColor(kOrange+1);
@@ -601,7 +608,7 @@ void unfold_Bayeszjet(
         lUnFoldedFold->AddEntry(fUnfoldPlot,Form("Unfolded, iter=%d",regBayes),"l");
         lUnFoldedFold->AddEntry(hfoldD,"Folded","l");
         
-        TH1D* hKineUnf1 = (TH1D*)hKinePos->ProjectionX("",2,2)->Clone();
+        TH1D* hKineUnf1 = (TH1D*)hKineGen->ProjectionX("",2,2)->Clone();
         TH1D* hUnfoldKine1 = (TH1D*)fUnfoldPlot->ProjectionX("",2,2)->Clone();
         hUnfoldKine1->Divide(hKineUnf1);
         hUnfoldKine1->SetLineColor(kOrange+1);
@@ -719,6 +726,7 @@ void unfold_Bayeszjet(
     }
 //    lFoldedR2->Draw();
     
+    cout<<DjetEff<<endl;
 return;
 }
 
