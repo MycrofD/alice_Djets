@@ -32,28 +32,23 @@ ispostfix=0
 ##################################### THINGS TO CHANGE
 # remember to change ND (number of Dmesons in config file)
 flagCUT=0 # 
-cutfileNo=0
+cutfileNo=0 #2,3,5,6
+listName="" #SQ2 3 5 6
 if [ $flagCUT -eq 1 ]; then
- data=${dataCUT2}
- effFile=${effCUT2}
- if [ $cutfileNo -eq 1 ]; then
-  OUT=${OUT}_cutsysLL1
- elif [ $cutfileNo -eq 2 ]; then
-  OUT=${OUT}_cutsysLL2
+ data=${dataCUT}
+ effFile=${effCUT}
+ if [ $cutfileNo -eq 2 ]; then
+  OUT=${OUT}_cutsL2
+  listName="SQ2"
  elif [ $cutfileNo -eq 3 ]; then
-  OUT=${OUT}_cutsysLL3
- elif [ $cutfileNo -eq 4 ]; then
-  OUT=${OUT}_cutsysTT2
- elif [ $cutfileNo -eq 0 ]; then
-  OUT=${OUT}_cutsysDeDe
- elif [ $cutfileNo -eq 5 ]; then  
-  data=${dataCUT}
-  effFile=${effCUT}
-  OUT=${OUT}_cutsysT3
- elif [ $cutfileNo -eq 6 ]; then  
-  data=${dataCUT}
-  effFile=${effCUT} 
-  OUT=${OUT}_cutsysDe
+  OUT=${OUT}_cutsL3
+  listName="SQ3"
+ elif [ $cutfileNo -eq 5 ]; then
+  OUT=${OUT}_cutsT2
+  listName="SQ5"
+ elif [ $cutfileNo -eq 6 ]; then
+  OUT=${OUT}_cutsT3
+  listName="SQ6"
  fi
 fi
  

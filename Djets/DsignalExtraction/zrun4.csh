@@ -28,7 +28,7 @@ bin_zjet=$1 # change the bin number you want to use here.
 flagEff=1 #1 Getting efficiencies and MC sigmas in different jetpt intervals for all Dpt bins
 flagRef=1 #2 Reflections for different jetpt intervals for all Dpt bins
 flagSBs=1 #3 Side Band subtraction method
-flagSim=0 #4 Simulation for non-prompt and prompt D-jets
+flagSim=1 #4 Simulation for non-prompt and prompt D-jets
 #-----
 flagJES=0
 # change flagCUT in zrun_settings.csh
@@ -120,30 +120,6 @@ source zrun_settings.csh
 
 ## Getting Efficiencies for each bin of jet pt interval
 ##-----------------------------------------------------------
-#isprefix=1 # we have in zrun_settings.csh (THE MAIN ONE)
-#ispostfix=1 #we have at signalextraction settings too
-
-listName="" #SQ2 3 5 6
-if [ $flagCUT -eq 1 ]; then
- if [ $cutfileNo -eq 1 ] && [ $R -eq 4 ]; then
-    listName="SQ2" #SQ2 3 5 6
- elif [ $cutfileNo -eq 2 ] && [ $R -eq 4 ]; then
-    listName="SQ3" #SQ2 3 5 6
- elif [ $cutfileNo -eq 3 ] && [ $R -eq 4 ]; then
-    listName="SQ5" #SQ2 3 5 6
- elif [ $cutfileNo -eq 4 ] && [ $R -eq 4 ]; then
-    listName="SQ6" #SQ2 3 5 6
- elif [ $cutfileNo -eq 1 ] && [ $R -eq 6 ]; then
-    listName="HP2" #SQ2 3 5 6
- elif [ $cutfileNo -eq 2 ] && [ $R -eq 6 ]; then
-    listName="HP3" #SQ2 3 5 6
- elif [ $cutfileNo -eq 3 ] && [ $R -eq 6 ]; then
-    listName="HP5" #SQ2 3 5 6
- elif [ $cutfileNo -eq 4 ] && [ $R -eq 6 ]; then
-    listName="HP6" #SQ2 3 5 6
- fi
-fi
-isPrompt=1
 outDir=$OUT/efficiency
 if [ $flagEff -eq 1 ]; then
  cd ../efficiency
@@ -161,10 +137,10 @@ if [ $flagRef -eq 1 ]; then
 fi
 ## Signal Extraction Side Bands, with/without efficiency correction
 ##---------------------------------------------------------
-isEff=$flagEff
+#isEff=$flagEff
+#isRef=$flagRef
 #prompteff=/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts/Default/efficiency/DjetEff_prompt_jetpt5_50.root
 prompteff=$outDir/DjetEff_prompt_jetpt #also there in settings. needs to be cleaned
-isRef=$flagRef
 refFile=$outRefl/reflectionTemplates_pp_
 #ispostfix=0 #we have at efficiency settings too
 #listName=Cut # we have at eff settings too
@@ -180,7 +156,7 @@ prod=kl
 saveDir=Z0to102
 
 if [ $flagSBs -eq 1 ]; then
- root -l -b -q signalExtraction_SBz.C'("'$data'", '$isEff', "'$prompteff'", '$isRef', "'$refFile'", '$ispostfix', "'$listName'", "'$out'", '$save', '$isMoreFiles', "'$prod'", '$isprefix', "'$saveDir'", '$boundSigma')'
+ root -l -b -q signalExtraction_SBz.C'("'$data'", '$flagEff', "'$prompteff'", '$flagRef', "'$refFile'", '$ispostfix', "'$listName'", "'$out'", '$save', '$isMoreFiles', "'$prod'", '$isprefix', "'$saveDir'", '$boundSigma')'
 fi
 ## B-feed down simulation
 ##-----------------------
@@ -190,7 +166,7 @@ effFileNonPrompt=$outDir/DjetEff_nonPrompt_jetpt
 isBsim=1
 if [ $flagSim -eq 1 ]; then
  cd ../POWHEGSim
- bash zrun_sim.csh $OUT $fBsimN $fCsimN $effFilePrompt $effFileNonPrompt $isEff $isBsim
+ bash zrun_sim.csh $OUT $fBsimN $fCsimN $effFilePrompt $effFileNonPrompt $flagEff $isBsim
  cd ../DsignalExtraction
 fi
 
@@ -213,7 +189,7 @@ fi
 #count=0
 #while [ $count -lt $fBsimN ]
 #do
-#    root -l -b -q getSimSpectra_z.C'("'$simFilesDir'",'$count',1,1,1,'$isEff', "'$effFilePrompt'","'$effFileNonPrompt'","'$BFDSimDirOut'")'
+#    root -l -b -q getSimSpectra_z.C'("'$simFilesDir'",'$count',1,1,1,'$flagEff', "'$effFilePrompt'","'$effFileNonPrompt'","'$BFDSimDirOut'")'
 #    ((count++))
 #done
 #
@@ -275,7 +251,7 @@ fi
 #root -l -b << EOF
 #gInterpreter->ProcessLine(".x AliHFInvMassFitterDJET.cxx++g");
 #.L signalExtraction_SBz.C
-#signalExtraction_SBz("$data", $isEff, "$prompteff", $isRef, "$refFile", $ispostfix, "$listName", "$out", $save, $isMoreFiles, "$prod", $isprefix, "$saveDir", $boundSigma)
+#signalExtraction_SBz("$data", $flagEff, "$prompteff", $flagRef, "$refFile", $ispostfix, "$listName", "$out", $save, $isMoreFiles, "$prod", $isprefix, "$saveDir", $boundSigma)
 #EOF
 #fi
 
