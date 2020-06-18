@@ -17,6 +17,10 @@ elif [ $R -eq 6 ]; then
  effFile=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/AnalysisResults_1062_R06_ppMC_5cuts.root 
  effFileJES=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/newMC_JES/AnalysisResults_R06_721.root #JES 4%
 fi
+##################################### GENERAL STUFF
+doBFD=0
+doUnfold=0
+OUT=${OUT}_finaltry #OUT is in zrun4 and zrun4D
 ##################################### general, changed later for CUTSYS
 listName="" #SQ2 3 5 6 
 isprefix=0 #

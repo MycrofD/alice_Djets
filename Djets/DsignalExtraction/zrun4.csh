@@ -13,7 +13,6 @@
 # Executing 'bash zrun_main.csh' on your terminal in AliPhysics environment,
 # in turn, runs this file 'zrun.csh'
 
-EOS_local=$3
 R=$2		# Jet radius, fed as an argument from zrun_main.csh 
 #/eos/user/a/amohanty/
 
@@ -24,10 +23,10 @@ bin_zjet=$1 # change the bin number you want to use here.
         # 1 through x mean all bins of jet pt
         # The arguments here are passed from zrun_main.csh
 #----- Flags for all analysis steps
-flagEff=1 #1 Getting efficiencies and MC sigmas in different jetpt intervals for all Dpt bins
-flagRef=1 #2 Reflections for different jetpt intervals for all Dpt bins
-flagSBs=1 #3 Side Band subtraction method
-flagSim=1 #4 Simulation for non-prompt and prompt D-jets
+flagEff=0 #1 Getting efficiencies and MC sigmas in different jetpt intervals for all Dpt bins
+flagRef=0 #2 Reflections for different jetpt intervals for all Dpt bins
+flagSBs=0 #3 Side Band subtraction method
+flagSim=0 #4 Simulation for non-prompt and prompt D-jets
 #-----
 # change flagCUT, flagJES  in zrun_settings.csh
 #-----
@@ -88,19 +87,11 @@ cat $conffile_z2 >> configDzero_ppz.h
 
 # Output directory
 # Remember to change this also in zrun4D.csh
-OUT=${EOS_local}/media/jackbauer/data/z_out/R_0$R
-OUT=${OUT}_finaltry
-if [ $boundSigma -eq 1 ]; then
- OUT=${OUT}_boundSigma1
-elif [ $boundSigma -eq 2 ]; then
- OUT=${OUT}_boundSigmaall10
-elif [ $boundSigma -eq 3 ]; then
- OUT=${OUT}_boundSigmaall20
-fi
-## Getting data and MC files
+#OUT=${EOS_local}/media/jackbauer/data/z_out/R_0$R
+OUT=/media/jackbauer/data/z_out/R_0$R
+## Getting data and MC files SOURCING THE SETTINGS
 ##-----------------------------------------------------
 source zrun_settings.csh
-
 ## Getting Efficiencies for each bin of jet pt interval
 ##-----------------------------------------------------------
 outDir=$OUT/efficiency
@@ -112,7 +103,7 @@ if [ $flagEff -eq 1 ]; then
 fi
 ## Reflections
 ##------------
-outRefl=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/reflections
+outRefl=/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/reflections
 listNameRef=""
 kl=""
 if [ $flagRef -eq 1 ]; then
