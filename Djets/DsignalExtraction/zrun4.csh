@@ -1,6 +1,5 @@
 #! /bin/bash
 
-
 #--------------------------------------------------
 #  Author A.Mohanty
 #  Utrecht University
@@ -21,22 +20,16 @@ R=$2		# Jet radius, fed as an argument from zrun_main.csh
 ## Writing the configDzero_pp.h file: Setting up D pT bins
 ##--------------------------------------------------------
 bin_zjet=$1 # change the bin number you want to use here.
-		# 0 means no cut on jet pt
-		# 1 through x mean all bins of jet pt
-		# The arguments here are passed from zrun_main.csh
+        # 0 means no cut on jet pt
+        # 1 through x mean all bins of jet pt
+        # The arguments here are passed from zrun_main.csh
 #----- Flags for all analysis steps
 flagEff=1 #1 Getting efficiencies and MC sigmas in different jetpt intervals for all Dpt bins
 flagRef=1 #2 Reflections for different jetpt intervals for all Dpt bins
 flagSBs=1 #3 Side Band subtraction method
 flagSim=1 #4 Simulation for non-prompt and prompt D-jets
 #-----
-flagJES=0
-# change flagCUT in zrun_settings.csh
-#-----
-#DO NOT TOUCH
-flagRes=0 #5 Response matrix
-flagBFD=0 #6 B-feed down subtraction.. will also be done elsewhere
-flagUnf=0 #7 Unfolding #not done here.. 4D unfolding is done separately.
+# change flagCUT, flagJES  in zrun_settings.csh
 #-----
 finerunfold=0
 boundSigma=6 #also see bin_zjet=24	# if needed to fit certain Dpt bins with a bounded sigma: sigma +/- some fraction of this sigma
@@ -96,16 +89,6 @@ cat $conffile_z2 >> configDzero_ppz.h
 # Output directory
 # Remember to change this also in zrun4D.csh
 OUT=${EOS_local}/media/jackbauer/data/z_out/R_0$R
-#OUT=${OUT}_1D
-#OUT=${OUT}_36
-#OUT=${OUT}_35
-#OUT=${OUT}_34
-#OUT=${OUT}_25Sim
-#OUT=${OUT}_25UnfCheck
-#OUT=${OUT}_fixSig1st3sig
-#OUT=${OUT}_3sig
-#OUT=${OUT}_sigmeanfix
-#OUT=${OUT}_fixSig1st
 OUT=${OUT}_finaltry
 if [ $boundSigma -eq 1 ]; then
  OUT=${OUT}_boundSigma1
@@ -137,13 +120,9 @@ if [ $flagRef -eq 1 ]; then
 fi
 ## Signal Extraction Side Bands, with/without efficiency correction
 ##---------------------------------------------------------
-#isEff=$flagEff
-#isRef=$flagRef
 #prompteff=/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts/Default/efficiency/DjetEff_prompt_jetpt5_50.root
-prompteff=$outDir/DjetEff_prompt_jetpt #also there in settings. needs to be cleaned
+prompteff=$outDir/DjetEff_prompt_jetpt 
 refFile=$outRefl/reflectionTemplates_pp_
-#ispostfix=0 #we have at efficiency settings too
-#listName=Cut # we have at eff settings too
 if [ $flagRef -eq 1 ]; then
  out=$OUT/signalExtraction
 elif [ $flagRef -eq 0 ]; then
@@ -152,7 +131,6 @@ fi
 save=1
 isMoreFiles=0
 prod=kl
-#isprefix=0 #we have at eff settings too
 saveDir=Z0to102
 
 if [ $flagSBs -eq 1 ]; then
@@ -171,79 +149,11 @@ if [ $flagSim -eq 1 ]; then
 fi
 
 ###################################################################
-#simFilesDir=/home/jackbauer/ALICE_HeavyFlavour/work/Djets/out/outMC/allR/
-#BFDSimDirOut=$OUT/SimFiles/BFeedDown
-#if [ ! -d "$BFDSimDirOut" ] || [ $isBsim -eq 1 ]; then                                                                                                                                                             
 #
-# cd ../POWHEGSim
-## 1: simulation file directory;
-## 2: number of simulation files $fBsimN = $count
-## 3: quark type: 0: charm, 1: beauty
-## 4: zfrac:: 1:D-jet z spectrum, 0:D-meson pT spectrum
-## 5: if D meson pT cut applied (for D-jet pT spectrum case), if yes the lower and upper values from the D-meson pT bins from the config file are taken                                                             
-## 6: if efficiency applied (for B simulations, ratio of non-prompt/prompt efficiency)                                                                                                                              
-## 7: prompt efficiency file
-## 8: non-prompt efficiency file
-## 9: directory for the output files                                                                                                                                                                                
+#               THE END 
 #
-#count=0
-#while [ $count -lt $fBsimN ]
-#do
-#    root -l -b -q getSimSpectra_z.C'("'$simFilesDir'",'$count',1,1,1,'$flagEff', "'$effFilePrompt'","'$effFileNonPrompt'","'$BFDSimDirOut'")'
-#    ((count++))
-#done
-#
-##plot all the variations
-#fi
 ###################################################################
-
-## Response
-##------------------------
-#dataFile=/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/AnalysisResults_414_z.root
-dataFile=$effFile
-if [ $flagJES -eq 1 ]; then
- dataFile=$effFileJES
-fi 
-outDirRM=$OUT/ResponseMatrix
-if [ $flagRes -eq 1 ]; then
- cd ../ResponseMatrix
- bash zrun_RM.csh 0 $dataFile $outDirRM
- bash zrun_RM.csh 1 $dataFile $outDirRM
- cd ../DsignalExtraction
-fi
-
-## B-feed down subtraction
-##------------------------
-dataFileFDdir=$out/plots/$saveDir
-if [ $flagBFD -eq 1 ]; then
- cd ../FDsubtraction
- bash zrun_FD.csh $dataFileFDdir $data $OUT
- cd ../DsignalExtraction
-fi
-
-## Unfolding
-##----------
-#dataFileFDdir=$out/plots/$saveDir
-dataUnfoldInDir=$OUT/FDsubtraction
-detRMFilePrompt=$OUT/ResponseMatrix/DetMatrix_prompt
-bkgRMFile=$OUT/ResponseMatrix/DetMatrix_
- if [ $finerunfold -eq 0 ]; then #10-15
-unfoldingDirOut=$OUT/unfolding
- elif [ $finerunfold -eq 1 ]; then #10-15
-unfoldingDirOut=$OUT/unfolding_finer
- fi
-regPar=5
-isPrior=0
-priorType=0 
-isBkgRM=0
-isFDUpSys=0 
-isFDDownSys=0
-
-if [ $flagUnf -eq 1 ]; then
- cd ../unfolding
- bash zrun_unfold.csh $dataUnfoldInDir $detRMFilePrompt $bkgRMFile $unfoldingDirOut $regPar $isPrior $priorType $isBkgRM $isFDUpSys $isFDDownSys
- cd ../DsignalExtraction
-fi
+###################################################################
 
 ##for running custom cxx macros from AliPhysics
 ##gInterpreter->ProcessLine(".x AliHFInvMassFitterDJET.cxx++g");
