@@ -12,26 +12,20 @@
 #---------------
 # Executing 'bash zrun_main.csh' on your terminal in AliPhysics environment,
 # in turn, runs this file 'zrun.csh'
-
-R=$2		# Jet radius, fed as an argument from zrun_main.csh 
-#/eos/user/a/amohanty/
-
 ## Writing the configDzero_pp.h file: Setting up D pT bins
 ##--------------------------------------------------------
-bin_zjet=$1 # change the bin number you want to use here.
-        # 0 means no cut on jet pt
-        # 1 through x mean all bins of jet pt
-        # The arguments here are passed from zrun_main.csh
-#----- Flags for all analysis steps
-flagEff=0 #1 Getting efficiencies and MC sigmas in different jetpt intervals for all Dpt bins
-flagRef=0 #2 Reflections for different jetpt intervals for all Dpt bins
-flagSBs=0 #3 Side Band subtraction method
-flagSim=0 #4 Simulation for non-prompt and prompt D-jets
+bin_zjet=$1 # The arguments here are passed from zrun_main.csh
+R=$2        # Jet radius, fed as an argument from zrun_main.csh 
+OUT=$3      # Output directory
+##----- Flags for all analysis steps
+flagEff=$4 #1 Getting efficiencies and MC sigmas in different jetpt intervals for all Dpt bins
+flagRef=$5 #2 Reflections for different jetpt intervals for all Dpt bins
+flagSBs=$6 #3 Side Band subtraction method
+flagSim=$7 #4 Simulation for non-prompt and prompt D-jets
 #-----
 # change flagCUT, flagJES  in zrun_settings.csh
-#-----
 finerunfold=0
-boundSigma=6 #also see bin_zjet=24	# if needed to fit certain Dpt bins with a bounded sigma: sigma +/- some fraction of this sigma
+boundSigma=0 #also see bin_zjet=24	# if needed to fit certain Dpt bins with a bounded sigma: sigma +/- some fraction of this sigma
 if [ $bin_zjet -eq 24 ]; then #2-5
  boundSigma=0
 fi
@@ -48,7 +42,13 @@ echo "const int fBsimN = ${fBsimN};" >> configDzero_ppz.h	#
 echo "const int fCsimN = ${fCsimN};" >> configDzero_ppz.h	#
 echo "int zjetbin = ${bin_zjet};" >> configDzero_ppz.h		#
 
-# defining Dpt intervals and, measured and unfolding true bins for different jetpt intervals
+##### different Dpt ranges for different R
+if [ $R -eq 2 ]; then
+ echo "double fDptRangesA[] = {2,2,4,5,10};//Dpt mins in jetpt bins, 36 is max in last bin">> configDzero_ppz.h #
+else
+ echo "double fDptRangesA[] = {2,2,3,5,5};//Dpt mins in jetpt bins, 36 is max in last bin">> configDzero_ppz.h #
+fi
+##### defining Dpt intervals and, measured and unfolding true bins for different jetpt intervals
 if [ $bin_zjet -eq 26 ]; then  # full jet bin		# before it was 14
  echo "double        fptbinsDA[] = {1,2,3,4,5,6,7,8,10,12,16,24,36};" >> configDzero_ppz.h
  echo " double fdplotmin = 2000, dataplotmax = 200000;" >> configDzero_ppz.h
@@ -65,7 +65,7 @@ elif [ $bin_zjet -eq 2 ]; then #7-10
  if [ $R -eq 2 ]; then
   echo "double        fptbinsDA[] = {4,5,6,7,8,10};" >> configDzero_ppz.h # report from z = 0.4
  else
- echo "double        fptbinsDA[] = {3,4,5,6,7,8,10};" >> configDzero_ppz.h # report from z = 0.4
+  echo "double        fptbinsDA[] = {3,4,5,6,7,8,10};" >> configDzero_ppz.h # report from z = 0.4
  fi
  echo " double fdplotmin = 800, dataplotmax = 100000;" >> configDzero_ppz.h
 elif [ $bin_zjet -eq 3 ]; then #10-15
@@ -85,10 +85,6 @@ elif [ $bin_zjet -eq 9 ]; then #15-50 ...
 fi
 cat $conffile_z2 >> configDzero_ppz.h
 
-# Output directory
-# Remember to change this also in zrun4D.csh
-#OUT=${EOS_local}/media/jackbauer/data/z_out/R_0$R
-OUT=/media/jackbauer/data/z_out/R_0$R
 ## Getting data and MC files SOURCING THE SETTINGS
 ##-----------------------------------------------------
 source zrun_settings.csh
@@ -126,6 +122,22 @@ saveDir=Z0to102
 
 if [ $flagSBs -eq 1 ]; then
  root -l -b -q signalExtraction_SBz.C'("'$data'", '$flagEff', "'$prompteff'", '$flagRef', "'$refFile'", '$ispostfix', "'$listName'", "'$out'", '$save', '$isMoreFiles', "'$prod'", '$isprefix', "'$saveDir'", '$boundSigma')'
+fi
+
+#-----
+# Multi trial
+if [ $flagMulti -eq 1 ]; then
+out=$OUT/signalExtraction
+boundSigma=$8
+fsigmafactor=$9
+fixedMass=${10}
+bkgType=${11}
+minfSys=${12}
+maxfSys=${13}
+fMassBinWidthFactor=${14}
+sysNum=${15}
+#-----
+ root -l -b -q signalExtraction_SBz.C'("'$data'", 1, "'$prompteff'", 1, "'$refFile'", 0, "'$listName'", "'$out'", 0, '$isMoreFiles', "'$prod'", 0, "'$saveDir'", '$boundSigma','$fsigmafactor','$fixedMass','$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$sysNum')'
 fi
 ## B-feed down simulation
 ##-----------------------

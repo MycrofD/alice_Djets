@@ -18,13 +18,15 @@ elif [ $R -eq 6 ]; then
  effFileJES=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/newMC_JES/AnalysisResults_R06_721.root #JES 4%
 fi
 ##################################### GENERAL STUFF
-doBFD=0
-doUnfold=0
-OUT=${OUT}_finaltry #OUT is in zrun4 and zrun4D
+#doBFD=0
+#doUnfold=0
+#OUT=${OUT}_finaltry #OUT is in zrun4 and zrun4D
 ##################################### general, changed later for CUTSYS
 listName="" #SQ2 3 5 6 
 isprefix=0 #
 ispostfix=0 #
+##################################### RAW SYS multi trial
+flagMulti=1
 ##################################### JES SYS
 flagJES=0
 ##################################### CUT SYS
@@ -32,23 +34,31 @@ flagJES=0
 flagCUT=0
 cutfileNo=0 #2,3,5,6
 ##################################### THINGS TO CHANGE
-if [ $flagJES -eq 1 ]; then
+if [ $flagMulti -eq 1 ]; then
+ OUT=${OUT}_Multi
+elif [ $flagJES -eq 1 ]; then
   OUT=${OUT}_JES
+  effFile=$effFileJES
 elif [ $flagCUT -eq 1 ]; then
  isprefix=1
  ispostfix=1
  if [ $cutfileNo -eq 2 ]; then
-  OUT=${OUT}_cutsL2
+  OUT=${OUT}_L2
   listName="SQ2"
  elif [ $cutfileNo -eq 3 ]; then
-  OUT=${OUT}_cutsL3
+  OUT=${OUT}_L3
   listName="SQ3"
  elif [ $cutfileNo -eq 5 ]; then
-  OUT=${OUT}_cutsT2
+  OUT=${OUT}_T2
   listName="SQ5"
  elif [ $cutfileNo -eq 6 ]; then
-  OUT=${OUT}_cutsT3
+  OUT=${OUT}_T3
   listName="SQ6"
  fi
+fi
+##################################### CUT SYS extra stuff for R=0.2
+if [ $flagCUT -eq 1 ]; then
+  OUT=${OUT}_cutfix_data
+  #OUT=${OUT}_cutfix_MC
 fi
 ##################################### THINGS TO CHANGE
