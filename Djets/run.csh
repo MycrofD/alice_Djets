@@ -19,13 +19,13 @@ Dmeson=$4           # 0: D0, 1: D*
 ###### !!!! CONFIGURE THE FLAGS BELOW !!!!!!!!
 ############### analysis flags (you can switch some of the flags to run on a part of the analysis chain)
 # usually you don't need to change this part
-isSignal=1          # if to extract signal from the inv. mass
-isEffPrompt=1       # if to extract prompt D-jet efficiency
-isEffNonPrompt=1    # if to extract non-prompt D-jet efficiency
-isDetRMPrompt=1     # if to extract prompt D-jet response matrix
-isDetRMNonPrompt=1  # if to extract non-prompt D-jet response matrix
-isUnfolding=1       # if to perform unfolding
-isFDSub=1           # if to subtract feed-down
+isSignal=0          # if to extract signal from the inv. mass
+isEffPrompt=0       # if to extract prompt D-jet efficiency
+isEffNonPrompt=0    # if to extract non-prompt D-jet efficiency
+isDetRMPrompt=0     # if to extract prompt D-jet response matrix
+isDetRMNonPrompt=0  # if to extract non-prompt D-jet response matrix
+isFDSub=0           # if to subtract feed-down
+isUnfolding=0       # if to perform unfolding
 isFinalSpectra=1    # if to extract the final x-section
 
 isCsim=0            # switch this flag on if you haven't prepared output of the simulations yet, it takes time -- if the simulation output directory is empty the simulations will be run anyway
@@ -354,7 +354,8 @@ if [ $isUnfolding -eq 1 ]; then
   signalUnfoldedFile=$unfoldingDirOut/unfoldedSpectrum_unfoldedJetSpectrum.root
 fi
 if [ $isUnfolding -eq 0 ]; then
-  signalUnfoldedFile=$signalBCorrFile
+  #signalUnfoldedFile=$signalBCorrFile
+  signalUnfoldedFile=$unfoldingDirOut/unfoldedSpectrum_unfoldedJetSpectrum.root
 fi
 
 
