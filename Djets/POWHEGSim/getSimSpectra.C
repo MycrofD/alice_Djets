@@ -33,11 +33,19 @@ void setHistoDetails(TH1 *hh, Color_t color, Style_t Mstyle, Width_t width, stri
 void SaveCanvas(TCanvas *c, string name = "tmp");
 
 //quark: 1 = beauty, 0 = charm
-void getSimSpectra(TString simFile, int simNr,
-  int quark, bool jet, bool isDptcut,
-  bool isEff, TString effFilePrompt, TString effFileNonPrompt,
-  TString outFileDir,
-  bool isjetptcut, double jetmin, double jetmax )
+void getSimSpectra(
+        TString simFile, 
+        int simNr,
+        int quark, 
+        bool jet, 
+        bool isDptcut,
+        bool isEff, 
+        TString effFilePrompt, 
+        TString effFileNonPrompt,
+        TString outFileDir,
+        bool isjetptcut, 
+        double jetmin, 
+        double jetmax )
 {
 
     gSystem->Exec(Form("mkdir -p %s",outFileDir.Data()));
@@ -109,6 +117,7 @@ TH1* GetInputSimHistJet(TString inFile, TH1 *hPt, bool isEff, TString effFilePro
       std::cout << "Error in getting dir! Exiting..." << std::endl;
       return NULL;
     }
+
     TH1D *hxsection = (TH1D*)dir->FindObject("fHistXsection");
     if(!hxsection) {
       std::cout << "Error in getting x-section hist! Exiting..." << std::endl;
@@ -121,12 +130,12 @@ TH1* GetInputSimHistJet(TString inFile, TH1 *hPt, bool isEff, TString effFilePro
     TTree *tree;
     if(!fDmesonSpecie) tree = (TTree*)fileInput->Get("AliAnalysisTaskDmesonJets_D0_MCTruth");
     else tree = (TTree*)fileInput->Get("AliAnalysisTaskDmesonJets_DStar_MCTruth");
+
     AliAnalysisTaskDmesonJets::AliDmesonMCInfoSummary *brD = 0;
 
     AliAnalysisTaskDmesonJets::AliJetInfoSummary *brJet = 0;
     tree->SetBranchAddress("DmesonJet",&brD);
     tree->SetBranchAddress(Form("Jet_AKTChargedR0%d0_pt_scheme",Rpar),&brJet);
-    cout<<"RPAR================"<<Rpar<<endl;
 
     if(!tree || !brD || !brJet) {
       std::cout << "Error in setting the tree/branch names! Exiting..." << std::endl;
