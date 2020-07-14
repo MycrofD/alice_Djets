@@ -114,7 +114,7 @@ TH1* GetInputSimHistJet(TString inFile, TH1 *hPt, bool isEff, TString effFilePro
 
     TList* dir;
     dir=(TList*)fileInput->Get("AliAnalysisTaskDmesonJets_histos");
-//    if(!dir) {dir=(TList*)fileInput->Get("AliAnalysisTaskEmcalJetTree_histos");}
+    if(!dir) {dir=(TList*)fileInput->Get("AliAnalysisTaskEmcalJetTree_histos");}
     if(!dir) {
       std::cout << "Error in getting dir! Exiting..." << std::endl;
       return NULL;
