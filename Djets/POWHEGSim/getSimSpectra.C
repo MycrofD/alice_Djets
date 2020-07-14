@@ -112,7 +112,9 @@ TH1* GetInputSimHistJet(TString inFile, TH1 *hPt, bool isEff, TString effFilePro
       std::cout << "File " << fileInput << " cannot be opened! check your file path!" << std::endl; return NULL;
     }
 
-    TList* dir=(TList*)fileInput->Get("AliAnalysisTaskDmesonJets_histos");
+    TList* dir;
+    dir=(TList*)fileInput->Get("AliAnalysisTaskDmesonJets_histos");
+//    if(!dir) {dir=(TList*)fileInput->Get("AliAnalysisTaskEmcalJetTree_histos");}
     if(!dir) {
       std::cout << "Error in getting dir! Exiting..." << std::endl;
       return NULL;
@@ -125,7 +127,15 @@ TH1* GetInputSimHistJet(TString inFile, TH1 *hPt, bool isEff, TString effFilePro
     }
     double xsection = hxsection->GetMean(2);
     double events = (double)hxsection->GetEntries();
-    double scaling = xsection/events;
+    //double scaling = xsection/events;
+
+    TH1D *htrialsVpthard = (TH1D*)dir->FindObject("fHistTrialsVsPtHard");
+    if(!htrialsVpthard) {
+      std::cout << "Error in getting trialsVpthard hist! Exiting..." << std::endl;
+      return NULL;
+    }
+    double trialsVpthard = htrialsVpthard->Integral();
+    double scaling = xsection/trialsVpthard;
 
     TTree *tree;
     if(!fDmesonSpecie) tree = (TTree*)fileInput->Get("AliAnalysisTaskDmesonJets_D0_MCTruth");
@@ -165,7 +175,7 @@ TH1* GetInputSimHistJet(TString inFile, TH1 *hPt, bool isEff, TString effFilePro
       if(brD->fPartonType != 5) continue;
     }
     else if(brD->fPartonType != 4) continue;
-    if(brD->fAncestorPDG == 2212) continue; // check if not coming from proton
+    //if(brD->fAncestorPDG == 2212) continue; // check if not coming from proton
 
     if(isDptcut){
       for (int j=0; j<fptbinsDN; j++) {
@@ -225,6 +235,7 @@ TH1* GetInputSimHistD(TString inFile, TH1 *hPt, bool isjetptcut){
     }
     double xsection = hxsection->GetMean(2);
     double events = (double)hxsection->GetEntries();
+//    double trials = (double)hxsection->Get
     double scaling = xsection/events;
 
 
