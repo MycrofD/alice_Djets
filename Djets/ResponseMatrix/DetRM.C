@@ -54,7 +54,7 @@ void DetRM(
     TH1D *hPtG[NDMC];//matched, not required
     TH1D *hPtR[NDMC];//matched, not required
 
-	TList *histList[NDMC];
+	TList *histList[NDMC];TList *histList2[NDMC];
 	THnSparseD *sparseMC[NDMC];
 	THnSparseD *GMC[NDMC];
 	THnSparseD *RMC[NDMC];
@@ -67,12 +67,17 @@ void DetRM(
 
     for(int i=0; i<NDMC; i++){
         if(!isprefix){
-            if(postfix) { 
-                histList[i] =  (TList*)dir->Get(Form("%s%d%sMCrec",histName.Data(),i,listName.Data())); }
-            else {
-                if(isPrompt) histList[i] =  (TList*)dir->Get(Form("%s%dMCrec",histName.Data(),i));
-                else histList[i] =  (TList*)dir->Get(Form("%s%dFDMCrec",histName.Data(),i));
+            if(!postfix) { 
+                if(isPrompt){
+                    histList[i] =  (TList*)dir->Get(Form("%s%dMCrec",histName.Data(),i));
                 }
+                else{
+                    histList[i] =  (TList*)dir->Get(Form("%s%dFDMCrec",histName.Data(),i));
+                }
+            }
+            else {
+                histList[i] =  (TList*)dir->Get(Form("%s%d%sMCrec",histName.Data(),i,listName.Data())); 
+            }
         }
         else{
              if(postfix) {
@@ -84,8 +89,8 @@ void DetRM(
 
 
         sparseMC[i] = (THnSparseD*)histList[i]->FindObject("ResponseMatrix");
-        GMC[i] = (THnSparseD*)histList[i]->FindObject("ResponseMatrix");
-        RMC[i] = (THnSparseD*)histList[i]->FindObject("ResponseMatrix");
+        GMC[i] = (THnSparseD*)sparseMC[i]->Clone(Form("GMC_%d",i));
+        RMC[i] = (THnSparseD*)sparseMC[i]->Clone(Form("RMC_%d",i));
 
         //Dpt and jetpt cuts on Reco level
         sparseMC[i]->GetAxis(2)->SetRangeUser(Dptmin,Dptmax);
@@ -106,11 +111,11 @@ void DetRM(
         }
 
         //eta cuts on Gen and Reco levels
-    	if(!fDmesonSpecie) {//Dzero
+    	if(!fDmesonSpecie){//Dzero
     		sparseMC[i]->GetAxis(4)->SetRangeUser(-(0.9-fRpar),0.9-fRpar);
     		sparseMC[i]->GetAxis(9)->SetRangeUser(-(0.9-fRpar),0.9-fRpar);
-    		RMC[i]->GetAxis(4)->SetRangeUser(-(0.9-fRpar),0.9-fRpar);
-    		GMC[i]->GetAxis(9)->SetRangeUser(-(0.9-fRpar),0.9-fRpar);
+    	    RMC[i]->GetAxis(4)->SetRangeUser(-(0.9-fRpar),0.9-fRpar);
+    	    GMC[i]->GetAxis(9)->SetRangeUser(-(0.9-fRpar),0.9-fRpar);
     	}
 
         const int DNresDim = 3;
@@ -132,11 +137,14 @@ void DetRM(
         hPtJet[i]->SetName(Form("hPtJet_%d",i)); 
         hPtJetD[i]->SetName(Form("hPtJetD_%d",i));
 
+        //gen level jetpt projection
         if(fDmesonSpecie) hPtG[i] = (TH1D*)sparseMC[i]->Projection(5); //Dstar tmp
         else   hPtG[i] = (TH1D*)sparseMC[i]->Projection(6);
 
-        hPtG[i]->SetName(Form("hPtG_%d",i));
+        //reco level jetpt projection
         hPtR[i] = (TH1D*)sparseMC[i]->Projection(1);
+
+        hPtG[i]->SetName(Form("hPtG_%d",i));
         hPtR[i]->SetName(Form("hPtR_%d",i));
         hPtG[i]->Sumw2();
         hPtR[i]->Sumw2();
@@ -147,7 +155,7 @@ void DetRM(
   		    hPtJetGen = (TH1D*)hPtG[0]->Clone("hPtJetGen");
   		    hPtJetRec = (TH1D*)hPtR[0]->Clone("hPtJetRec");
             hPtJetG_all = (TH1D*)hPtJetG_1D[0]->Clone("hPtJetG_all");
-            hPtJetR_noeff = (TH1D*)hPtJetR_2D[0]->Clone("hPtJetR_noeff");
+            hPtJetR_noeff = (TH2D*)hPtJetR_2D[0]->Clone("hPtJetR_noeff");
         }
         else{
             hPtJet2d_noeff->Add(hPtJet[i]);
@@ -158,6 +166,10 @@ void DetRM(
             hPtJetR_noeff->Add(hPtJetR_2D[i]);
         }
 	}
+            THnSparseD* Gtest = (THnSparseD*)GMC[0]->Clone("Gtest");//random selection from the 2.6+1.4,3.5 million events
+            THnSparseD* Rtest = (THnSparseD*)RMC[0]->Clone("Rtest");
+            Gtest->Add(GMC[1]);
+            Rtest->Add(RMC[1]);
 
     //--- Djet eff scaling and filling a new response
     TFile *fileEff = new TFile(effFilePnP.Data(),"read");
@@ -165,10 +177,8 @@ void DetRM(
     TH2D *hPtJet2dDjet = new TH2D("hjetRecGen","hjetRecGen", 60, 0, 60, 60, 0, 60); 
     TH1D *hGenNum = new TH1D("hGenNum","hGenNum",fptbinsJetMeasN,fptbinsJetMeasA);
     TH1D *hGenDen = new TH1D("hGenDen","hGenDen",fptbinsJetMeasN,fptbinsJetMeasA);
-    TH1D *hGenEff = new TH1D("hGenEff","hGenEff",fptbinsJetMeasN,fptbinsJetMeasA);
     TH1D *hRecNum = new TH1D("hRecNum","hRecNum",fptbinsJetMeasN,fptbinsJetMeasA);
     TH1D *hRecDen = new TH1D("hRecDen","hRecDen",fptbinsJetMeasN,fptbinsJetMeasA);
-    TH1D *hRecEff = new TH1D("hRecEff","hRecEff",fptbinsJetMeasN,fptbinsJetMeasA);
     cout<<"Number of bins in the response: "<<hPtJetD3d->GetNbins()<<endl;
     for (int z = 0; z < hPtJetD3d->GetNbins(); z++){
         int coord[3]={0,0,0};
@@ -190,10 +200,12 @@ void DetRM(
         if(jG_center>=fptbinsJetMeasA[0] || jG_center <= fptbinsJetMeasA[fptbinsJetMeasN]){hRecNum->Fill(jR_center, weight);}
     }
     //kine eff, setting errors zero
-    hGenNum->Divide(hGenDen);hRecNum->Divide(hRecDen);
-    for(int i=0; i<hGenNum->GetXaxis()->GetNbins();i++){
-        hGenNum->SetBinError(i+1,0);
-        hRecNum->SetBinError(i+1,0);
+    TH1D* hGenEff=(TH1D*)hGenNum->Clone("hGenEff");
+    TH1D* hRecEff=(TH1D*)hRecNum->Clone("hRecEff");
+    hGenEff->Divide(hGenDen);hRecEff->Divide(hRecDen);
+    for(int i=0; i<hGenEff->GetXaxis()->GetNbins();i++){
+        hGenEff->SetBinError(i+1,0);
+        hRecEff->SetBinError(i+1,0);
     }
     TCanvas* cc_kineEff = new TCanvas("cc_kf","cc_kf", 600,500);
     hGenNum->GetYaxis()->SetRangeUser(0.9,1.1);
@@ -217,7 +229,8 @@ void DetRM(
     TH2D *hclos_resp = new TH2D("hclosure_r","hclosure_r", 60, 0, 60, 60, 0, 60); 
     TH1D *hclos_true1d = new TH1D("hclos_true1d","hclos_true1d", 60, 0, 60); 
     TH1D *hclos_data1d = new TH1D("hclos_data1d","hclos_data1d", 60, 0, 60); 
-    for (int z = 0; z < clos_resp_size; z++){
+    hclos_true1d->Sumw2();hclos_data1d->Sumw2();
+    for (int z = 0; z < clos_resp_size+1; z++){
         int coord_resp[3]={0,0,0};
         int resp_num = dist6(rng);
         double content_resp = hPtJetD3d->GetBinContent(resp_num,coord_resp);
@@ -232,16 +245,20 @@ void DetRM(
         weight = weight/eff_c;
         hclos_resp->Fill(jR_center, jG_center, weight);//1. response for closure, Djet eff scaled
     }
-    for (int z = 0; z < (int)(hPtJetG_all->GetNbinsX()*0.5); z++){
-        int num = dist6(rng);
-        hclos_true1d->Fill(hPtJetG_all->GetBinCenter(num),hPtJetG_all->GetBinContent(num));//3. 50% MC no eff, true
+    for (int z = 0; z < hPtJetG_all->GetNbinsX()+1; z++){
+        //int num = dist6(rng);
+        int num = z;//dist6(rng);
+        hclos_true1d->SetBinContent(hPtJetG_all->GetBinCenter(num),hPtJetG_all->GetBinContent(num));//3. 50% MC no eff, true
+        hclos_true1d->SetBinError(hPtJetG_all->GetBinCenter(num),hPtJetG_all->GetBinError(num));//3. 50% MC no eff, true
     }
-    for (int z = 0; z < (int)(hPtJetR_noeff->GetNbinsX()*0.5); z++){
-        int num = dist6(rng);
+    for (int z = 0; z < (int)(hPtJetR_noeff->GetNbinsX()+1); z++){
+        //int num = dist6(rng);
+        int num = z;//dist6(rng);
         double eff_c = 1;
         double DR_center = hPtJetR_noeff->GetYaxis()->GetBinCenter(num);
         eff_c = effHist->GetBinContent(effHist->GetXaxis()->FindBin(DR_center));
-        hclos_data1d->Fill(hPtJetRec->GetBinCenter(num),hPtJetRec->GetBinContent(num)/eff_c);//2. 50% MC Djet eff scaled
+        hclos_data1d->SetBinContent(hPtJetRec->GetBinCenter(num),hPtJetRec->GetBinContent(num)/eff_c);//2. 50% MC Djet eff scaled
+        hclos_data1d->SetBinError(hPtJetRec->GetBinCenter(num),hPtJetRec->GetBinError(num)/eff_c);//2. 50% MC Djet eff scaled
     }
 
     TCanvas *c_closure_resp = new TCanvas("c_closure_r","c_closure_r",800,600);
@@ -303,6 +320,8 @@ void DetRM(
     hclos_true1d->Write();//3. 50% MC no eff, true
     hclos_data1d->Write();//2. 50% MC Djet eff scaled
     hclos_resp->Write();//1. response for closure, Djet eff scaled
+    hPtJetG_all->Write();
+    hPtJetR_noeff->Write();
     ofile->Close();
 
    return;
