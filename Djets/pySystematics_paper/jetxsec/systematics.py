@@ -47,7 +47,6 @@ datafileSig = RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results
 
 datafileUnf = RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"%(R))
 datafileJES = RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/FinalSys/JESsysFinal_DzeroR%s_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"%(R))
-
 #######
 flagMulti=1
 flagRef=0
@@ -65,8 +64,7 @@ ROOT.gStyle.SetLegendBorderSize(0)
 #histos:
 # 0. Multi trial
 ## raw systematics files
-#sizeMulti=281#141
-sizeMulti=325#141
+sizeMulti=973
 Multititles=[
         ]
 if(flagMulti):
@@ -74,7 +72,7 @@ if(flagMulti):
             RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/FinalSys/RawSysFinal_DzeroR%s_paperCuts/Default/signalExtraction_multitrial/JetPtSpectra_SB_eff.root"%(R))
             ]
     hMulti=[
-            datafileMulti[0].Get('hjetptspectrumRebScaled').Clone('hMulti_0')
+            datafileMulti[0].Get('hjetptspectrumReb').Clone('hMulti_0')
             ];
     for i in range(1,sizeMulti):
         try:
@@ -82,7 +80,7 @@ if(flagMulti):
                 RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/FinalSys/RawSysFinal_DzeroR%s_paperCuts/Default/signalExtraction_multitrial/JetPtSpectra_SB_eff%d.root"%(R,i))
                 )
             hMulti.append(
-                datafileMulti[i].Get('hjetptspectrumRebScaled').Clone('hMulti_'+str(i))
+                datafileMulti[i].Get('hjetptspectrumReb').Clone('hMulti_'+str(i))
                 )
         except:
             pass
@@ -114,37 +112,68 @@ if(flagMulti):
     c_MultiRaw.SaveAs('plots/0_Multi/0_Multi_sysRaw'+R+'.pdf')
     c_MultiRaw.SaveAs('plots/0_Multi/0_Multi_sysRaw'+R+'.png')
     c_MultiRaw.SaveAs('plots/0_Multi/0_Multi_sysRaw'+R+'.svg')
+    #### -----------------------------Distribution of yields
+    c_MultiYieldDist = TCanvas("cMultiYieldDist","cMultiYieldDist",900,600)
+    c_MultiYieldDist.Divide(4,3)
+    hTrialsDist=[]
+    for i in range(fptbinsJN):
+        c_MultiYieldDist.cd(i+1)
+        c_MultiYieldDist.cd(i+1).SetMargin(2,0,0.9,0.9)
+        hTrialsDist.append(yieldDist(hMulti,fptbinsJC[i]))#hTrialsPerPt.append(hYPTValues[0])
+        hTrialsDist[i].Draw()
+    c_MultiYieldDist.SaveAs('plots/0_Multi/0_Multi_yieldDist'+R+'.pdf')
+    c_MultiYieldDist.SaveAs('plots/0_Multi/0_Multi_yieldDist'+R+'.png')
     #### -----------------------------
     c_MultiYieldTrialsJetpt = TCanvas("cMultiYieldTrialsJetpt","cMultiYieldTrialsJetpt",900,600)
     c_MultiYieldTrialsJetpt.Divide(4,3)
     hTrialsPerPt = []
+
+    meanYPT,line_YPT=[],[]
+    sigYPTplus,line_YPTplus,sigUp=[],[],1.5
+    sigYPTminu,line_YPTminu,sigDo=[],[],1.5
     for i in range(fptbinsJN):
         c_MultiYieldTrialsJetpt.cd(i+1)
         c_MultiYieldTrialsJetpt.cd(i+1).SetMargin(2,0,0.9,0.9)
-        hTrialsPerPt.append(yieldPtrials(hMulti,fptbinsJC[i]))
+        hTrialsPerPt.append(yieldPtrials(hMulti,fptbinsJC[i]))#hTrialsPerPt.append(hYPTValues[0])
         hTrialsPerPt[i].SetTitle(str(fptbinsJlo[i])+' < #it{p}_{T,ch.jet} < '+str(fptbinsJhi[i])+' GeV')
         hTrialsPerPt[i].Draw()
+        
+        c_MultiYieldTrialsJetpt.cd(i+1).Update()
+        meanYPT.append(hMulti[0].GetBinContent(hMulti[0].GetXaxis().FindBin(fptbinsJC[i]))) 
+        sigYPTplus.append(hMulti[0].GetBinContent(hMulti[0].GetXaxis().FindBin(fptbinsJC[i])) + sigUp*hMulti[0].GetBinError(hMulti[0].GetXaxis().FindBin(fptbinsJC[i])) )
+        sigYPTminu.append(hMulti[0].GetBinContent(hMulti[0].GetXaxis().FindBin(fptbinsJC[i])) - sigDo*hMulti[0].GetBinError(hMulti[0].GetXaxis().FindBin(fptbinsJC[i])) )
+        line_YPT.append(ROOT.TLine(0,meanYPT[i],len(datafileMulti), meanYPT[i]))
+        line_YPTplus.append(ROOT.TLine(0,sigYPTplus[i],len(datafileMulti), sigYPTplus[i]))
+        line_YPTminu.append(ROOT.TLine(0,sigYPTminu[i],len(datafileMulti), sigYPTminu[i]))
+        line_YPT[i].SetLineColor(ROOT.kRed+2)
+        line_YPTplus[i].SetLineColor(ROOT.kRed+2)
+        line_YPTminu[i].SetLineColor(ROOT.kRed+2)
+        c_MultiYieldTrialsJetpt.cd(i+1)
+        line_YPT[i].Draw('same')
+        line_YPTplus[i].Draw('same')
+        line_YPTminu[i].Draw('same')
+
     c_MultiYieldTrialsJetpt.cd(fptbinsJN+1);
     ttMultiYPT= [];delYPTtt=0.066
-    YPTvariations=[
-            'default, free '               ,' #sigma = #sigma_{MC}       '              ,'#sigma = #sigma_{MC}*1.15   ','#sigma = #sigma_{MC}*0.85   ',
-            '#it{m} = #it{m}_{PDG}       ' ,'#sigma = #sigma_{MC}, #it{m}=#it{m}_{PDG} ','bkg 1: linear  '             ,'bkg 2: poly2    '            ,
-            'lower limit,1.72'             ,'lower limit,1.70'                          ,'upper limit,2.09'            ,'upper limit,2.11'            ,
-            'mass rebin(2)*2 '             ,'mass rebin(2)*0.5']
-    for i in range(14):
-        ttMultiYPT.append(ROOT.TLatex(.12+i*delYPTtt,.5,str(i)+": "+YPTvariations[i]))
+    YPTvariations=['#sigma = free, #sigma_{MC}, #sigma_{MC}*1.1, #sigma_{MC}*0.9 ', 
+            'bkg = 0(exp), 1(lin), 2(poly2)',
+            'mass = free, m_{PDG}',
+            'lower limit = 1.71, 1.72, 1.70',
+            'upper limit = 2.10, 2.09, 2.11',
+            'mass bin width= 2, 4, 1   ']
+    for i in range(len(YPTvariations)):
+        ttMultiYPT.append(ROOT.TLatex(0.5,.5-i*delYPTtt,str(i)+": "+YPTvariations[i]))
         ttMultiYPT[i].SetTextFont(82);
         ttMultiYPT[i].SetTextAlign(22);
         ttMultiYPT[i].SetTextSize(0.06);
-        ttMultiYPT[i].SetTextAngle(90)
+        ttMultiYPT[i].SetTextAngle(0)
         ttMultiYPT[i].SetTextColor(ROOT.kRed+2)
         ttMultiYPT[i].Draw('same')
     
     c_MultiYieldTrialsJetpt.cd(fptbinsJN+2)
-    outliers={'02':'3','03':'3','04':'3,7','06':'3,7,8'}
     ttMultiYPT2 = [ROOT.TLatex(.12,.8,'R = 0.'+str(int(R))+', Multi-trial'),
             ROOT.TLatex(.12,.7,'pp, 5.02 TeV'),
-            ROOT.TLatex(.12,.6,'Outlier(s): '+outliers[R])
+            ROOT.TLatex(.12,.6,'')
             ]
     for i in range(len(ttMultiYPT2)):ttMultiYPT2[i].SetTextSize(0.1);ttMultiYPT2[i].SetTextFont(42);ttMultiYPT2[i].Draw('same')
 
@@ -163,6 +192,7 @@ if(flagMulti):
             HistoStyle(hhMultiratio[i],1,2,21,0,RTColors[0]);
             hhMultiratio[i].GetYaxis().SetTitle('ratio');hhMultiratio[i].SetTitle("Multi-trial: R=0."+str(int(R)))
             hhMultiratio[i].SetLineColor((i%20)+29)
+            hhMultiratio[i].GetYaxis.SetRangeUser(0,2)
             if(i==1): hhMultiratio[i].Draw(); 
             elif(i>1): hhMultiratio[i].Draw('same')
         except: pass
@@ -171,35 +201,21 @@ if(flagMulti):
     #### -----------------------------RMS
     c_MultiRMS = TCanvas("cMultiRMS","cMultiRMS",900,600)
     lMulti4 = TLegend(0.12,0.60,0.38,0.88);
-    histMultiRMS = rootRMS(hhMultiratio);
-    histMultiRMS1 = rootRMS(hhMultiratio[:61]+hhMultiratio[81:]);                      # 3     excluded
-    histMultiRMS2 = rootRMS(hhMultiratio[:61]+hhMultiratio[81:141]+hhMultiratio[161:]);# 3,7   excluded
-    histMultiRMS3 = rootRMS(hhMultiratio[:61]+hhMultiratio[81:141]+hhMultiratio[181:]);# 3,7,8 excluded
-
+    histMultiRMS = rootRMS_mt(hhMultiratio,sigUp,sigDo);
     histMultiRMS.SetLineColor(ROOT.kRed+2);histMultiRMS.SetFillColor(ROOT.kRed+2);histMultiRMS.SetFillStyle(3354);
-
-    if(R=='02'):histMultiRMS_o=histMultiRMS1
-    elif(R=='03'):histMultiRMS_o=histMultiRMS1
-    elif(R=='04'):histMultiRMS_o=histMultiRMS2
-    elif(R=='06'):histMultiRMS_o=histMultiRMS3
-    histMultiRMS_o.SetFillColor(ROOT.kGreen+2);histMultiRMS_o.SetFillStyle(3345);histMultiRMS_o.SetLineColor(ROOT.kGreen+2)
-    histMultiRMS_o.GetYaxis().SetRangeUser(0,0.25);histMultiRMS_o.GetYaxis().SetTitle("RMS");
-    histMultiRMS_o.Draw()
-    lMulti4.AddEntry(histMultiRMS_o,'Outlier(s) excluded:');
-    if(R!='06'):histMultiRMS.Draw('same');lMulti4.AddEntry(histMultiRMS,'All included: ');
+    histMultiRMS.GetYaxis().SetRangeUser(0,0.25);histMultiRMS.GetYaxis().SetTitle("RMS");
+    histMultiRMS.Draw()
+    #lMulti4.AddEntry(histMultiRMS,'');
     lMulti4.Draw('same')
 
     # text
     ytextplace=0.22
-    if(R=='06'):ytextplace=0.197
-    ttMultiRMS_o= ROOT.TText(18,ytextplace,GetDigitText(histMultiRMS_o,fptbinsJC));ttMultiRMS_o.SetTextSize(0.04);
-    ttMultiRMS  = ROOT.TText(18,0.175,GetDigitText(histMultiRMS,fptbinsJC));ttMultiRMS.SetTextSize(0.04);
-    ttMultiRMS_o.Draw('same')
-    if(R!='06'):ttMultiRMS.Draw('same');
+    ttMultiRMS= ROOT.TText(18,ytextplace,GetDigitText(histMultiRMS,fptbinsJC));ttMultiRMS.SetTextSize(0.04);
+    ttMultiRMS.Draw('same')
     c_MultiRMS.SaveAs('plots/0_Multi/0_Multi_sysRMS'+R+'.pdf')
     c_MultiRMS.SaveAs('plots/0_Multi/0_Multi_sysRMS'+R+'.png')
 
-    if(wait):input()
+    #if(wait):input()
 ############## -----------------------------
 #histos:
 # 1. Reflection
