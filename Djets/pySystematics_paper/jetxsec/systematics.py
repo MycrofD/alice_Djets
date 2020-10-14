@@ -17,26 +17,36 @@ from funcsettings import * # HistoMarkers#from stylesettings import * # HistoMar
 if len(sys.argv)==1:
     print("   === Usage example: python file.py R ")
     print("   === e.g.: python file.py 02")
+    print("   === OR ===   ")
+    print("   === Usage example: python file.py R jetbin")
+    print("   === e.g.: python file.py 02 1")
     exit()
 wait=1
 #--------------------------------------------------
-fptbinsJN = 10
-fptbinsJC = [2.5,3.5,4.5,5.5,7,9,12,17,25,40]
-fptbinsJlo = [2,3,4,5,6,8,10,14,20,30]
-fptbinsJhi = [3,4,5,6,8,10,14,20,30,50]
-fptbinsJlh = [2,3,4,5,6,8,10,14,20,30,50]
-##--------------------------------------------------
 #fptbinsJN = 7
 #fptbinsJC = [5.5,7,9,12,17,25,40]
 #fptbinsJlo = [5,6,8,10,14,20,30]
 #fptbinsJhi = [6,8,10,14,20,30,50]
 #fptbinsJlh = [5,6,8,10,14,20,30,50]
 ##--------------------------------------------------
-
 fptbinsJNreal = 10
 fptbinsJlhreal = [2,3,4,5,6,8,10,14,20,30,50]
+##--------------------------------------------------
 R = str(sys.argv[1]) #'02'
-
+lensysin = len(sys.argv)
+if(lensysin>2): 
+    jetbin = str(sys.argv[2]);print(jetbin);print(type(jetbin))
+    fptbinsJlh = [0.2,0.4,0.6,0.7,0.8,0.9,1.02]
+    fptbinsJN=6
+    fptbinsJC=[0.3,0.5,0.65,0.75,0.85,0.96]
+else: 
+    jetbin='';print(jetbin);print(type(jetbin))
+    fptbinsJlh = [2,3,4,5,6,8,10,14,20,30,50]
+    fptbinsJN = 10
+    fptbinsJC = [2.5,3.5,4.5,5.5,7,9,12,17,25,40]
+fptbinsJlo = fptbinsJlh[:-1]
+fptbinsJhi = fptbinsJlh[1:]
+##--------------------------------------------------
 Rtitle=R #for accessing the directories
 
 RTColors = [RT.kRed+2, RT.kGreen+2, RT.kBlue+2, RT.kOrange+2, RT.kViolet+2, RT.kYellow+2, RT.kCyan-6, RT.kAzure+2, RT.kMagenta-6,RT.kGreen-8,RT.kYellow-8]
