@@ -30,7 +30,7 @@ if [ $bin_zjet -eq 24 ]; then #2-5
  boundSigma=0
 fi
 fBsimN=10 #11	# number of non-prompt sim files
-fCsimN=1 #9#11	# number of prompt sim files
+fCsimN=12 #9#11	# number of prompt sim files: 9 pow+pyt, 1 pyth6, 1 pyth8, 1 pyth 8-2
 unoriginal_tag=unoriginal	# adding a tag that says the next file zrun.csh is not the original file to be edited, rather this is
 conffile_z1=configDzero_ppz1.h	# first half of config file
 conffile_z2=configDzero_ppz2.h	# second half of config file
@@ -122,11 +122,10 @@ saveDir=Z0to102
 
 if [ $flagSBs -eq 1 ]; then
  root -l -b -q signalExtraction_SBz.C'("'$data'", '$flagEff', "'$prompteff'", '$flagRef', "'$refFile'", '$ispostfix', "'$listName'", "'$out'", '$save', '$isMoreFiles', "'$prod'", '$isprefix', "'$saveDir'", '$boundSigma')'
-fi
-
+#fi
 #-----
 # Multi trial
-if [ $flagMulti -eq 1 ]; then
+elif [ $flagMulti -eq 1 ] || [ $flagSBSig -eq 1 ]; then
 out=$OUT/signalExtraction
 boundSigma=$8
 fsigmafactor=$9
@@ -137,8 +136,18 @@ maxfSys=${13}
 fMassBinWidthFactor=${14}
 sysNum=${15}
 #-----
+  if [ $flagSBSig -eq 0 ]; then
  root -l -b -q signalExtraction_SBz.C'("'$data'", 1, "'$prompteff'", 1, "'$refFile'", 0, "'$listName'", "'$out'", 0, '$isMoreFiles', "'$prod'", 0, "'$saveDir'", '$boundSigma','$fsigmafactor','$fixedMass','$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$sysNum')'
-fi
+  elif [ $flagSBSig -eq 1 ]; then
+        sigmaSignal=${16}
+        sigmaBkgll=${17}
+        sigmaBkglh=${18}
+        sigmaBkgrl=${19}
+        sigmaBkgrh=${20}
+ root -l -b -q signalExtraction_SBz.C'("'$data'", 1, "'$prompteff'", 1, "'$refFile'", 0, "'$listName'", "'$out'", 0, '$isMoreFiles', "'$prod'", 0, "'$saveDir'", '$boundSigma','$fsigmafactor','$fixedMass','$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$sysNum', '$sigmaSignal', '$sigmaBkgll', '$sigmaBkglh', '$sigmaBkgrl', '$sigmaBkgrh')'
+  fi
+#fi #multi or SBsig end if common for next one, flagSBs
+fi #flagSBs end if
 ## B-feed down simulation
 ##-----------------------
 ##/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/POWHEGSimulations/fastSim_pp5TeV
