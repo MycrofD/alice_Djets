@@ -23,6 +23,7 @@ flagRef=$5 #2 Reflections for different jetpt intervals for all Dpt bins
 flagSBs=$6 #3 Side Band subtraction method
 flagSim=$7 #4 Simulation for non-prompt and prompt D-jets
 #-----
+#-----
 # change flagCUT, flagJES  in zrun_settings.csh
 finerunfold=0
 boundSigma=0 #also see bin_zjet=24	# if needed to fit certain Dpt bins with a bounded sigma: sigma +/- some fraction of this sigma
@@ -104,6 +105,7 @@ listNameRef=""
 kl=""
 if [ $flagRef -eq 1 ]; then
  root -l -b -q signalExtraction_zrefl.C'("'$effFile'","'$outRefl'",0,"'$listNameRef'",0,"'$kl'")'
+
 fi
 ## Signal Extraction Side Bands, with/without efficiency correction
 ##---------------------------------------------------------
@@ -122,32 +124,64 @@ saveDir=Z0to102
 
 if [ $flagSBs -eq 1 ]; then
  root -l -b -q signalExtraction_SBz.C'("'$data'", '$flagEff', "'$prompteff'", '$flagRef', "'$refFile'", '$ispostfix', "'$listName'", "'$out'", '$save', '$isMoreFiles', "'$prod'", '$isprefix', "'$saveDir'", '$boundSigma')'
-#fi
-#-----
+fi
 # Multi trial
-elif [ $flagMulti -eq 1 ] || [ $flagSBSig -eq 1 ]; then
+if [ $flagMulti -eq 1 ]; then
 out=$OUT/signalExtraction
-boundSigma=$8
-fsigmafactor=$9
-fixedMass=${10}
-bkgType=${11}
-minfSys=${12}
-maxfSys=${13}
-fMassBinWidthFactor=${14}
-sysNum=${15}
-#-----
-  if [ $flagSBSig -eq 0 ]; then
- root -l -b -q signalExtraction_SBz.C'("'$data'", 1, "'$prompteff'", 1, "'$refFile'", 0, "'$listName'", "'$out'", 0, '$isMoreFiles', "'$prod'", 0, "'$saveDir'", '$boundSigma','$fsigmafactor','$fixedMass','$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$sysNum')'
-  elif [ $flagSBSig -eq 1 ]; then
-        sigmaSignal=${16}
-        sigmaBkgll=${17}
-        sigmaBkglh=${18}
-        sigmaBkgrl=${19}
-        sigmaBkgrh=${20}
- root -l -b -q signalExtraction_SBz.C'("'$data'", 1, "'$prompteff'", 1, "'$refFile'", 0, "'$listName'", "'$out'", 0, '$isMoreFiles', "'$prod'", 0, "'$saveDir'", '$boundSigma','$fsigmafactor','$fixedMass','$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$sysNum', '$sigmaSignal', '$sigmaBkgll', '$sigmaBkglh', '$sigmaBkgrl', '$sigmaBkgrh')'
-  fi
-#fi #multi or SBsig end if common for next one, flagSBs
-fi #flagSBs end if
+ctry=1
+fsigmafactor=1
+
+  for boundSigma in 0; do
+    for bkgType in 0 1 2; do
+      for fixedMass in 0 1; do
+        for minfSys in 1.71 1.72 1.70; do
+          for maxfSys in 2.1 2.09 2.11; do
+            for fMassBinWidthFactor in 2 4 1; do
+
+root -l -b -q signalExtraction_SBz.C'("'$data'", '$flagEff', "'$prompteff'", '$flagRef', "'$refFile'", '$ispostfix', "'$listName'", "'$out'", '$save', '$isMoreFiles', "'$prod'", '$isprefix', "'$saveDir'", '$boundSigma', '$fsigmafactor', '$fixedMass', '$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$ctry','$flagMulti')'
+
+ctry=$[ctry+1]
+
+            done
+          done
+        done
+      done
+    done
+  done
+
+  for boundSigma in 1; do
+  for fsigmafactor in 1 1.1 0.9; do
+    for bkgType in 0 1 2; do
+      for fixedMass in 0 1; do
+        for minfSys in 1.71 1.72 1.70; do
+          for maxfSys in 2.1 2.09 2.11; do
+            for fMassBinWidthFactor in 2 4 1; do
+
+root -l -b -q signalExtraction_SBz.C'("'$data'", '$flagEff', "'$prompteff'", '$flagRef', "'$refFile'", '$ispostfix', "'$listName'", "'$out'", '$save', '$isMoreFiles', "'$prod'", '$isprefix', "'$saveDir'", '$boundSigma', '$fsigmafactor', '$fixedMass', '$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$ctry','$flagMulti')'
+ctry=$[ctry+1]
+
+            done
+          done
+        done
+      done
+    done
+  done
+  done
+fi 
+# Side-Band Signal ranges
+if [ $flagSBSig -eq 1 ]; then
+boundSigma=0;fsigmafactor=1;fixedMass=0;bkgType=0;minfSys=1.71;maxfSys=2.1;fMassBinWidthFactor=2
+out=$OUT/signalExtraction
+ctry=0
+  for sigmaWindow in 2 3; do
+    for SBout in 9 8; do
+      for SBint in 4 3.5 4.5; do
+root -l -b -q signalExtraction_SBz.C'("'$data'", '$flagEff', "'$prompteff'", '$flagRef', "'$refFile'", '$ispostfix', "'$listName'", "'$out'", '$save', '$isMoreFiles', "'$prod'", '$isprefix', "'$saveDir'", '$boundSigma', '$fsigmafactor', '$fixedMass', '$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$ctry','$flagSBSig','$sigmaWindow','-$SBout','-$SBint','$SBint','$SBout')'
+ctry=$[ctry+1]
+      done
+    done
+  done
+fi
 ## B-feed down simulation
 ##-----------------------
 ##/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/POWHEGSimulations/fastSim_pp5TeV
