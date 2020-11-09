@@ -45,11 +45,6 @@ void DetRM(
     TH1D *hMCpt;
 	TH1D *hMCpt_reco;
     TH2D *hPtJet[NDMC];
-    TH1D *hPtJetG_1D[NDMC];//for closure
-    TH2D *hPtJetR_2D[NDMC];//for closure
-    TH1D *hPtJetG_all;//for closure, sum of G_1D
-    TH2D *hPtJetR_noeff;//for closure, sum of R_2D
-    TH1D *hPtJetR_eff;//for closure, sum of R_2D, projection of _noeff effscaled
     THnSparseD *hPtJetD[NDMC];//to store Djet eff corrected spectra
     TH1D *hPtG[NDMC];//matched, not required
     TH1D *hPtR[NDMC];//matched, not required
@@ -64,6 +59,10 @@ void DetRM(
     TH1D *hPtJetGen;
     TH1D *hPtJetRec;
 
+    TH1D* hGMC[NDMC];//closure
+    TH1D* hRMC[NDMC];
+    TH1D* hGMCall;
+    TH1D* hRMCall;
 
     for(int i=0; i<NDMC; i++){
         if(!isprefix){
@@ -87,17 +86,15 @@ void DetRM(
              else { cout<<"-----postfix has to be true if prefix is true!! check again----------------"<<endl; return;       }
         }
 
-
         sparseMC[i] = (THnSparseD*)histList[i]->FindObject("ResponseMatrix");
         GMC[i] = (THnSparseD*)sparseMC[i]->Clone(Form("GMC_%d",i));
         RMC[i] = (THnSparseD*)sparseMC[i]->Clone(Form("RMC_%d",i));
-
         //Dpt and jetpt cuts on Reco level
         sparseMC[i]->GetAxis(2)->SetRangeUser(Dptmin,Dptmax);
         sparseMC[i]->GetAxis(1)->SetRangeUser(jetmin,jetmax);
         RMC[i]->GetAxis(2)->SetRangeUser(Dptmin,Dptmax);//for closure
         RMC[i]->GetAxis(1)->SetRangeUser(jetmin,jetmax);//for closure
-
+        //RMC[i]->GetAxis(6)->SetRangeUser(jetmin,jetmax);
         //Dpt and jetpt cuts on Gen level
         if(fDmesonSpecie){// Dstar 
             sparseMC[i]->GetAxis(6)->SetRangeUser(Dptmin,Dptmax);
@@ -128,8 +125,8 @@ void DetRM(
             int DresDim[DNresDim] = {1,6,2};
             hPtJet[i] = (TH2D*)sparseMC[i]->Projection(6,1,"E");
             hPtJetD[i] = (THnSparseD*)sparseMC[i]->Projection(DNresDim,DresDim,"E");//additional Dpt gen axis
-            hPtJetG_1D[i] = (TH1D*)GMC[i]->Projection(6,"E");
-            hPtJetR_2D[i] = (TH2D*)RMC[i]->Projection(2,1,"E");
+            hGMC[i] = (TH1D*)GMC[i]->Projection(7,"E");//closure
+            hRMC[i] = (TH1D*)RMC[i]->Projection(2,"E");//closure
         }
 
         hPtJet[i]->Sumw2(); 
@@ -137,9 +134,14 @@ void DetRM(
         hPtJet[i]->SetName(Form("hPtJet_%d",i)); 
         hPtJetD[i]->SetName(Form("hPtJetD_%d",i));
 
+        hGMC[i]->Sumw2();//closure
+        hRMC[i]->Sumw2();//closure
+        hGMC[i]->SetName(Form("hGMC_%d",i));
+        hRMC[i]->SetName(Form("hRMC_%d",i));
+
         //gen level jetpt projection
         if(fDmesonSpecie) hPtG[i] = (TH1D*)sparseMC[i]->Projection(5); //Dstar tmp
-        else   hPtG[i] = (TH1D*)sparseMC[i]->Projection(6);
+        else hPtG[i] = (TH1D*)sparseMC[i]->Projection(6);
 
         //reco level jetpt projection
         hPtR[i] = (TH1D*)sparseMC[i]->Projection(1);
@@ -154,26 +156,31 @@ void DetRM(
   		    hPtJetD3d = (THnSparseD*)hPtJetD[0]->Clone("hPtJetD3d");
   		    hPtJetGen = (TH1D*)hPtG[0]->Clone("hPtJetGen");
   		    hPtJetRec = (TH1D*)hPtR[0]->Clone("hPtJetRec");
-            hPtJetG_all = (TH1D*)hPtJetG_1D[0]->Clone("hPtJetG_all");
-            hPtJetR_noeff = (TH2D*)hPtJetR_2D[0]->Clone("hPtJetR_noeff");
+            hGMCall = (TH1D*)hGMC[0]->Clone("hGMCall");
+            hRMCall = (TH1D*)hRMC[0]->Clone("hRMCall");
         }
         else{
             hPtJet2d_noeff->Add(hPtJet[i]);
             hPtJetD3d->Add(hPtJetD[i]);
       		hPtJetGen->Add(hPtG[i]);
       		hPtJetRec->Add(hPtR[i]);
-            hPtJetG_all->Add(hPtJetG_1D[i]);
-            hPtJetR_noeff->Add(hPtJetR_2D[i]);
+            hGMCall->Add(hGMC[i]);
+            hRMCall->Add(hRMC[i]);
         }
 	}
-            THnSparseD* Gtest = (THnSparseD*)GMC[0]->Clone("Gtest");//random selection from the 2.6+1.4,3.5 million events
-            THnSparseD* Rtest = (THnSparseD*)RMC[0]->Clone("Rtest");
-            Gtest->Add(GMC[1]);
-            Rtest->Add(RMC[1]);
-
     //--- Djet eff scaling and filling a new response
     TFile *fileEff = new TFile(effFilePnP.Data(),"read");
     TH1D* effHist; effHist = (TH1D*)fileEff->Get("hEff_reb");
+
+    TCanvas* ceff = new TCanvas("ceff","ceff",600,400);
+    TH1D* heffRec = (TH1D*)hRMCall->Clone("heffRec");
+    TH1D* heffRecReb = (TH1D*)heffRec->Rebin(fptbinsDN,"heffRecReb",fptbinsDA);
+    TH1D* heffGen = (TH1D*)hGMCall->Clone("heffGen");
+    TH1D* heffGenReb = (TH1D*)heffGen->Rebin(fptbinsDN,"heffGenReb",fptbinsDA);
+    heffRecReb->Divide(heffGenReb);
+    heffRecReb->Draw();
+    ceff->SaveAs(Form("%s/ceff_%d.png",outDir.Data(),isPrompt));
+
     TH2D *hPtJet2dDjet = new TH2D("hjetRecGen","hjetRecGen", 60, 0, 60, 60, 0, 60); 
     TH1D *hGenNum = new TH1D("hGenNum","hGenNum",fptbinsJetMeasN,fptbinsJetMeasA);
     TH1D *hGenDen = new TH1D("hGenDen","hGenDen",fptbinsJetMeasN,fptbinsJetMeasA);
@@ -211,6 +218,52 @@ void DetRM(
     hGenNum->GetYaxis()->SetRangeUser(0.9,1.1);
     hGenNum->Draw(); hRecNum->Draw("same");
     cc_kineEff->SaveAs(Form("%s/kineEff_%d.png",outDir.Data(),isPrompt));
+
+if(isPrompt){
+    //closure===========================from sparse
+    const int DnDim=6;
+    int zRec = 0, jetRec = 1, DRec = 2;
+    int zGen = 5, jetGen = 6, DGen = 7;
+    int Ddim[DnDim]   = {zRec,jetRec,zGen,jetGen,DRec,DGen};
+    THnSparseD* GMC_0 = (THnSparseD*)GMC[0]->Projection(DnDim,Ddim,"E");//Clone("GMC_all");
+    THnSparseD* GMC_1 = (THnSparseD*)GMC[1]->Projection(DnDim,Ddim,"E");//Clone("GMC_all");
+    THnSparseD* RMC_0 = (THnSparseD*)RMC[0]->Projection(DnDim,Ddim,"E");//Clone("RMC_all");
+    THnSparseD* RMC_1 = (THnSparseD*)RMC[1]->Projection(DnDim,Ddim,"E");//Clone("RMC_all");
+    THnSparseD* GMC_all = (THnSparseD*)GMC_0->Clone("GMC_all");
+    THnSparseD* RMC_all = (THnSparseD*)RMC_0->Clone("RMC_all");
+    GMC_all->Add(GMC_1);
+    RMC_all->Add(RMC_1);
+    TH2D* h_gen;// = new TH2D("hGMC_gen","hGMC_gen",60,0,60,60,0,60);
+    TH2D* h_rec = new TH2D("hGMC_rec","hGMC_rec",60,0,60,60,0,60);
+    TH2D* h_eff = new TH2D("hGMC_eff","hGMC_eff",60,0,60,60,0,60);
+    cout<<"====="<<GMC_all->GetNbins()<<endl;
+    cout<<"====="<<RMC_all->GetNbins()<<endl;
+
+    THnSparseD* sparse_gen=(THnSparseD*)GMC_all->Clone("sparse_gen");//Projection(DnDim,Ddim,"E");
+    THnSparseD* sparse_rec=(THnSparseD*)RMC_all->Clone("sparse_rec");//Projection(DnDim,Ddim,"E");
+    
+    
+    for (int i=1; i<sparse_rec->GetNbins()+1;i++){
+        int coord[DnDim] = {0,0,0,0,0,0};
+        double content = sparse_rec->GetBinContent(i,coord); 
+        double DR_center = sparse_rec->GetAxis(2)->GetBinCenter(coord[2]);
+        double jR_center = sparse_rec->GetAxis(1)->GetBinCenter(coord[1]);
+        double eff_c = 1;
+        eff_c = effHist->GetBinContent(effHist->GetXaxis()->FindBin(DR_center));
+        double weight = content/eff_c;
+        h_eff->Fill(DR_center,jR_center,weight);
+        h_rec->Fill(DR_center,jR_center,content);
+    }
+    TCanvas* ccheck = new TCanvas("ccheck","ccheck",600,400);
+//    //hGMC_eff1->SetLineColor(kRed+2);
+    TH1D* hrec = (TH1D*)h_rec->ProjectionX("hrec",0,-1);
+    TH1D* heff = (TH1D*)h_eff->ProjectionX("heff",0,-1);
+    hrec->SetLineColor(kGreen+2);
+//    ccheck->SetLogy();
+    heff->Draw();
+//    hrec->Draw("same");
+    ccheck->SaveAs(Form("%s/ccheck_%d.png",outDir.Data(), isPrompt));
+}
     // closure-------
     TH2D *hPtJetClosure = new TH2D("hjetRGClosure","hjetRGClosure", 60, 0, 60, 60, 0, 60); 
     int full_resp_size = hPtJetD3d->GetNbins();
@@ -226,54 +279,6 @@ void DetRM(
     for (int i = 0; i < clos_resp_size; i++){h_test->Fill(dist6(rng));}
     TCanvas* cc_test = new TCanvas("rr","rr", 600,500);h_test->Draw();cc_test->SaveAs(Form("%s/TEST_%d.png",outDir.Data(),isPrompt));
     
-    TH2D *hclos_resp = new TH2D("hclosure_r","hclosure_r", 60, 0, 60, 60, 0, 60); 
-    TH1D *hclos_true1d = new TH1D("hclos_true1d","hclos_true1d", 60, 0, 60); 
-    TH1D *hclos_data1d = new TH1D("hclos_data1d","hclos_data1d", 60, 0, 60); 
-    hclos_true1d->Sumw2();hclos_data1d->Sumw2();
-    for (int z = 0; z < clos_resp_size+1; z++){
-        int coord_resp[3]={0,0,0};
-        int resp_num = dist6(rng);
-        double content_resp = hPtJetD3d->GetBinContent(resp_num,coord_resp);
-        int i = coord_resp[0], j = coord_resp[1], k = coord_resp[2];
-        double weight = content_resp;
-        double jR_center = hPtJetD3d->GetAxis(0)->GetBinCenter(i);
-        double jG_center = hPtJetD3d->GetAxis(1)->GetBinCenter(j);
-        double DR_center = hPtJetD3d->GetAxis(2)->GetBinCenter(k);
-
-        double eff_c = 1;
-        eff_c = effHist->GetBinContent(effHist->GetXaxis()->FindBin(DR_center));
-        weight = weight/eff_c;
-        hclos_resp->Fill(jR_center, jG_center, weight);//1. response for closure, Djet eff scaled
-    }
-    for (int z = 0; z < hPtJetG_all->GetNbinsX()+1; z++){
-        //int num = dist6(rng);
-        int num = z;//dist6(rng);
-        hclos_true1d->SetBinContent(hPtJetG_all->GetBinCenter(num),hPtJetG_all->GetBinContent(num));//3. 50% MC no eff, true
-        hclos_true1d->SetBinError(hPtJetG_all->GetBinCenter(num),hPtJetG_all->GetBinError(num));//3. 50% MC no eff, true
-    }
-    for (int z = 0; z < (int)(hPtJetR_noeff->GetNbinsX()+1); z++){
-        //int num = dist6(rng);
-        int num = z;//dist6(rng);
-        double eff_c = 1;
-        double DR_center = hPtJetR_noeff->GetYaxis()->GetBinCenter(num);
-        eff_c = effHist->GetBinContent(effHist->GetXaxis()->FindBin(DR_center));
-        hclos_data1d->SetBinContent(hPtJetRec->GetBinCenter(num),hPtJetRec->GetBinContent(num)/eff_c);//2. 50% MC Djet eff scaled
-        hclos_data1d->SetBinError(hPtJetRec->GetBinCenter(num),hPtJetRec->GetBinError(num)/eff_c);//2. 50% MC Djet eff scaled
-    }
-
-    TCanvas *c_closure_resp = new TCanvas("c_closure_r","c_closure_r",800,600);
-    c_closure_resp->SetLogz();
-    hclos_resp->Draw("colz");
-    pv2->Draw("same");
-    c_closure_resp->SaveAs(Form("%s/plots/Closure_response_%d.png",outDir.Data(), isPrompt ));
-    
-    // --------------
-    hclos_true1d->SetName("hclos_true1d");//3. 
-    hclos_data1d->SetName("hclos_data1d");//2. 
-    hclos_resp->SetName("hclosure_resp");//1. 
-    // --------------
-
-
     hPtJet2d_noeff->SetTitle(""); 
     hPtJet2dDjet->SetTitle("");
     
@@ -317,11 +322,7 @@ void DetRM(
     hPtJetRec->Write();
     hPtJet2d_noeff->Write();
     hPtJet2dDjet->Write();//D-jet eff scaled response
-    hclos_true1d->Write();//3. 50% MC no eff, true
-    hclos_data1d->Write();//2. 50% MC Djet eff scaled
-    hclos_resp->Write();//1. response for closure, Djet eff scaled
-    hPtJetG_all->Write();
-    hPtJetR_noeff->Write();
+
     ofile->Close();
 
    return;
