@@ -7,23 +7,23 @@
 #include "config.h"
 
 void DetRM(
-        bool isPrompt = 1, 
-        TString datafile = "../outMC/AnalysisResults_fast_D0MCPythia_SMQcorr2.root", 
-        TString outDir = "plots",
-        bool postfix = 0, 
-        TString listName = "FD", 
-        bool isprefix=0,
-        TString effFilePnP=""
+        bool isPrompt = 1
+        ,TString datafile = "../outMC/AnalysisResults_fast_D0MCPythia_SMQcorr2.root"
+        ,TString outDir = "plots"
+        ,bool postfix = 0
+        ,TString listName = "FD"
+        ,bool isprefix=0
+        ,TString effFilePnP=""
+        ,TString FDsubfile="FDsub.root"
+        ,bool bClosure = 0
         )
-//const int DimResN = 3;int jetR=1;int jetG=6;int DptG=7;
-//int DimRes = {jetR,jetG,DptG}; 
 {
-
+//gStyle settings
     gStyle->SetOptStat(0000); //Mean and RMS shown
     gStyle->SetPadRightMargin(0.1);
     gSystem->Exec(Form("mkdir %s",outDir.Data()));
     gSystem->Exec(Form("mkdir %s/plots",outDir.Data()));
-
+//reading MC train output file
     TFile *File = new TFile(datafile,"read");
     TDirectoryFile* dir=(TDirectoryFile*)File->Get("DmesonsForJetCorrelations");
     TString histName;
@@ -33,26 +33,27 @@ void DetRM(
     else{
             if(fDmesonSpecie) histName = "histosDStarMBN";
             else histName = "histosD0";}
-
+//minor settings
     float jetmin = 0, jetmax = 60;
     float Dptmin = fptbinsDA[0], Dptmax = fptbinsDA[fptbinsDN];
-
+//minor settings
     TPaveText *pv2 = new TPaveText(0.15,0.8,0.25,0.9,"brNDC");
     pv2->SetFillStyle(0);
     pv2->SetBorderSize(0);
     pv2->AddText(Form("R=0.%d",Rpar));
-
+//Histograms initiation
     TH1D *hMCpt;
 	TH1D *hMCpt_reco;
     TH2D *hPtJet[NDMC];
     THnSparseD *hPtJetD[NDMC];//to store Djet eff corrected spectra
-    TH1D *hPtG[NDMC];//matched, not required
-    TH1D *hPtR[NDMC];//matched, not required
+    TH1D *hPtG[NDMC];//matched, not required; gives the hPtJetGen in root file
+    TH1D *hPtR[NDMC];//matched, not required; gives the hPtJetRec in root file
 
-	TList *histList[NDMC];TList *histList2[NDMC];
+	TList *histList[NDMC];
 	THnSparseD *sparseMC[NDMC];
 	THnSparseD *GMC[NDMC];
 	THnSparseD *RMC[NDMC];
+    TRandom3 *random1 = new TRandom3(0);
 
     TH2D *hPtJet2d_noeff; 
     THnSparseD *hPtJetD3d;
@@ -87,7 +88,7 @@ void DetRM(
         }
 
         sparseMC[i] = (THnSparseD*)histList[i]->FindObject("ResponseMatrix");
-        GMC[i] = (THnSparseD*)sparseMC[i]->Clone(Form("GMC_%d",i));
+        GMC[i] = (THnSparseD*)histList[i]->Clone(Form("GMC_%d",i));
         RMC[i] = (THnSparseD*)sparseMC[i]->Clone(Form("RMC_%d",i));
         //Dpt and jetpt cuts on Reco level
         sparseMC[i]->GetAxis(2)->SetRangeUser(Dptmin,Dptmax);
@@ -103,8 +104,8 @@ void DetRM(
         else {// Dzero 
             sparseMC[i]->GetAxis(7)->SetRangeUser(Dptmin,Dptmax);
             sparseMC[i]->GetAxis(6)->SetRangeUser(jetmin,jetmax);
-            GMC[i]->GetAxis(7)->SetRangeUser(Dptmin,Dptmax);
-            GMC[i]->GetAxis(6)->SetRangeUser(jetmin,jetmax);
+            //GMC[i]->GetAxis(7)->SetRangeUser(Dptmin,Dptmax);
+            //GMC[i]->GetAxis(6)->SetRangeUser(jetmin,jetmax);
         }
 
         //eta cuts on Gen and Reco levels
@@ -112,7 +113,7 @@ void DetRM(
     		sparseMC[i]->GetAxis(4)->SetRangeUser(-(0.9-fRpar),0.9-fRpar);
     		sparseMC[i]->GetAxis(9)->SetRangeUser(-(0.9-fRpar),0.9-fRpar);
     	    RMC[i]->GetAxis(4)->SetRangeUser(-(0.9-fRpar),0.9-fRpar);
-    	    GMC[i]->GetAxis(9)->SetRangeUser(-(0.9-fRpar),0.9-fRpar);
+    	    //GMC[i]->GetAxis(9)->SetRangeUser(-(0.9-fRpar),0.9-fRpar);
     	}
 
         const int DNresDim = 3;
@@ -125,8 +126,8 @@ void DetRM(
             int DresDim[DNresDim] = {1,6,2};
             hPtJet[i] = (TH2D*)sparseMC[i]->Projection(6,1,"E");
             hPtJetD[i] = (THnSparseD*)sparseMC[i]->Projection(DNresDim,DresDim,"E");//additional Dpt gen axis
-            hGMC[i] = (TH1D*)GMC[i]->Projection(7,"E");//closure
-            hRMC[i] = (TH1D*)RMC[i]->Projection(2,"E");//closure
+            hGMC[i] = (TH1D*)GMC[i]->Projection(7,"E");//Dpt gen proj
+            hRMC[i] = (TH1D*)RMC[i]->Projection(2,"E");//Dpt rec proj
         }
 
         hPtJet[i]->Sumw2(); 
@@ -168,10 +169,12 @@ void DetRM(
             hRMCall->Add(hRMC[i]);
         }
 	}
+
     //--- Djet eff scaling and filling a new response
     TFile *fileEff = new TFile(effFilePnP.Data(),"read");
     TH1D* effHist; effHist = (TH1D*)fileEff->Get("hEff_reb");
 
+    // Dpt dependent eff checks.
     TCanvas* ceff = new TCanvas("ceff","ceff",600,400);
     TH1D* heffRec = (TH1D*)hRMCall->Clone("heffRec");
     TH1D* heffRecReb = (TH1D*)heffRec->Rebin(fptbinsDN,"heffRecReb",fptbinsDA);
@@ -181,6 +184,7 @@ void DetRM(
     heffRecReb->Draw();
     ceff->SaveAs(Form("%s/ceff_%d.png",outDir.Data(),isPrompt));
 
+    //Creating the detector responses
     TH2D *hPtJet2dDjet = new TH2D("hjetRecGen","hjetRecGen", 60, 0, 60, 60, 0, 60); 
     TH1D *hGenNum = new TH1D("hGenNum","hGenNum",fptbinsJetMeasN,fptbinsJetMeasA);
     TH1D *hGenDen = new TH1D("hGenDen","hGenDen",fptbinsJetMeasN,fptbinsJetMeasA);
@@ -219,66 +223,6 @@ void DetRM(
     hGenNum->Draw(); hRecNum->Draw("same");
     cc_kineEff->SaveAs(Form("%s/kineEff_%d.png",outDir.Data(),isPrompt));
 
-if(isPrompt){
-    //closure===========================from sparse
-    const int DnDim=6;
-    int zRec = 0, jetRec = 1, DRec = 2;
-    int zGen = 5, jetGen = 6, DGen = 7;
-    int Ddim[DnDim]   = {zRec,jetRec,zGen,jetGen,DRec,DGen};
-    THnSparseD* GMC_0 = (THnSparseD*)GMC[0]->Projection(DnDim,Ddim,"E");//Clone("GMC_all");
-    THnSparseD* GMC_1 = (THnSparseD*)GMC[1]->Projection(DnDim,Ddim,"E");//Clone("GMC_all");
-    THnSparseD* RMC_0 = (THnSparseD*)RMC[0]->Projection(DnDim,Ddim,"E");//Clone("RMC_all");
-    THnSparseD* RMC_1 = (THnSparseD*)RMC[1]->Projection(DnDim,Ddim,"E");//Clone("RMC_all");
-    THnSparseD* GMC_all = (THnSparseD*)GMC_0->Clone("GMC_all");
-    THnSparseD* RMC_all = (THnSparseD*)RMC_0->Clone("RMC_all");
-    GMC_all->Add(GMC_1);
-    RMC_all->Add(RMC_1);
-    TH2D* h_gen;// = new TH2D("hGMC_gen","hGMC_gen",60,0,60,60,0,60);
-    TH2D* h_rec = new TH2D("hGMC_rec","hGMC_rec",60,0,60,60,0,60);
-    TH2D* h_eff = new TH2D("hGMC_eff","hGMC_eff",60,0,60,60,0,60);
-    cout<<"====="<<GMC_all->GetNbins()<<endl;
-    cout<<"====="<<RMC_all->GetNbins()<<endl;
-
-    THnSparseD* sparse_gen=(THnSparseD*)GMC_all->Clone("sparse_gen");//Projection(DnDim,Ddim,"E");
-    THnSparseD* sparse_rec=(THnSparseD*)RMC_all->Clone("sparse_rec");//Projection(DnDim,Ddim,"E");
-    
-    
-    for (int i=1; i<sparse_rec->GetNbins()+1;i++){
-        int coord[DnDim] = {0,0,0,0,0,0};
-        double content = sparse_rec->GetBinContent(i,coord); 
-        double DR_center = sparse_rec->GetAxis(2)->GetBinCenter(coord[2]);
-        double jR_center = sparse_rec->GetAxis(1)->GetBinCenter(coord[1]);
-        double eff_c = 1;
-        eff_c = effHist->GetBinContent(effHist->GetXaxis()->FindBin(DR_center));
-        double weight = content/eff_c;
-        h_eff->Fill(DR_center,jR_center,weight);
-        h_rec->Fill(DR_center,jR_center,content);
-    }
-    TCanvas* ccheck = new TCanvas("ccheck","ccheck",600,400);
-//    //hGMC_eff1->SetLineColor(kRed+2);
-    TH1D* hrec = (TH1D*)h_rec->ProjectionX("hrec",0,-1);
-    TH1D* heff = (TH1D*)h_eff->ProjectionX("heff",0,-1);
-    hrec->SetLineColor(kGreen+2);
-//    ccheck->SetLogy();
-    heff->Draw();
-//    hrec->Draw("same");
-    ccheck->SaveAs(Form("%s/ccheck_%d.png",outDir.Data(), isPrompt));
-}
-    // closure-------
-    TH2D *hPtJetClosure = new TH2D("hjetRGClosure","hjetRGClosure", 60, 0, 60, 60, 0, 60); 
-    int full_resp_size = hPtJetD3d->GetNbins();
-    int clos_resp_size = (int)(full_resp_size*0.8);
-
-    //random stuff
-    random_device dev;
-    mt19937 rng(dev());
-    uniform_int_distribution<mt19937::result_type> dist6(1,full_resp_size);
-
-    //storing the random number distribution: a check
-    TH1D* h_test = new TH1D("test","test",clos_resp_size/20,0,clos_resp_size);
-    for (int i = 0; i < clos_resp_size; i++){h_test->Fill(dist6(rng));}
-    TCanvas* cc_test = new TCanvas("rr","rr", 600,500);h_test->Draw();cc_test->SaveAs(Form("%s/TEST_%d.png",outDir.Data(),isPrompt));
-    
     hPtJet2d_noeff->SetTitle(""); 
     hPtJet2dDjet->SetTitle("");
     
@@ -289,31 +233,95 @@ if(isPrompt){
     hPtJet2dDjet->GetXaxis()->SetTitle("p_{T,ch jet}^{rec.} (GeV/#it{c})");
     hPtJet2dDjet->GetYaxis()->SetTitle("p_{T,ch jet}^{gen.} (GeV/#it{c})");
 
+    //drawing the responses:
+    //1. normal response
+    TCanvas *cjetPt2d = new TCanvas("cjetPt2d","cjetPt2d",800,600);
+    cjetPt2d->SetLogz();
+    hPtJet2d_noeff->Draw("colz");
+    pv2->Draw("same");
+    //2. eff scaled response
+    TCanvas *cjetPt2dDjet = new TCanvas("cjetPt2dDjet","cjetPt2dDjet",800,600);
+    cjetPt2dDjet->SetLogz();
+    hPtJet2dDjet->Draw("colz");
+    pv2->Draw("same");
+    //saving the two responses
+    cjetPt2d->SaveAs(Form("%s/plots/DetMatrix_%s_Dpt%d_%d.png",outDir.Data(), isPrompt ? "prompt" : "nonPrompt", (int)Dptmin, (int)Dptmax));
+    cjetPt2dDjet->SaveAs(Form("%s/plots/DetMatrix_%s_Dpt%d_%d_Djet.png",outDir.Data(), isPrompt ? "prompt" : "nonPrompt", (int)Dptmin, (int)Dptmax));
+    //matched gen are reco level jetpt distributions
     hPtJetGen->SetName("hPtJetGen");
     hPtJetRec->SetName("hPtJetRec");
     hPtJetGen->SetLineColor(kBlue+2);
     hPtJetRec->SetLineColor(kRed+2);
-
-
     TCanvas *cjetPt = new TCanvas("cjetPt","cjetPt",800,600);
     cjetPt->SetLogy();
     hPtJetGen->Draw();
     hPtJetRec->Draw("same");
     //cjetPt->SaveAs(Form("%s/pTdist_Dpt%d_%d.png",outDir, (int)Dptmin, (int)Dptmax));
 
-    TCanvas *cjetPt2d = new TCanvas("cjetPt2d","cjetPt2d",800,600);
-    cjetPt2d->SetLogz();
-    hPtJet2d_noeff->Draw("colz");
-    pv2->Draw("same");
+    //--Preparing closure test sparses
+    double datajets = 0;
+    TH1D* hMCjet = (TH1D*)hPtJet2dDjet->ProjectionX("hMCjet");
 
-    TCanvas *cjetPt2dDjet = new TCanvas("cjetPt2dDjet","cjetPt2dDjet",800,600);
-    cjetPt2dDjet->SetLogz();
-    hPtJet2dDjet->Draw("colz");
-    pv2->Draw("same");
+    double MCjets = hMCjet->Integral();
+    cout<<"eff MC jets="<<MCjets<<endl;
 
-    cjetPt2d->SaveAs(Form("%s/plots/DetMatrix_%s_Dpt%d_%d.png",outDir.Data(), isPrompt ? "prompt" : "nonPrompt", (int)Dptmin, (int)Dptmax));
-    cjetPt2dDjet->SaveAs(Form("%s/plots/DetMatrix_%s_Dpt%d_%d_Djet.png",outDir.Data(), isPrompt ? "prompt" : "nonPrompt", (int)Dptmin, (int)Dptmax));
+    hMCjet->GetXaxis()->SetRangeUser(fptbinsJetMeasA[0],fptbinsJetMeasA[fptbinsJetMeasN]);
 
+    MCjets = hMCjet->Integral();
+    cout<<"eff MC jets="<<MCjets<<endl;
+
+    TH2D* hPtJet2dDjet_clos = new TH2D("hPtJet2dDjet_clos","hPtJet2dDjet_clos", 60, 0, 60, 60, 0, 60);
+    TH1D* hMCjetTrue = (TH1D*)GMC[0]->Projection(6,"E");//
+    hMCjetTrue->SetName("hMCjetTrue"); 
+    TH1D* hMCjetClosData = new TH1D("hMCjetClosData","hMCjetClosData",60,jetmin,jetmax);
+    TH1D* hMCjetClosTrue = new TH1D("hMCjetClosTrue","hMCjetClosTrue",60,jetmin,jetmax);
+    if(bClosure){
+        TFile *fileFD = new TFile(FDsubfile,"read");
+        TH1D *bFDspectrum = (TH1D*)fileFD->Get("hData_binned_sub");
+        datajets = bFDspectrum->Integral();
+        cout<<"datajets="<<datajets<<endl;
+        double RMscaling = 1-datajets/MCjets; //this is about RM 0.9, MCFD_reco 0.1
+        //loop over sparse bins
+        for(int i=0;i<NDMC;i++){
+        for(int iGMC=0; iGMC<GMC[i]->GetNbins()+1;iGMC++){
+            int coord[13]={0,0,0,0,0,0,0,0,0,0,0,0,0};
+            double binentries = GMC[i]->GetBinContent(iGMC+1,coord);
+            double jR_cent = GMC[i]->GetAxis(1)->GetBinCenter(coord[1]);
+            double DR_cent = GMC[i]->GetAxis(2)->GetBinCenter(coord[2]);
+            double eR_cent = GMC[i]->GetAxis(4)->GetBinCenter(coord[4]);
+            double jG_cent = GMC[i]->GetAxis(6)->GetBinCenter(coord[6]);
+            double DG_cent = GMC[i]->GetAxis(7)->GetBinCenter(coord[7]);
+            double eG_cent = GMC[i]->GetAxis(9)->GetBinCenter(coord[9]);
+            // loop over each jet-entry: why? to get a random value about the RMscaling
+            double RMw = 0;
+            for(int ientry = 0; ientry < binentries; ientry++){
+                if(random1->Uniform(1) <= RMscaling) RMw++;
+            }
+            //efficiency
+            double eff_c = 1;
+            //eff_c = effHist->GetBinContent(effHist->GetXaxis()->FindBin(DR_cent));
+            //checking the acceptance region
+            if(jG_cent >= jetmin && jG_cent <= jetmax){//jet gen
+                if(DG_cent >= Dptmin && DG_cent <= Dptmax){//Dpt gen
+                    if(eG_cent >= fRpar-0.9  && eG_cent <= 0.9-fRpar){//eta gen
+                            hMCjetClosTrue->Fill(jG_cent,(binentries));
+                        if(jR_cent >= jetmin && jR_cent <= jetmax){//jet rec
+                            if(DR_cent >= Dptmin && DR_cent <= Dptmax){//Dpt rec
+                                hPtJet2dDjet_clos->Fill(jR_cent, jG_cent, RMw/eff_c);
+//                                hPtJetRecClosureData->Fill(jmatch[1],SPw/eff->GetBinContent(eff->FindBin(jmatch[2])));
+                                hMCjetClosData->Fill(jR_cent,(binentries)/eff_c);
+                            }
+                        }
+                    }
+                }
+            }
+
+
+        }
+        }
+    }
+    
+    //---------------------------------
     //TFile *ofile = new TFile(Form("%s/DetMatrix_Dpt%d_%d.root",outDir, (int)Dptmin, (int)Dptmax),"RECREATE");
     //if(Djet)...//introduce flag for efficiency scaling of the response matrix as an option
     TFile *ofile = new TFile(Form("%s/DetMatrix_%s.root",outDir.Data(), isPrompt ? "prompt" : "nonPrompt" ),"RECREATE");
@@ -322,6 +330,13 @@ if(isPrompt){
     hPtJetRec->Write();
     hPtJet2d_noeff->Write();
     hPtJet2dDjet->Write();//D-jet eff scaled response
+    if(bClosure){
+        hPtJet2dDjet_clos->Write();//closure response
+        hMCjet->Write();// reco level data spec for closure
+        hMCjetTrue->Write();// gen level true spec unmatched for closure
+        hMCjetClosData->Write();
+        hMCjetClosTrue->Write();
+    }
 
     ofile->Close();
 
