@@ -60,7 +60,7 @@ void DetRM(
     TH1D *hPtJetGen;
     TH1D *hPtJetRec;
 
-    TH1D* hGMC[NDMC];//closure
+    TH1D* hGMC[NDMC];//efficiency Dpt dependent
     TH1D* hRMC[NDMC];
     TH1D* hGMCall;
     TH1D* hRMCall;
@@ -88,14 +88,13 @@ void DetRM(
         }
 
         sparseMC[i] = (THnSparseD*)histList[i]->FindObject("ResponseMatrix");
-        GMC[i] = (THnSparseD*)histList[i]->Clone(Form("GMC_%d",i));
-        RMC[i] = (THnSparseD*)sparseMC[i]->Clone(Form("RMC_%d",i));
+        GMC[i] = (THnSparseD*)histList[i]->FindObject("ResponseMatrix");//GMC[i] = (THnSparseD*)histList[i]->Clone(Form("GMC_%d",i));
+        RMC[i] = (THnSparseD*)histList[i]->FindObject("ResponseMatrix");//RMC[i] = (THnSparseD*)histList[i]->Clone(Form("RMC_%d",i));
         //Dpt and jetpt cuts on Reco level
         sparseMC[i]->GetAxis(2)->SetRangeUser(Dptmin,Dptmax);
         sparseMC[i]->GetAxis(1)->SetRangeUser(jetmin,jetmax);
         RMC[i]->GetAxis(2)->SetRangeUser(Dptmin,Dptmax);//for closure
         RMC[i]->GetAxis(1)->SetRangeUser(jetmin,jetmax);//for closure
-        //RMC[i]->GetAxis(6)->SetRangeUser(jetmin,jetmax);
         //Dpt and jetpt cuts on Gen level
         if(fDmesonSpecie){// Dstar 
             sparseMC[i]->GetAxis(6)->SetRangeUser(Dptmin,Dptmax);
@@ -104,8 +103,8 @@ void DetRM(
         else {// Dzero 
             sparseMC[i]->GetAxis(7)->SetRangeUser(Dptmin,Dptmax);
             sparseMC[i]->GetAxis(6)->SetRangeUser(jetmin,jetmax);
-            //GMC[i]->GetAxis(7)->SetRangeUser(Dptmin,Dptmax);
-            //GMC[i]->GetAxis(6)->SetRangeUser(jetmin,jetmax);
+            GMC[i]->GetAxis(7)->SetRangeUser(Dptmin,Dptmax);
+            GMC[i]->GetAxis(6)->SetRangeUser(jetmin,jetmax);
         }
 
         //eta cuts on Gen and Reco levels
@@ -113,7 +112,7 @@ void DetRM(
     		sparseMC[i]->GetAxis(4)->SetRangeUser(-(0.9-fRpar),0.9-fRpar);
     		sparseMC[i]->GetAxis(9)->SetRangeUser(-(0.9-fRpar),0.9-fRpar);
     	    RMC[i]->GetAxis(4)->SetRangeUser(-(0.9-fRpar),0.9-fRpar);
-    	    //GMC[i]->GetAxis(9)->SetRangeUser(-(0.9-fRpar),0.9-fRpar);
+    	    GMC[i]->GetAxis(9)->SetRangeUser(-(0.9-fRpar),0.9-fRpar);
     	}
 
         const int DNresDim = 3;
@@ -135,21 +134,19 @@ void DetRM(
         hPtJet[i]->SetName(Form("hPtJet_%d",i)); 
         hPtJetD[i]->SetName(Form("hPtJetD_%d",i));
 
-        hGMC[i]->Sumw2();//closure
-        hRMC[i]->Sumw2();//closure
+        hGMC[i]->Sumw2();//
+        hRMC[i]->Sumw2();//
         hGMC[i]->SetName(Form("hGMC_%d",i));
         hRMC[i]->SetName(Form("hRMC_%d",i));
 
-        //gen level jetpt projection
+        //gen level jetpt projection, matched
         if(fDmesonSpecie) hPtG[i] = (TH1D*)sparseMC[i]->Projection(5); //Dstar tmp
         else hPtG[i] = (TH1D*)sparseMC[i]->Projection(6);
-
-        //reco level jetpt projection
-        hPtR[i] = (TH1D*)sparseMC[i]->Projection(1);
-
         hPtG[i]->SetName(Form("hPtG_%d",i));
-        hPtR[i]->SetName(Form("hPtR_%d",i));
         hPtG[i]->Sumw2();
+        //reco level jetpt projection, matched
+        hPtR[i] = (TH1D*)sparseMC[i]->Projection(1);
+        hPtR[i]->SetName(Form("hPtR_%d",i));
         hPtR[i]->Sumw2();
 
 		if (!i){
