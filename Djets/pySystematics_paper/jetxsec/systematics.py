@@ -7,10 +7,15 @@ import numpy as np
 import scipy as sp
 from rootpy.io import root_open
 import array
+#import root_numpy as rtnp
+from root_numpy import hist2array
+import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
 
 from matplotlib import colors as mcolors
+import seaborn as sns
 ##----------------------------------------------------------------
-from ROOT import TCanvas, TLegend, TLine
+from ROOT import TCanvas, TLegend, TLine, TPad, TLatex, TF1
 ##----------------------------------------------------------------
 from funcsettings import * # HistoMarkers#from stylesettings import * # HistoMarkers
 #--------------------------------------------------
@@ -29,37 +34,35 @@ wait=1
 #fptbinsJhi = [6,8,10,14,20,30,50]
 #fptbinsJlh = [5,6,8,10,14,20,30,50]
 ##--------------------------------------------------
-fptbinsJNreal = 10
-fptbinsJlhreal = [2,3,4,5,6,8,10,14,20,30,50]
-##--------------------------------------------------
 R = str(sys.argv[1]) #'02'
 lensysin = len(sys.argv)
 if(lensysin>2): 
-    jetbin = str(sys.argv[2]);print(jetbin);print(type(jetbin))
-    fptbinsJlh = [0.2,0.4,0.6,0.7,0.8,0.9,1.02]
-    fptbinsJN=6
-    fptbinsJC=[0.3,0.5,0.65,0.75,0.85,0.96]
+    jetbin = str(sys.argv[2]);print(jetbin);
+    fptbinsJlh = [0.4,0.6,0.7,0.8,0.9,1.02]
+    fptbinsJN=5
+    fptbinsJC=[0.5,0.65,0.75,0.85,0.96]
+    fDptbins = [3,5,5,6,4]
 else: 
-    jetbin='';print(jetbin);print(type(jetbin))
+    jetbin='';print(jetbin);
     fptbinsJlh = [2,3,4,5,6,8,10,14,20,30,50]
     fptbinsJN = 10
     fptbinsJC = [2.5,3.5,4.5,5.5,7,9,12,17,25,40]
+    fDptbins = [12];jetbin='0'
 fptbinsJlo = fptbinsJlh[:-1]
 fptbinsJhi = fptbinsJlh[1:]
 ##--------------------------------------------------
 Rtitle=R #for accessing the directories
-
 RTColors = [RT.kRed+2, RT.kGreen+2, RT.kBlue+2, RT.kOrange+2, RT.kViolet+2, RT.kYellow+2, RT.kCyan-6, RT.kAzure+2, RT.kMagenta-6,RT.kGreen-8,RT.kYellow-8]
-
 datafileFinal = RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/unfolding_Bayes_5/finalSpectra/JetPtSpectrum_final.root"%(R))
 datafileFD = RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/FDsubtraction/JetPtSpectrum_FDsub.root"%(R))
 datafileSig = RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/signalExtraction/JetPtSpectra_SB_eff.root"%(R))
-
 datafileUnf = RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"%(R))
-datafileJES = RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/FinalSys/JESsysFinal_DzeroR%s_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"%(R))
+#datafileJES = RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/FinalSys/JESsysFinal_DzeroR%s_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"%(R))
+datafileJES = RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/JES/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"%(R))
 #######
-flagMulti=1
-flagRef=0
+flagMulti=0
+flagRef=1
+flagClos=0
 flagSigSB=0
 flagCutsys=0
 flagFD=0
@@ -71,15 +74,35 @@ flagJES=0
 RT.gStyle.SetOptStat(0000)
 ROOT.gStyle.SetLegendBorderSize(0)
 ############## -----------------------------
+JET_or_Z=''
+JET_or_Z_title=''
+whichJetInZBins=['2_5','5_7','7_10','10_15','15_50']
+if(lensysin>2):
+    whichJetInZ=int(str(sys.argv[2]))
+    JET_or_Z+='Z/'
+    whichjetbin = '_'+whichJetInZBins[whichJetInZ]
+    whichjetbintitle = whichjetbin[1:]+' GeV'
+    JET_or_Z_title='#it{z}_{||,ch.jet}'
+else:
+    JET_or_Z+='JET/'
+    whichjetbin = ''
+    whichjetbintitle = whichjetbin
+    JET_or_Z_title='#it{p}_{T,ch.jet}'
+############## -----------------------------
+if(lensysin>2):
+    string_SYSTEMATICS_MULTI='/media/jackbauer/data/z_out/R_'+R+'_finaltry/RawSys_Multi/signalExtraction/plots/Z0to102_jetbin_'+whichJetInZBins[whichJetInZ]
+else:
+    string_SYSTEMATICS_MULTI='/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/FinalSys/RawSysFinal_DzeroR'+R+'_paperCuts/Default/signalExtraction_multitrial'
 #histos:
 # 0. Multi trial
 ## raw systematics files
-sizeMulti=973
+if(lensysin>2): sizeMulti=650
+else: sizeMulti=973
 Multititles=[
         ]
 if(flagMulti):
     datafileMulti = [
-            RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/FinalSys/RawSysFinal_DzeroR%s_paperCuts/Default/signalExtraction_multitrial/JetPtSpectra_SB_eff.root"%(R))
+            RT.TFile(string_SYSTEMATICS_MULTI+"/JetPtSpectra_SB_eff.root")
             ]
     hMulti=[
             datafileMulti[0].Get('hjetptspectrumReb').Clone('hMulti_0')
@@ -87,7 +110,7 @@ if(flagMulti):
     for i in range(1,sizeMulti):
         try:
             datafileMulti.append(
-                RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/FinalSys/RawSysFinal_DzeroR%s_paperCuts/Default/signalExtraction_multitrial/JetPtSpectra_SB_eff%d.root"%(R,i))
+                RT.TFile(string_SYSTEMATICS_MULTI+"/JetPtSpectra_SB_eff%d.root"%(i))
                 )
             hMulti.append(
                 datafileMulti[i].Get('hjetptspectrumReb').Clone('hMulti_'+str(i))
@@ -95,8 +118,9 @@ if(flagMulti):
         except:
             pass
     #### -----------------------------
-    c_MultiRaw = TCanvas("cMultiRaw","cMultiRaw",1200,900)
-    c_MultiRaw.Divide(3,4)
+    c_MultiRaw = TCanvas("cMultiRaw","cMultiRaw",900,600)
+    c_MultiRaw.Divide(4,3)
+    if(lensysin>2): c_MultiRaw = TCanvas("cMultiRaw","cMultiRaw",900,450);c_MultiRaw.Divide(3,2)
     lMulti1 = TLegend(0.12,0.60,0.38,0.88);
     hhMultiRaw=[]
     colorindex=30
@@ -105,13 +129,13 @@ if(flagMulti):
         try:
             hhDptSpec = []
             if(i%20==1): colorindex += 1
-            for dbins in range(12):
+            for dbins in range(fDptbins[int(jetbin)]):
                 hhdptspecRaw = datafileMulti[i].Get('hjetptsub_'+str(dbins)).Clone('hjetptsub_'+str(dbins))
-                hhdptspectra=hhdptspecRaw.Rebin(fptbinsJNreal,'hjetptsubReb_'+str(dbins),array.array('d',fptbinsJlhreal)) 
+                hhdptspectra=hhdptspecRaw.Rebin(fptbinsJN,'hjetptsubReb_'+str(dbins),array.array('d',fptbinsJlh)) 
                 hhDptSpec.append(hhdptspectra)
                 c_MultiRaw.cd(dbins+1)
-                c_MultiRaw.cd(dbins+1).SetLogy()
-                hhDptSpec[dbins].SetMinimum(0.5)
+                #if(lensysin==2): c_MultiRaw.cd(dbins+1).SetLogy()
+                hhDptSpec[dbins].SetMinimum(-5)
                 hhDptSpec[dbins].SetLineColor(colorindex)#RTColors[colorindex])
                 if(i==0): hhDptSpec[dbins].Draw() #default
                 else: hhDptSpec[dbins].Draw('same')
@@ -119,23 +143,28 @@ if(flagMulti):
         except:
             pass
 
-    c_MultiRaw.SaveAs('plots/0_Multi/0_Multi_sysRaw'+R+'.pdf')
-    c_MultiRaw.SaveAs('plots/0_Multi/0_Multi_sysRaw'+R+'.png')
-    c_MultiRaw.SaveAs('plots/0_Multi/0_Multi_sysRaw'+R+'.svg')
+    c_MultiRaw.SaveAs('plots/'+JET_or_Z+'/0_Multi/0_Multi_'+R+whichjetbin+'_sysRaw'+'.pdf')
+    c_MultiRaw.SaveAs('plots/'+JET_or_Z+'/0_Multi/0_Multi_'+R+whichjetbin+'_sysRaw'+'.svg')
     #### -----------------------------Distribution of yields
     c_MultiYieldDist = TCanvas("cMultiYieldDist","cMultiYieldDist",900,600)
     c_MultiYieldDist.Divide(4,3)
+    if(lensysin>2): c_MultiYieldDist = TCanvas("cMultiYieldDist","cMultiYieldDist",1000,600); c_MultiYieldDist.Divide(3,2)
     hTrialsDist=[]
     for i in range(fptbinsJN):
         c_MultiYieldDist.cd(i+1)
         c_MultiYieldDist.cd(i+1).SetMargin(2,0,0.9,0.9)
         hTrialsDist.append(yieldDist(hMulti,fptbinsJC[i]))#hTrialsPerPt.append(hYPTValues[0])
+        hTrialsDist[i].SetTitle(str(fptbinsJlo[i])+' < '+JET_or_Z_title+' < '+str(fptbinsJhi[i])+' GeV')
+        hTrialsDist[i].GetYaxis().SetTitle('Frequency')
+        hTrialsDist[i].GetXaxis().SetTitle('Raw yields of D-jets')
         hTrialsDist[i].Draw()
-    c_MultiYieldDist.SaveAs('plots/0_Multi/0_Multi_yieldDist'+R+'.pdf')
-    c_MultiYieldDist.SaveAs('plots/0_Multi/0_Multi_yieldDist'+R+'.png')
+    #c_MultiYieldDist.cd();padMYD = TPad("","",0,0,1,1.2);padMYD.SetFillStyle(4000);padMYD.Draw();padMYD.cd();latMYD = TLatex();latMYD.SetTextSize(0.04);latMYD.DrawLatexNDC(.4,0.99,"Frequency of raw yields")
+    c_MultiYieldDist.SaveAs('plots/'+JET_or_Z+'/0_Multi/0_Multi_'+R+whichjetbin+'_yieldDist'+'.pdf')
+    c_MultiYieldDist.SaveAs('plots/'+JET_or_Z+'/0_Multi/0_Multi_'+R+whichjetbin+'_yieldDist'+'.svg')
     #### -----------------------------
-    c_MultiYieldTrialsJetpt = TCanvas("cMultiYieldTrialsJetpt","cMultiYieldTrialsJetpt",900,600)
+    c_MultiYieldTrialsJetpt = TCanvas("cMultiYieldTrials","cMultiYieldTrials",900,600)
     c_MultiYieldTrialsJetpt.Divide(4,3)
+    if(lensysin>2): c_MultiYieldTrialsJetpt = TCanvas("cMultiYieldTrials","cMultiYieldTrials",1000,600); c_MultiYieldTrialsJetpt.Divide(3,2)
     hTrialsPerPt = []
 
     meanYPT,line_YPT=[],[]
@@ -145,7 +174,7 @@ if(flagMulti):
         c_MultiYieldTrialsJetpt.cd(i+1)
         c_MultiYieldTrialsJetpt.cd(i+1).SetMargin(2,0,0.9,0.9)
         hTrialsPerPt.append(yieldPtrials(hMulti,fptbinsJC[i]))#hTrialsPerPt.append(hYPTValues[0])
-        hTrialsPerPt[i].SetTitle(str(fptbinsJlo[i])+' < #it{p}_{T,ch.jet} < '+str(fptbinsJhi[i])+' GeV')
+        hTrialsPerPt[i].SetTitle(str(fptbinsJlo[i])+' < '+JET_or_Z_title+' < '+str(fptbinsJhi[i])+' GeV')
         hTrialsPerPt[i].Draw()
         
         c_MultiYieldTrialsJetpt.cd(i+1).Update()
@@ -154,7 +183,7 @@ if(flagMulti):
         sigYPTminu.append(hMulti[0].GetBinContent(hMulti[0].GetXaxis().FindBin(fptbinsJC[i])) - sigDo*hMulti[0].GetBinError(hMulti[0].GetXaxis().FindBin(fptbinsJC[i])) )
         line_YPT.append(ROOT.TLine(0,meanYPT[i],len(datafileMulti), meanYPT[i]))
         line_YPTplus.append(ROOT.TLine(0,sigYPTplus[i],len(datafileMulti), sigYPTplus[i]))
-        line_YPTminu.append(ROOT.TLine(0,sigYPTminu[i],len(datafileMulti), sigYPTminu[i]))
+        line_YPTminu.append(ROOT.TLine(0,max(0,sigYPTminu[i]),len(datafileMulti), max(0,sigYPTminu[i])))
         line_YPT[i].SetLineColor(ROOT.kRed+2)
         line_YPTplus[i].SetLineColor(ROOT.kRed+2)
         line_YPTminu[i].SetLineColor(ROOT.kRed+2)
@@ -164,6 +193,11 @@ if(flagMulti):
         line_YPTminu[i].Draw('same')
 
     c_MultiYieldTrialsJetpt.cd(fptbinsJN+1);
+    ttMultiYPT2 = [ROOT.TLatex(.12,.8,'R = 0.'+str(int(R))+', Multi-trial')
+            ,ROOT.TLatex(.12,.7,'pp, 5.02 TeV')
+            ,ROOT.TLatex(.12,.6,''+whichjetbintitle)
+            ]
+    for i in range(len(ttMultiYPT2)):ttMultiYPT2[i].SetTextSize(0.1);ttMultiYPT2[i].SetTextFont(42);ttMultiYPT2[i].Draw('same')
     ttMultiYPT= [];delYPTtt=0.066
     YPTvariations=['#sigma = free, #sigma_{MC}, #sigma_{MC}*1.1, #sigma_{MC}*0.9 ', 
             'bkg = 0(exp), 1(lin), 2(poly2)',
@@ -180,34 +214,32 @@ if(flagMulti):
         ttMultiYPT[i].SetTextColor(ROOT.kRed+2)
         ttMultiYPT[i].Draw('same')
     
-    c_MultiYieldTrialsJetpt.cd(fptbinsJN+2)
-    ttMultiYPT2 = [ROOT.TLatex(.12,.8,'R = 0.'+str(int(R))+', Multi-trial'),
-            ROOT.TLatex(.12,.7,'pp, 5.02 TeV'),
-            ROOT.TLatex(.12,.6,'')
-            ]
-    for i in range(len(ttMultiYPT2)):ttMultiYPT2[i].SetTextSize(0.1);ttMultiYPT2[i].SetTextFont(42);ttMultiYPT2[i].Draw('same')
+    #c_MultiYieldTrialsJetpt.cd(fptbinsJN+2)
+    #ttMultiYPT2 = [ROOT.TLatex(.12,.8,'R = 0.'+str(int(R))+', Multi-trial')
+    #        ,ROOT.TLatex(.12,.7,'pp, 5.02 TeV')
+    #        ,ROOT.TLatex(.12,.6,''+whichJetInZBins[whichJetInZ]+' GeV')
+    #        ]
+    #for i in range(len(ttMultiYPT2)):ttMultiYPT2[i].SetTextSize(0.1);ttMultiYPT2[i].SetTextFont(42);ttMultiYPT2[i].Draw('same')
 
-    c_MultiYieldTrialsJetpt.SaveAs('plots/0_Multi/0_Multi_YieldTrialsJetpt'+R+'.pdf')
-    c_MultiYieldTrialsJetpt.SaveAs('plots/0_Multi/0_Multi_YieldTrialsJetpt'+R+'.png')
-    c_MultiYieldTrialsJetpt.SaveAs('plots/0_Multi/0_Multi_YieldTrialsJetpt'+R+'.svg')
+    c_MultiYieldTrialsJetpt.SaveAs('plots/'+JET_or_Z+'/0_Multi/0_Multi_'+R+whichjetbin+'_YieldTrials'+'.pdf')
+    c_MultiYieldTrialsJetpt.SaveAs('plots/'+JET_or_Z+'/0_Multi/0_Multi_'+R+whichjetbin+'_YieldTrials'+'.svg')
     #### -----------------------------
     c_MultiRatio = TCanvas("cMultiRatio","cMultiRatio",900,600)
     lMulti3 = TLegend(0.12,0.60,0.38,0.88);
     hhMultiratio=[]
-    #for i in range(sizeMulti):
     for i in range(len(datafileMulti)):
         try:
             hhMultiratio.append(hMulti[i].Clone('hMultiratio_'+str(i)))
             hhMultiratio[i].Divide(hMulti[0])
             HistoStyle(hhMultiratio[i],1,2,21,0,RTColors[0]);
-            hhMultiratio[i].GetYaxis().SetTitle('ratio');hhMultiratio[i].SetTitle("Multi-trial: R=0."+str(int(R)))
+            hhMultiratio[i].GetYaxis().SetTitle('ratio');hhMultiratio[i].SetTitle("Multi-trial: R=0."+str(int(R))+' '+whichjetbintitle)
             hhMultiratio[i].SetLineColor((i%20)+29)
-            hhMultiratio[i].GetYaxis.SetRangeUser(0,2)
+            hhMultiratio[i].GetYaxis().SetRangeUser(0,2)
             if(i==1): hhMultiratio[i].Draw(); 
             elif(i>1): hhMultiratio[i].Draw('same')
         except: pass
-    c_MultiRatio.SaveAs('plots/0_Multi/0_Multi_sysRatio'+R+'.pdf')
-    c_MultiRatio.SaveAs('plots/0_Multi/0_Multi_sysRatio'+R+'.png')
+    c_MultiRatio.SaveAs('plots/'+JET_or_Z+'/0_Multi/0_Multi_'+R+whichjetbin+'_sysRatio'+'.pdf')
+    c_MultiRatio.SaveAs('plots/'+JET_or_Z+'/0_Multi/0_Multi_'+R+whichjetbin+'_sysRatio'+'.svg')
     #### -----------------------------RMS
     c_MultiRMS = TCanvas("cMultiRMS","cMultiRMS",900,600)
     lMulti4 = TLegend(0.12,0.60,0.38,0.88);
@@ -215,18 +247,58 @@ if(flagMulti):
     histMultiRMS.SetLineColor(ROOT.kRed+2);histMultiRMS.SetFillColor(ROOT.kRed+2);histMultiRMS.SetFillStyle(3354);
     histMultiRMS.GetYaxis().SetRangeUser(0,0.25);histMultiRMS.GetYaxis().SetTitle("RMS");
     histMultiRMS.Draw()
-    #lMulti4.AddEntry(histMultiRMS,'');
-    lMulti4.Draw('same')
+    #lMulti4.AddEntry(histMultiRMS,'');lMulti4.Draw('same')
 
     # text
     ytextplace=0.22
-    ttMultiRMS= ROOT.TText(18,ytextplace,GetDigitText(histMultiRMS,fptbinsJC));ttMultiRMS.SetTextSize(0.04);
+    ttMultiRMS= ROOT.TText(15,ytextplace,GetDigitText(histMultiRMS,fptbinsJC));ttMultiRMS.SetTextSize(0.04);
+    if(lensysin>2):ttMultiRMS= ROOT.TText(0.6,0.2,GetDigitText(histMultiRMS,fptbinsJC));ttMultiRMS.SetTextSize(0.04);
     ttMultiRMS.Draw('same')
-    c_MultiRMS.SaveAs('plots/0_Multi/0_Multi_sysRMS'+R+'.pdf')
-    c_MultiRMS.SaveAs('plots/0_Multi/0_Multi_sysRMS'+R+'.png')
+    c_MultiRMS.SaveAs('plots/'+JET_or_Z+'/0_Multi/0_Multi_'+R+whichjetbin+'_sysRMS'+'.pdf')
+    c_MultiRMS.SaveAs('plots/'+JET_or_Z+'/0_Multi/0_Multi_'+R+whichjetbin+'_sysRMS'+'.svg')
 
-    #if(wait):input()
+    if(wait):input()
 ############## -----------------------------
+#histos:
+# 9. Closure test
+## 
+if(flagClos):
+    size_closure=10
+    dataClosure=[]
+    hhClosure=[]
+    #### -----------------------------
+    c_close = TCanvas("cClose","cClose",900,600)
+    lClose = TLegend(0.12,0.80,0.38,0.88);
+    #### -----------------------------
+    for i in range(size_closure):
+        dataClosure.append(ROOT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/unfolding_Bayes_5/plots/Closure/unfoldedSpectrum_closure%d.root"%(R,i),"read"))
+        hhClosure.append(dataClosure[i].Get('hRawVTrue').Clone('hRawVTrue'+str(i)))
+        hhClosure[i].GetYaxis().SetTitle("ratio")
+        hhClosure[i].GetYaxis().SetRangeUser(0,2)
+        if(i==0):hhClosure[i].Draw()
+        else:hhClosure[i].Draw("same")
+    c_close.SaveAs('plots/'+JET_or_Z+'9_Closure/9_Close'+R+whichjetbin+'.pdf')
+    c_close.SaveAs('plots/'+JET_or_Z+'9_Closure/9_Close'+R+whichjetbin+'.png')
+    #### -----------------------------RMS
+    c_CloRMS = TCanvas("cCloRMS","cCloRMS",900,600)
+    lCloRMS = TLegend(0.12,0.80,0.38,0.88);
+    histCloRMS = ratioRMS(hhClosure)
+    histCloRMS.GetYaxis().SetRangeUser(0,0.5);histCloRMS.SetLineColor(ROOT.kGreen+2);
+    histCloRMS.SetFillColor(ROOT.kGreen+2);histCloRMS.SetFillStyle(3654)
+    histCloRMS.GetYaxis().SetTitle("RMS");histCloRMS.Draw();
+    # text
+    ttCloRMS = ROOT.TText(5,0.4,GetDigitText(histCloRMS,fptbinsJC))
+    ttCloRMS.Draw('same')
+    c_CloRMS.SaveAs('plots/'+JET_or_Z+'9_Closure/9_CloRMS'+R+whichjetbin+'.pdf')
+    c_CloRMS.SaveAs('plots/'+JET_or_Z+'9_Closure/9_CloRMS'+R+whichjetbin+'.png')
+    #### -----------------------------
+    if(wait):input()
+############## -----------------------------
+############## -----------------------------
+if(lensysin>2):
+    string_SYSTEMATICS_REF='/media/jackbauer/data/z_out/R_'+R+'_finaltry/RawSys_SBSig/signalExtraction/plots/Z0to102_jetbin_'+whichJetInZBins[whichJetInZ]
+else:
+    string_SYSTEMATICS_REF="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR"+R+"_paperCuts/RawSys_SBSig/Default/signalExtraction/"
 #histos:
 # 1. Reflection
 ## 
@@ -243,66 +315,60 @@ if(flagRef):
     hRf1ratio=hRf1.Clone('hRf1ratio');hRf1ratio.Divide(hRdf);HistoStyle(hRf1ratio,1,2,21,0,ROOT.kGreen+2);
     for i in range(hRf0ratio.GetNbinsX()): hRf0ratio.SetBinError(i+1,0);hRf1ratio.SetBinError(i+1,0)
     hRf0ratio.GetYaxis().SetRangeUser(0.9,1.1)
+    hRf0ratio.SetTitle("R=0."+str(int(R))+": Reflections")
+    hRf0ratio.GetYaxis().SetTitle("Ratio")
     hRf0ratio.Draw();hRf1ratio.Draw('same')
     leg_Ref.AddEntry(hRf0ratio,"refl,-50%","l");leg_Ref.AddEntry(hRf1ratio,"refl,+50%","l");leg_Ref.Draw('same')
     lRef = ROOT.TLine(2, 1, 50, 1);lRef.SetLineStyle(2);lRef.Draw("same")
     ttRefsys0 = ROOT.TText(5,1.05,GetDigitTextFromRatio(hRf0ratio,fptbinsJC))
     ttRefsys1 = ROOT.TText(5,0.95,GetDigitTextFromRatio(hRf1ratio,fptbinsJC))
     ttRefsys0.Draw('same');ttRefsys1.Draw('same')
-    c_Ref.SaveAs('plots/1_Ref/1_Ref_rat'+R+'.pdf')
-    c_Ref.SaveAs('plots/1_Ref/1_Ref_rat'+R+'.png')
+    c_Ref.SaveAs('plots/'+JET_or_Z+'1_Ref/1_Ref_rat'+R+whichjetbin+'.pdf')
+    c_Ref.SaveAs('plots/'+JET_or_Z+'1_Ref/1_Ref_rat'+R+whichjetbin+'.png')
 
     if(wait):input()
 ############## -----------------------------
+if(lensysin>2):
+    string_SYSTEMATICS_SIGSB='/media/jackbauer/data/z_out/R_'+R+'_finaltry/RawSys_SBSig/signalExtraction/plots/Z0to102_jetbin_'+whichJetInZBins[whichJetInZ]
+else:
+    #string_SYSTEMATICS_SIGSB="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/FinalSys/RawSysFinal_DzeroR"+R+"_paperCuts/Default/signalExtraction_SigSBranges/"
+    string_SYSTEMATICS_SIGSB="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR"+R+"_paperCuts/RawSys_SBSig/Default/signalExtraction/"
 #histos:
 # 2. Signal and SB ranges
 ## raw systematics files
-sigSBsize=18
-sigSBtitles=[
-        'S:2\sigma, SB:4-9\sigma',#default, not necessary
-        'S:3\sigma, SB:4-9\sigma',
-        'S:2\sigma, SB:4-8\sigma',
-        'S:3\sigma, SB:4-8\sigma',
-        'S:2\sigma, SB:4-7\sigma',
-        'S:3\sigma, SB:4-7\sigma',
-        'S:2\sigma, SB:4.5-9\sigma',
-        'S:3\sigma, SB:4.5-9\sigma',
-        'S:2\sigma, SB:4.5-8\sigma',
-        'S:3\sigma, SB:4.5-8\sigma',
-        'S:2\sigma, SB:4.5-7\sigma',
-        'S:3\sigma, SB:4.5-7\sigma',
+if(lensysin<=3): # for both jetpt and zch
+    sigSBtitles=[
+        #'S:2\sigma, SB:4.0-9\sigma',#default, not necessary
         'S:2\sigma, SB:3.5-9\sigma',
-        'S:3\sigma, SB:3.5-9\sigma',
+        'S:2\sigma, SB:4.5-9\sigma',
+        'S:2\sigma, SB:4.0-8\sigma',
         'S:2\sigma, SB:3.5-8\sigma',
+        'S:2\sigma, SB:4.5-8\sigma',
+        'S:3\sigma, SB:4.0-9\sigma',
+        'S:3\sigma, SB:3.5-9\sigma',
+        'S:3\sigma, SB:4.5-9\sigma',
+        'S:3\sigma, SB:4.0-8\sigma',
         'S:3\sigma, SB:3.5-8\sigma',
-        'S:2\sigma, SB:3.5-7\sigma',
-        'S:3\sigma, SB:3.5-7\sigma',
+        'S:3\sigma, SB:4.5-8\sigma',
         ]
+
 if(flagSigSB):
     datafileSigSB = [
-            RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/FinalSys/RawSysFinal_DzeroR%s_paperCuts/Default/signalExtraction_SigSBranges/JetPtSpectra_SB_eff.root"%(R))
+            RT.TFile(string_SYSTEMATICS_SIGSB+"/JetPtSpectra_SB_eff.root")
             ]
-    hSigSB=[
-            datafileSigSB[0].Get('hjetptspectrumRebScaled').Clone('hSigSB_0')
-            ];
-    for i in range(1,sigSBsize):
-        datafileSigSB.append(
-            RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/FinalSys/RawSysFinal_DzeroR%s_paperCuts/Default/signalExtraction_SigSBranges/JetPtSpectra_SB_eff%d.root"%(R,i))
-            )
-        hSigSB.append(
-            datafileSigSB[i].Get('hjetptspectrumRebScaled').Clone('hSigSB_'+str(i))
-            )
+    hSigSB=[datafileSigSB[0].Get('hjetptspectrumRebScaled').Clone('hSigSB_0')];
+    for i in range(1,len(sigSBtitles)+1):
+        try:
+            datafileSigSB.append( RT.TFile(string_SYSTEMATICS_SIGSB+"/JetPtSpectra_SB_eff%d.root"%(i)) )
+            hSigSB.append( datafileSigSB[i].Get('hjetptspectrumRebScaled').Clone('hSigSB_'+str(i)) )
+        except: pass
     #### -----------------------------
     c_SigSB = TCanvas("cSigSB","cSigSB",900,600)
     lSigSB1 = TLegend(0.12,0.50,0.38,0.88);
     hhSigSBratio=[]
-    excludedSigSB=[]
-    #if(R=='04'):excludedSigSB=[6,7,8,9,10,11]
-    if(R=='04' or R=='06'):excludedSigSB=[6,7,8,9,10,11]
-    #elif(R=='06'):excludedSigSB=[7,9,11]
-    #elif(R=='06'):excludedSigSB=[11]
-    for i in range(sigSBsize):
-    #for i in range(5):#for i in [0,1,2,6,7]:
+    excludedSigSB=[]#6,7,8,9,10,11]
+    excludedSigSB=[2,5,8,11]
+    for i in range(len(hSigSB)):
         hhSigSBratio.append(hSigSB[i].Clone('hSigSBratio_'+str(i)))
         hhSigSBratio[i].Divide(hSigSB[0])
         HistoStyle(hhSigSBratio[i],1,2,21,0,22+2*i);
@@ -314,39 +380,29 @@ if(flagSigSB):
         elif(i>1 and i not in excludedSigSB):
             hhSigSBratio[i].Draw('same')
         if(i>=1 and i not in excludedSigSB):
-            lSigSB1.AddEntry(hhSigSBratio[i],sigSBtitles[i],"l");
+            lSigSB1.AddEntry(hhSigSBratio[i],sigSBtitles[i-1],"l");
     lSigSB1.Draw("same");
 
-    c_SigSB.SaveAs('plots/2_SigSB/2_SigSB_sys'+R+'.pdf')
-    c_SigSB.SaveAs('plots/2_SigSB/2_SigSB_sys'+R+'.png')
+    c_SigSB.SaveAs('plots/'+JET_or_Z+'2_SigSB/2_SigSB_sys'+R+whichjetbin+'.pdf')
+    c_SigSB.SaveAs('plots/'+JET_or_Z+'2_SigSB/2_SigSB_sys'+R+whichjetbin+'.png')
     #### -----------------------------RMS
     hhSigSBratio_o=[]
-    hhSigSBratio_o2=[]
     for i in range(len(hhSigSBratio)):
         if(i in excludedSigSB):continue
         else:hhSigSBratio_o.append(hhSigSBratio[i])
-    for i in range(len(hhSigSBratio)):
-        if(i in excludedSigSB or i%2!=0):continue
-        else:hhSigSBratio_o2.append(hhSigSBratio[i])
     c_SigSBRMS = TCanvas("cSigSBRMS","cSigSBRMS",900,600)
     lSigSB2 = TLegend(0.12,0.80,0.38,0.88);
-    if(R=='04' or R=='06'):lSigSB2 = TLegend(0.12,0.715,0.3,0.88);
     histSigSBRMS = rootRMS(hhSigSBratio_o)
-    histSigSBRMS2= rootRMS(hhSigSBratio_o2)
     histSigSBRMS.GetYaxis().SetRangeUser(0,0.2);histSigSBRMS.SetLineColor(ROOT.kGreen+2);
-    histSigSBRMS2.GetYaxis().SetRangeUser(0,0.2);histSigSBRMS2.SetLineColor(ROOT.kRed+2);
     histSigSBRMS.SetFillColor(ROOT.kGreen+2);histSigSBRMS.SetFillStyle(3654)
-    histSigSBRMS2.SetFillColor(ROOT.kRed+2); histSigSBRMS2.SetFillStyle(3645)
     histSigSBRMS.GetYaxis().SetTitle("RMS");histSigSBRMS.Draw();lSigSB2.AddEntry(histSigSBRMS,'all')
-    if(len(excludedSigSB)>0):histSigSBRMS2.Draw('same');lSigSB2.AddEntry(histSigSBRMS2,'only 2sig')
-    lSigSB2.Draw('same')
+    #lSigSB2.Draw('same')
     # text
-    ttSigSB = ROOT.TText(14,0.18,GetDigitText(histSigSBRMS,fptbinsJC))
-    ttSigSB2 = ROOT.TText(14,0.16,GetDigitText(histSigSBRMS2,fptbinsJC))
+    ttSigSB = ROOT.TText(8,0.18,GetDigitText(histSigSBRMS,fptbinsJC))
+    if(lensysin>=3): ttSigSB = ROOT.TText(0.6,0.18,GetDigitText(histSigSBRMS,fptbinsJC))
     ttSigSB.Draw('same')
-    if(R=='04' or R=='06'):ttSigSB2.Draw('same')
-    c_SigSBRMS.SaveAs('plots/2_SigSB/2_SigSB_sysRMS'+R+'.pdf')
-    c_SigSBRMS.SaveAs('plots/2_SigSB/2_SigSB_sysRMS'+R+'.png')
+    c_SigSBRMS.SaveAs('plots/'+JET_or_Z+'2_SigSB/2_SigSB_sysRMS'+R+whichjetbin+'.pdf')
+    c_SigSBRMS.SaveAs('plots/'+JET_or_Z+'2_SigSB/2_SigSB_sysRMS'+R+whichjetbin+'.png')
 
     if(wait):input()
 ############## -----------------------------
@@ -565,6 +621,7 @@ if(flagUSvd):
 #histos:
 # 8. JES
 ##
+#fbola = TF1("fbola","[0] + TMath.Sqrt(4*[1]*x + [2])",2,50);
 if(flagJES):
     hJES_0 = datafileUnf.Get('unfoldedSpectrum').Clone('hJES_0') #default
     hJES_1 = datafileJES.Get('unfoldedSpectrum').Clone('hJES_1') #jes
@@ -591,4 +648,65 @@ if(flagJES):
     c_JESsys.SaveAs('plots/8_JES/8_JES_sys'+R+'.pdf')
     c_JESsys.SaveAs('plots/8_JES/8_JES_sys'+R+'.png')
 
+    yJES = hist2array(hJES_1ratio)[:]
+    xJES = np.array(fptbinsJC)[:]
+    xJESlh= np.array(fptbinsJlh[:])
+    print(xJES, yJES)
+    funcJES = funcLine #funcJES = funcBola
+    try:
+        popt, pcov = curve_fit(funcJES, xJES, yJES)
+    except RuntimeError:
+        print("Error")
+
+    #print(popt)
+    #fig=plt.figure(0)
+    #plt.grid(axis='both',color='0.95')
+    #plt.ylim(0.95,1.15)
+    #plt.ylabel('ratio');
+    #if(lensysin==2):plt.xlabel(r'jet $p_T$')
+    #else: plt.xlabel(r'$z_{||}$')
+    ##plt.xticks(np.arange(min(xJESall),max(xJESall)+5,5.0))
+    #try:
+    #    plt.plot(xJES, funcJES(xJES,*popt),'r-', label='fit')
+    #except:
+    #    pass
+    #plt.step(xJESlh[1:], yJES, label="test")
+    #plt.plot(xJES, yJES,'bo', label='data')
+    ##plt.show()
+    #plt.draw()
+    #plt.waitforbuttonpress(1);input()
+    #plt.close()
+    #print(funcJES(xJES,*popt))
+
+    yerrJES = [];
+    for i in range(hJES_1ratio.GetNbinsX()): 
+        yerrJES.append(hJES_1ratio.GetBinError(i+1));
+    yerrJES=np.array(yerrJES)
+    fig=plt.figure(1);plt.grid(axis='both',color='0.95');plt.ylim(0.6,1.8);#plt.xticks(np.arange(min(xJESall),max(xJESall)+5,5.0));
+    plt.xlim(fptbinsJlh[0],fptbinsJlh[-1])
+    plt.plot(xJESlh, funcJES(xJESlh,*popt),'r-', label='fit');plt.step(xJESlh[1:], yJES,'k', label="test");
+    plt.errorbar(xJES,yJES,yerr=yerrJES,fmt='.k');
+    if(lensysin==2):
+        plt.xlabel(r'jet $p_T$')
+        locJES = [2,1.4]
+    plt.ylabel('ratio');
+    plt.title("JES unc: R=0."+str(int(R)))
+    uncJESvals = ""
+    valsJES = abs(100*(funcJES(xJES,*popt)-1)) #100*(valsJES[i]-1)
+    for i in range(len(valsJES)):
+        uncJESvals += "%.1f, "%(valsJES[i]) #"R%s"%(R))
+    uncJESvals = uncJESvals[:-1]+' in %'
+    plt.text(locJES[0], locJES[1], uncJESvals,
+         #rotation=45,
+         horizontalalignment='left',
+         verticalalignment='top',
+         #multialignment='center'
+         )
+    plt.draw()
+    plt.savefig('plots/'+JET_or_Z+'8_JES/8_JES_rat'+R+whichjetbin+'.pdf')
+    plt.savefig('plots/'+JET_or_Z+'8_JES/8_JES_rat'+R+whichjetbin+'.png')
+    plt.waitforbuttonpress(1);input()
+    plt.close()
+
     if(wait):input()
+
