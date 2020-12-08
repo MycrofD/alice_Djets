@@ -55,21 +55,26 @@ Rtitle=R #for accessing the directories
 RTColors = [RT.kRed+2, RT.kGreen+2, RT.kBlue+2, RT.kOrange+2, RT.kViolet+2, RT.kYellow+2, RT.kCyan-6, RT.kAzure+2, RT.kMagenta-6,RT.kGreen-8,RT.kYellow-8]
 datafileFinal = RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/unfolding_Bayes_5/finalSpectra/JetPtSpectrum_final.root"%(R))
 datafileFD = RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/FDsubtraction/JetPtSpectrum_FDsub.root"%(R))
-datafileSig = RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/signalExtraction/JetPtSpectra_SB_eff.root"%(R))
 datafileUnf = RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"%(R))
 #datafileJES = RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/FinalSys/JESsysFinal_DzeroR%s_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"%(R))
 datafileJES = RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/JES/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"%(R))
+
+
+
+
+
 #######
 flagMulti=0
-flagRef=1
+flagRef=0
 flagClos=0
 flagSigSB=0
 flagCutsys=0
 flagFD=0
 flagUIter=0
-flagUPrior=0
+flagUPrior=1
 flagUSvd=0
 flagJES=0
+flagStat=0
 #######
 RT.gStyle.SetOptStat(0000)
 ROOT.gStyle.SetLegendBorderSize(0)
@@ -296,15 +301,17 @@ if(flagClos):
 ############## -----------------------------
 ############## -----------------------------
 if(lensysin>2):
-    string_SYSTEMATICS_REF='/media/jackbauer/data/z_out/R_'+R+'_finaltry/RawSys_SBSig/signalExtraction/plots/Z0to102_jetbin_'+whichJetInZBins[whichJetInZ]
+    string_SYSTEMATICS_REF="/media/jackbauer/data/z_out/R_"+R+"_finaltry/signalExtraction/plots/Z0to102_jetbin_"+whichJetInZBins[whichJetInZ]
+    datafileSig = ROOT.TFile(string_SYSTEMATICS_REF+"/JetPtSpectra_SB_eff.root","read")
 else:
-    string_SYSTEMATICS_REF="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR"+R+"_paperCuts/RawSys_SBSig/Default/signalExtraction/"
+    string_SYSTEMATICS_REF="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/FinalSys/RawSysFinal_DzeroR"+R+"_paperCuts/Default/signalExtraction_refsys"
+    datafileSig = ROOT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/signalExtraction/JetPtSpectra_SB_eff.root"%(R))
 #histos:
 # 1. Reflection
 ## 
 if(flagRef):
-    datafileRf0 = ROOT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/FinalSys/RawSysFinal_DzeroR%s_paperCuts/Default/signalExtraction_refsys/JetPtSpectra_SB_effrefSys0.root"%(R),"read")
-    datafileRf1 = ROOT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/FinalSys/RawSysFinal_DzeroR%s_paperCuts/Default/signalExtraction_refsys/JetPtSpectra_SB_effrefSys1.root"%(R),"read")
+    datafileRf0 = ROOT.TFile(string_SYSTEMATICS_REF+"/JetPtSpectra_SB_effrefSys0.root","read")
+    datafileRf1 = ROOT.TFile(string_SYSTEMATICS_REF+"/JetPtSpectra_SB_effrefSys1.root","read")
     hRdf = datafileSig.Get('hjetptspectrumRebScaled').Clone('hRdf')
     hRf0 = datafileRf0.Get('hjetptspectrumRebScaled').Clone('hRf0')
     hRf1 = datafileRf1.Get('hjetptspectrumRebScaled').Clone('hRf1')
@@ -319,9 +326,9 @@ if(flagRef):
     hRf0ratio.GetYaxis().SetTitle("Ratio")
     hRf0ratio.Draw();hRf1ratio.Draw('same')
     leg_Ref.AddEntry(hRf0ratio,"refl,-50%","l");leg_Ref.AddEntry(hRf1ratio,"refl,+50%","l");leg_Ref.Draw('same')
-    lRef = ROOT.TLine(2, 1, 50, 1);lRef.SetLineStyle(2);lRef.Draw("same")
-    ttRefsys0 = ROOT.TText(5,1.05,GetDigitTextFromRatio(hRf0ratio,fptbinsJC))
-    ttRefsys1 = ROOT.TText(5,0.95,GetDigitTextFromRatio(hRf1ratio,fptbinsJC))
+    lRef = ROOT.TLine(fptbinsJlh[0], 1, fptbinsJlh[-1], 1);lRef.SetLineStyle(2);lRef.Draw("same")
+    ttRefsys0 = ROOT.TText(fptbinsJC[0],1.05,GetDigitTextFromRatio(hRf0ratio,fptbinsJC))
+    ttRefsys1 = ROOT.TText(fptbinsJC[0],0.95,GetDigitTextFromRatio(hRf1ratio,fptbinsJC))
     ttRefsys0.Draw('same');ttRefsys1.Draw('same')
     c_Ref.SaveAs('plots/'+JET_or_Z+'1_Ref/1_Ref_rat'+R+whichjetbin+'.pdf')
     c_Ref.SaveAs('plots/'+JET_or_Z+'1_Ref/1_Ref_rat'+R+whichjetbin+'.png')
@@ -393,13 +400,13 @@ if(flagSigSB):
     c_SigSBRMS = TCanvas("cSigSBRMS","cSigSBRMS",900,600)
     lSigSB2 = TLegend(0.12,0.80,0.38,0.88);
     histSigSBRMS = rootRMS(hhSigSBratio_o)
-    histSigSBRMS.GetYaxis().SetRangeUser(0,0.2);histSigSBRMS.SetLineColor(ROOT.kGreen+2);
+    histSigSBRMS.GetYaxis().SetRangeUser(0,0.6);histSigSBRMS.SetLineColor(ROOT.kGreen+2);
     histSigSBRMS.SetFillColor(ROOT.kGreen+2);histSigSBRMS.SetFillStyle(3654)
     histSigSBRMS.GetYaxis().SetTitle("RMS");histSigSBRMS.Draw();lSigSB2.AddEntry(histSigSBRMS,'all')
     #lSigSB2.Draw('same')
     # text
     ttSigSB = ROOT.TText(8,0.18,GetDigitText(histSigSBRMS,fptbinsJC))
-    if(lensysin>=3): ttSigSB = ROOT.TText(0.6,0.18,GetDigitText(histSigSBRMS,fptbinsJC))
+    if(lensysin>=3): ttSigSB = ROOT.TText(0.6,0.3,GetDigitText(histSigSBRMS,fptbinsJC))
     ttSigSB.Draw('same')
     c_SigSBRMS.SaveAs('plots/'+JET_or_Z+'2_SigSB/2_SigSB_sysRMS'+R+whichjetbin+'.pdf')
     c_SigSBRMS.SaveAs('plots/'+JET_or_Z+'2_SigSB/2_SigSB_sysRMS'+R+whichjetbin+'.png')
@@ -469,9 +476,19 @@ if(flagCutsys):
 #histos:
 # 4. B-FD
 if(flagFD):
-    hFD_ce = datafileFD.Get('hData_binned_sub').Clone('hFD_ce')
-    hFD_up = datafileFD.Get('hData_binned_sub_up').Clone('hFD_up')
-    hFD_do = datafileFD.Get('hData_binned_sub_down').Clone('hFD_do')
+    if(lensysin>2):
+        xtitle = "z_{||}"
+        textpos = 0.5
+        datafileFD=ROOT.TFile("/media/jackbauer/data/z_out/R_"+R+"_finaltry/FDsubtraction/outFD_1.root","read")
+        hFD_ce = datafileFD.Get('hsub_c'+str(int(jetbin)+1)).Clone('hFD_ce')
+        hFD_up = datafileFD.Get('hsub_u'+str(int(jetbin)+1)).Clone('hFD_up')
+        hFD_do = datafileFD.Get('hsub_d'+str(int(jetbin)+1)).Clone('hFD_do')
+    else:
+        textpos=5
+        xtitle = "jet-p_T"
+        hFD_ce = datafileFD.Get('hData_binned_sub').Clone('hFD_ce')
+        hFD_up = datafileFD.Get('hData_binned_sub_up').Clone('hFD_up')
+        hFD_do = datafileFD.Get('hData_binned_sub_down').Clone('hFD_do')
     #### -----------------------------
     c_FD = TCanvas("cFD","cFD",900,600)
     hFD_upratio = hFD_up.Clone('hFD_upratio')
@@ -481,24 +498,35 @@ if(flagFD):
     HistoStyle(hFD_upratio,1,2,21,0,ROOT.kRed+2);
     HistoStyle(hFD_doratio,1,2,21,0,ROOT.kGreen+2);
     hFD_upratio.GetYaxis().SetTitle('ratio');hFD_upratio.SetTitle("B feed-down: R=0."+str(int(R)))
+    hFD_upratio.GetYaxis().SetRangeUser(0,2);
+    if(lensysin>2):hFD_upratio.GetXaxis().SetTitle(xtitle)
     hFD_upratio.Draw()
     hFD_doratio.Draw('same')
     # text
-    ttup = ROOT.TText(5,1.5,GetDigitTextFromRatio(hFD_upratio,fptbinsJC))
-    ttdo = ROOT.TText(5,0.5,GetDigitTextFromRatio(hFD_doratio,fptbinsJC))
+    ttup = ROOT.TText(textpos,1.5,GetDigitTextFromRatio(hFD_upratio,fptbinsJC))
+    ttdo = ROOT.TText(textpos,0.5,GetDigitTextFromRatio(hFD_doratio,fptbinsJC))
     ttup.Draw('same');ttdo.Draw('same')
-    c_FD.SaveAs('plots/4_FD/4_FD_sys'+R+'.pdf')
-    c_FD.SaveAs('plots/4_FD/4_FD_sys'+R+'.png')
+    #c_FD.SaveAs('plots/4_FD/4_FD_sys'+R+'.pdf')
+    #c_FD.SaveAs('plots/4_FD/4_FD_sys'+R+'.png')
+    c_FD.SaveAs('plots/'+JET_or_Z+'4_FD/4_FD_sys'+R+whichjetbin+'.pdf')
+    c_FD.SaveAs('plots/'+JET_or_Z+'4_FD/4_FD_sys'+R+whichjetbin+'.png')
 
     if(wait):input()
 ############## -----------------------------
 #histos:
 # 5. UnfBayes Iterations
 if(flagUIter):
-    datafileUIter4=RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/unfolding_Bayes_4/unfoldedSpectrum_unfoldedJetSpectrum.root"%(R))
-    datafileUIter6=RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/unfolding_Bayes_6/unfoldedSpectrum_unfoldedJetSpectrum.root"%(R))
-    datafileUIter = [datafileUnf,datafileUIter4,datafileUIter6]
-    hIters=[datafileUIter[0].Get('unfoldedSpectrum').Clone('hIter_5'),datafileUIter[1].Get('unfoldedSpectrum').Clone('hIter_4'),datafileUIter[2].Get('unfoldedSpectrum').Clone('hIter_6')]
+    if(lensysin>2):
+        datafileUIter4 = ROOT.TFile("/media/jackbauer/data/z_out/R_"+R+"_finaltry/unfolding/Bayes/alljetz2D/unfold2DoutFileRegBayesSys4.root","read")
+        datafileUIter6= ROOT.TFile("/media/jackbauer/data/z_out/R_"+R+"_finaltry/unfolding/Bayes/alljetz2D/unfold2DoutFileRegBayesSys6.root","read")
+        datafileUIter5= ROOT.TFile("/media/jackbauer/data/z_out/R_"+R+"_finaltry/unfolding/Bayes/alljetz2D/unfold2DoutFileRegBayesSys5.root","read")
+        datafileUIter = [datafileUIter5,datafileUIter4,datafileUIter6]
+        hIters=[datafileUIter[0].Get('UnfProjectX_'+jetbin).Clone('hIter_5'),datafileUIter[1].Get('UnfProjectX_'+jetbin).Clone('hIter_4'),datafileUIter[2].Get('UnfProjectX_'+jetbin).Clone('hIter_6')]
+    else:
+        datafileUIter4=RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/unfolding_Bayes_4/unfoldedSpectrum_unfoldedJetSpectrum.root"%(R))
+        datafileUIter6=RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/unfolding_Bayes_6/unfoldedSpectrum_unfoldedJetSpectrum.root"%(R))
+        datafileUIter = [datafileUnf,datafileUIter4,datafileUIter6]
+        hIters=[datafileUIter[0].Get('unfoldedSpectrum').Clone('hIter_5'),datafileUIter[1].Get('unfoldedSpectrum').Clone('hIter_4'),datafileUIter[2].Get('unfoldedSpectrum').Clone('hIter_6')]
     hIterRat0=hIters[0].Clone('hIterRat0');hIterRat0.Divide(hIters[0])
     hIterRat1=hIters[1].Clone('hIterRat1');hIterRat1.Divide(hIters[0])
     hIterRat2=hIters[2].Clone('hIterRat2');hIterRat2.Divide(hIters[0])
@@ -506,41 +534,71 @@ if(flagUIter):
     hIterRat1.SetLineColor(ROOT.kRed+2);hIterRat2.SetLineColor(ROOT.kBlue+2)
     #### -----------------------------
     c_Iter = TCanvas("cIter","cIter",900,500)
-    hIterRat1.GetYaxis().SetRangeUser(0.990,1.01);hIterRat1.GetYaxis().SetTitle('ratio to B iter=5')
-    hIterRat1.SetTitle("Bayes Iterations: R=0."+str(int(R)))
+    if(lensysin>2):
+        lower_limit=0.9;upper_limit=1.1
+    else:
+        lower_limit=0.99;upper_limit=1.02
+    hIterRat1.GetYaxis().SetRangeUser(lower_limit,upper_limit);hIterRat1.GetYaxis().SetTitle('ratio to B iter=5')
+    hIterRat1.SetTitle("Bayes Iterations: R=0."+str(int(R))+whichjetbintitle)
     leg_Iter=ROOT.TLegend(0.7,0.7,0.85,0.85)
     leg_Iter.AddEntry(hIterRat1,'B iter=4','l')
     leg_Iter.AddEntry(hIterRat2,'B iter=6','l')
     hIterRat1.Draw();hIterRat2.Draw('same')
-    lIter = ROOT.TLine(2, 1, 50, 1);lIter.SetLineStyle(2);lIter.Draw("same")
+    lIter = ROOT.TLine(fptbinsJlh[0], 1, fptbinsJlh[-1], 1);lIter.SetLineStyle(2);lIter.Draw("same")
     leg_Iter.Draw('same')
-    c_Iter.SaveAs('plots/5_Iter/5_Iter_ratio'+R+'.pdf')
-    c_Iter.SaveAs('plots/5_Iter/5_Iter_ratio'+R+'.png')
+    #c_Iter.SaveAs('plots/5_Iter/5_Iter_ratio'+R+'.pdf')
+    #c_Iter.SaveAs('plots/5_Iter/5_Iter_ratio'+R+'.png')
+    c_Iter.SaveAs('plots/'+JET_or_Z+'5_Iter/5_Iter_ratio'+R+whichjetbin+'.pdf')
+    c_Iter.SaveAs('plots/'+JET_or_Z+'5_Iter/5_Iter_ratio'+R+whichjetbin+'.png')
     #### -----------------------------
     c_IterSys= TCanvas("cIterSys","cIterSys",900,500)
     histIterRMS = rootRMS([hIterRat0,hIterRat1,hIterRat2])
-    histIterRMS.GetYaxis().SetRangeUser(0,0.016);histIterRMS.SetLineColor(ROOT.kBlue+2);
-    histIterRMS.SetTitle("Bayes Iterations: R=0."+str(int(R)))
+    if(lensysin>2):histIterRMS.GetYaxis().SetRangeUser(0,0.2);histIterRMS.SetLineColor(ROOT.kBlue+2);
+    else:histIterRMS.GetYaxis().SetRangeUser(0,0.016);histIterRMS.SetLineColor(ROOT.kBlue+2);
+    histIterRMS.SetTitle("Bayes Iterations: R=0."+str(int(R))+" . "+whichjetbintitle)
     histIterRMS.SetFillColor(ROOT.kBlue+2);histIterRMS.SetFillStyle(3654)
     histIterRMS.GetYaxis().SetTitle("RMS");histIterRMS.Draw()
-    ttIter = ROOT.TText(5,0.010,GetDigitText(histIterRMS,fptbinsJC))
+    ttIter = ROOT.TText(fptbinsJlh[1],0.010,GetDigitText(histIterRMS,fptbinsJC))
     ttIter.Draw('same')
-    c_IterSys.SaveAs('plots/5_Iter/5_Iter_sys'+R+'.pdf')
-    c_IterSys.SaveAs('plots/5_Iter/5_Iter_sys'+R+'.png')
-
+    #c_IterSys.SaveAs('plots/5_Iter/5_Iter_sys'+R+'.pdf')
+    #c_IterSys.SaveAs('plots/5_Iter/5_Iter_sys'+R+'.png')
+    c_IterSys.SaveAs('plots/'+JET_or_Z+'5_Iter/5_Iter_rat'+R+whichjetbin+'.pdf')
+    c_IterSys.SaveAs('plots/'+JET_or_Z+'5_Iter/5_Iter_rat'+R+whichjetbin+'.png')
+    ##### -----------------------------
+    c_It= TCanvas("cIt","cIt",900,500)
+    histIterRMSIT = histIterRMS.Clone('histIterRMSIT')
+    for i in range(histIterRMS.GetNbinsX()):
+        histIterRMSIT.SetBinContent(i+1,histIterRMS.GetBinContent(i+1)+lower_limit)
+    histIterRMSIT.GetYaxis().SetRangeUser(lower_limit,upper_limit);
+    histIterRMSIT.GetYaxis().SetTitle('ratio to B iter=5 and RMS above lower limit')
+    #histIterRMSIT.SetTitle('ratio to B iter=5 and RMS above lower limit')
+    histIterRMSIT.Draw()
+    hIterRat1.Draw('same');hIterRat2.Draw('same')
+    leg_IT=ROOT.TLegend(0.6,0.7,0.85,0.85)
+    leg_IT.AddEntry(hIterRat1,'B iter=4, ratio to iter=5','l')
+    leg_IT.AddEntry(hIterRat2,'B iter=6, ratio to iter=5','l')
+    leg_IT.AddEntry(histIterRMSIT,'RMS (+ lower limit on Y)')
+    leg_IT.Draw('same')
+    ttIT = ROOT.TText(fptbinsJlh[1],0.013+lower_limit,GetDigitText(histIterRMS,fptbinsJC))
+    ttIT.Draw('same')
+    c_It.SaveAs('plots/'+JET_or_Z+'5_Iter/5_ItFinal'+R+whichjetbin+'.pdf')
+    c_It.SaveAs('plots/'+JET_or_Z+'5_Iter/5_ItFinal'+R+whichjetbin+'.png')
     if(wait):input()
 ############## -----------------------------
 #histos:
 # 6. UnfBayes Priors
 sizePrior=10
 if(flagUPrior):
-    dataUPrior=[datafileUnf]
-    hUPrior=[dataUPrior[0].Get('unfoldedSpectrum').Clone('hPriorMC')]
-    hUPriorratio=[hUPrior[0].Clone('hratPriorMC')]
-    for i in range(1,sizePrior):
-        dataUPrior.append(RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/unfolding_Bayes_5_priorType%d/unfoldedSpectrum_unfoldedJetSpectrum.root"%(R,i-1)))
-        hUPrior.append(dataUPrior[i].Get('unfoldedSpectrum').Clone('hPrior'+str(i-1)))
-        hUPriorratio.append(dataUPrior[i].Get('unfoldedSpectrum').Clone('hPriorratio'+str(i-1)))
+    if(lensysin>2):
+        pass
+    else:
+        dataUPrior=[datafileUnf]
+        hUPrior=[dataUPrior[0].Get('unfoldedSpectrum').Clone('hPriorMC')]
+        hUPriorratio=[hUPrior[0].Clone('hratPriorMC')]
+        for i in range(1,sizePrior):
+            dataUPrior.append(RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/unfolding_Bayes_5_priorType%d/unfoldedSpectrum_unfoldedJetSpectrum.root"%(R,i-1)))
+            hUPrior.append(dataUPrior[i].Get('unfoldedSpectrum').Clone('hPrior'+str(i-1)))
+            hUPriorratio.append(dataUPrior[i].Get('unfoldedSpectrum').Clone('hPriorratio'+str(i-1)))
     #### -----------------------------
     c_Prior = TCanvas("cPrior","cPrior",900,500)
     leg_Prior=ROOT.TLegend(0.15,0.55,0.3,0.87)
@@ -621,7 +679,6 @@ if(flagUSvd):
 #histos:
 # 8. JES
 ##
-#fbola = TF1("fbola","[0] + TMath.Sqrt(4*[1]*x + [2])",2,50);
 if(flagJES):
     hJES_0 = datafileUnf.Get('unfoldedSpectrum').Clone('hJES_0') #default
     hJES_1 = datafileJES.Get('unfoldedSpectrum').Clone('hJES_1') #jes
@@ -710,3 +767,19 @@ if(flagJES):
 
     if(wait):input()
 
+############## -----------------------------
+#histos:
+# . Statistical uncertainties
+if(flagStat):
+    if(lensysin>2):
+        fileString="/media/jackbauer/data/z_out/R_"+R+"_finaltry/unfolding/Bayes/alljetz2D/unfold2DoutFileAPW.root"
+    else:
+        fileString="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR"+R+"_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"
+    statSignal=ROOT.TFile(fileString)
+    hSignal = statSignal.Get('unfoldedSpectrum').Clone('hStat')
+
+    statErr=[]
+    for i in range(hSignal.GetNbinsX()):
+        statErr.append(round(100*hSignal.GetBinError(i+1)/hSignal.GetBinContent(i+1),1))
+
+    print(statErr)
