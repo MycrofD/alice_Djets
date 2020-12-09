@@ -59,7 +59,8 @@ datafileUnf = RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results
 #datafileJES = RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/FinalSys/JESsysFinal_DzeroR%s_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"%(R))
 datafileJES = RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/JES/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"%(R))
 
-
+if(lensysin>2):
+    datafileUnf= ROOT.TFile("/media/jackbauer/data/z_out/R_"+R+"_finaltry/unfolding/Bayes/alljetz2D/unfold2DoutFileRegBayesSys5.root","read")
 
 
 
@@ -587,12 +588,18 @@ if(flagUIter):
 ############## -----------------------------
 #histos:
 # 6. UnfBayes Priors
-sizePrior=10
 if(flagUPrior):
+    dataUPrior=[datafileUnf]
     if(lensysin>2):
-        pass
+        sizePrior=9
+        hUPrior=[dataUPrior[0].Get('UnfProjectX_'+jetbin).Clone('hPriorMC')]
+        hUPriorratio=[hUPrior[0].Clone('hratPriorMC')]
+        for i in range(1,sizePrior):
+            dataUPrior.append(RT.TFile("/media/jackbauer/data/z_out/R_%s_finaltry/unfolding/Bayes/alljetz2D/unfold2DoutFileAPW%d.root"%(R,i)))
+            hUPrior.append(dataUPrior[i].Get('UnfProjectX_'+jetbin).Clone('hPrior'+str(i-1)))
+            hUPriorratio.append(dataUPrior[i].Get('UnfProjectX_'+jetbin).Clone('hPriorratio'+str(i-1)))
     else:
-        dataUPrior=[datafileUnf]
+        sizePrior=10
         hUPrior=[dataUPrior[0].Get('unfoldedSpectrum').Clone('hPriorMC')]
         hUPriorratio=[hUPrior[0].Clone('hratPriorMC')]
         for i in range(1,sizePrior):
@@ -608,22 +615,28 @@ if(flagUPrior):
         hUPriorratio[i].Divide(hUPrior[0])
         HistoStyle(hUPriorratio[i],1,2,21,0,RTColors[i])
         for j in range(hUPriorratio[i].GetNbinsX()+1):hUPriorratio[i].SetBinError(j,0)
-        if(i==0):hUPriorratio[i].Draw()
-        elif(i==1 or i==6):continue
-        else:hUPriorratio[i].Draw('same');leg_Prior.AddEntry(hUPriorratio[i],'Prior: '+str(i-1))
+
+        if(lensysin>2):
+            if(i==0):hUPriorratio[i].Draw()
+            else:hUPriorratio[i].Draw('same');leg_Prior.AddEntry(hUPriorratio[i],'Prior: '+str(i))
+        else:
+            if(i==0):hUPriorratio[i].Draw()
+            elif(i==1 or i==6):continue
+            else:hUPriorratio[i].Draw('same');leg_Prior.AddEntry(hUPriorratio[i],'Prior: '+str(i-1))
     leg_Prior.Draw('same')
-    c_Prior.SaveAs('plots/6_Priors/6_Priors_ratio'+R+'.pdf')
-    c_Prior.SaveAs('plots/6_Priors/6_Priors_ratio'+R+'.png')
+    c_Prior.SaveAs('plots/'+JET_or_Z+'6_Priors/6_Priors_ratio'+R+whichjetbin+'.pdf')
+    c_Prior.SaveAs('plots/'+JET_or_Z+'6_Priors/6_Priors_ratio'+R+whichjetbin+'.png')
     #### -----------------------------
     c_PriorRMS = TCanvas("cPriorRMS","cPriorRMS",900,500)
-    histPriorRMS=rootRMS(hUPriorratio[0:1]+hUPriorratio[2:6]+hUPriorratio[7:])
+    if(lensysin>2):histPriorRMS=rootRMS(hUPriorratio[:])
+    else:histPriorRMS=rootRMS(hUPriorratio[0:1]+hUPriorratio[2:6]+hUPriorratio[7:])
     histPriorRMS.GetYaxis().SetRangeUser(0,0.06)
     histPriorRMS.SetFillColor(ROOT.kRed+2);histPriorRMS.SetFillStyle(3354);histPriorRMS.GetYaxis().SetTitle('RMS');histPriorRMS.SetTitle('Bayes unfolding: priors sys.')
     histPriorRMS.Draw()
-    ttPrior = ROOT.TText(5,0.04,GetDigitText(histPriorRMS,fptbinsJC))
+    ttPrior = ROOT.TText(fptbinsJlo[1],0.04,GetDigitText(histPriorRMS,fptbinsJC))
     ttPrior.Draw('same')
-    c_PriorRMS.SaveAs('plots/6_Priors/6_Priors_RMS'+R+'.pdf')
-    c_PriorRMS.SaveAs('plots/6_Priors/6_Priors_RMS'+R+'.png')
+    c_PriorRMS.SaveAs('plots/'+JET_or_Z+'6_Priors/6_Priors_RMS'+R+whichjetbin+'.pdf')
+    c_PriorRMS.SaveAs('plots/'+JET_or_Z+'6_Priors/6_Priors_RMS'+R+whichjetbin+'.png')
 
     if(wait):input()
 ############## -----------------------------
