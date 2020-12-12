@@ -187,11 +187,10 @@ void unfold_Bayeszjet(
     THnSparseD *hZjetRecGenD;
     THnSparseD *hZjetRGD[NDMC];
     //---- Storing the response matrix for drawing purposes ------------
-
     TList *histList[NDMC];THnSparseD *sparseMC[NDMC];THnSparseD *sparsereco[NDMC];
     //--- Empty 2D histograms to define binning of response matrix at reco and gen level --------------------
-    
     TH2D* hZjetRRebin = new TH2D("hRecRebin","hRecRebin", fptbinsZMeasN, fptbinsZMeasA, fJetptbinsN, fJetptbinsA);
+    TH2D* hZjetR = new TH2D("hRec","hRec", fptbinsZMeasN, fptbinsZMeasA, fJetptbinsN, fJetptbinsA);
     hZjetRRebin->Sumw2();
     TH2D* hZjetGRebin = new TH2D("hGenRebin","hGenRebin", fptbinsZFinalN, fptbinsZFinalA, fJetptbinsN, fJetptbinsA);
     hZjetGRebin->Sumw2();
@@ -243,6 +242,7 @@ void unfold_Bayeszjet(
     ***************************/
     RooUnfold::ErrorTreatment errorTreatment = RooUnfold::kCovariance;
     RooUnfoldResponse response (hZjetRRebin, hZjetGRebin);
+    RooUnfoldResponse responseFine(hZjetRRebin, hZjetGRebin);
     //----------- fill 4D histo response matrix
     double MCjets1 = 0;
     if(DptcutTrue){
@@ -259,6 +259,9 @@ void unfold_Bayeszjet(
             double DR_center = hZjetRecGenD->GetAxis(4)->GetBinCenter(n);
             double DG_center = hZjetRecGenD->GetAxis(5)->GetBinCenter(p);
 
+            if(zR_center>=1)zR_center=0.99999;
+            if(zG_center>=1)zG_center=0.99999;
+
             if(isPrior){
                 if     (priorType==1) {weight *= 1+(  zG_center-  jG_center/70)/2;}
                 else if(priorType==2) {weight *= 1-(  zG_center-  jG_center/70)/2;}
@@ -270,6 +273,47 @@ void unfold_Bayeszjet(
                 else if(priorType==8) {weight *= 1-(1+zG_center-2*jG_center/70)/3;}
                 else weight = weight;
             }
+            //========================================================================
+            double eff_c = 1;
+            if    (jR_center>=fJetptbinsA[0] && jR_center<=fJetptbinsA[1]){eff_c=effHists[0]->GetBinContent(effHists[0]->GetXaxis()->FindBin(DR_center));}
+            else if(jR_center>fJetptbinsA[1] && jR_center<=fJetptbinsA[2]){eff_c=effHists[1]->GetBinContent(effHists[1]->GetXaxis()->FindBin(DR_center));}
+            else if(jR_center>fJetptbinsA[2] && jR_center<=fJetptbinsA[3]){eff_c=effHists[2]->GetBinContent(effHists[2]->GetXaxis()->FindBin(DR_center));}
+            else if(jR_center>fJetptbinsA[3] && jR_center<=fJetptbinsA[4]){eff_c=effHists[3]->GetBinContent(effHists[3]->GetXaxis()->FindBin(DR_center));}
+            else if(jR_center>fJetptbinsA[4] && jR_center<=fJetptbinsA[5]){eff_c=effHists[4]->GetBinContent(effHists[4]->GetXaxis()->FindBin(DR_center));}
+            //========================================================================
+            bool measurement_pre = kTRUE, measurement_pos = kTRUE;//kine eff booleans
+            for(int iBin=0;iBin<5;iBin++){
+                //if(jG_center>=fJetptbinsA[iBin] && jG_center<=fJetptbinsA[iBin+1]){
+                if(jG_center>=fJetptbinsA[iBin] && jG_center<=fJetptbinsA[5]){
+                    if(DG_center>=fDptRangesA[iBin] && DG_center<=fDptRangesAUp[4]){
+                        //if(fRpar-0.9 <= jmatch[9] && jmatch[9] <= 0.9-fRpar){
+                            //hZjetGRebinClos->Fill(jmatch[5],jmatch[6],bincontent-RMw);//gen level closure
+                            kineEffFulRec->Fill(zR_center,jR_center,weight);
+                            kineEffFulGen->Fill(zG_center,jG_center,weight);
+                            //pre unfolding kine eff--//if(DG_center<=fDptRangesAUp[4] || jG_center<=fJetptbinsA[fJetptbinsN] || jG_center>=fJetptbinsA[0] || zG_center>=fptbinsZFinalA[0]){ kineEffCutRec->Fill(zR_center,jR_center,weight); }
+                            if(DG_center>fDptRangesAUp[4] || jG_center>fJetptbinsA[fJetptbinsN] || jG_center<fJetptbinsA[0] || zG_center<fptbinsZFinalA[0]){measurement_pre = kFALSE;}
+                            if (measurement_pre){ kineEffCutRec->Fill(zR_center,jR_center,weight); }
+                            //post unfolding kine eff--//if(DR_center<=fDptRangesAUp[4] || jR_center<=fJetptbinsA[fJetptbinsN] || jR_center>=fJetptbinsA[0] || zR_center>=fptbinsZMeasA[0]){ kineEffCutGen->Fill(zG_center,jG_center,weight); }
+                            if(DR_center>fDptRangesAUp[4] || jR_center>fJetptbinsA[fJetptbinsN] || jR_center<fJetptbinsA[0] || zR_center<fptbinsZMeasA[0]){measurement_pos = kFALSE;}
+                            if (measurement_pos){ kineEffCutGen->Fill(zG_center,jG_center,weight);}
+                            //if(jR_center>=fJetptbinsA[iBin] && jR_center<=fJetptbinsA[iBin+1]){
+                            if(jR_center>=fJetptbinsA[iBin] && jR_center<=fJetptbinsA[5]){
+                                if(DR_center>=fDptRangesA[iBin] && DR_center<=fDptRangesAUp[4]){
+                                    //if(fRpar-0.9 <= jmatch[4] && jmatch[4] <= 0.9-fRpar){
+                                        response.Fill(zR_center,jR_center,zG_center,jG_center,weight/eff_c);
+                                        if(bClosure){
+                                            hMCjetD->Fill(zG_center,jG_center,weight/eff_c);
+                                            MCjets1 += weight/eff_c;
+                                        }
+                                    //}
+                                }
+                            }
+                        //}
+                    }
+                }
+            }
+            //========================================================================
+            /*
             bool measurement_ok = kTRUE; bool measurement_pre = kTRUE; bool measurement_pos = kTRUE;
             //fDptRangesA[] = {2,2,3,5,5};//fDptRangesAUp[] = {5,7,10,15,36};
             if( DR_center<fDptRangesA[0] || DG_center< fDptRangesA[0] ){measurement_ok = kFALSE;}
@@ -308,6 +352,7 @@ void unfold_Bayeszjet(
                     hMCjetD->Fill(zG_center,jG_center,weight);
                 }
             }
+            */
         }
     }
     else{cout<<"No response!!"<<endl;return;}
@@ -368,22 +413,23 @@ void unfold_Bayeszjet(
             for(int ientry = 0; ientry < bincontent; ientry++){
                 if(random1->Uniform(1) <= RMscaling) RMw++;
             }
-            //measurement ok
+            //
             Double_t zR_center=jmatch[0], jR_center=jmatch[1], DR_center=jmatch[2], zG_center=jmatch[5], jG_center=jmatch[6], DG_center=jmatch[7];
-                    double eff_c = 1;
-                    if    (jR_center>=fJetptbinsA[0] && jR_center<=fJetptbinsA[1]){eff_c=effHists[0]->GetBinContent(effHists[0]->GetXaxis()->FindBin(DR_center));}
-                    else if(jR_center>fJetptbinsA[1] && jR_center<=fJetptbinsA[2]){eff_c=effHists[1]->GetBinContent(effHists[1]->GetXaxis()->FindBin(DR_center));}
-                    else if(jR_center>fJetptbinsA[2] && jR_center<=fJetptbinsA[3]){eff_c=effHists[2]->GetBinContent(effHists[2]->GetXaxis()->FindBin(DR_center));}
-                    else if(jR_center>fJetptbinsA[3] && jR_center<=fJetptbinsA[4]){eff_c=effHists[3]->GetBinContent(effHists[3]->GetXaxis()->FindBin(DR_center));}
-                    else if(jR_center>fJetptbinsA[4] && jR_center<=fJetptbinsA[5]){eff_c=effHists[4]->GetBinContent(effHists[4]->GetXaxis()->FindBin(DR_center));}
+            double eff_c = 1;
+            if    (jR_center>=fJetptbinsA[0] && jR_center<=fJetptbinsA[1]){eff_c=effHists[0]->GetBinContent(effHists[0]->GetXaxis()->FindBin(DR_center));}
+            else if(jR_center>fJetptbinsA[1] && jR_center<=fJetptbinsA[2]){eff_c=effHists[1]->GetBinContent(effHists[1]->GetXaxis()->FindBin(DR_center));}
+            else if(jR_center>fJetptbinsA[2] && jR_center<=fJetptbinsA[3]){eff_c=effHists[2]->GetBinContent(effHists[2]->GetXaxis()->FindBin(DR_center));}
+            else if(jR_center>fJetptbinsA[3] && jR_center<=fJetptbinsA[4]){eff_c=effHists[3]->GetBinContent(effHists[3]->GetXaxis()->FindBin(DR_center));}
+            else if(jR_center>fJetptbinsA[4] && jR_center<=fJetptbinsA[5]){eff_c=effHists[4]->GetBinContent(effHists[4]->GetXaxis()->FindBin(DR_center));}
             //========================================================================
-            bool measurement_ok = kFALSE;
             for(int iBin=0;iBin<5;iBin++){
-                if(jG_center>=fJetptbinsA[iBin] && jG_center<=fJetptbinsA[iBin+1]){
+                //if(jG_center>=fJetptbinsA[iBin] && jG_center<=fJetptbinsA[iBin+1]){
+                if(jG_center>=fJetptbinsA[iBin] && jG_center<=fJetptbinsA[5]){
                     if(DG_center>=fDptRangesA[iBin] && DG_center<=fDptRangesAUp[4]){
                         if(fRpar-0.9 <= jmatch[9] && jmatch[9] <= 0.9-fRpar){
                             hZjetGRebinClos->Fill(jmatch[5],jmatch[6],bincontent-RMw);//gen level closure
-                            if(jR_center>=fJetptbinsA[iBin] && jR_center<=fJetptbinsA[iBin+1]){
+                            //if(jR_center>=fJetptbinsA[iBin] && jR_center<=fJetptbinsA[iBin+1]){
+                            if(jR_center>=fJetptbinsA[iBin] && jR_center<=fJetptbinsA[5]){
                                 if(DR_center>=fDptRangesA[iBin] && DR_center<=fDptRangesAUp[4]){
                                     if(fRpar-0.9 <= jmatch[4] && jmatch[4] <= 0.9-fRpar){
                                         hZjetRRebinClos->Fill(jmatch[0],jmatch[1],(bincontent-RMw)/eff_c);//rec level 
@@ -395,46 +441,6 @@ void unfold_Bayeszjet(
                     }
                 }
             }
-            /*
-            bool measurement_ok = kTRUE;
-//==================================================================================================================================
-            if(jmatch[9] < fRpar-0.9 && jmatch[9] > 0.9-fRpar){measurement_ok = kFALSE;}
-            else if((DG_center< fDptRangesA[0] || DG_center>fDptRangesAUp[4] || jG_center< fJetptbinsA[0]|| jG_center> fJetptbinsA[5] || zG_center<fptbinsZMeasA[0]))  {measurement_ok = kFALSE;}
-            else if((DG_center<fDptRangesA[0] && jG_center>=fJetptbinsA[0] )) {measurement_ok = kFALSE;}
-            else if((DG_center<fDptRangesA[1] && jG_center>=fJetptbinsA[1] )) {measurement_ok = kFALSE;}
-            else if((DG_center<fDptRangesA[2] && jG_center>=fJetptbinsA[2] )) {measurement_ok = kFALSE;}
-            else if((DG_center<fDptRangesA[3] && jG_center>=fJetptbinsA[3] )) {measurement_ok = kFALSE;}
-            else if((DG_center<fDptRangesA[4] && jG_center>=fJetptbinsA[4] )) {measurement_ok = kFALSE;}
-
-            if(measurement_ok){
-                hZjetGRebinClos->Fill(jmatch[5],jmatch[6],bincontent-RMw);//gen level closure hist
-            }
-            if(jmatch[4] < fRpar-0.9 && jmatch[4] > 0.9-fRpar){measurement_ok = kFALSE;}
-            else if((DR_center< fDptRangesA[0] || DR_center>fDptRangesAUp[4] || jR_center< fJetptbinsA[0]|| jR_center> fJetptbinsA[5] || zR_center<fptbinsZMeasA[0]))  {measurement_ok = kFALSE;}
-            else if((DR_center<fDptRangesA[0] && jR_center>=fJetptbinsA[0] )) {measurement_ok = kFALSE;}
-            else if((DR_center<fDptRangesA[1] && jR_center>=fJetptbinsA[1] )) {measurement_ok = kFALSE;}
-            else if((DR_center<fDptRangesA[2] && jR_center>=fJetptbinsA[2] )) {measurement_ok = kFALSE;}
-            else if((DR_center<fDptRangesA[3] && jR_center>=fJetptbinsA[3] )) {measurement_ok = kFALSE;}
-            else if((DR_center<fDptRangesA[4] && jR_center>=fJetptbinsA[4] )) {measurement_ok = kFALSE;}
-//==================================================================================================================================
-*/
-            /*
-                    double eff_c = 1;
-                    if    (jR_center>=fJetptbinsA[0] && jR_center<=fJetptbinsA[1]){eff_c=effHists[0]->GetBinContent(effHists[0]->GetXaxis()->FindBin(DR_center));}
-                    else if(jR_center>fJetptbinsA[1] && jR_center<=fJetptbinsA[2]){eff_c=effHists[1]->GetBinContent(effHists[1]->GetXaxis()->FindBin(DR_center));}
-                    else if(jR_center>fJetptbinsA[2] && jR_center<=fJetptbinsA[3]){eff_c=effHists[2]->GetBinContent(effHists[2]->GetXaxis()->FindBin(DR_center));}
-                    else if(jR_center>fJetptbinsA[3] && jR_center<=fJetptbinsA[4]){eff_c=effHists[3]->GetBinContent(effHists[3]->GetXaxis()->FindBin(DR_center));}
-                    else if(jR_center>fJetptbinsA[4] && jR_center<=fJetptbinsA[5]){eff_c=effHists[4]->GetBinContent(effHists[4]->GetXaxis()->FindBin(DR_center));}
-
-            if(measurement_ok){
-                if(eff_c==1)
-                {
-                    cout<<eff_c<<": "<<jmatch[0]<<","<<jmatch[5]<<","<<jmatch[1]<<","<<jmatch[6]<<","<<jmatch[2]<<","<<jmatch[7]<<endl;
-                }
-                hZjetRRebinClos->Fill(jmatch[0],jmatch[1],(bincontent-RMw)/eff_c);//rec level closure hist
-                responseClos.Fill(jmatch[0],jmatch[1],jmatch[5],jmatch[6],RMw/eff_c);//response
-            }
-            */
         }
     TCanvas* cClos = new TCanvas("cClos","cClos",800,600);
     hZjetRRebinClos->Draw();
@@ -687,52 +693,53 @@ void unfold_Bayeszjet(
 
     // Unfolded/Measured/Folded spectra comparison
     // ----------------------------------
-    //int databinnum = 2; int unfoldbinnum = 1; //if(){}
-    int databinnum = 0; int unfoldbinnum = 0; //if(){}
-    //
     TH2D* fUnfoldPlot = (TH2D*)fUnfoldedBayes[regBayes-1]->Clone();
     fUnfoldPlot->SetLineColor(kRed+2);
     fUnfoldPlot->SetLineWidth(4);
     TCanvas *cUnFoldedFold = new TCanvas("UnFoldedMeasuredFolded","UnFolded,Measured,Folded", 1400, 900);
     TCanvas *cUnFoldedFoldClos= new TCanvas("UnfoldMeasFoldClos","Closure:UnFolded,Measured,Folded", 1400, 900);
     TLegend *lUnFoldedFold = new TLegend(0.25,0.25, 0.85, 0.85);
+    TLegend *lUnFoldedFoldClos = new TLegend(0.25,0.25, 0.85, 0.85);
     cUnFoldedFold->Divide(3,2);cUnFoldedFoldClos->Divide(3,2);
     //cUnFoldedFold->SetLogz();cUnFoldedFoldClos->SetLogz();
+    TH1D* hData2Dplot = (TH1D*)hData2D->ProjectionX("",1,1,"E")->Clone();
+    TH1D* hUnfoldPlot = (TH1D*)fUnfoldPlot->ProjectionX("",1,1,"E")->Clone();
+    TH1D* hfold = (TH1D*)folded[regBayes-1]->ProjectionX("",1,1,"E")->Clone();
+    TH1D* hKineUnf = (TH1D*)hKineGen->ProjectionX("",1,1)->Clone();
+    TH1D* hUnfoldKine = (TH1D*)fUnfoldPlot->ProjectionX("",1,1)->Clone();
+        TH1D* hDataClos;// = (TH1D*)hZjetRRebinClos->ProjectionX("",1,1,"E")->Clone();
+        TH1D* hUnfoClos;// = (TH1D*)fUnfoldedBayesClos[regBayes-1]->ProjectionX("",1,1,"E")->Clone();
+        TH1D* hTrueClos;// = (TH1D*)hZjetGRebinClos->ProjectionX("",1,1,"E")->Clone();
     for (int binjet=1; binjet<= fUnfoldedBayes[regBayes-1]->GetNbinsY(); binjet++){
         /***********************************
         ############# Unfolding ##################
         ************************************/
         cUnFoldedFold->cd(binjet);
 
-        TH1D* hData2Dplot = (TH1D*)hData2D->ProjectionX("",binjet+databinnum,binjet+databinnum,"E")->Clone();
+        hData2Dplot = (TH1D*)hData2D->ProjectionX("",binjet,binjet,"E")->Clone();
         //hData2Dplot->SetLineColor(kBlack);
         hData2Dplot->SetLineWidth(2);
         hData2Dplot->SetMarkerStyle(20);
         hData2Dplot->SetMarkerSize(1);
         hData2Dplot->Scale(1,"width");
         hData2Dplot->Draw();
-        //if(binjet<5){
-        //hData2Dplot->SetTitle(Form("Jet pt: %s GeV/c",jetpttitle[binjet-1].Data()));}
-        //else
-        {
-        hData2Dplot->SetTitle(Form("Jet pt: %s GeV/c",jetpttitle[binjet-1].Data()));}
-        //fUnfoldedBayes[regBayes-1]->SetLineColor(kRed+2);
-        //fUnfoldedBayes[regBayes-1]->ProjectionX("",binjet+2,binjet+2,"E")->Draw("same");
-        TH1D* h2 = (TH1D*)fUnfoldPlot->ProjectionX("",binjet+unfoldbinnum,binjet+unfoldbinnum,"E")->Clone();
-        h2->SetLineColor(kRed+2);
-        h2->SetLineWidth(2);
-        h2->SetMarkerStyle(20);
-        h2->SetMarkerColor(kRed+2);
-        h2->Scale(1,"width");
-        h2->Draw("same");
-        //fUnfoldPlot->ProjectionX("",binjet+2,binjet+2,"E")->Draw("same");
-        TH1D* hfold = (TH1D*)folded[regBayes-1]->ProjectionX("",binjet+databinnum,binjet+databinnum,"E")->Clone();
+        hData2Dplot->SetTitle(Form("Jet pt: %s GeV/c",jetpttitle[binjet-1].Data()));
+
+        hUnfoldPlot = (TH1D*)fUnfoldPlot->ProjectionX("",binjet,binjet,"E")->Clone();
+        hUnfoldPlot->SetLineColor(kRed+2);
+        hUnfoldPlot->SetLineWidth(2);
+        hUnfoldPlot->SetMarkerStyle(20);
+        hUnfoldPlot->SetMarkerColor(kRed+2);
+        hUnfoldPlot->Scale(1,"width");
+        hUnfoldPlot->Draw("same");
+
+        hfold = (TH1D*)folded[regBayes-1]->ProjectionX("",binjet,binjet,"E")->Clone();
         hfold->SetLineColor(kGreen+2);
         hfold->Scale(1,"width");
         hfold->Draw("same");
         //kine efficiency
-        TH1D* hKineUnf = (TH1D*)hKineGen->ProjectionX("",binjet+unfoldbinnum,binjet+unfoldbinnum)->Clone();
-        TH1D* hUnfoldKine = (TH1D*)fUnfoldPlot->ProjectionX("",binjet+unfoldbinnum,binjet+unfoldbinnum)->Clone();
+        hKineUnf = (TH1D*)hKineGen->ProjectionX("",binjet,binjet)->Clone();
+        hUnfoldKine = (TH1D*)fUnfoldPlot->ProjectionX("",binjet,binjet)->Clone();
         hUnfoldKine->Divide(hKineUnf);
         hUnfoldKine->SetLineColor(kOrange+1);
         hUnfoldKine->SetMarkerColor(kOrange+1);
@@ -745,47 +752,41 @@ void unfold_Bayeszjet(
         if(bClosure){
             cUnFoldedFoldClos->cd(binjet);
             //cUnFoldedFoldClos->cd(binjet)->SetLogy();
-            TH1D* hDataClos = (TH1D*)hZjetRRebinClos->ProjectionX("",binjet+databinnum,binjet+databinnum,"E")->Clone();
-            TH1D* hUnfoClos = (TH1D*)fUnfoldedBayesClos[regBayes-1]->ProjectionX("",binjet+unfoldbinnum,binjet+unfoldbinnum,"E")->Clone();
-            TH1D* hTrueClos = (TH1D*)hZjetGRebinClos->ProjectionX("",binjet+databinnum,binjet+databinnum,"E")->Clone();
+            hDataClos = (TH1D*)hZjetRRebinClos->ProjectionX("",binjet,binjet,"E")->Clone();
+            hUnfoClos = (TH1D*)fUnfoldedBayesClos[regBayes-1]->ProjectionX("",binjet,binjet,"E")->Clone();
+            hTrueClos = (TH1D*)hZjetGRebinClos->ProjectionX("",binjet,binjet,"E")->Clone();
             hDataClos->SetLineColor(kRed+2);
             hTrueClos->SetLineColor(kGreen+2);
             hUnfoClos->SetLineColor(kBlue+2);
             hTrueClos->SetMinimum(0);
+            hTrueClos->SetMaximum(hTrueClos->GetMaximum()*1.5);
             hTrueClos->Draw();
             hDataClos->Draw("same");
-            //hUnfoClos->Draw("same");
+            hUnfoClos->Draw("same");
         }
     }
     //legend in the last tpad
-        cUnFoldedFold->cd(fUnfoldedBayes[regBayes-1]->GetNbinsY()+1);
-        TH1D* hData2Dplot = (TH1D*)hData2D->ProjectionX("",3,3,"E")->Clone();
-        hData2Dplot->SetLineWidth(2);
-        TH1D* hfoldD = (TH1D*)folded[regBayes-1]->ProjectionX("",3,3,"E")->Clone();
-        hfoldD->SetLineColor(kGreen+2);
-        hfoldD->SetLineWidth(2);
-        lUnFoldedFold->AddEntry(hData2Dplot,"Measured","l");
-        lUnFoldedFold->AddEntry(fUnfoldPlot,Form("Unfolded, iter=%d",regBayes),"l");
-        lUnFoldedFold->AddEntry(hfoldD,"Folded","l");
-        
-        TH1D* hKineUnf1 = (TH1D*)hKineGen->ProjectionX("",2,2)->Clone();
-        TH1D* hUnfoldKine1 = (TH1D*)fUnfoldPlot->ProjectionX("",2,2)->Clone();
-        hUnfoldKine1->Divide(hKineUnf1);
-        hUnfoldKine1->SetLineColor(kOrange+1);
-        hUnfoldKine1->SetMarkerColor(kOrange+1);
-        hUnfoldKine1->SetMarkerStyle(21);
-        lUnFoldedFold->AddEntry(hUnfoldKine1,"Kine Eff corr");
+    cUnFoldedFold->cd(fUnfoldedBayes[regBayes-1]->GetNbinsY()+1);
+    lUnFoldedFold->AddEntry(hData2Dplot,"Measured","l");
+    lUnFoldedFold->AddEntry(hUnfoldPlot,Form("Unfolded, iter=%d",regBayes),"l");
+    lUnFoldedFold->AddEntry(hfold,"Folded","l");
+    lUnFoldedFold->AddEntry(hUnfoldKine,"Kine Eff corr");
     lUnFoldedFold->Draw("same");
     cUnFoldedFold->SaveAs(Form("%s/alljetz2D/unfoldMeasFold.pdf",outDir.Data()));
     cUnFoldedFold->SaveAs(Form("%s/alljetz2D/unfoldMeasFold.png",outDir.Data()));
     cUnFoldedFold->SaveAs(Form("%s/alljetz2D/unfoldMeasFold.svg",outDir.Data()));
 
     if(bClosure){
+        cUnFoldedFoldClos->cd(fUnfoldedBayesClos[regBayes-1]->GetNbinsY()+1);
+        lUnFoldedFoldClos->AddEntry(hDataClos,"MC data");
+        lUnFoldedFoldClos->AddEntry(hTrueClos,"MC truth");
+        lUnFoldedFoldClos->AddEntry(hUnfoClos,"MC unfold");
+        lUnFoldedFoldClos->Draw("same");
         cUnFoldedFoldClos->SaveAs(Form("%s/alljetz2D/unfoldMeasFoldClos.pdf",outDir.Data()));
         cUnFoldedFoldClos->SaveAs(Form("%s/alljetz2D/unfoldMeasFoldClos.png",outDir.Data()));
     }
     // Unfolded/Measured spectra comparison
-    // ----------------------------------
+    // ------------------------------------
     TCanvas *cUnFolded = new TCanvas("UnFoldedMeasured","UnFolded/Measured", 1400, 900);
     cUnFolded->Divide(3,2);
     cUnFolded->SetLogz();
@@ -794,7 +795,7 @@ void unfold_Bayeszjet(
         ############# Unfolding comparison
         ************************************/
         cUnFolded->cd(binjet);
-        TH1D* hData2Dplot = (TH1D*)hData2D->ProjectionX("",binjet+databinnum,binjet+databinnum,"E")->Clone();
+        TH1D* hData2Dplot = (TH1D*)hData2D->ProjectionX("",binjet,binjet,"E")->Clone();
         //hData2Dplot->SetLineColor(kBlack);
         hData2Dplot->SetLineWidth(2);
         hData2Dplot->SetMarkerStyle(20);
@@ -803,7 +804,7 @@ void unfold_Bayeszjet(
         hData2Dplot->SetTitle(Form("Jet pt: %s GeV/c",jetpttitle[binjet-1].Data()));
         for(int ivar=0; ivar<NTrials; ivar++){//changes
             fUnfoldedBayes[ivar]->SetLineColor(colortable[ivar]);
-            fUnfoldedBayes[ivar]->ProjectionX("",binjet+unfoldbinnum,binjet+unfoldbinnum,"E")->Draw("same");
+            fUnfoldedBayes[ivar]->ProjectionX("",binjet,binjet,"E")->Draw("same");
         }
     }
     TLegend *lUnFolded = new TLegend(0.25,0.25, 0.85, 0.85);
@@ -815,9 +816,6 @@ void unfold_Bayeszjet(
     }
     lUnFolded->Draw();
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//databinnum += -2; //delete
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Folded/Measured spectra comparison
     // ----------------------------------
     TCanvas *cFolded = new TCanvas("FoldedMeasured","Folded/Measured", 1400, 900);
@@ -829,7 +827,7 @@ void unfold_Bayeszjet(
         ************************************/
         cFolded->cd(binjet);
 
-        TH1D* hData2Dplot = (TH1D*)hData2D->ProjectionX("",binjet+databinnum,binjet+databinnum,"E")->Clone();
+        TH1D* hData2Dplot = (TH1D*)hData2D->ProjectionX("",binjet,binjet,"E")->Clone();
         //hData2Dplot->SetLineColor(kBlack);
         hData2Dplot->SetLineWidth(2);
         hData2Dplot->SetMarkerStyle(20);
@@ -838,7 +836,7 @@ void unfold_Bayeszjet(
 //        hData2Dplot->SetTitle(Form("Jet pt: %s GeV/c",jetpttitle[binjet].Data()));
         for(int ivar=0; ivar<NTrials; ivar++){//changes
             folded[ivar]->SetLineColor(colortable[ivar]);
-            folded[ivar]->ProjectionX("",binjet+databinnum,binjet+databinnum,"E")->Draw("same");
+            folded[ivar]->ProjectionX("",binjet,binjet,"E")->Draw("same");
         }
     }
     TLegend *lFolded2 = new TLegend(0.25,0.25, 0.85, 0.85);
@@ -864,9 +862,9 @@ void unfold_Bayeszjet(
         ############# folding ##################
         ************************************/
         cFoldedR->cd(binjet);
-        TH1D* hDbase = (TH1D*)hData2D->ProjectionX("",binjet+databinnum,binjet+databinnum,"E");
+        TH1D* hDbase = (TH1D*)hData2D->ProjectionX("",binjet,binjet,"E");
         for(int ivar=0; ivar<NTrials; ivar++){//changes
-            hRatio[binjet-1][ivar] = (TH1D*)folded[ivar]->ProjectionX("",binjet+databinnum,binjet+databinnum,"E");
+            hRatio[binjet-1][ivar] = (TH1D*)folded[ivar]->ProjectionX("",binjet,binjet,"E");
             hRatio[binjet-1][ivar]->Divide(hDbase);
             hRatio[binjet-1][ivar]->SetLineColor(colortable[ivar]);
             for (int binN=1; binN <=hRatio[binjet-1][ivar]->GetNbinsX(); binN++){
