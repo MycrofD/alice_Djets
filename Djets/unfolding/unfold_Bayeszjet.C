@@ -299,6 +299,9 @@ void unfold_Bayeszjet(
                     else if(jR_center>fJetptbinsA[4] && jR_center<=fJetptbinsA[5]){eff_c=effHists[4]->GetBinContent(effHists[4]->GetXaxis()->FindBin(DR_center));}
                     weight = weight/eff_c;
                     MCjets1 += weight;
+                        if(eff_c==1){
+                            cout<<eff_c<<": "<<zR_center<<","<<zG_center<<";"<<jR_center<<","<<jG_center<<"; "<<DR_center<<","<<DG_center<<endl;
+                        }
                 }
                 response.Fill(zR_center,jR_center,zG_center,jG_center,weight);
                 if(bClosure){
@@ -366,44 +369,72 @@ void unfold_Bayeszjet(
                 if(random1->Uniform(1) <= RMscaling) RMw++;
             }
             //measurement ok
+            Double_t zR_center=jmatch[0], jR_center=jmatch[1], DR_center=jmatch[2], zG_center=jmatch[5], jG_center=jmatch[6], DG_center=jmatch[7];
+                    double eff_c = 1;
+                    if    (jR_center>=fJetptbinsA[0] && jR_center<=fJetptbinsA[1]){eff_c=effHists[0]->GetBinContent(effHists[0]->GetXaxis()->FindBin(DR_center));}
+                    else if(jR_center>fJetptbinsA[1] && jR_center<=fJetptbinsA[2]){eff_c=effHists[1]->GetBinContent(effHists[1]->GetXaxis()->FindBin(DR_center));}
+                    else if(jR_center>fJetptbinsA[2] && jR_center<=fJetptbinsA[3]){eff_c=effHists[2]->GetBinContent(effHists[2]->GetXaxis()->FindBin(DR_center));}
+                    else if(jR_center>fJetptbinsA[3] && jR_center<=fJetptbinsA[4]){eff_c=effHists[3]->GetBinContent(effHists[3]->GetXaxis()->FindBin(DR_center));}
+                    else if(jR_center>fJetptbinsA[4] && jR_center<=fJetptbinsA[5]){eff_c=effHists[4]->GetBinContent(effHists[4]->GetXaxis()->FindBin(DR_center));}
+            //========================================================================
+            bool measurement_ok = kFALSE;
+            for(int iBin=0;iBin<5;iBin++){
+                if(jG_center>=fJetptbinsA[iBin] && jG_center<=fJetptbinsA[iBin+1]){
+                    if(DG_center>=fDptRangesA[iBin] && DG_center<=fDptRangesAUp[4]){
+                        if(fRpar-0.9 <= jmatch[9] && jmatch[9] <= 0.9-fRpar){
+                            hZjetGRebinClos->Fill(jmatch[5],jmatch[6],bincontent-RMw);//gen level closure
+                            if(jR_center>=fJetptbinsA[iBin] && jR_center<=fJetptbinsA[iBin+1]){
+                                if(DR_center>=fDptRangesA[iBin] && DR_center<=fDptRangesAUp[4]){
+                                    if(fRpar-0.9 <= jmatch[4] && jmatch[4] <= 0.9-fRpar){
+                                        hZjetRRebinClos->Fill(jmatch[0],jmatch[1],(bincontent-RMw)/eff_c);//rec level 
+                                        responseClos.Fill(jmatch[0],jmatch[1],jmatch[5],jmatch[6],RMw/eff_c);//response
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            /*
             bool measurement_ok = kTRUE;
-
-                 if((jmatch[7]<fDptRangesA[0] && jmatch[6]>=fJetptbinsA[0] )) {measurement_ok = kFALSE;}//minimum Dpt cut for each jetpt interval
-            else if((jmatch[7]<fDptRangesA[1] && jmatch[6]>=fJetptbinsA[1] )) {measurement_ok = kFALSE;}
-            else if((jmatch[7]<fDptRangesA[2] && jmatch[6]>=fJetptbinsA[2] )) {measurement_ok = kFALSE;}
-            else if((jmatch[7]<fDptRangesA[3] && jmatch[6]>=fJetptbinsA[3] )) {measurement_ok = kFALSE;}
-            else if((jmatch[7]<fDptRangesA[4] && jmatch[6]>=fJetptbinsA[4] )) {measurement_ok = kFALSE;}
-                 if((jmatch[7]>fDptRangesAUp[4] || jmatch[6]> fJetptbinsA[5] || jmatch[5]<fptbinsZMeasA[0]))  {measurement_ok = kFALSE;}
+//==================================================================================================================================
+            if(jmatch[9] < fRpar-0.9 && jmatch[9] > 0.9-fRpar){measurement_ok = kFALSE;}
+            else if((DG_center< fDptRangesA[0] || DG_center>fDptRangesAUp[4] || jG_center< fJetptbinsA[0]|| jG_center> fJetptbinsA[5] || zG_center<fptbinsZMeasA[0]))  {measurement_ok = kFALSE;}
+            else if((DG_center<fDptRangesA[0] && jG_center>=fJetptbinsA[0] )) {measurement_ok = kFALSE;}
+            else if((DG_center<fDptRangesA[1] && jG_center>=fJetptbinsA[1] )) {measurement_ok = kFALSE;}
+            else if((DG_center<fDptRangesA[2] && jG_center>=fJetptbinsA[2] )) {measurement_ok = kFALSE;}
+            else if((DG_center<fDptRangesA[3] && jG_center>=fJetptbinsA[3] )) {measurement_ok = kFALSE;}
+            else if((DG_center<fDptRangesA[4] && jG_center>=fJetptbinsA[4] )) {measurement_ok = kFALSE;}
 
             if(measurement_ok){
                 hZjetGRebinClos->Fill(jmatch[5],jmatch[6],bincontent-RMw);//gen level closure hist
             }
-
-                 if((jmatch[2]<fDptRangesA[0] && jmatch[1]>=fJetptbinsA[0] )) {measurement_ok = kFALSE;}
-            else if((jmatch[2]<fDptRangesA[1] && jmatch[1]>=fJetptbinsA[1] )) {measurement_ok = kFALSE;}
-            else if((jmatch[2]<fDptRangesA[2] && jmatch[1]>=fJetptbinsA[2] )) {measurement_ok = kFALSE;}
-            else if((jmatch[2]<fDptRangesA[3] && jmatch[1]>=fJetptbinsA[3] )) {measurement_ok = kFALSE;}
-            else if((jmatch[2]<fDptRangesA[4] && jmatch[1]>=fJetptbinsA[4] )) {measurement_ok = kFALSE;}
-                 if((jmatch[2]>fDptRangesAUp[4] || jmatch[1]> fJetptbinsA[5] || jmatch[0]<fptbinsZMeasA[0]))  {measurement_ok = kFALSE;}
-            //efficiency
-            double eff_c = 1;
-            if     (jmatch[1]>=fJetptbinsA[0]&& jmatch[1]<=fJetptbinsA[1]){eff_c=effHists[0]->GetBinContent(effHists[0]->GetXaxis()->FindBin(jmatch[2]));}
-            else if(jmatch[1]>fJetptbinsA[1] && jmatch[1]<=fJetptbinsA[2]){eff_c=effHists[1]->GetBinContent(effHists[1]->GetXaxis()->FindBin(jmatch[2]));}
-            else if(jmatch[1]>fJetptbinsA[2] && jmatch[1]<=fJetptbinsA[3]){eff_c=effHists[2]->GetBinContent(effHists[2]->GetXaxis()->FindBin(jmatch[2]));}
-            else if(jmatch[1]>fJetptbinsA[3] && jmatch[1]<=fJetptbinsA[4]){eff_c=effHists[3]->GetBinContent(effHists[3]->GetXaxis()->FindBin(jmatch[2]));}
-            else if(jmatch[1]>fJetptbinsA[4] && jmatch[1]<=fJetptbinsA[5]){eff_c=effHists[4]->GetBinContent(effHists[4]->GetXaxis()->FindBin(jmatch[2]));}
+            if(jmatch[4] < fRpar-0.9 && jmatch[4] > 0.9-fRpar){measurement_ok = kFALSE;}
+            else if((DR_center< fDptRangesA[0] || DR_center>fDptRangesAUp[4] || jR_center< fJetptbinsA[0]|| jR_center> fJetptbinsA[5] || zR_center<fptbinsZMeasA[0]))  {measurement_ok = kFALSE;}
+            else if((DR_center<fDptRangesA[0] && jR_center>=fJetptbinsA[0] )) {measurement_ok = kFALSE;}
+            else if((DR_center<fDptRangesA[1] && jR_center>=fJetptbinsA[1] )) {measurement_ok = kFALSE;}
+            else if((DR_center<fDptRangesA[2] && jR_center>=fJetptbinsA[2] )) {measurement_ok = kFALSE;}
+            else if((DR_center<fDptRangesA[3] && jR_center>=fJetptbinsA[3] )) {measurement_ok = kFALSE;}
+            else if((DR_center<fDptRangesA[4] && jR_center>=fJetptbinsA[4] )) {measurement_ok = kFALSE;}
+//==================================================================================================================================
+*/
+            /*
+                    double eff_c = 1;
+                    if    (jR_center>=fJetptbinsA[0] && jR_center<=fJetptbinsA[1]){eff_c=effHists[0]->GetBinContent(effHists[0]->GetXaxis()->FindBin(DR_center));}
+                    else if(jR_center>fJetptbinsA[1] && jR_center<=fJetptbinsA[2]){eff_c=effHists[1]->GetBinContent(effHists[1]->GetXaxis()->FindBin(DR_center));}
+                    else if(jR_center>fJetptbinsA[2] && jR_center<=fJetptbinsA[3]){eff_c=effHists[2]->GetBinContent(effHists[2]->GetXaxis()->FindBin(DR_center));}
+                    else if(jR_center>fJetptbinsA[3] && jR_center<=fJetptbinsA[4]){eff_c=effHists[3]->GetBinContent(effHists[3]->GetXaxis()->FindBin(DR_center));}
+                    else if(jR_center>fJetptbinsA[4] && jR_center<=fJetptbinsA[5]){eff_c=effHists[4]->GetBinContent(effHists[4]->GetXaxis()->FindBin(DR_center));}
 
             if(measurement_ok){
-                if(eff_c==1){
+                if(eff_c==1)
+                {
                     cout<<eff_c<<": "<<jmatch[0]<<","<<jmatch[5]<<","<<jmatch[1]<<","<<jmatch[6]<<","<<jmatch[2]<<","<<jmatch[7]<<endl;
                 }
                 hZjetRRebinClos->Fill(jmatch[0],jmatch[1],(bincontent-RMw)/eff_c);//rec level closure hist
                 responseClos.Fill(jmatch[0],jmatch[1],jmatch[5],jmatch[6],RMw/eff_c);//response
             }
-//            if(measurement_ok){
-//                hZjetGRebinClos->Fill(jmatch[5],jmatch[6],bincontent-RMw);//gen level closure hist
-//            }
-
+            */
         }
     TCanvas* cClos = new TCanvas("cClos","cClos",800,600);
     hZjetRRebinClos->Draw();
@@ -713,13 +744,14 @@ void unfold_Bayeszjet(
         hData2Dplot->SetMinimum(hData2Dplot->GetMinimum()*0.5);
         if(bClosure){
             cUnFoldedFoldClos->cd(binjet);
-            cUnFoldedFoldClos->cd(binjet)->SetLogy();
+            //cUnFoldedFoldClos->cd(binjet)->SetLogy();
             TH1D* hDataClos = (TH1D*)hZjetRRebinClos->ProjectionX("",binjet+databinnum,binjet+databinnum,"E")->Clone();
             TH1D* hUnfoClos = (TH1D*)fUnfoldedBayesClos[regBayes-1]->ProjectionX("",binjet+unfoldbinnum,binjet+unfoldbinnum,"E")->Clone();
             TH1D* hTrueClos = (TH1D*)hZjetGRebinClos->ProjectionX("",binjet+databinnum,binjet+databinnum,"E")->Clone();
             hDataClos->SetLineColor(kRed+2);
             hTrueClos->SetLineColor(kGreen+2);
             hUnfoClos->SetLineColor(kBlue+2);
+            hTrueClos->SetMinimum(0);
             hTrueClos->Draw();
             hDataClos->Draw("same");
             //hUnfoClos->Draw("same");
