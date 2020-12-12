@@ -67,12 +67,12 @@ if(lensysin>2):
 #######
 flagMulti=0
 flagRef=0
-flagClos=0
+flagClos=1
 flagSigSB=0
 flagCutsys=0
 flagFD=0
 flagUIter=0
-flagUPrior=1
+flagUPrior=0
 flagUSvd=0
 flagJES=0
 flagStat=0
@@ -277,8 +277,12 @@ if(flagClos):
     lClose = TLegend(0.12,0.80,0.38,0.88);
     #### -----------------------------
     for i in range(size_closure):
-        dataClosure.append(ROOT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/unfolding_Bayes_5/plots/Closure/unfoldedSpectrum_closure%d.root"%(R,i),"read"))
-        hhClosure.append(dataClosure[i].Get('hRawVTrue').Clone('hRawVTrue'+str(i)))
+        if(lensysin>2):
+            dataClosure.append(ROOT.TFile("/media/jackbauer/data/z_out/R_"+R+"_finaltry/unfolding/Bayes/alljetz2D/MCClosure_"+str(i)+".root","read"))
+            hhClosure.append(dataClosure[i].Get('unfByTruth'+str(int(jetbin)+1)).Clone('hRawVTrue'+str(i)))
+        else:
+            dataClosure.append(ROOT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/unfolding_Bayes_5/plots/Closure/unfoldedSpectrum_closure%d.root"%(R,i),"read"))
+            hhClosure.append(dataClosure[i].Get('hRawVTrue').Clone('hRawVTrue'+str(i)))
         hhClosure[i].GetYaxis().SetTitle("ratio")
         hhClosure[i].GetYaxis().SetRangeUser(0,2)
         if(i==0):hhClosure[i].Draw()
@@ -293,7 +297,7 @@ if(flagClos):
     histCloRMS.SetFillColor(ROOT.kGreen+2);histCloRMS.SetFillStyle(3654)
     histCloRMS.GetYaxis().SetTitle("RMS");histCloRMS.Draw();
     # text
-    ttCloRMS = ROOT.TText(5,0.4,GetDigitText(histCloRMS,fptbinsJC))
+    ttCloRMS = ROOT.TText(fptbinsJlo[1],0.4,GetDigitText(histCloRMS,fptbinsJC))
     ttCloRMS.Draw('same')
     c_CloRMS.SaveAs('plots/'+JET_or_Z+'9_Closure/9_CloRMS'+R+whichjetbin+'.pdf')
     c_CloRMS.SaveAs('plots/'+JET_or_Z+'9_Closure/9_CloRMS'+R+whichjetbin+'.png')
@@ -420,16 +424,25 @@ cutindices=['','2','3','5','6']
 Cutstitles=['def','cut1','cut2','cut3','cut4']
 sizeCutsys=5#
 if(flagCutsys):
-    datafileCutsys = [datafileFD]
-    hCuts=[datafileFD.Get('hData_binned_sub').Clone('hCuts_0')];
-    for i in range(1,sizeCutsys):
-        datafileCutsys.append(
-            RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/FinalSys/CutSys%sFinal_DzeroR%s_paperCuts/Default/FDsubtraction/JetPtSpectrum_FDsub.root"%(cutindices[i],R))
-            )
-        hCuts.append(datafileCutsys[i].Get('hData_binned_sub').Clone('hCuts_'+str(i)))
+    if(lensysin>2):
+        datafileCutsys=[ROOT.TFile("/media/jackbauer/data/z_out/R_"+R+"_finaltry/FDsubtraction/outFD_1.root ","read")]
+        hCuts=[datafileCutsys[0].Get('hsub_c'+str(int(jetbin)+1)).Clone('hCuts_0')];
+        for i in range(1,sizeCutsys):
+            datafileCutsys.append(ROOT.TFile("/media/jackbauer/data/z_out/R_"+R+"_finaltry/SQ"+cutindices[i]+"/FDsubtraction/outFD_1.root ","read"))
+            hCuts.append(datafileCutsys[i].Get('hsub_c'+str(int(jetbin)+1)).Clone('hCuts_'+str(i)))
+        print(hCuts)
+    else:
+        datafileCutsys = [datafileFD]
+        hCuts=[datafileFD.Get('hData_binned_sub').Clone('hCuts_0')];
+        for i in range(1,sizeCutsys):
+            datafileCutsys.append(
+                    #RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/FinalSys/CutSys%sFinal_DzeroR%s_paperCuts/Default/FDsubtraction/JetPtSpectrum_FDsub.root"%(cutindices[i],R))
+                    RT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR"+R+"_paperCuts/SQ"+cutindices[i]+"/Default/FDsubtraction/JetPtSpectrum_FDsub.root")
+                    )
+            hCuts.append(datafileCutsys[i].Get('hData_binned_sub').Clone('hCuts_'+str(i)))
     #### -----------------------------
     c_Cuts = TCanvas("cCuts","cCuts",900,600)
-    lCuts1 = TLegend(0.12,0.70,0.38,0.88);
+    lCuts1 = TLegend(0.72,0.70,0.88,0.88);
     hhCutsratio=[]
     for i in range(sizeCutsys):
         hhCutsratio.append(hCuts[i].Clone('hCutsRatio_'+str(i)))
@@ -439,16 +452,17 @@ if(flagCutsys):
         hhCutsratio[i].SetLineColor(RTColors[i])
         if(i==0):
             hhCutsratio[i].GetYaxis().SetRangeUser(0.4,2)
+            if(lensysin>2):hhCutsratio[i].GetYaxis().SetRangeUser(0.4,3)
             hhCutsratio[i].Draw()
-        elif(i>0):
+        else:
             hhCutsratio[i].Draw('same')
-    
-        if(i>=0):
-            lCuts1.AddEntry(hhCutsratio[i],Cutstitles[i],"l");
+        lCuts1.AddEntry(hhCutsratio[i],Cutstitles[i],"l");
     lCuts1.Draw("same");
 
-    c_Cuts.SaveAs('plots/3_Cuts/3_Cuts_ratio'+R+'.pdf')
-    c_Cuts.SaveAs('plots/3_Cuts/3_Cuts_ratio'+R+'.png')
+    #c_Cuts.SaveAs('plots/3_Cuts/3_Cuts_ratio'+R+'.pdf')
+    #c_Cuts.SaveAs('plots/3_Cuts/3_Cuts_ratio'+R+'.png')
+    c_Cuts.SaveAs('plots/'+JET_or_Z+'3_Cuts/3_Cuts_ratio'+R+whichjetbin+'.pdf')
+    c_Cuts.SaveAs('plots/'+JET_or_Z+'3_Cuts/3_Cuts_ratio'+R+whichjetbin+'.png')
     #### -----------------------------RMS
     c_CutsRMS = TCanvas("cCutsRMS","cCutsRMS",900,600)
     histCutsRMS = rootRMS(hhCutsratio)
@@ -456,22 +470,78 @@ if(flagCutsys):
     histCutsRMS.SetFillColor(ROOT.kBlue+2);histCutsRMS.SetFillStyle(3654)
     histCutsRMS.GetYaxis().SetTitle("RMS");histCutsRMS.Draw()
     # extra for R 02
-    histCutsRMS2= rootRMS(hhCutsratio[0:1]+hhCutsratio[3:])
+    #histCutsRMS2= rootRMS(hhCutsratio[0:1]+hhCutsratio[3:])
+    histCutsRMS2= rootRMS(hhCutsratio,0.1)
     histCutsRMS3 = histCutsRMS.Clone('histCutsRMS3')
-    histCutsRMS3.SetBinContent(histCutsRMS3.GetNbinsX(),histCutsRMS2.GetBinContent(histCutsRMS2.GetXaxis().FindBin(40)))
 
-    ttCuts2 = ROOT.TText(33,0.8,GetDigitText(histCutsRMS2,fptbinsJC)[-10:])
+    ttCuts2 = ROOT.TText(fptbinsJlo[-2],0.8,GetDigitText(histCutsRMS2,fptbinsJC))#[-10:])
     #ttCuts2 = ROOT.TText(5,0.6,GetDigitText(histCutsRMS3,fptbinsJC))
     histCutsRMS3.SetFillColor(ROOT.kRed+2);histCutsRMS3.SetFillStyle(3645)
-    if (R=='02'):histCutsRMS3.Draw('same');ttCuts2.Draw('same')
+    if (lensysin==2 and R=='02'):# or (lensysin>2 and R=='02'):
+        histCutsRMS3.SetBinContent(histCutsRMS3.GetNbinsX(),histCutsRMS2.GetBinContent(histCutsRMS2.GetXaxis().FindBin(40)))
+        histCutsRMS3.Draw('same');ttCuts2.Draw('same')
 
     # text
-    ttCuts = ROOT.TText(5,0.9,GetDigitText(histCutsRMS,fptbinsJC))
+    ttCuts = ROOT.TText(fptbinsJlo[1],0.9,GetDigitText(histCutsRMS,fptbinsJC))
     ttCuts.Draw('same')
 
-    c_CutsRMS.SaveAs('plots/3_Cuts/3_Cuts_sysRMS'+R+'.pdf')
-    c_CutsRMS.SaveAs('plots/3_Cuts/3_Cuts_sysRMS'+R+'.png')
+    #c_CutsRMS.SaveAs('plots/3_Cuts/3_Cuts_sysRMS'+R+'.pdf')
+    #c_CutsRMS.SaveAs('plots/3_Cuts/3_Cuts_sysRMS'+R+'.png')
+    c_CutsRMS.SaveAs('plots/'+JET_or_Z+'3_Cuts/3_Cuts_sysRMS'+R+whichjetbin+'.pdf')
+    c_CutsRMS.SaveAs('plots/'+JET_or_Z+'3_Cuts/3_Cuts_sysRMS'+R+whichjetbin+'.png')
 
+    ##FITTING plot
+    if(lensysin>2):
+        yCUTS = hist2array(histCutsRMS)
+        xCUTS = np.array(fptbinsJC)
+        if(R=='02'):
+            if(whichJetInZ==2 or 4):
+                xCUTS=xCUTS[1:]
+                yCUTS=yCUTS[1:]
+                print('this works!!!!!!!!')
+    else:
+        yCUTS = hist2array(histCutsRMS)[3:-1]
+        xCUTS = np.array(fptbinsJC)[3:-1]
+    xCUTSlh= np.array(fptbinsJlh[:])
+    print(xCUTS, yCUTS)
+    funcCUTS = funcLine #funcJES = funcBola
+    try:
+        popt, pcov = curve_fit(funcCUTS, xCUTS, yCUTS)
+        print(popt)
+    except:pass
+    print(popt)
+    
+    fig=plt.figure(1);plt.grid(axis='both',color='0.95');plt.ylim(0,0.5);#plt.xticks(np.arange(min(xJESall),max(xJESall)+5,5.0));
+    plt.xlim(fptbinsJlh[0],fptbinsJlh[-1])
+    plt.plot(xCUTSlh, funcCUTS(xCUTSlh,*popt),'r-', label='fit');
+    plt.plot(fptbinsJlo[0:2],[hist2array(histCutsRMS)[0],hist2array(histCutsRMS)[0]],'k')
+    if(lensysin==2 and R=='02'):plt.step(fptbinsJlh[1:], hist2array(histCutsRMS2),'k', label="test");
+    else:plt.step(fptbinsJlh[1:], hist2array(histCutsRMS),'k', label="test");
+    plt.errorbar(fptbinsJC,hist2array(histCutsRMS),fmt='.k');
+    if(lensysin==2):
+        plt.xlabel(r'jet $p_T$')
+        locCUTS = 0.4
+    elif(lensysin>2):
+        plt.xlabel(r'z$_{||}$')
+        locCUTS = 0.4
+    plt.ylabel('ratio');
+    plt.title("CUTS unc: R=0."+str(int(R)))
+    uncCUTSvals = ""
+    valsCUTS = abs(100*(funcCUTS(np.array(fptbinsJC),*popt))) #100*(valsJES[i]-1)
+    for i in range(len(valsCUTS)):
+        uncCUTSvals += "%.1f, "%(valsCUTS[i]) #"R%s"%(R))
+    uncCUTSvals = uncCUTSvals[:-1]+' in %'
+    plt.text(fptbinsJlh[1], locCUTS, uncCUTSvals,
+         #rotation=45,
+         horizontalalignment='left',
+         verticalalignment='top',
+         #multialignment='center'
+         )
+    plt.draw()
+    plt.savefig('plots/'+JET_or_Z+'3_Cuts/3_Cut_FIT'+R+whichjetbin+'.pdf')
+    plt.savefig('plots/'+JET_or_Z+'3_Cuts/3_Cut_FIT'+R+whichjetbin+'.png')
+    plt.waitforbuttonpress(1);input()
+    plt.close()
     if(wait):input()
 ############## -----------------------------
 #histos:
@@ -630,6 +700,7 @@ if(flagUPrior):
     c_PriorRMS = TCanvas("cPriorRMS","cPriorRMS",900,500)
     if(lensysin>2):histPriorRMS=rootRMS(hUPriorratio[:])
     else:histPriorRMS=rootRMS(hUPriorratio[0:1]+hUPriorratio[2:6]+hUPriorratio[7:])
+    #else:histPriorRMS=rootRMS(hUPriorratio[:])
     histPriorRMS.GetYaxis().SetRangeUser(0,0.06)
     histPriorRMS.SetFillColor(ROOT.kRed+2);histPriorRMS.SetFillStyle(3354);histPriorRMS.GetYaxis().SetTitle('RMS');histPriorRMS.SetTitle('Bayes unfolding: priors sys.')
     histPriorRMS.Draw()

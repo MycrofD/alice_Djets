@@ -28,7 +28,10 @@ def GetDigitText(histo,bincenters):
     print(listx)
     return listx
 
-def rootRMS(histpylist): #takes histos in list
+def rootRMS(histpylist,*args): #takes histos in list
+    if(len(args)>0):
+        diff_bin_limit=args[0]
+    else:diff_bin_limit=1
     if(len(histpylist))==1: print('ERROR: not enough hists'); return histpylist[0]
     hrmslist = histpylist[0].Clone('hrmslist')
     for binx in range(1,hrmslist.GetNbinsX()+1):
@@ -36,12 +39,22 @@ def rootRMS(histpylist): #takes histos in list
         hist_rejects = 0
         for i in range(1,len(histpylist)):
             diff_bin = np.sqrt((histpylist[i].GetBinContent(binx)-histpylist[0].GetBinContent(binx))**2)
-            if (diff_bin>0.4): hist_rejects += 1; bincontentx2 += 0
+            if (diff_bin>diff_bin_limit): hist_rejects += 1; bincontentx2 += 0
             else: bincontentx2 += (histpylist[i].GetBinContent(binx)-histpylist[0].GetBinContent(binx))**2
         bincontentx = np.sqrt((bincontentx2)/(len(histpylist)-1-hist_rejects))
         hrmslist.SetBinContent(binx,bincontentx)
         hrmslist.SetBinError(binx,0)
             
+    return hrmslist
+
+def ratioRMS(histpylist):
+    hrmslist = histpylist[0].Clone('hrmslist')
+    for binx in range(1,hrmslist.GetNbinsX()+1):
+        binx2 = 0
+        for i in range(len(histpylist)):
+            binx2 += (1-histpylist[i].GetBinContent(binx))**2
+        hrmslist.SetBinContent(binx,np.sqrt(binx2/len(histpylist)))
+        hrmslist.SetBinError(binx,0)
     return hrmslist
 
 def rootMEAN(histpylist): #takes histos in list
