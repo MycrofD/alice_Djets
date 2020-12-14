@@ -67,7 +67,7 @@ if(lensysin>2):
 #######
 flagMulti=0
 flagRef=0
-flagClos=1
+flagClos=0
 flagSigSB=0
 flagCutsys=0
 flagFD=0
@@ -292,6 +292,7 @@ if(flagClos):
     #### -----------------------------RMS
     c_CloRMS = TCanvas("cCloRMS","cCloRMS",900,600)
     lCloRMS = TLegend(0.12,0.80,0.38,0.88);
+    #skip = 0;histCloRMS = ratioRMS(hhClosure[:skip]+hhClosure[skip+1:])
     histCloRMS = ratioRMS(hhClosure)
     histCloRMS.GetYaxis().SetRangeUser(0,0.5);histCloRMS.SetLineColor(ROOT.kGreen+2);
     histCloRMS.SetFillColor(ROOT.kGreen+2);histCloRMS.SetFillStyle(3654)
@@ -442,7 +443,8 @@ if(flagCutsys):
             hCuts.append(datafileCutsys[i].Get('hData_binned_sub').Clone('hCuts_'+str(i)))
     #### -----------------------------
     c_Cuts = TCanvas("cCuts","cCuts",900,600)
-    lCuts1 = TLegend(0.72,0.70,0.88,0.88);
+    lCuts1 = TLegend(0.12,0.70,0.38,0.88);
+    if(lensysin>2):lCuts1 = TLegend(0.72,0.70,0.88,0.88);
     hhCutsratio=[]
     for i in range(sizeCutsys):
         hhCutsratio.append(hCuts[i].Clone('hCutsRatio_'+str(i)))
@@ -471,15 +473,28 @@ if(flagCutsys):
     histCutsRMS.GetYaxis().SetTitle("RMS");histCutsRMS.Draw()
     # extra for R 02
     #histCutsRMS2= rootRMS(hhCutsratio[0:1]+hhCutsratio[3:])
-    histCutsRMS2= rootRMS(hhCutsratio,0.1)
+    if(lensysin==2):
+        histCutsRMS2 = rootRMS(hhCutsratio,0.1)
+    elif(lensysin>2):
+        histCutsRMS2 = rootRMS(hhCutsratio,0.6)
     histCutsRMS3 = histCutsRMS.Clone('histCutsRMS3')
 
-    ttCuts2 = ROOT.TText(fptbinsJlo[-2],0.8,GetDigitText(histCutsRMS2,fptbinsJC))#[-10:])
+    ttCuts2 = ROOT.TText(fptbinsJlh[-2],0.8,GetDigitText(histCutsRMS2,fptbinsJC))#[-10:])
     #ttCuts2 = ROOT.TText(5,0.6,GetDigitText(histCutsRMS3,fptbinsJC))
     histCutsRMS3.SetFillColor(ROOT.kRed+2);histCutsRMS3.SetFillStyle(3645)
     if (lensysin==2 and R=='02'):# or (lensysin>2 and R=='02'):
         histCutsRMS3.SetBinContent(histCutsRMS3.GetNbinsX(),histCutsRMS2.GetBinContent(histCutsRMS2.GetXaxis().FindBin(40)))
         histCutsRMS3.Draw('same');ttCuts2.Draw('same')
+    elif (lensysin>2 and R=='02'):
+        histCutsRMS3.SetBinContent(1,histCutsRMS2.GetBinContent(histCutsRMS2.GetXaxis().FindBin(0.5)))
+        histCutsRMS3.Draw('same');
+        if(jetbin=='2'):
+            ttCuts2=ROOT.TText(fptbinsJlh[1],0.7,"w/o cut2")
+            ttCuts2.Draw('same') 
+        elif(jetbin=='4'):
+            ttCuts2 = ROOT.TText(fptbinsJlo[1],0.7,GetDigitText(histCutsRMS2,fptbinsJC)+" w/o cut2")#[-10:])
+            #ttCuts2=ROOT.TText(fptbinsJlh[1],0.7,"w/o cut2")
+            ttCuts2.Draw('same') 
 
     # text
     ttCuts = ROOT.TText(fptbinsJlo[1],0.9,GetDigitText(histCutsRMS,fptbinsJC))
