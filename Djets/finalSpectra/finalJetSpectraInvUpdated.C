@@ -136,7 +136,9 @@ void finalJetSpectraInvUpdated(
 Int_t type = 0, //0 - pt x-section, 1 - z x-section, 2 - z PDF
 Int_t radius = 4, // 2, 4 or 6
 Int_t z = 0, //which z jet pT bin 1,2,3,4,5
-Int_t sysGlobal = 0, //0 - (defualt )add LumiUnc, BRUnc and Tracking Unc.; 1 - (R comparison) no global Unc; 2 - (energy comparison) add LumiUnc and Tracking Unc
+Int_t sysGlobal = 0, //0 - (defualt )add LumiUnc, BRUnc and Tracking Unc. + add cut var and JES;  for x-section
+                     //1 - (R comparison) no global Unc; cut var separate and no JES - available only for pT x-section (type 0)
+                     //2 - (energy comparison) add LumiUnc and Tracking Unc cut var and JES
 TString dataFile = "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR04_paperCuts/Default/unfolding_Bayes_4/unfoldedSpectrum_unfoldedJetSpectrum.root",
 TString dataAnalysisFile = "/mnt/hgfs/vmware/data_R04_050219/data/AnalysisResults_Run2w18b.root",
 TString simDir = "/home/kvapil/work/analysis/pp_run2/D0jet/BaseCuts/Simulations/Prompt/AnalysisResults_Run2w18b.root",
@@ -206,12 +208,12 @@ histBase="unfoldedSpectrum";
     // ----------------------------------------------------------------
     Double_t sigma_in = 0.0578;
     const Double_t  BRDzero = 0.0389;
-    Double_t BRDzeroUnc = 0.04;//or 0.0004?
+    Double_t BRDzeroUnc = 0.0004;
     Double_t DtrackingUnc = 0.05;
     Double_t LumiUnc = 0.05;
     if(fivetev){
         sigma_in = 0.05077;
-        DtrackingUnc = 0;//0.03;//need to be checked
+        DtrackingUnc = 0.03;
         LumiUnc=0.021;
     }
     if(type ==0){//x-section
@@ -289,8 +291,8 @@ histBase="unfoldedSpectrum";
                 //systUncD_up = new Double_t[xAxisBins]{0.0891, 0.0912, 0.0721, 0.0989, 0.078, 0.0827, 0.1145, 0.2137};
                 //systUncD_down = new Double_t[xAxisBins]{0.1009, 0.1034,	0.0907, 0.1161,	0.098, 0.1144,	0.1386, 0.2486};
                 //JES and CUTS not in systUncD_up and systUncD_down
-                systUncD_up = new Double_t[xAxisBins]{0.072, 0.073, 0.069, 0.078, 0.113, 0.174, 0.227};
-                systUncD_down = new Double_t[xAxisBins]{0.088, 0.089, 0.088, 0.098,	0.138, 0.195, 0.285};
+                systUncD_up = new Double_t[xAxisBins]{0.065, 0.067, 0.062, 0.072, 0.109, 0.171, 0.225};
+                systUncD_down = new Double_t[xAxisBins]{0.083, 0.084, 0.082, 0.093,	0.135, 0.193, 0.283};
                 systUncD_JES = new Double_t[xAxisBins]{0.011, 0.016, 0.022, 0.031, 0.047, 0.071, 0.117};
                 systUncD_CUTS = new Double_t[xAxisBins]{0.014, 0.017, 0.021, 0.026, 0.036, 0.052, 0.081};
             }
@@ -313,8 +315,8 @@ histBase="unfoldedSpectrum";
                 //systUncD_up = new Double_t[xAxisBins]{0.0891, 0.0912, 0.0721, 0.0989, 0.078, 0.0827, 0.1145, 0.2137};
                 //systUncD_down = new Double_t[xAxisBins]{0.1009, 0.1034,	0.0907, 0.1161,	0.098, 0.1144,	0.1386, 0.2486};
                 //JES and CUTS not in systUncD_up and systUncD_down
-                systUncD_up = new Double_t[xAxisBins]{0.084, 0.074, 0.086, 0.098, 0.119, 0.177, 0.256};
-                systUncD_down = new Double_t[xAxisBins]{0.099, 0.093, 0.109, 0.127,	0.156, 0.217, 0.275};
+                systUncD_up = new Double_t[xAxisBins]{0.078, 0.067, 0.08, 0.093, 0.115, 0.174, 0.254};
+                systUncD_down = new Double_t[xAxisBins]{0.094, 0.088, 0.105, 0.123,	0.153, 0.215, 0.274};
                 systUncD_JES = new Double_t[xAxisBins]{0.016, 0.02, 0.024, 0.031, 0.043, 0.061, 0.096};
                 systUncD_CUTS = new Double_t[xAxisBins]{0.034, 0.043, 0.056, 0.075, 0.107, 0.158, 0.253};
             }
@@ -331,8 +333,8 @@ histBase="unfoldedSpectrum";
                 //systUncD_up = new Double_t[xAxisBins]{0.0891, 0.0912, 0.0721, 0.0989, 0.078, 0.0827, 0.1145, 0.2137};
                 //systUncD_down = new Double_t[xAxisBins]{0.1009, 0.1034,	0.0907, 0.1161,	0.098, 0.1144,	0.1386, 0.2486};
                 //JES and CUTS not in systUncD_up and systUncD_down
-                systUncD_up = new Double_t[xAxisBins]{0.08, 0.069, 0.082, 0.104, 0.158, 0.172, 0.309};
-                systUncD_down = new Double_t[xAxisBins]{0.096, 0.087, 0.108, 0.137,	0.205, 0.234, 0.364};
+                systUncD_up = new Double_t[xAxisBins]{0.075, 0.062, 0.076, 0.099, 0.155, 0.169, 0.307};
+                systUncD_down = new Double_t[xAxisBins]{0.091, 0.082, 0.104, 0.133,	0.203, 0.232, 0.362};
                 systUncD_JES = new Double_t[xAxisBins]{0.016, 0.02, 0.024, 0.031, 0.043, 0.061, 0.096};
                 systUncD_CUTS = new Double_t[xAxisBins]{0.034, 0.043, 0.056, 0.075, 0.107, 0.158, 0.253};
             }
@@ -355,8 +357,8 @@ histBase="unfoldedSpectrum";
                 //systUncD_up = new Double_t[xAxisBins]{0.0891, 0.0912, 0.0721, 0.0989, 0.078, 0.0827, 0.1145, 0.2137};
                 //systUncD_down = new Double_t[xAxisBins]{0.1009, 0.1034,	0.0907, 0.1161,	0.098, 0.1144,	0.1386, 0.2486};
                 //JES and CUTS not in systUncD_up and systUncD_down
-                systUncD_up = new Double_t[xAxisBins]{0.095, 0.09, 0.073, 0.12, 0.159, 0.235, 0.351};
-                systUncD_down = new Double_t[xAxisBins]{0.106, 0.104, 0.092, 0.144,	0.197, 0.343, 0.437};
+                systUncD_up = new Double_t[xAxisBins]{0.091, 0.085, 0.067, 0.116, 0.156, 0.233, 0.35};
+                systUncD_down = new Double_t[xAxisBins]{0.101, 0.10, 0.087, 0.141,	0.195, 0.342, 0.436};
                 systUncD_JES = new Double_t[xAxisBins]{0.003, 0.009, 0.017, 0.029, 0.05, 0.082, 0.143};
                 systUncD_CUTS = new Double_t[xAxisBins]{0.048, 0.055, 0.064, 0.078, 0.101, 0.138, 0.208};
             }
