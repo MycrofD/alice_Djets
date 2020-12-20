@@ -1,0 +1,112 @@
+
+
+energy: "5.02"
+sigma_in: 0.05077
+DtrackingUnc: 0.03
+LumiUnc: 0.021
+BRDzero: 0.0389
+BRDzeroUnc: 0.0004
+
+##--------------------------
+## PARAMTERS configuration
+##--------------------------
+xAxisBins:
+    0: 7
+    1: 5 
+    2: 5 
+
+xAxis:
+    0: [5,6,8,10,14,20,30,50]
+    1: [0.4,0.6,0.7,0.8,0.9,1.0]
+    2: [0.4,0.6,0.7,0.8,0.9,1.0]
+
+xAxisC:
+    0: [5.5,7,9,12,17,25,40]
+    1: [0.5,0.65,0.75,0.85,0.95]
+    2: [0.5,0.65,0.75,0.85,0.95]
+
+jetpTbins:
+    0: []
+    1: [2,5,7,10,15,50]
+    2: [2,5,7,10,15,50]
+
+DpTbins:
+    0:
+        "02": [2,36]
+        "03": [2,36]
+        "04": [2,36]
+        "06": [2,36]
+    1:
+        "02": [[2,2,4,5,10],[5,7,10,15,36]]
+        "03": [[2,2,3,5,5],[5,7,10,15,36]]
+        "04": [[2,2,3,5,5],[5,7,10,15,36]]
+        "06": [[2,2,3,5,5],[5,7,10,15,36]]
+    2:
+        "02": [[2,2,4,5,10],[5,7,10,15,36]]
+        "03": [[2,2,3,5,5],[5,7,10,15,36]]
+        "04": [[2,2,3,5,5],[5,7,10,15,36]]
+        "06": [[2,2,3,5,5],[5,7,10,15,36]]
+##--------------------------
+## DIRECTORY configuration
+##--------------------------
+simDir: "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR03_paperCuts/Simulations/Prompt/"
+dataAnalysisFile:
+    "02": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/AnalysisResults_744_R02_pp_5cuts.root"
+    "03": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/AnalysisResults_757_R03_pp_5cuts.root"
+    "04": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/AnalysisResults_745_R04_pp_5cuts.root"
+    "06": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/AnalysisResults_751_R06_pp_5cuts.root"
+dataFile:
+    "02": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR02_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"
+    "03": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR03_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"
+    "04": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR04_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"
+    "06": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR06_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"
+outSpectraDir:
+    "02": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR02_paperCuts/Default/unfolding_Bayes_5/final/"
+    "03": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR03_paperCuts/Default/unfolding_Bayes_5/final/"
+    "04": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR04_paperCuts/Default/unfolding_Bayes_5/final/"
+    "06": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR06_paperCuts/Default/unfolding_Bayes_5/final/"
+
+##--------------------------
+## SIMULATION configuration
+##--------------------------
+ePowhegPythia6: 0
+ePowhegPythia8: 1
+ePythia6: 0
+ePythia8: 1
+ePythia8SoftMode2: 1
+ePowhegPythia6dijet: 0
+ePowhegPythia8dijet: 0
+##-------
+fPythia6:
+    - "AnalysisResults_FastSim_pythia6_charm_1594235514"
+fPythia8:
+    - "AnalysisResults_FastSim_pythia8_charm_1594137862"
+fPythia8SoftMode2:
+    - "AnalysisResults_FastSim_pythia8_charm_soft2color_1598639645"
+fPowhegPythia6dijet:
+    - "AnalysisResults_FastSim_powheg+pythia8_dijetHadi"
+fPowhegPythia8dijet:
+    - "AnalysisResults_FastSim_powheg+pythia8_dijetSalvatore"
+
+fPowhegPythia8:
+    - "AnalysisResults_FastSim_powheg+pythia8_charm_central_1593017599"
+    - "AnalysisResults_FastSim_powheg+pythia8_charm_m13_1593091148"
+    - "AnalysisResults_FastSim_powheg+pythia8_charm_m17_1593090378"
+    - "AnalysisResults_FastSim_powheg+pythia8_charm_F1R05_1593338244"
+    - "AnalysisResults_FastSim_powheg+pythia8_charm_F05R1_1593337904"
+    - "AnalysisResults_FastSim_powheg+pythia8_charm_F2R1_1593341637"
+    - "AnalysisResults_FastSim_powheg+pythia8_charm_F1R2_1593339352"
+    - "AnalysisResults_FastSim_powheg+pythia8_charm_F05R05_1593334134"
+    - "AnalysisResults_FastSim_powheg+pythia8_charm_F2R2_1593354950"
+
+fPowhegPythia6:
+    - "AnalysisResults_FastSim_powheg+pythia6_charm_central"
+    - "AnalysisResults_FastSim_powheg+pythia6_charm_m13_1536595965"
+    - "AnalysisResults_FastSim_powheg+pythia6_charm_m17_1536655729"
+    - "AnalysisResults_FastSim_powheg+pythia6_charm_F1R05_1536598175"
+    - "AnalysisResults_FastSim_powheg+pythia6_charm_F05R1_1536604800"
+    - "AnalysisResults_FastSim_powheg+pythia6_charm_F2R1_1535916012"
+    - "AnalysisResults_FastSim_powheg+pythia6_charm_F1R2_1536594271"
+    - "AnalysisResults_FastSim_powheg+pythia6_charm_F05R05_1535894261"
+    - "AnalysisResults_FastSim_powheg+pythia6_charm_F2R2_1535895146"
+
