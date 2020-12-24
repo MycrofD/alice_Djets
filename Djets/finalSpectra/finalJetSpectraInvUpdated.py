@@ -60,10 +60,10 @@ histBase="unfoldedSpectrum";
 ## ----------------------------------------------------------------
 ## --------------- SET PARAMETERS + BINNING HERE ------------------
 ## ----------------------------------------------------------------
-sigma_in=data_loaded['sigma_in'] #sigma_in = 0.0578;
-BRDzero=data_loaded['BRDzero'] #0.0389;
-BRDzeroUnc=data_loaded['BRDzeroUnc'] #0.0004;
-DtrackingUnc=data_loaded['DtrackingUnc'] #DtrackingUnc = 0.021;
+sigma_in=data_loaded['sigma_in'] 
+BRDzero=data_loaded['BRDzero'] 
+BRDzeroUnc=data_loaded['BRDzeroUnc'] 
+DtrackingUnc=data_loaded['DtrackingUnc'] 
 LumiUnc=data_loaded['LumiUnc'] 
 ##--- INITIAL VALUES
 xAxisBins = data_loaded['xAxisBins'][type_]
@@ -71,7 +71,19 @@ xAxis = array.array('d',data_loaded['xAxis'][type_])
 xAxisC = array.array('d',data_loaded['xAxisC'][type_])
 jetpTbins = array.array('d',data_loaded['jetpTbins'][type_])
 DpTbins=array.array('d',data_loaded['DpTbins'][type_][R])
+##--- create folders
+outPlotDir=outSpectraDir+"/plots"
+ROOT.gSystem.Exec("mkdir "+outSpectraDir)
+ROOT.gSystem.Exec("mkdir "+outPlotDir)
 ##--- Uncertainties
+# unc part 1
+systUncD_up,systUncD_down,systUncD_JES,systUncD_CUTS = np.zeros(xAxisBins),np.zeros(xAxisBins),np.zeros(xAxisBins),np.zeros(xAxisBins)
+if(type_==0):
+    systUncD_up,systUncD_down,systUncD_JES,systUncD_CUTS = unc_loaded[type_][R]['systUncD_up'],unc_loaded[type_][R]['systUncD_down'],unc_loaded[type_][R]['systUncD_JES'],unc_loaded[type_][R]['systUncD_CUTS']
+else:
+    systUncD_up,systUncD_down,systUncD_JES,systUncD_CUTS = unc_loaded[1][R][zBin]['systUncD_up'],unc_loaded[1][R][zBin]['systUncD_down'],unc_loaded[1][R][zBin]['systUncD_JES'],unc_loaded[1][R][zBin]['systUncD_CUTS']
+
+# unc part 2
 addBRDzeroUnc,addDtrackingUnc,addLumiUnc,separateCUTUnc,addJESUnc=0,0,0,0,0
 if(type_==0 or type_==1):
     if(sysGlobal==0):
@@ -83,7 +95,27 @@ if(type_==0 or type_==1):
 elif(type_==2):
     addBRDzeroUnc,addDtrackingUnc,addLumiUnc,separateCUTUnc,addJESUnc=0,0,0,0,1
     plotRanges[2],plotRanges[3]=0,10
-systUncD_up,systUncD_down = np.zeros(xAxisBins),np.zeros(xAxisBins)
+
+# unc part 3
+bit = -1
+print("sys bitmap: ",addBRDzeroUnc,addDtrackingUnc,addLumiUnc,addJESUnc,not separateCUTUnc)
+for bin_ in range(xAxisBins):
+    totalUnc = 0
+    if(addBRDzeroUnc): totalUnc+= BRDzeroUnc**2
+    if(addDtrackingUnc): totalUnc+= DtrackingUnc**2
+    if(addLumiUnc): totalUnc+= LumiUnc**2
+    if(addJESUnc): totalUnc += systUncD_JES[bin_]**2
+    if(separateCUTUnc==0): totalUnc += systUncD_CUTS[bin_]**2
+    systUncD_up[bin_] = np.sqrt(systUncD_up[bin_]**2 + totalUnc)
+    systUncD_down[bin_] = np.sqrt(systUncD_down[bin_]**2 + totalUnc)
+    #print(systUncD_up[bin_]," ",systUncD_down[bin_])
+# unc part 4: 
+#           add JES manually for ratio plots.
+#           create separate plot for separate CUT SYS
+# unc part 5
+gDataCutSys = ROOT.TGraph()
+if(separateCUTUnc): gDataCutSys = ROOT.TGraph(xAxisBins,xAxisC, systUncD_CUTS)
+
 ##--- GET DATA and EVENTS
 print("get Data and Events")
 File = ROOT.TFile(dataAnalysisFile,"read");
@@ -232,7 +264,93 @@ if(type_==0 or type_==1):
 elif(type_==2):
     sysmode = "_PDF_noneGlobal_addedCUTandJES"
 
-#canvas.SaveAs()
+canvas.SaveAs(outPlotDir+"/finalSpectra_"+sysmode+".png")
+ofile = ROOT.TFile(outSpectraDir+"JetPtSpectrum_final"+sysmode+".root","recreate")
+hData_binned.Write()
+hDataSys.Write()
+if(separateCUTUnc): gDataCutSys.Write("gDataCutSys")
+hData_binned_ratio.Write()
+hDataSysRatio.Write()
+if(ePowhegPythia6):
+    simPowhegPythia6_cent.Write()
+    simPowhegPythia6_up.Write()
+    simPowhegPythia6_down.Write()
+    simPowhegPythia6.Write()
+    simPowhegPythia6_cent_R.Write()
+    simPowhegPythia6_up_R.Write()
+    simPowhegPythia6_down_R.Write()
+    simPowhegPythia6_R.Write()
+    for ivar in range(1,9):
+        simPowhegPythia6var[ivar].Write()
+
+if(ePowhegPythia8):
+    simPowhegPythia8_cent.Write()
+    simPowhegPythia8_up.Write()
+    simPowhegPythia8_down.Write()
+    simPowhegPythia8.Write()
+    simPowhegPythia8_cent_R.Write()
+    simPowhegPythia8_up_R.Write()
+    simPowhegPythia8_down_R.Write()
+    simPowhegPythia8_R.Write()
+    for ivar in range(1,9):
+        simPowhegPythia8var[ivar].Write()
+
+if(ePythia6):
+    simPythia6_cent.Write()
+    simPythia6_up.Write()
+    simPythia6_down.Write()
+    simPythia6.Write()
+    simPythia6_cent_R.Write()
+    simPythia6_up_R.Write()
+    simPythia6_down_R.Write()
+    simPythia6_R.Write()
+
+if(ePythia8):
+    simPythia8_cent.Write()
+    simPythia8_up.Write()
+    simPythia8_down.Write()
+    simPythia8.Write()
+    simPythia8_cent_R.Write()
+    simPythia8_up_R.Write()
+    simPythia8_down_R.Write()
+    simPythia8_R.Write()
+
+if(ePythia8SoftMode2):
+    simPythia8Soft2_cent.Write()
+    simPythia8Soft2_up.Write()
+    simPythia8Soft2_down.Write()
+    simPythia8Soft2.Write()
+    simPythia8Soft2_cent_R.Write()
+    simPythia8Soft2_up_R.Write()
+    simPythia8Soft2_down_R.Write()
+    simPythia8Soft2_R.Write()
+
+if(ePowhegPythia6dijet):
+    simPowhegPythia6dijet_cent.Write()
+    simPowhegPythia6dijet_up.Write()
+    simPowhegPythia6dijet_down.Write()
+    simPowhegPythia6dijet.Write()
+    simPowhegPythia6dijet_cent_R.Write()
+    simPowhegPythia6dijet_up_R.Write()
+    simPowhegPythia6dijet_down_R.Write()
+    simPowhegPythia6dijet_R.Write()
+    for ivar in range(1,9):
+        simPowhegPythia6dijetvar[ivar].Write()
+
+if(ePowhegPythia8dijet):
+    simPowhegPythia8dijet_cent.Write()
+    #simPowhegPythia8dijet_up.Write()
+    #simPowhegPythia8dijet_down.Write()
+    simPowhegPythia8dijet.Write()
+    simPowhegPythia8dijet_cent_R.Write()
+    #simPowhegPythia8dijet_up_R.Write()
+    #simPowhegPythia8dijet_down_R.Write()
+    simPowhegPythia8dijet_R.Write()
+    #for ivar in range(1,9):
+    #    simPowhegPythia8dijetvar[ivar].Write()
+
+ofile.Close()
+
 """ 
 """
 ##--- ---- ---------- ----------------- -------------------- ENDGAME
