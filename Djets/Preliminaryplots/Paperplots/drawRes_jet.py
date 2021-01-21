@@ -145,7 +145,7 @@ cResp.SaveAs('plots/Resp_R0'+str(R)+jetorz+'_'+str(jetbin)+'.eps')
 #################################################################################
 y1,y2=0.8,0.85
 x1,x2=0.12,0.8
-textsize=0.035
+textsize=0.032
 pvALICE2 = ROOT.TPaveText(x1,y1,x2,y2,"brNDC");
 pvALICE2.SetFillStyle(0);
 pvALICE2.SetBorderSize(0);
@@ -190,7 +190,6 @@ pvD4.SetTextSize(textsize);
 pvD4.SetTextAlign(11);
 pvD4.AddText("#it{p}_{T, D^{0}} > 2 GeV/#it{c}");
 
-shift += 0.05;
 pvjet1 = ROOT.TPaveText(x1+0.5,y1,x2+0.5,y2,"brNDC");
 pvjet1.SetFillStyle(0);
 pvjet1.SetBorderSize(0);
@@ -212,7 +211,7 @@ pvEta1 = ROOT.TPaveText(x1+0.5,y1-2*0.05,x2+0.5,y2-2*0.05,"brNDC");
 pvEta1.SetFillStyle(0);
 pvEta1.SetBorderSize(0);
 pvEta1.SetTextFont(42);
-pvEta1.SetTextSize(0.04);
+pvEta1.SetTextSize(textsize);
 pvEta1.SetTextAlign(11);
 pvEta1.AddText("|#it{#eta}_{lab}^{jet}| < 0."+str(9-R));
 
@@ -234,11 +233,9 @@ def GetDeltaProb(hDel2D,binLimLow,binLimHig,markerstyle,markersize,color,legend)
     hDel.GetYaxis().SetTitle("Probability Density");
     hDel.GetXaxis().SetTitle("#Delta_{#it{p}_{T}}");
     legend.AddEntry(hDel,str(binLimLow-1)+" < #it{p}_{T, gen jet}^{ch} < "+str(binLimHig)+" GeV/#it{c}","p");
-    for i in range(1,hDel2D.GetNbinsY()+1):
-        #if(hDel2D.GetYaxis().GetBinLowEdge(i)>=binLimLow and hDel2D.GetYaxis().GetBinLowEdge(i+1)<=binLimHig):
-        print(i,":",hDel2D.GetYaxis().GetBinLowEdge(i))
-        htemp = hDel2D.ProjectionX("",binLimLow,binLimHig,"")
-        hDel.Add(hDel,htemp,1,1)
+
+    htemp = hDel2D.ProjectionX("",binLimLow,binLimHig,"")
+    hDel.Add(hDel,htemp,1,1)
 
     if(hDel.Integral()!=0):
         hDel.Scale(1./hDel.Integral())
@@ -246,14 +243,14 @@ def GetDeltaProb(hDel2D,binLimLow,binLimHig,markerstyle,markersize,color,legend)
     return hDel
 
 leg = ROOT.TLegend(0.15,0.23,0.4,0.40);
-leg.SetTextSize(0.03);
-hbin1 = GetDeltaProb(hDel2D,6,8,24,1.2,ROOT.kRed+2,leg)
-hbin2 = GetDeltaProb(hDel2D,8,10,25,1.2,ROOT.kBlue+2,leg)
-hbin3 = GetDeltaProb(hDel2D,20,30,27,1.8,ROOT.kGreen+2,leg)
+leg.SetTextSize(textsize);
+hbin1 = GetDeltaProb(hDel2D,6,6,24,1.2,ROOT.kRed+2,leg)
+hbin2 = GetDeltaProb(hDel2D,9,10,25,1.2,ROOT.kBlue+2,leg)
+hbin3 = GetDeltaProb(hDel2D,21,30,27,1.8,ROOT.kGreen+2,leg)
 ### CANVAS
 cDel = ROOT.TCanvas("cDel","cDel",950,800);
 cDel.SetLogz()
-hbin1.GetYaxis().SetRangeUser(0,50)
+hbin1.GetYaxis().SetRangeUser(0,30)
 hbin1.Draw()
 hbin2.Draw('same')
 hbin3.Draw('same')
@@ -269,17 +266,17 @@ leg.Draw('same')
 cDel.SaveAs('plots/Delta_R0'+str(R)+jetorz+'_.pdf')
 #########################################################
 leg2 = ROOT.TLegend(0.15,0.23,0.4,0.40);
-leg2.SetTextSize(0.03);
-hbin12 = GetDeltaProb(hDel2D_noeff,9,9,24,1.2,ROOT.kRed+2,leg2)
-hbin22 = GetDeltaProb(hDel2D_noeff,8,10,25,1.2,ROOT.kBlue+2,leg2)
-hbin32 = GetDeltaProb(hDel2D_noeff,20,30,27,1.8,ROOT.kGreen+2,leg2)
+leg2.SetTextSize(textsize);
+hbin12 = GetDeltaProb(hDel2D_noeff,7,8,24,1.2,ROOT.kRed+2,leg2)
+hbin22 = GetDeltaProb(hDel2D_noeff,9,10,25,1.2,ROOT.kBlue+2,leg2)
+hbin32 = GetDeltaProb(hDel2D_noeff,21,30,27,1.8,ROOT.kGreen+2,leg2)
 #### CANVAS
 cDel2 = ROOT.TCanvas("cDel2","cDel2",950,800);
 cDel2.SetLogz()
-hbin12.GetYaxis().SetRangeUser(0,50)
+hbin12.GetYaxis().SetRangeUser(0,30)
 hbin12.Draw()
-#hbin22.Draw('same')
-#hbin32.Draw('same')
+hbin22.Draw('same')
+hbin32.Draw('same')
 pvALICE2.Draw('same')
 pvpp.Draw('same')
 pvD2.Draw('same')

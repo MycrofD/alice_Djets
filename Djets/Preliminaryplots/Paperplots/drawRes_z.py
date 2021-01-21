@@ -149,7 +149,7 @@ cResp.SaveAs('plots/Resp_R0'+str(R)+jetorz+'_.eps')
 #################################################################################
 y1,y2=0.8,0.85
 x1,x2=0.12,0.8
-textsize=0.035
+textsize=0.032
 pvALICE2 = ROOT.TPaveText(x1,y1,x2,y2,"brNDC");
 pvALICE2.SetFillStyle(0);
 pvALICE2.SetBorderSize(0);
@@ -186,8 +186,7 @@ pvD3.SetTextSize(textsize);
 pvD3.SetTextAlign(11);
 pvD3.AddText("and charge conj.");
 
-shift += 0.05;
-pvD4 = ROOT.TPaveText(x1,y1-shift,x2,y2-shift,"brNDC");
+pvD4 = ROOT.TPaveText(x1+0.02,y1-0.4,x2+0.02,y2-0.4,"brNDC");
 pvD4.SetFillStyle(0);
 pvD4.SetBorderSize(0);
 pvD4.SetTextFont(42);
@@ -195,7 +194,30 @@ pvD4.SetTextSize(textsize);
 pvD4.SetTextAlign(11);
 pvD4.AddText("#it{p}_{T, D^{0}} > 2 GeV/#it{c}");
 
-shift += 0.05;
+pvD4J = ROOT.TPaveText(x1+0.02,y1-0.35,x2+0.02,y2-0.35,"brNDC");
+pvD4J.SetFillStyle(0);
+pvD4J.SetBorderSize(0);
+pvD4J.SetTextFont(42);
+pvD4J.SetTextSize(textsize);
+pvD4J.SetTextAlign(11);
+pvD4J.AddText("5 < #it{p}_{T, gen jet}^{ch} < 7 GeV/#it{c}");
+
+pvD5 = ROOT.TPaveText(x1+0.42,y1-0.4,x2+0.42,y2-0.4,"brNDC");
+pvD5.SetFillStyle(0);
+pvD5.SetBorderSize(0);
+pvD5.SetTextFont(42);
+pvD5.SetTextSize(textsize);
+pvD5.SetTextAlign(11);
+pvD5.AddText("#it{p}_{T, D^{0}} > 5 GeV/#it{c}");
+
+pvD5J = ROOT.TPaveText(x1+0.42,y1-0.35,x2+0.42,y2-0.35,"brNDC");
+pvD5J.SetFillStyle(0);
+pvD5J.SetBorderSize(0);
+pvD5J.SetTextFont(42);
+pvD5J.SetTextSize(textsize);
+pvD5J.SetTextAlign(11);
+pvD5J.AddText("10 < #it{p}_{T, gen jet}^{ch} < 15 GeV/#it{c}");
+
 pvjet1 = ROOT.TPaveText(x1+0.5,y1,x2+0.5,y2,"brNDC");
 pvjet1.SetFillStyle(0);
 pvjet1.SetBorderSize(0);
@@ -217,7 +239,7 @@ pvEta1 = ROOT.TPaveText(x1+0.5,y1-2*0.05,x2+0.5,y2-2*0.05,"brNDC");
 pvEta1.SetFillStyle(0);
 pvEta1.SetBorderSize(0);
 pvEta1.SetTextFont(42);
-pvEta1.SetTextSize(0.04);
+pvEta1.SetTextSize(textsize);
 pvEta1.SetTextAlign(11);
 pvEta1.AddText("|#it{#eta}_{lab}^{jet}| < 0."+str(9-R));
 
@@ -240,11 +262,9 @@ def GetDeltaProb(hDel2D,binLimLow,binLimHig,markerstyle,markersize,color,legend,
     hDel.GetYaxis().SetTitle("Probability Density");
     hDel.GetXaxis().SetTitle("#Delta_{#it{z}}");
     legend.AddEntry(hDel,str(jetlow)+" < #it{z}_{||, gen}^{ch} < "+str(jethig)+" GeV/#it{c}","p");
-    for i in range(1,hDel2D.GetNbinsY()+1):
-        print(i,":",hDel2D.GetYaxis().GetBinLowEdge(i))
-        if(hDel2D.GetYaxis().GetBinLowEdge(i)>=binLimLow and hDel2D.GetYaxis().GetBinLowEdge(i+1)<=binLimHig):
-            htemp = hDel2D.ProjectionX("",binLimLow,binLimHig,"")
-            hDelTemp.Add(hDelTemp,htemp,1,1)
+
+    htemp = hDel2D.ProjectionX("",binLimLow,binLimHig,"")
+    hDelTemp.Add(hDelTemp,htemp,1,1)
 
     for i in range(1,hDel.GetNbinsX()+1):
         bincontent = 0
@@ -259,33 +279,39 @@ def GetDeltaProb(hDel2D,binLimLow,binLimHig,markerstyle,markersize,color,legend,
     return hDel
 
 
-leg = ROOT.TLegend(0.15,0.23,0.4,0.40);
-leg.SetTextSize(0.03);
-hbin1 = GetDeltaProb(hDel2D,6,6,24,1.2,ROOT.kRed+2,leg,0.4,0.6)
-hbin2 = GetDeltaProb(hDel2D,7,8,25,1.2,ROOT.kBlue+2,leg,0.6,0.8)
-hbin3 = GetDeltaProb(hDel2D,9,10,27,1.8,ROOT.kGreen+2,leg,0.8,1.0)
-hbin4 = GetDeltaProb(hDel2D,16,16,20,1.2,ROOT.kRed+2,leg,0.4,0.6)
-hbin5 = GetDeltaProb(hDel2D,17,18,21,1.2,ROOT.kBlue+2,leg,0.6,0.8)
-hbin6 = GetDeltaProb(hDel2D,19,20,33,1.8,ROOT.kGreen+2,leg,0.8,1.0)
+leg1 = ROOT.TLegend(0.15,0.23,0.4,0.40);
+leg1.SetTextSize(textsize);
+leg2 = ROOT.TLegend(0.55,0.23,0.8,0.40);
+leg2.SetTextSize(textsize);
+hbin1 = GetDeltaProb(hDel2D,6,6,24,1.2,ROOT.kRed+2,leg1,0.4,0.6)
+hbin2 = GetDeltaProb(hDel2D,7,8,25,1.2,ROOT.kBlue+2,leg1,0.7,0.8)
+hbin3 = GetDeltaProb(hDel2D,9,10,27,1.8,ROOT.kGreen+2,leg1,0.9,1.0)
+hbin4 = GetDeltaProb(hDel2D,16,16,20,1.2,ROOT.kRed+2,leg2,0.4,0.6)
+hbin5 = GetDeltaProb(hDel2D,17,17,21,1.2,ROOT.kBlue+2,leg2,0.6,0.7)
+hbin6 = GetDeltaProb(hDel2D,19,19,33,1.8,ROOT.kGreen+2,leg2,0.8,0.9)
 ####################
 ######## CANVAS
 cDel = ROOT.TCanvas("cDel","cDel",950,800);
 cDel.SetLogz()
 hbin1.GetYaxis().SetRangeUser(0,30)
 hbin1.Draw()
-#hbin2.Draw('same')
-#hbin3.Draw('same')
+hbin2.Draw('same')
+hbin3.Draw('same')
 hbin4.Draw('same')
-#hbin5.Draw('same')
-#hbin6.Draw('same')
+hbin5.Draw('same')
+hbin6.Draw('same')
 pvALICE2.Draw('same')
 pvpp.Draw('same')
 pvD2.Draw('same')
 pvD3.Draw('same')
 pvD4.Draw('same')
+pvD4J.Draw('same')
+pvD5.Draw('same')
+pvD5J.Draw('same')
 pvjet1.Draw('same')
 pvjet2.Draw('same')
 pvEta1.Draw('same')
-leg.Draw('same')
+leg1.Draw('same')
+leg2.Draw('same')
 cDel.SaveAs('plots/Delta_R0'+str(R)+jetorz+'_.pdf')
 input()
