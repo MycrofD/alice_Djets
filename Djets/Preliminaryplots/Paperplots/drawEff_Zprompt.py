@@ -7,7 +7,7 @@ import array
 Colors = [ROOT.kRed+1,ROOT.kBlue+2,ROOT.kGreen+2,ROOT.kViolet+2]
 Markers = [20,21,22,23]
 plotmin, plotmax = 2,36
-plotYmin, plotYmax = 0.001,0.5
+plotYmin, plotYmax = 0.00,0.4
 
 ROOT.gStyle.SetOptStat(000)
 ROOT.gStyle.SetLegendFont(42)
@@ -16,6 +16,11 @@ ROOT.gStyle.SetPadRightMargin(0.03)
 
 ### SETTINGS
 R=int(sys.argv[1]) #R=2,3,4,6
+PnP=int(sys.argv[2]) #0 for non-prompt, 1 for prompt
+if(PnP):
+    dirtext,labeltext="prompt","Prompt"
+else:
+    dirtext,labeltext="nonPrompt","Non-prompt"
 energy = "5.02"
 ptjetbins = [5,7,10,15,50]
 ptbinsDNlist = [5,6,6,6]
@@ -47,12 +52,12 @@ hEmpty.GetXaxis().SetRangeUser(plotmin,plotmax);
 hEmpty.GetYaxis().SetRangeUser(plotYmin,plotYmax);
 ### READING INPUT FILE
 inFiles, hEffPrompts = [], []
-leg = ROOT.TLegend(0.65,0.20,0.85,0.50);
-leg.SetTextSize(0.03);
+leg = ROOT.TLegend(0.6,0.17,0.7,0.40);
+leg.SetTextSize(0.04);
 for i in range(len(jetbinnames)):
     jetbinname = jetbinnames[i]
     inFiles.append(
-            ROOT.TFile('/media/jackbauer/data/z_out/R_0'+str(R)+'_finaltry/efficiency/DjetEff_prompt_jetpt'+str(jetbinname)+'.root','read')
+            ROOT.TFile('/media/jackbauer/data/z_out/R_0'+str(R)+'_finaltry/efficiency/DjetEff_'+dirtext+'_jetpt'+str(jetbinname)+'.root','read')
             )
     hh = inFiles[i].Get('hEff_reb').Clone("h"+str(i))
     hh.GetXaxis().SetRangeUser(plotmin,plotmax);
@@ -62,7 +67,7 @@ for i in range(len(jetbinnames)):
     hEffPrompts[i].SetMarkerColor(Colors[i]);
     hEffPrompts[i].SetLineColor(Colors[i]);
     hEffPrompts[i].SetMarkerStyle(Markers[i]);
-    hEffPrompts[i].SetMarkerSize(1.2);
+    hEffPrompts[i].SetMarkerSize(1.3);
     hEffPrompts[i].GetXaxis().SetTitle("#it{p}_{T,D^{0}} (GeV/#it{c})");
     hEffPrompts[i].GetYaxis().SetTitle("Acceptance #times Efficiency");
     hEffPrompts[i].GetXaxis().SetLabelSize(0.04);
@@ -73,42 +78,45 @@ for i in range(len(jetbinnames)):
     hEffPrompts[i].GetYaxis().SetTitleSize(0.05);
     hEffPrompts[i].GetXaxis().SetRangeUser(fptbinsJlh[i][0],fptbinsJlh[i][-1]);
     hEffPrompts[i].Rebin(fptbinsJN[i],'h_'+str(i),array.array('d',fptbinsJlh[i]))
-    hEffPrompts[i].SetMaximum(hEffPrompts[i].GetMaximum()*2.5);
+    #hEffPrompts[i].SetMaximum(hEffPrompts[i].GetMaximum()*2.5);
+    #hEffPrompts[i].SetMaximum(0.45);
     leg.AddEntry(hEffPrompts[i],jetptLegends[i],"p");
 
+### LEGEND STUFF
+textsize = 0.04
 shift = -0.0;
 pvALICE = ROOT.TPaveText(0.15,0.85,0.8,0.9,"brNDC");
 pvALICE.SetFillStyle(0);
 pvALICE.SetBorderSize(0);
 pvALICE.SetTextFont(42);
-pvALICE.SetTextSize(0.04);
+pvALICE.SetTextSize(textsize);
 pvALICE.SetTextAlign(11);
-pvALICE.AddText("ALICE");
+pvALICE.AddText("ALICE, PYTHIA 6, pp, #sqrt{#it{s}} = "+energy+" TeV");
 
-shift += 0.05;
-pvEn= ROOT.TPaveText(0.15,0.85-shift,0.8,0.9-shift,"brNDC");
-pvEn.SetFillStyle(0);
-pvEn.SetBorderSize(0);
-pvEn.SetTextFont(42);
-pvEn.SetTextSize(0.04);
-pvEn.SetTextAlign(11);
-pvEn.AddText("PYTHIA 6, pp, #sqrt{#it{s}} = "+energy+" TeV");
+#shift += 0.05;
+#pvEn= ROOT.TPaveText(0.15,0.85-shift,0.8,0.9-shift,"brNDC");
+#pvEn.SetFillStyle(0);
+#pvEn.SetBorderSize(0);
+#pvEn.SetTextFont(42);
+#pvEn.SetTextSize(textsize)
+#pvEn.SetTextAlign(11);
+#pvEn.AddText("PYTHIA 6, pp, #sqrt{#it{s}} = "+energy+" TeV");
 
 shift += 0.05;
 pvD = ROOT.TPaveText(0.15,0.85-shift,0.8,0.9-shift,"brNDC");
 pvD.SetFillStyle(0);
 pvD.SetBorderSize(0);
 pvD.SetTextFont(42);
-pvD.SetTextSize(0.04);
+pvD.SetTextSize(textsize)
 pvD.SetTextAlign(11);
-pvD.AddText("Prompt D^{0} #rightarrow K^{-}#pi^{+} and charge conj.");
+pvD.AddText(labeltext+" D^{0} #rightarrow K^{-}#pi^{+} and charge conj.");
 
 shift += 0.05;
 pvJet = ROOT.TPaveText(0.15,0.85-shift,0.8,0.9-shift,"brNDC");
 pvJet.SetFillStyle(0);
 pvJet.SetBorderSize(0);
 pvJet.SetTextFont(42);
-pvJet.SetTextSize(0.04);
+pvJet.SetTextSize(textsize)
 pvJet.SetTextAlign(11);
 pvJet.AddText("Charged Jets, Anti-#it{k}_{T}, #it{R} = 0."+str(R));
 
@@ -118,7 +126,7 @@ pvEta = ROOT.TPaveText(0.15,0.85-shift,0.8,0.9-shift,"brNDC");
 pvEta.SetFillStyle(0);
 pvEta.SetBorderSize(0);
 pvEta.SetTextFont(42);
-pvEta.SetTextSize(0.04);
+pvEta.SetTextSize(textsize)
 pvEta.SetTextAlign(11);
 pvEta.AddText("|#it{#eta}_{lab}^{jet}| < 0."+str(9-R));
 
@@ -131,14 +139,14 @@ for i in range(len(jetbinnames)):
     hEffPrompts[i].Draw("same");
 
 pvALICE.Draw("same");
-pvEn.Draw("same");
+#pvEn.Draw("same");
 pvJet.Draw("same");
 pvD.Draw("same");
 pvEta.Draw("same");
 leg.Draw("same");
 
-cEff.SaveAs('Efficiency_R0'+str(R)+'_'+str(int(float(energy)))+'.pdf')
-cEff.SaveAs('Efficiency_R0'+str(R)+'_'+str(int(float(energy)))+'.png')
-cEff.SaveAs('Efficiency_R0'+str(R)+'_'+str(int(float(energy)))+'.eps')
+cEff.SaveAs('plots/z_'+dirtext+'Efficiency_R0'+str(R)+'_'+str(int(float(energy)))+'.pdf')
+cEff.SaveAs('plots/z_'+dirtext+'Efficiency_R0'+str(R)+'_'+str(int(float(energy)))+'.png')
+cEff.SaveAs('plots/z_'+dirtext+'Efficiency_R0'+str(R)+'_'+str(int(float(energy)))+'.eps')
 
 input()

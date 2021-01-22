@@ -332,6 +332,6 @@ pvsb3.Draw("same");
 legBands.Draw("same");
 lines.Draw("same");
 
-cMass.Print('DjetZinMass'+str(R)+'_'+str(jetbin)+'_'+str(int(float(energy)))+'tev.pdf')
-cMass.Print('DjetZinMass'+str(R)+'_'+str(jetbin)+'_'+str(int(float(energy)))+'tev.png')
-cMass.Print('DjetZinMass'+str(R)+'_'+str(jetbin)+'_'+str(int(float(energy)))+'tev.eps')
+cMass.Print('plots/DjetZinMass'+str(R)+'_'+str(jetbin)+'_'+str(int(float(energy)))+'tev.pdf')
+cMass.Print('plots/DjetZinMass'+str(R)+'_'+str(jetbin)+'_'+str(int(float(energy)))+'tev.png')
+cMass.Print('plots/DjetZinMass'+str(R)+'_'+str(jetbin)+'_'+str(int(float(energy)))+'tev.eps')

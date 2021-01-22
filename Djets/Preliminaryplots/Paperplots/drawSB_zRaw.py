@@ -1,9 +1,3 @@
-#include "style.C"
-#include <string>
-#include <sstream>
-#include <iostream>
-#include <TPDF.h>
-
 import os, os.path, sys
 import ROOT
 from style_settings import *
@@ -19,11 +13,11 @@ def setHistoDetails(h, color, mstyle, size, width):
     h.GetXaxis().SetTitle('#it{z}_{||}^{ch}')
 
 def SaveCanvas(c, name):
-    c.SaveAs(name+".png");
+    #c.SaveAs(name+".png");
     c.SaveAs(name+".pdf");
     c.SaveAs(name+".eps");
-    c.SaveAs(name+".root");
-    c.SaveAs(name+".C");
+    #c.SaveAs(name+".root");
+    #c.SaveAs(name+".C");
 ############
 if len(sys.argv) != 3:
     print("""
@@ -83,7 +77,7 @@ for i in range(ptbinsDN):
     hjetpt[i].GetYaxis().SetTitleSize(0.055);
     hjetpt[i].GetYaxis().SetTitleOffset(1.4);
 
-    hjetpt[i].SetMaximum(hjetpt[i].GetMaximum()*1.55);
+    #hjetpt[i].SetMaximum(hjetpt[i].GetMaximum()*1.3);
     hjetpt[i].SetMaximum(1600);
     if(islog):
         hjetpt[i].SetMaximum(hjetpt[i].GetMaximum()*10);
@@ -198,7 +192,8 @@ pvpt3.SetTextSize(0.053);
 pvpt3.AddText("%.0f < #it{p}_{T,D^{0}} < %.0f GeV/#it{c}"%(ptDbins[bin3],ptDbins[bin3+1]))
 
 
-cMass = ROOT.TCanvas("cMass","cMass",2160,1008)
+#cMass = ROOT.TCanvas("cMass","cMass",2160,1008)
+cMass = ROOT.TCanvas("cMass","cMass",3000,900)
 cMass.Divide(3,1);
 cMass.cd(1);
 ROOT.gPad.SetLogy(islog);
@@ -250,30 +245,6 @@ legBands23.Draw("same");
 legBands3.Draw("same");
 
 if(islog):
-    SaveCanvas(cMass,"RawJetPt_Perf_log_2");
+    SaveCanvas(cMass,"plots/RawZ_R0"+str(Rpar)+"_"+str(jetbin)+"_"+str(int(float(energy)))+"TeV_Perf_log_2");
 else:
-    SaveCanvas(cMass,"RawJetPt_Perf_2");
-"""
-
-
-
-}
-
-void setHistoDetails(TH1 *h, Color_t color, Style_t Mstyle, Size_t size = 0.9, Width_t width=2, int scale = 0){
-
-    if(scale)h->Scale(1,"width");
-    h->SetMarkerStyle(Mstyle);
-    h->SetMarkerColor(color);
-    h->SetMarkerSize(size);
-    h->SetLineColor(color);
-    h->SetLineWidth(width);
-    h->SetTitle(0);
-    h->GetXaxis()->SetTitle("p_{T}^{#D^0}(GeV/c)");
-
-    return;
-
-}
-
-
-}
-"""
+    SaveCanvas(cMass,"plots/RawZ_R0"+str(Rpar)+"_"+str(jetbin)+"_"+str(int(float(energy)))+"TeV_Perf_2");

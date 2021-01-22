@@ -216,6 +216,7 @@ pvEta1.SetTextAlign(11);
 pvEta1.AddText("|#it{#eta}_{lab}^{jet}| < 0."+str(9-R));
 
 hDel2D = inFileJresol.Get("hjetRecGenResol")
+#hDel2D = inFileJresol.Get("resolNow")
 hDel2D_noeff= inFileJresol.Get("hjetRGResol")
 
 def GetDeltaProb(hDel2D,binLimLow,binLimHig,markerstyle,markersize,color,legend):
@@ -273,7 +274,7 @@ hbin32 = GetDeltaProb(hDel2D_noeff,21,30,27,1.8,ROOT.kGreen+2,leg2)
 #### CANVAS
 cDel2 = ROOT.TCanvas("cDel2","cDel2",950,800);
 cDel2.SetLogz()
-hbin12.GetYaxis().SetRangeUser(0,30)
+#hbin12.GetYaxis().SetRangeUser(0,30)
 hbin12.Draw()
 hbin22.Draw('same')
 hbin32.Draw('same')

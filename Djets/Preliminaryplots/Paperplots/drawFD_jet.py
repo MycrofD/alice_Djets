@@ -47,12 +47,14 @@ fptbinsJN = 7
 fptbinsJlh=[5,6,8,10,14,20,30,50]
 jetLegFD="Raw B Feed-Down Fraction"
 jetLegFDsys="Sys. Unc. (POWHEG+PYTHIA6)"
+x_title = "#it{p}_{T,jet}^{ch}"
+y_title = "B Feed-Down Fraction"
 
 hEmpty = ROOT.TH1D("hE","hE",100,plotmin,plotmax)
 ## HIST SETTINGS
 hEmpty.SetTitle('')
-hEmpty.GetXaxis().SetTitle("#it{z}_{||}^{ch}");
-hEmpty.GetYaxis().SetTitle("B Feed-Down Fraction");
+hEmpty.GetXaxis().SetTitle(x_title);
+hEmpty.GetYaxis().SetTitle(y_title);
 #hEmpty.GetXaxis().SetLabelSize(0.04);
 #hEmpty.GetXaxis().SetTitleSize(0.04);
 #hEmpty.GetXaxis().SetTitleOffset(1.);
@@ -118,8 +120,8 @@ grsys.SetFillColor(Colors[0])
 grsys.SetLineColor(Colors[0])
 grsys.SetFillStyle(0)
 grsys.SetTitle('')
-grsys.GetXaxis().SetTitle("#it{z}_{||}^{ch}");
-grsys.GetYaxis().SetTitle("B Feed-Down Fraction");
+grsys.GetXaxis().SetTitle(x_title);
+grsys.GetYaxis().SetTitle(y_title);
 grsys.GetXaxis().SetLabelSize(0.04);
 grsys.GetXaxis().SetTitleSize(0.04);
 grsys.GetXaxis().SetTitleOffset(1.);
@@ -178,8 +180,8 @@ pvD.Draw("same");
 #pvEta.Draw("same");
 leg.Draw("same");
 
-cEff.SaveAs('jetFDratio_R0'+str(R)+'_'+str(int(float(energy)))+'.pdf')
-cEff.SaveAs('jetFDratio_R0'+str(R)+'_'+str(int(float(energy)))+'.png')
-cEff.SaveAs('jetFDratio_R0'+str(R)+'_'+str(int(float(energy)))+'.eps')
+cEff.SaveAs('plots/jetFDratio_R0'+str(R)+'_'+str(int(float(energy)))+'.pdf')
+cEff.SaveAs('plots/jetFDratio_R0'+str(R)+'_'+str(int(float(energy)))+'.png')
+cEff.SaveAs('plots/jetFDratio_R0'+str(R)+'_'+str(int(float(energy)))+'.eps')
 
 input()

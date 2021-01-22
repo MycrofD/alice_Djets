@@ -3,11 +3,12 @@
 #include <sstream>
 #include <iostream>
 
-setHistoDetails(TH1 *h, Color_t color, Style_t Mstyle, Width_t width);
+void setHistoDetails(TH1 *h, Color_t color, Style_t Mstyle, Width_t width);
+
 
 // double zmin = 0, zmax = 2.;
-//    double jetmin = 2, jetmax = 40;
-    double plotmin = 3, plotmax = 36;
+// double jetmin = 2, jetmax = 40;
+    double plotmin = 2, plotmax = 36;
 
     const int ptbinsJetN = 8;
     float ptJetbins[ptbinsJetN+1] = { 2,4,6,8,10,12,16,24,50 };
@@ -16,63 +17,58 @@ setHistoDetails(TH1 *h, Color_t color, Style_t Mstyle, Width_t width);
     int nonpromptColor = kBlue+1;
 
 
-void drawEff( int Rpar = 4 )
-{
+void drawEff( int Rpar = 4 ){
     style();
     gStyle->SetOptStat(000);
 
     gStyle->SetLegendFont(42);
     //gStyle->SetLegendTextSize(0.05);
+    gStyle->SetPadLeftMargin(0.135);
+    gStyle->SetPadRightMargin(0.03);
 
-stringstream sst;
-sst.clear(); sst.str("");
+    stringstream sst;sst.clear(); sst.str("");
 
-   //TFile *inFilePrompt = new TFile("out_806Preliminary/DjetEff_prompt_jetpt2_50.root","read");
-   //TFile *inFileFD = new TFile("out_806Base_FD/DjetEff_nonPrompt_jetpt2_50.root","read");
-
-   //TFile *inFilePrompt = new TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_cutTight/DzeroR03_def_437_old0/Default/efficiency/DjetEff_prompt_jetpt5_50.root","read");
-   //TFile *inFileFD = new TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_cutTight/DzeroR03_def_437_old0/Default/efficiency/DjetEff_nonPrompt_jetpt5_50.root","read");
-   TFile *inFilePrompt = new TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR04_paperCuts/Default/efficiency/DjetEff_prompt_jetpt5_50.root","read");
-   TFile *inFileFD = new TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR04_paperCuts/Default/efficiency/DjetEff_nonPrompt_jetpt5_50.root","read");
+    TFile *inFilePrompt = new TFile(Form("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR0%d_paperCuts/Default/efficiency/DjetEff_prompt_jetpt5_50.root",Rpar),"read");
+    TFile *inFileFD = new TFile(Form("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR0%d_paperCuts/Default/efficiency/DjetEff_nonPrompt_jetpt5_50.root",Rpar),"read");
 
     TH1F *hEffPrompt = (TH1F*)inFilePrompt->Get("hEff_reb");
     TH1F *hEffNonPrompt = (TH1F*)inFileFD->Get("hEff_reb");
 
-    hEffPrompt->SetTitle();
-            hEffPrompt->SetMarkerColor(promptColor);
-            hEffPrompt->SetLineColor(promptColor);
-            hEffPrompt->SetMarkerStyle(20);
-            hEffPrompt->SetMarkerSize(1.2);
-            hEffPrompt->GetXaxis()->SetTitle("#it{p}_{T,D^{0}} (GeV/#it{c})");
-            //hmass[i]->GetYaxis()->SetTitle(Form("Entries/%.1f MeV/#it{c^{2}}",hmass[i]->GetBinWidth(1)*1000));
-            //hEffPrompt->GetYaxis()->SetTitle("D^{*+} Acceptance #times Efficiency");
-            hEffPrompt->GetYaxis()->SetTitle("Acceptance #times Efficiency");
-            hEffPrompt->GetXaxis()->SetLabelSize(0.04);
-            hEffPrompt->GetXaxis()->SetTitleSize(0.05);
-            hEffPrompt->GetXaxis()->SetTitleOffset(1.);
-            hEffPrompt->GetYaxis()->SetTitleOffset(1.1);
-            hEffPrompt->GetYaxis()->SetLabelSize(0.045);
-            hEffPrompt->GetYaxis()->SetTitleSize(0.05);
-            hEffPrompt->GetXaxis()->SetRangeUser(plotmin,plotmax);
-            //hEffPrompt->SetMaximum(hEffPrompt->GetMaximum()*3.5);//for logy version
-            hEffPrompt->SetMaximum(hEffPrompt->GetMaximum()*1.5);//for linear y version
+    hEffPrompt->SetTitle("");
+    hEffPrompt->SetMarkerColor(promptColor);
+    hEffPrompt->SetLineColor(promptColor);
+    hEffPrompt->SetMarkerStyle(20);
+    hEffPrompt->SetMarkerSize(1.2);
+    hEffPrompt->GetXaxis()->SetTitle("#it{p}_{T,D^{0}} (GeV/#it{c})");
+    //hmass[i]->GetYaxis()->SetTitle(Form("Entries/%.1f MeV/#it{c^{2}}",hmass[i]->GetBinWidth(1)*1000));
+    //hEffPrompt->GetYaxis()->SetTitle("D^{*+} Acceptance #times Efficiency");
+    hEffPrompt->GetYaxis()->SetTitle("Acceptance #times Efficiency");
+    hEffPrompt->GetXaxis()->SetLabelSize(0.04);
+    hEffPrompt->GetXaxis()->SetTitleSize(0.05);
+    hEffPrompt->GetXaxis()->SetTitleOffset(1.);
+    hEffPrompt->GetYaxis()->SetTitleOffset(1.1);
+    hEffPrompt->GetYaxis()->SetLabelSize(0.045);
+    hEffPrompt->GetYaxis()->SetTitleSize(0.05);
+    hEffPrompt->GetXaxis()->SetRangeUser(plotmin,plotmax);
+    //hEffPrompt->SetMaximum(hEffPrompt->GetMaximum()*3.5);//for logy version
+    hEffPrompt->SetMaximum(hEffPrompt->GetMaximum()*1.5);//for linear y version
 
 
-   hEffNonPrompt->SetTitle();
-            hEffNonPrompt->SetMarkerColor(nonpromptColor);
-            hEffNonPrompt->SetLineColor(nonpromptColor);
-            hEffNonPrompt->SetMarkerStyle(21);
-            hEffNonPrompt->SetMarkerSize(1.2);
-            hEffNonPrompt->GetXaxis()->SetTitle("#it{p}_{T}^{D} (GeV/#it{c})");
-            //hmass[i]->GetYaxis()->SetTitle(Form("Entries/%.1f MeV/#it{c^{2}}",hmass[i]->GetBinWidth(1)*1000));
-            hEffNonPrompt->GetYaxis()->SetTitle("Acceptance #times Efficiency");
-            hEffNonPrompt->GetXaxis()->SetLabelSize(0.04);
-            hEffNonPrompt->GetXaxis()->SetTitleSize(0.05);
-            hEffNonPrompt->GetXaxis()->SetTitleOffset(1.);
-            hEffNonPrompt->GetYaxis()->SetLabelSize(0.045);
-            hEffNonPrompt->GetYaxis()->SetTitleSize(0.05);
-            hEffNonPrompt->GetXaxis()->SetRangeUser(plotmin,plotmax);
-            hEffNonPrompt->SetMaximum(hEffNonPrompt->GetMaximum()*2);
+    hEffNonPrompt->SetTitle("");
+    hEffNonPrompt->SetMarkerColor(nonpromptColor);
+    hEffNonPrompt->SetLineColor(nonpromptColor);
+    hEffNonPrompt->SetMarkerStyle(21);
+    hEffNonPrompt->SetMarkerSize(1.2);
+    hEffNonPrompt->GetXaxis()->SetTitle("#it{p}_{T}^{D} (GeV/#it{c})");
+    //hmass[i]->GetYaxis()->SetTitle(Form("Entries/%.1f MeV/#it{c^{2}}",hmass[i]->GetBinWidth(1)*1000));
+    hEffNonPrompt->GetYaxis()->SetTitle("Acceptance #times Efficiency");
+    hEffNonPrompt->GetXaxis()->SetLabelSize(0.04);
+    hEffNonPrompt->GetXaxis()->SetTitleSize(0.05);
+    hEffNonPrompt->GetXaxis()->SetTitleOffset(1.);
+    hEffNonPrompt->GetYaxis()->SetLabelSize(0.045);
+    hEffNonPrompt->GetYaxis()->SetTitleSize(0.05);
+    hEffNonPrompt->GetXaxis()->SetRangeUser(plotmin,plotmax);
+    hEffNonPrompt->SetMaximum(hEffNonPrompt->GetMaximum()*2);
 
 
     TLegend *leg = new TLegend(0.5,0.25,0.85,0.40);
