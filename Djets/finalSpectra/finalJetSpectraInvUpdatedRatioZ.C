@@ -251,7 +251,7 @@ void finalJetSpectraInvUpdatedRatioZ(
     ptAlice->SetFillStyle(0);
     ptAlice->SetTextAlign(13);
     ptAlice->SetTextFont(43);
-    ptAlice->SetTextSize(20);
+    ptAlice->SetTextSize(18);
     ptAlice->AddText("ALICE");
 
     TPaveText *ptInfo = new TPaveText(0.25,0.64,0.85,0.75,"NB NDC");
@@ -277,12 +277,20 @@ void finalJetSpectraInvUpdatedRatioZ(
     ptRadius[1]->AddText("R=0.4");
     ptRadius[2]->AddText("R=0.6");
 
-    TPaveText *ptRadius2[4];
+    TPaveText *ptRadius2[12];
     ptRadius2[0] = new TPaveText(0.25,0.4,0.95,0.8,"NB NDC");
-    ptRadius2[1] = new TPaveText(0.1,0.75,0.95,0.8,"NB NDC");
+    ptRadius2[1] = new TPaveText(0.09,0.75,0.95,0.8,"NB NDC");
     ptRadius2[2] = new TPaveText(0.09,0.75,0.95,0.8,"NB NDC");
-    ptRadius2[3] = new TPaveText(0.08,0.75,0.95,0.8,"NB NDC");
-    for(Int_t s = 0; s<4;s++){
+    ptRadius2[3] = new TPaveText(0.09,0.75,0.95,0.8,"NB NDC");
+    ptRadius2[4] = new TPaveText(0.25,0.85,0.95,0.95,"NB NDC");
+    ptRadius2[5] = new TPaveText(0.09,0.85,0.95,0.95,"NB NDC");
+    ptRadius2[6] = new TPaveText(0.09,0.85,0.95,0.95,"NB NDC");
+    ptRadius2[7] = new TPaveText(0.09,0.85,0.95,0.95,"NB NDC");
+    ptRadius2[8] = new TPaveText(0.25,0.85,0.95,0.95,"NB NDC");
+    ptRadius2[9] = new TPaveText(0.09,0.85,0.95,0.95,"NB NDC");
+    ptRadius2[10]= new TPaveText(0.09,0.85,0.95,0.95,"NB NDC");
+    ptRadius2[11]= new TPaveText(0.09,0.85,0.95,0.95,"NB NDC");
+    for(Int_t s = 0; s<12;s++){
         ptRadius2[s]->SetBorderSize(0);
         ptRadius2[s]->SetFillStyle(0);
         ptRadius2[s]->SetTextAlign(13);
@@ -290,10 +298,20 @@ void finalJetSpectraInvUpdatedRatioZ(
         ptRadius2[s]->SetTextSize(15);
     }
 
-    ptRadius2[0]->AddText("5 < p_{T,jet} < 7 GeV/#it{c} (p_{T,D} > 2 GeV/#it{c})");
-    ptRadius2[1]->AddText("7 < p_{T,jet} < 10 GeV/#it{c} (p_{T,D} > 2 GeV/#it{c})");
-    ptRadius2[2]->AddText("10 < p_{T,jet} < 15 GeV/#it{c} (p_{T,D} > 2 GeV/#it{c})");
-    ptRadius2[3]->AddText("15 < p_{T,jet} < 50 GeV/#it{c} (p_{T,D} > 3 GeV/#it{c})");
+    ptRadius2[0]->AddText("5 < #it{p}_{T,jet} < 7 GeV/#it{c}, #it{p}_{T,D} > 2 GeV/#it{c}");
+    ptRadius2[1]->AddText("7 < #it{p}_{T,jet} < 10 GeV/#it{c}, #it{p}_{T,D} > 4 GeV/#it{c}");
+    ptRadius2[2]->AddText("10 < #it{p}_{T,jet} < 15 GeV/#it{c}, #it{p}_{T,D} > 5 GeV/#it{c}");
+    ptRadius2[3]->AddText("15 < #it{p}_{T,jet} < 50 GeV/#it{c}, #it{p}_{T,D} > 10 GeV/#it{c}");
+
+    ptRadius2[4]->AddText("5 < #it{p}_{T,jet} < 7 GeV/#it{c}, #it{p}_{T,D} > 2 GeV/#it{c}");
+    ptRadius2[5]->AddText("7 < #it{p}_{T,jet} < 10 GeV/#it{c}, #it{p}_{T,D} > 3 GeV/#it{c}");
+    ptRadius2[6]->AddText("10 < #it{p}_{T,jet} < 15 GeV/#it{c}, #it{p}_{T,D} > 5 GeV/#it{c}");
+    ptRadius2[7]->AddText("15 < #it{p}_{T,jet} < 50 GeV/#it{c}, #it{p}_{T,D} > 5 GeV/#it{c}");
+
+    ptRadius2[8]->AddText("5 < #it{p}_{T,jet} < 7 GeV/#it{c}, #it{p}_{T,D} > 2 GeV/#it{c}");
+    ptRadius2[9]->AddText("7 < #it{p}_{T,jet} < 10 GeV/#it{c}, #it{p}_{T,D} > 3 GeV/#it{c}");
+    ptRadius2[10]->AddText("10 < #it{p}_{T,jet} < 15 GeV/#it{c}, #it{p}_{T,D} > 5 GeV/#it{c}");
+    ptRadius2[11]->AddText("15 < #it{p}_{T,jet} < 50 GeV/#it{c}, #it{p}_{T,D} > 5 GeV/#it{c}");
 
     TPaveText *ptEnergy[3];
     ptEnergy[0] = new TPaveText(0.45,0.72,0.95,0.9,"NB NDC");
@@ -304,38 +322,46 @@ void finalJetSpectraInvUpdatedRatioZ(
         ptEnergy[s]->SetFillStyle(0);
         ptEnergy[s]->SetTextAlign(13);
         ptEnergy[s]->SetTextFont(43);
-        ptEnergy[s]->SetTextSize(20);
+        ptEnergy[s]->SetTextSize(18);
     }
     //ptEnergy[0]->AddText("pp, #sqrt{#it{s}} = 13 TeV");
     ptEnergy[0]->AddText("pp, #sqrt{#it{s}} = 5.02 TeV");
 
     TLegend *leg =nullptr;
+    TLegend *leg2 =nullptr;
+    TLegend *leg3 =nullptr;
     Double_t shift = 0.06*(2+3);
     leg = new TLegend(0.08,0.72-shift,0.72,0.675,nullptr,"NB NDC");
+    leg2= new TLegend(0.08,0.9-shift/2.,0.72,0.855,nullptr,"NB NDC");
+    leg3= new TLegend(0.08,0.9-shift/2.,0.72,0.855,nullptr,"NB NDC");
     leg->SetBorderSize(0);
-    leg->SetTextFont(43);
-    leg->SetTextSize(14);
-    leg->SetLineColor(1);
-    leg->SetLineStyle(1);
-    leg->SetLineWidth(1);
-    leg->SetFillColor(0);
-    leg->SetFillStyle(0);
+    leg->SetTextFont(43); leg2->SetTextFont(43); leg3->SetTextFont(43);
+    leg->SetTextSize(14); leg2->SetTextSize(14); leg3->SetTextSize(14);
+    leg->SetLineColor(1); leg2->SetLineColor(1); leg3->SetLineColor(1);
+    leg->SetLineStyle(1); leg2->SetLineStyle(1); leg3->SetLineStyle(1);
+    leg->SetLineWidth(1); leg2->SetLineWidth(1); leg3->SetLineWidth(1);
+    leg->SetFillColor(0); leg2->SetFillColor(0); leg3->SetFillColor(0);
+    leg->SetFillStyle(0); leg2->SetFillStyle(0); leg3->SetFillStyle(0);
     leg->AddEntry(s13_hData_binned_syst[0],"R=0.2","fp");
-    leg->AddEntry(s13_hData_binned_syst[4],"R=0.4","fp");
-    leg->AddEntry(s13_hData_binned_syst[8],"R=0.6","fp");
+    leg2->AddEntry(s13_hData_binned_syst[4],"R=0.4","fp");
+    leg3->AddEntry(s13_hData_binned_syst[8],"R=0.6","fp");
     leg->AddEntry(s13_PowhegPythia8[0],"POWHEG hvq + PYTHIA 8","pf");
     leg->AddEntry(s13_Pythia8[0],"PYTHIA 8 Monash 2013","l");
     leg->AddEntry(s13_Pythia8SoftMode2[0],"PYTHIA 8 Monash 2013 Soft mode 2","l");
 
 
-    Pad[0]->cd();
-    ptRadius2[0]->Draw();
-    Pad[1]->cd();
-    ptRadius2[1]->Draw();
-    Pad[2]->cd();
-    ptRadius2[2]->Draw();
-    Pad[3]->cd();
-    ptRadius2[3]->Draw();
+    Pad[0]->cd();  ptRadius2[0]->Draw();
+    Pad[1]->cd();  ptRadius2[1]->Draw();
+    Pad[2]->cd();  ptRadius2[2]->Draw();
+    Pad[3]->cd();  ptRadius2[3]->Draw();
+    Pad[8]->cd();  ptRadius2[4]->Draw();
+    Pad[9]->cd();  ptRadius2[5]->Draw();
+    Pad[10]->cd(); ptRadius2[6]->Draw();
+    Pad[11]->cd(); ptRadius2[7]->Draw();
+    Pad[16]->cd(); ptRadius2[8]->Draw();
+    Pad[17]->cd(); ptRadius2[9]->Draw();
+    Pad[18]->cd(); ptRadius2[10]->Draw();
+    Pad[19]->cd(); ptRadius2[11]->Draw();
 
     Pad[0]->cd();
     ptAlice->Draw();
@@ -343,9 +369,14 @@ void finalJetSpectraInvUpdatedRatioZ(
     ptEnergy[0]->Draw();
     Pad[3]->cd();
     leg->Draw();
+    Pad[11]->cd();
+    leg2->Draw();
+    Pad[19]->cd();
+    leg3->Draw();
 
     TerminateCanvas4x6Pad(Pad,placeholder);
     canvas->SaveAs("PDFF.png");
+    canvas->SaveAs("PDFF.pdf");
 
 
     return;
@@ -603,7 +634,7 @@ void PlaceOnPad(TPad* pad,TGraphAsymmErrors* histo, Color_t ci, Style_t style, S
     if(linestyle!=-1)histo->SetLineStyle(linestyle);
    // histo->SetFillStyle(3005);
    // histo->SetMarkerSize(markersize); //add up
-    histo->SetLineWidth(2);
+    histo->SetLineWidth(1);
     if(scale>-1){
         TString tmp = "";
         TGraphAsymmErrors* histo_tmp = dynamic_cast<TGraphAsymmErrors*>(histo->Clone(tmp+histo->GetName()+"_plotCp"));
@@ -838,8 +869,8 @@ std::tuple<TCanvas*, TPad**, TH1D**> PrepareCanvas3x8Pad(UInt_t xAxisBins, Doubl
                placeholder[ipad]->SetMaximum(7.8);
             }
 
-            if(ipad > 20)placeholder[ipad]->GetXaxis()->SetTitle("z_{#parallel}");
-            if(ipad%6==0)placeholder[ipad]->GetYaxis()->SetTitle("1/N_{jets}dN/dz_{#parallel}");
+            if(ipad > 20)placeholder[ipad]->GetXaxis()->SetTitle("z_{||}");//parallel
+            if(ipad%6==0)placeholder[ipad]->GetYaxis()->SetTitle("1/N_{jets}dN/dz_{||}");
             if(ipad%6==3){placeholder[ipad]->GetYaxis()->SetTitle("MC/Data");
               placeholder[ipad]->GetYaxis()->CenterTitle();
             }
@@ -1019,15 +1050,15 @@ std::tuple<TCanvas*, TPad**, TH1D**> PrepareCanvas4x6Pad(UInt_t xAxisBins, Doubl
             }
             else if(ipad == 8 ||ipad == 9 ||ipad == 10 ||ipad == 11){
                placeholder[ipad]->SetMinimum(0.1);
-               placeholder[ipad]->SetMaximum(4.3);
+               placeholder[ipad]->SetMaximum(5.3);
             }
             else if(ipad == 16 ||ipad == 17 ||ipad == 18 ||ipad == 19){
                placeholder[ipad]->SetMinimum(0.1);
-               placeholder[ipad]->SetMaximum(3.3);
+               placeholder[ipad]->SetMaximum(5.3);
             }
 
-            if(ipad > 19)placeholder[ipad]->GetXaxis()->SetTitle("z_{#parallel}");
-            if(ipad%8==0)placeholder[ipad]->GetYaxis()->SetTitle("1/N_{jets}dN/dz_{#parallel}");
+            if(ipad > 19)placeholder[ipad]->GetXaxis()->SetTitle("z_{||}");
+            if(ipad%8==0)placeholder[ipad]->GetYaxis()->SetTitle("1/N_{jets}dN/dz_{||}");//parallel
             if(ipad%8==4){placeholder[ipad]->GetYaxis()->SetTitle("MC/Data");
               placeholder[ipad]->GetYaxis()->CenterTitle();
             }
