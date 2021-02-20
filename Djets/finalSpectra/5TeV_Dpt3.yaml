@@ -26,10 +26,14 @@ jetpTbins:
 
 DpTbins:
     0:
-        "02": [2,36]
-        "03": [2,36]
-        "04": [2,36]
-        "06": [2,36]
+        #"02": [2,36]
+        #"03": [2,36]
+        #"04": [2,36]
+        #"06": [2,36]
+        "02": [3,36]
+        "03": [3,36]
+        "04": [3,36]
+        "06": [3,36]
     1:
         "02": [[2,2,4,5,10],[5,7,10,15,36]]
         "03": [[2,2,3,5,5],[5,7,10,15,36]]
@@ -52,10 +56,14 @@ simDirZbin:
     5: "Jetpt15_50"
 simDir:
     0:
-        "02": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR02_paperCuts/Simulations/Prompt/"
-        "03": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR03_paperCuts/Simulations/Prompt/"
-        "04": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR04_paperCuts/Simulations/Prompt/"
-        "06": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR06_paperCuts/Simulations/Prompt/"
+        #"02": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR02_paperCuts/Simulations/Prompt/"
+        #"03": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR03_paperCuts/Simulations/Prompt/"
+        #"04": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR04_paperCuts/Simulations/Prompt/"
+        #"06": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR06_paperCuts/Simulations/Prompt/"
+        "02": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_D3zeroR02_paperCuts/Simulations/Prompt/"
+        "03": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_D3zeroR03_paperCuts/Simulations/Prompt/"
+        "04": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_D3zeroR04_paperCuts/Simulations/Prompt/"
+        "06": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_D3zeroR06_paperCuts/Simulations/Prompt/"
     1:
         "02": "/media/jackbauer/data/z_out/R_02_finaltry/SimFiles/Prompt/"
         "03": "/media/jackbauer/data/z_out/R_03_finaltry/SimFiles/Prompt/"
@@ -68,10 +76,14 @@ dataAnalysisFile:
     "06": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/AnalysisResults_751_R06_pp_5cuts.root"
 dataFile:
     0:
-        "02": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR02_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"
-        "03": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR03_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"
-        "04": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR04_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"
-        "06": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR06_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"
+        #"02": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR02_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"
+        #"03": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR03_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"
+        #"04": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR04_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"
+        #"06": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR06_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"
+        "02": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_D3zeroR02_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"
+        "03": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_D3zeroR03_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"
+        "04": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_D3zeroR04_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"
+        "06": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_D3zeroR06_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"
     1:
         "02": "/media/jackbauer/data/z_out/R_02_finaltry/unfolding/Bayes/alljetz2D/unfold2DoutFileAPW.root"
         "03": "/media/jackbauer/data/z_out/R_03_finaltry/unfolding/Bayes/alljetz2D/unfold2DoutFileAPW.root"
@@ -79,10 +91,14 @@ dataFile:
         "06": "/media/jackbauer/data/z_out/R_06_finaltry/unfolding/Bayes/alljetz2D/unfold2DoutFileAPW.root"
 outSpectraDir:
     0:
-        "02": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR02_paperCuts/Default/unfolding_Bayes_5/final/"
-        "03": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR03_paperCuts/Default/unfolding_Bayes_5/final/"
-        "04": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR04_paperCuts/Default/unfolding_Bayes_5/final/"
-        "06": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR06_paperCuts/Default/unfolding_Bayes_5/final/"
+        #"02": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR02_paperCuts/Default/unfolding_Bayes_5/final/"
+        #"03": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR03_paperCuts/Default/unfolding_Bayes_5/final/"
+        #"04": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR04_paperCuts/Default/unfolding_Bayes_5/final/"
+        #"06": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR06_paperCuts/Default/unfolding_Bayes_5/final/"
+        "02": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_D3zeroR02_paperCuts/Default/unfolding_Bayes_5/final/"
+        "03": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_D3zeroR03_paperCuts/Default/unfolding_Bayes_5/final/"
+        "04": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_D3zeroR04_paperCuts/Default/unfolding_Bayes_5/final/"
+        "06": "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_D3zeroR06_paperCuts/Default/unfolding_Bayes_5/final/"
     1:
         "02": "/media/jackbauer/data/z_out/R_02_finaltry/unfolding/final/"
         "03": "/media/jackbauer/data/z_out/R_03_finaltry/unfolding/final/"

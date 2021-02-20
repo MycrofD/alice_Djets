@@ -21,16 +21,18 @@ from funcsettings import *
 from style import *
 ##----------------------------------------------------------------
 ##--- SANITY CHECK
-if len(sys.argv)!=7:
-    print("""   === Usage example: python file.py type_ R z sysGlobal 5/13TeV sysUnc
+if len(sys.argv)!=8:
+    print("""   === Usage example: python file.py type_ R z sysGlobal 5/13 5/13Yaml 5/13sysUnc
                     type_ = 0: jet-pt x-sec, 1: z x-sec, 2: z PDF
                     R = jet radius. 02, 03, 04, 06. (03 only for type:0 x-section)
                     z = which jetpt interval for z: 1,2,3,4,5
                     sysGlobal = 0: (default). add LmiUnc, BRUnc, DmesonTrackingUnc, CUTvar, JES; for x-section
                                 1: (R comparison). no global Unc; cut var separate. no JES. only for type:0 x-section
                                 2: (energy comparison) add LumiUnc and DmesonTrackingUnc, CUTvar and JES
-                    5/13TeV: YAML config file for corresponding energy
-                    sysUnc: YAML config with systematics
+                    5/13TeV: 5, 13
+                    5/13TeV yaml: YAML config file for corresponding energy
+                    sysUnc yaml: YAML config with systematics
+    python file.py 0/1/2 02/03/04/06 2/3/4/5 0/1/2 5/13 5yaml 5sysuncYaml
     """
     )
     exit()
@@ -41,22 +43,25 @@ R=sys.argv[2]
 zBin=int(sys.argv[3]);
 if(type_ == 0): zBin = 0;
 sysGlobal=int(sys.argv[4])
+energy_int=int(sys.argv[5])
 dy=2*(9.0-int(R))/10.
 pdf = {0:False,1:False,2:True}[type_]
 plotRanges=[0,2,10e-9,1]
 ## ----------------------------------------------------------------
 ##--- LOAD YAML CONFIG, Read YAML file
-yaml_config_file = sys.argv[5]
-yaml_unc_config_file = sys.argv[6]
+yaml_config_file = sys.argv[6]
+yaml_unc_config_file = sys.argv[7]
 with open(yaml_config_file, 'r') as stream:
     data_loaded = yaml.safe_load(stream)
 with open(yaml_unc_config_file, 'r') as unc_stream:
     unc_loaded = yaml.safe_load(unc_stream)
 energy=data_loaded['energy']
-outSpectraDir=data_loaded['outSpectraDir'][R]
-dataFile=data_loaded['dataFile'][R]
+outSpectraDir=data_loaded['outSpectraDir'][int(bool(type_))][R]
+dataFile=data_loaded['dataFile'][int(bool(type_))][R]
 dataAnalysisFile=data_loaded['dataAnalysisFile'][R]
-histBase="unfoldedSpectrum";
+histBase=data_loaded['histBase'][int(bool(type_))]
+if(type_):
+    histBase+=str(zBin-1)
 ## ----------------------------------------------------------------
 ## --------------- SET PARAMETERS + BINNING HERE ------------------
 ## ----------------------------------------------------------------
@@ -66,14 +71,17 @@ BRDzeroUnc=data_loaded['BRDzeroUnc']
 DtrackingUnc=data_loaded['DtrackingUnc'] 
 LumiUnc=data_loaded['LumiUnc'] 
 ##--- INITIAL VALUES
-xAxisBins = data_loaded['xAxisBins'][type_]
-xAxis = array.array('d',data_loaded['xAxis'][type_])
-xAxisC = array.array('d',data_loaded['xAxisC'][type_])
-jetpTbins = array.array('d',data_loaded['jetpTbins'][type_])
-DpTbins=array.array('d',data_loaded['DpTbins'][type_][R])
+xAxisBins = data_loaded['xAxisBins'][int(bool(type_))]
+xAxis = array.array('d',data_loaded['xAxis'][int(bool(type_))])
+xAxisC = array.array('d',data_loaded['xAxisC'][int(bool(type_))])
+jetpTbins = array.array('d',data_loaded['jetpTbins'][int(bool(type_))])
+DpTbins=data_loaded['DpTbins'][int(bool(type_))][R]
 ##--- create folders
-outPlotDir=outSpectraDir+"/plots"
 ROOT.gSystem.Exec("mkdir "+outSpectraDir)
+if(energy_int==5 and type_ != 0):
+    outSpectraDir+=data_loaded['simDirZbin'][zBin]
+    ROOT.gSystem.Exec("mkdir "+outSpectraDir)
+outPlotDir=outSpectraDir+"/plots/"
 ROOT.gSystem.Exec("mkdir "+outPlotDir)
 ##--- Uncertainties
 # unc part 1
@@ -81,7 +89,8 @@ systUncD_up,systUncD_down,systUncD_JES,systUncD_CUTS = np.zeros(xAxisBins),np.ze
 if(type_==0):
     systUncD_up,systUncD_down,systUncD_JES,systUncD_CUTS = unc_loaded[type_][R]['systUncD_up'],unc_loaded[type_][R]['systUncD_down'],unc_loaded[type_][R]['systUncD_JES'],unc_loaded[type_][R]['systUncD_CUTS']
 else:
-    systUncD_up,systUncD_down,systUncD_JES,systUncD_CUTS = unc_loaded[1][R][zBin]['systUncD_up'],unc_loaded[1][R][zBin]['systUncD_down'],unc_loaded[1][R][zBin]['systUncD_JES'],unc_loaded[1][R][zBin]['systUncD_CUTS']
+    #systUncD_up,systUncD_down,systUncD_JES,systUncD_CUTS = unc_loaded[1][R][zBin]['systUncD_up'],unc_loaded[1][R][zBin]['systUncD_down'],unc_loaded[1][R][zBin]['systUncD_JES'],unc_loaded[1][R][zBin]['systUncD_CUTS']
+    systUncD_up,systUncD_down = unc_loaded[1][R][zBin]['systUncD_up'],unc_loaded[1][R][zBin]['systUncD_down']
 
 # unc part 2
 addBRDzeroUnc,addDtrackingUnc,addLumiUnc,separateCUTUnc,addJESUnc=0,0,0,0,0
@@ -132,7 +141,11 @@ hDataSys, hData_binned, hDataSysRatio, hData_binned_ratio = GetData(dataFile,his
 PlaceOnPadData(upPad,hDataSys,hData_binned,0.9);
 PlaceOnPadData(downPad,hDataSysRatio,hData_binned_ratio,0);
 ##--- PROMPT SIMULATION
-simDir=data_loaded['simDir']
+if(type_):
+    simDir=data_loaded['simDir'][int(bool(type_))][R]+data_loaded['simDirZbin'][zBin]
+else:
+    simDir=data_loaded['simDir'][int(bool(type_))][R]
+simPrefix=data_loaded['simPrefix'][int(bool(type_))]
 ePowhegPythia6=data_loaded['ePowhegPythia6']
 ePowhegPythia8=data_loaded['ePowhegPythia8']
 ePythia6=data_loaded['ePythia6']
@@ -151,56 +164,56 @@ fPowhegPythia8dijet=data_loaded['fPowhegPythia8dijet']
 ##--- powheg pythia 6
 #--------------------
 if(ePowhegPythia6):
-    print("get POWHWG+PYTHIA6")
-    simPowhegPythia6, simPowhegPythia6_cent, simPowhegPythia6_up, simPowhegPythia6_down,simPowhegPythia6var = GetSim("simPowhegPythia6",type_, 9, fPowhegPythia6, simDir, simScaling, xAxisBins, xAxis, DpTbins, jetpTbins, zBin, pdf,dy)
+    print("get POWHEG+PYTHIA6")
+    simPowhegPythia6, simPowhegPythia6_cent, simPowhegPythia6_up, simPowhegPythia6_down,simPowhegPythia6var = GetSim("simPowhegPythia6",type_, 9, fPowhegPythia6, simDir, simScaling, xAxisBins, xAxis, DpTbins, jetpTbins, zBin, pdf,dy,simPrefix,energy_int)
     simPowhegPythia6_R, simPowhegPythia6_cent_R, simPowhegPythia6_up_R, simPowhegPythia6_down_R = GetDataSimRatio("simPowhegPythia6",hData_binned,simPowhegPythia6_cent, simPowhegPythia6_up, simPowhegPythia6_down, xAxisBins, xAxis, DpTbins, jetpTbins, zBin, pdf,dy)
     PlaceOnPadSim(upPad,simPowhegPythia6,ROOT.TColor.GetColor("#000099"),24,1)
     PlaceOnPadSim(dowmPad,simPowhegPythia6_R,ROOT.TColor.GetColor("#000099"),24,1)
 ##--powheg pythia 8
 #--------------------
 if(ePowhegPythia8):
-    print("get POWHWG+PYTHIA8")
-    simPowhegPythia8, simPowhegPythia8_cent, simPowhegPythia8_up, simPowhegPythia8_down,simPowhegPythia8var = GetSim("simPowhegPythia8",type_, 9, fPowhegPythia8, simDir, simScaling, xAxisBins, xAxis, DpTbins, jetpTbins, zBin, pdf,dy)
-    simPowhegPythia8_R, simPowhegPythia8_cent_R, simPowhegPythia8_up_R, simPowhegPythia8_down_R = GetDataSimRatio("simPowhegPythia8",hData_binned,simPowhegPythia8_cent, simPowhegPythia8_up, simPowhegPythia8_down, xAxisBins, xAxis)#, DpTbins, jetpTbins, zBin, pdf,dy)
+    print("get POWHEG+PYTHIA8")
+    simPowhegPythia8, simPowhegPythia8_cent, simPowhegPythia8_up, simPowhegPythia8_down,simPowhegPythia8var = GetSim("simPowhegPythia8",type_, 9, fPowhegPythia8, simDir, simScaling, xAxisBins, xAxis, DpTbins, jetpTbins, zBin, pdf,dy,simPrefix,energy_int)
+    simPowhegPythia8_R, simPowhegPythia8_cent_R, simPowhegPythia8_up_R, simPowhegPythia8_down_R = GetDataSimRatio("simPowhegPythia8",hData_binned,simPowhegPythia8_cent, simPowhegPythia8_up, simPowhegPythia8_down, xAxisBins, xAxis)
     PlaceOnPadSim(upPad,simPowhegPythia8,ROOT.TColor.GetColor("#000099"),24,1)
     PlaceOnPadSim(downPad,simPowhegPythia8_R,ROOT.TColor.GetColor("#000099"),24,1)
 ##-- pythia 6
 #--------------------
 if(ePythia6):
     print("get PYTHIA6")
-    simPythia6, simPythia6_cent, simPythia6_up, simPythia6_down,hBlackHole = GetSim("simPythia6",type_, 1,fPythia6, simDir, simScaling, xAxisBins, xAxis, DpTbins, jetpTbins, zBin, pdf, dy)
-    simPythia6_R, simPythia6_cent_R, simPythia6_up_R, simPythia6_down_R = GetDataSimRatio("simPythia6",hData_binned,simPythia6_cent, simPythia6_up, simPythia6_down, xAxisBins, xAxis)#, DpTbins, jetpTbins, zBin, pdf, dy)
+    simPythia6, simPythia6_cent, simPythia6_up, simPythia6_down,hBlackHole = GetSim("simPythia6",type_, 1,fPythia6, simDir, simScaling, xAxisBins, xAxis, DpTbins, jetpTbins, zBin, pdf, dy,simPrefix,energy_int)
+    simPythia6_R, simPythia6_cent_R, simPythia6_up_R, simPythia6_down_R = GetDataSimRatio("simPythia6",hData_binned,simPythia6_cent, simPythia6_up, simPythia6_down, xAxisBins, xAxis)
     PlaceOnPadSim(upPad,simPythia6,ROOT.TColor.GetColor("#009933"),25,2);
     PlaceOnPadSim(downPad,simPythia6_R,ROOT.TColor.GetColor("#009933"),25,2);
 ##-- pythia 8
 #--------------------
 if(ePythia8):
     print("get PYTHIA8")
-    simPythia8, simPythia8_cent, simPythia8_up, simPythia8_down,hBlackHole = GetSim("simPythia8",type_, 1,fPythia8, simDir, simScaling, xAxisBins, xAxis, DpTbins, jetpTbins, zBin, pdf, dy)
-    simPythia8_R, simPythia8_cent_R, simPythia8_up_R, simPythia8_down_R = GetDataSimRatio("simPythia8",hData_binned,simPythia8_cent, simPythia8_up, simPythia8_down, xAxisBins, xAxis)#, DpTbins, jetpTbins, zBin, pdf, dy)
+    simPythia8, simPythia8_cent, simPythia8_up, simPythia8_down,hBlackHole = GetSim("simPythia8",type_, 1,fPythia8, simDir, simScaling, xAxisBins, xAxis, DpTbins, jetpTbins, zBin, pdf, dy, simPrefix,energy_int)
+    simPythia8_R, simPythia8_cent_R, simPythia8_up_R, simPythia8_down_R = GetDataSimRatio("simPythia8",hData_binned,simPythia8_cent, simPythia8_up, simPythia8_down, xAxisBins, xAxis)
     PlaceOnPadSim(upPad,simPythia8,ROOT.TColor.GetColor("#009933"),27,2);
     PlaceOnPadSim(downPad,simPythia8_R,ROOT.TColor.GetColor("#009933"),27,2);
 ##-- pythia 8 soft mode 2
 #------------------------
 if(ePythia8SoftMode2):
     print("get PYTHIA8 soft mode2")
-    simPythia8Soft2, simPythia8Soft2_cent, simPythia8Soft2_up, simPythia8Soft2_down,hBlackHole = GetSim("simPythia8Soft2",type_, 1,fPythia8SoftMode2, simDir, simScaling, xAxisBins, xAxis, DpTbins, jetpTbins, zBin, pdf, dy)
+    simPythia8Soft2, simPythia8Soft2_cent, simPythia8Soft2_up, simPythia8Soft2_down,hBlackHole = GetSim("simPythia8Soft2",type_, 1,fPythia8SoftMode2, simDir, simScaling, xAxisBins, xAxis, DpTbins, jetpTbins, zBin, pdf, dy, simPrefix, energy_int)
     simPythia8Soft2_R, simPythia8Soft2_cent_R, simPythia8Soft2_up_R, simPythia8Soft2_down_R = GetDataSimRatio("simPythia8Soft2",hData_binned,simPythia8Soft2_cent, simPythia8Soft2_up, simPythia8Soft2_down, xAxisBins, xAxis)
     PlaceOnPadSim(upPad,simPythia8Soft2,ROOT.kOrange+2,28,4)
     PlaceOnPadSim(downPad,simPythia8Soft2_R,ROOT.kOrange+2,28,4);
 ##-- powheg pythia 6 dijet
 #-------------------------
 if(ePowhegPythia6dijet):
-    print("get POWHWG+PYTHIA6 dijet")
-    simPowhegPythia6dijet, simPowhegPythia6dijet_cent, simPowhegPythia6dijet_up, simPowhegPythia6dijet_down,simPowhegPythia6dijetvar = GetSim("simPowhegPythia6dijet",type_, 1, fPowhegPythia6dijet, simDir, simScaling, xAxisBins, xAxis, DpTbins, jetpTbins, zBin, pdf, dy)
+    print("get POWHEG+PYTHIA6 dijet")
+    simPowhegPythia6dijet, simPowhegPythia6dijet_cent, simPowhegPythia6dijet_up, simPowhegPythia6dijet_down,simPowhegPythia6dijetvar = GetSim("simPowhegPythia6dijet",type_, 1, fPowhegPythia6dijet, simDir, simScaling, xAxisBins, xAxis, DpTbins, jetpTbins, zBin, pdf, dy, simPrefix, energy_int)
     simPowhegPythia6dijet_R, simPowhegPythia6dijet_cent_R, simPowhegPythia6dijet_up_R, simPowhegPythia6dijet_down_R = GetDataSimRatio("simPowhegPythia6dijet",hData_binned,simPowhegPythia6dijet_cent, simPowhegPythia6dijet_up, simPowhegPythia6dijet_down, xAxisBins, xAxis)
     PlaceOnPadSim(upPad,simPowhegPythia6dijet,ROOT.TColor.GetColor("#000099"),28,1)
     PlaceOnPadSim(downPad,simPowhegPythia6dijet_R,ROOT.TColor.GetColor("#000099"),28,1)
 ##-- powheg pythia 8 dijet
 #-------------------------
 if(ePowhegPythia8dijet):
-    print("get POWHWG+PYTHIA8 dijet")
-    simPowhegPythia8dijet, simPowhegPythia8dijet_cent, simPowhegPythia8dijet_up, simPowhegPythia8dijet_down,simPowhegPythia8dijetvar = GetSim("simPowhegPythia8dijet",type_, 1, fPowhegPythia8dijet, simDir, simScaling, xAxisBins, xAxis, DpTbins, jetpTbins, zBin, pdf, dy)
+    print("get POWHEG+PYTHIA8 dijet")
+    simPowhegPythia8dijet, simPowhegPythia8dijet_cent, simPowhegPythia8dijet_up, simPowhegPythia8dijet_down,simPowhegPythia8dijetvar = GetSim("simPowhegPythia8dijet",type_, 1, fPowhegPythia8dijet, simDir, simScaling, xAxisBins, xAxis, DpTbins, jetpTbins, zBin, pdf, dy, simPrefix, energy_int)
     simPowhegPythia8dijet_R, simPowhegPythia8dijet_cent_R, simPowhegPythia8dijet_up_R, simPowhegPythia8dijet_down_R = GetDataSimRatio("simPowhegPythia8dijet",hData_binned,simPowhegPythia8dijet_cent, simPowhegPythia8dijet_up, simPowhegPythia8dijet_down, xAxisBins, xAxis)
     PlaceOnPadSim(upPad,simPowhegPythia8dijet,ROOT.TColor.GetColor("#009999"),28,1)
     PlaceOnPadSim(downPad,simPowhegPythia8dijet_R,ROOT.TColor.GetColor("#009999"),28,1)
