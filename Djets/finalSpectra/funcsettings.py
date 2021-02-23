@@ -170,19 +170,23 @@ def GetData(dataFile,histBase,dataScaling,nBins,xBins,systUncD_down,systUncD_up,
     """
     return (grsysl,hData_binned, grsysRatio,hData_binned_ratio) #return (hDataSys, hData_binned, hDataSysRatio, hData_binned_ratio)
 #----------
-def GetSim(simname, type_, nFiles, names, simDir, simScaling, nBins, xBins, DpTbins, jetpTbins, zBin, pdf,dy):
+def GetSim(simname, type_, nFiles, names, simDir, simScaling, nBins, xBins, DpTbins, jetpTbins, zBin, pdf,dy,simPrefix, energy_int):
     hPrompt, hPrompt_binned = [],[] 
     tmp = "h"
     tmp+=simname
     for nr in range(nFiles):
         file_ = simDir
-        file_ += "/JetPt_"
+        file_ += simPrefix
         file_ += names[nr]
         if(type_ == 0):
             file_ += "_Dpt"+str(int(DpTbins[0]))+"_"+str(int(DpTbins[1]));
         if(type_ ==1 or type_ ==2):
-            file_ += "_Dpt"; file_ += DpTbins[0][zBin-1]; file_ += "_"; file_ += DpTbins[1][zBin-1];
-            file_ += "_Jetpt"; file_ += jetpTbins[zBin-1]; file_ += "_"; file_ += jetpTbins[zBin];
+            if(energy_int==13):
+                file_ += "_Dpt"; file_ += str(int(DpTbins[0][zBin-1])); file_ += "_"; file_ += str(int(DpTbins[1][zBin-1]));
+                file_ += "_Jetpt"; file_ += str(int(jetpTbins[zBin-1])); file_ += "_"; file_ += str(int(jetpTbins[zBin]));
+            elif(energy_int==5):
+                file_ += "_Jetpt"; file_ += str(int(jetpTbins[zBin-1])); file_ += "_"; file_ += str(int(jetpTbins[zBin]));
+                file_ += "_Dpt"; file_ += str(int(DpTbins[0][zBin-1])); file_ += "_"; file_ += str(int(DpTbins[1][zBin-1]));
         file_ += "_Dzero.root"
         htmp = ROOT.TH1D()
         if(type_ ==0):
@@ -190,9 +194,10 @@ def GetSim(simname, type_, nFiles, names, simDir, simScaling, nBins, xBins, DpTb
             if(htmp==False): print("no histogram in file: ",file_)
             htmp.GetYaxis().SetTitle("d#sigma/dp_{T} (mb)");
         if(type_ ==1 or type_ ==2):
-            htmp = GetInputHist(file_,"hz")
+            htmp = GetInputHist(file_,"hPt")
             if(htmp==False): print("no histogram in file: ",file_)
             htmp.GetYaxis().SetTitle("d#sigma/dz (mb)");
+
         hPrompt.append(htmp.Clone("hPrompt_%d"%(nr)))
         hPrompt_binned.append(htmp.Rebin(nBins,"hPrompt_binned_%d"%(nr),xBins))
         hPrompt_binned[nr].SetName(tmp+"_var"+("%d"%(nr)))
