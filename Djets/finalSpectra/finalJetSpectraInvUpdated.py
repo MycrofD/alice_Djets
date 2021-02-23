@@ -123,7 +123,7 @@ for bin_ in range(xAxisBins):
 #           create separate plot for separate CUT SYS
 # unc part 5
 gDataCutSys = ROOT.TGraph()
-if(separateCUTUnc): gDataCutSys = ROOT.TGraph(xAxisBins,xAxisC, systUncD_CUTS)
+if(separateCUTUnc): gDataCutSys = ROOT.TGraph(xAxisBins,xAxisC, array.array('d',systUncD_CUTS))
 
 ##--- GET DATA and EVENTS
 print("get Data and Events")
