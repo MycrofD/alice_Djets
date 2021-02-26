@@ -121,9 +121,9 @@ sst.clear(); sst.str("");
     }
 
     //hmass[0]->SetMaximum(hmass[0]->GetMaximum()*1.1);
-    hmass[bin1]->SetMaximum(hmass[bin1]->GetMaximum()*1.3);
-    hmass[bin2]->SetMaximum(hmass[bin2]->GetMaximum()*1.12);
-    hmass[bin3]->SetMaximum(hmass[bin3]->GetMaximum()*1.25);
+    hmass[bin1]->SetMaximum(hmass[bin1]->GetMaximum()*1.);
+    hmass[bin2]->SetMaximum(hmass[bin2]->GetMaximum()*1.);
+    hmass[bin3]->SetMaximum(hmass[bin3]->GetMaximum()*1.);
 
     hmass[bin1]->GetYaxis()->SetTitleOffset(1.4);
     hmass[bin2]->GetYaxis()->SetTitleOffset(1.4);
@@ -330,10 +330,6 @@ sst.clear(); sst.str("");
     pvsigma3->AddText(Form("#sigma = %.1f #pm %.1f MeV/#it{c}^{2}",hsigma->GetBinContent(hsigma->FindBin((ptDbins[bin3]+ptDbins[bin3+1])/2. )),hsigma->GetBinError(hsigma->FindBin((ptDbins[bin3]+ptDbins[bin3+1])/2. ))));
 
     TCanvas *cMass = new TCanvas("cMass","cMass",3000,900);
-    //TCanvas *cMass = new TCanvas("cMass","cMass",3000,1000);
-    //TCanvas *cMass = new TCanvas("cMass","cMass",1800,600);
-    //TCanvas *cMass = new TCanvas("cMass","cMass");
-    //cMass->SetBatch();
     cMass->Divide(3,1);
     cMass->cd(1);
     hmass[bin1]->Draw();

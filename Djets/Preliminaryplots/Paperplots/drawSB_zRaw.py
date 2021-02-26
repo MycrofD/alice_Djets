@@ -48,7 +48,7 @@ massColor = ROOT.kBlack; signalColor = ROOT.kRed+1; SBColor = ROOT.kGreen+3; sub
 markersize = 2.;
 markerstyle= [24,25,27]
 
-ltextsize = 0.053;
+ltextsize = 0.06;
 ROOT.gStyle.SetOptStat(000);ROOT.gStyle.SetLegendFont(42);ROOT.gStyle.SetPadLeftMargin(0.15);ROOT.gStyle.SetPadRightMargin(0.02);ROOT.gStyle.SetPadTopMargin(0.02);
 
 ### READING INPUT FILE
@@ -77,12 +77,12 @@ for i in range(ptbinsDN):
     hjetpt[i].GetYaxis().SetTitleSize(0.055);
     hjetpt[i].GetYaxis().SetTitleOffset(1.4);
 
-    #hjetpt[i].SetMaximum(hjetpt[i].GetMaximum()*1.3);
-    hjetpt[i].SetMaximum(1600);
+    hjetpt[i].SetMaximum(hjetpt[i].GetMaximum()*2.2);
+    #hjetpt[i].SetMaximum(1600);
     if(islog):
         hjetpt[i].SetMaximum(hjetpt[i].GetMaximum()*10);
         hjetpt[i].SetMinimum(1);
-    hjetpt[i].SetMinimum(-50);
+    hjetpt[i].SetMinimum(-hjetpt[i].GetMaximum()*0.10);
 
     hjets = inFile.Get("hjetpt_sb_"+str(i)).Clone("hjetpt_sb_"+str(i))
     hjetsReb = hjets.Rebin(ptbinsJetN,"hjetpt_s_"+str(i),array.array('d',ptJetbins))
@@ -102,29 +102,26 @@ for i in range(ptbinsDN):
     hjetptsub[i].SetLineColor(subColor);
     hjetptsub[i].SetLineWidth(2);
     hjetptsub[i].SetMarkerStyle(markerstyle[2]);
-    hjetptsub[i].SetMarkerSize(markersize+0.5);
+    hjetptsub[i].SetMarkerSize(markersize+1.8);
 
 
 if(islog):
     hjetpt[bin3].SetMaximum(hjetpt[bin3].GetMaximum()*1000);
-legBands1 = ROOT.TLegend(0.15,0.76,0.7,0.86)
+legBands1 = ROOT.TLegend(0.45,0.88,0.85,0.92)#0.15,0.76,0.7,0.86)
 legBands1.SetTextSize(ltextsize)
 legBands1.SetFillStyle(0);
 legBands1.SetTextAlign(13);
-legBands1.AddEntry(hjetpt[0],"#splitline{Signal region}{|#it{M}(K#pi)-#it{M}_{D^{0}}|<2#sigma}","p");
+#legBands1.AddEntry(hjetpt[0],"#splitline{Signal region}{|#it{M}(K#pi)-#it{M}_{D^{0}}|<2#sigma}","p");
+legBands1.AddEntry(hjetpt[0],"Signal region","p");
 
-legBands2 = ROOT.TLegend(0.15,0.65,0.7,0.75)
+legBands2 = ROOT.TLegend(0.45,0.88,0.85,0.92)#0.15,0.65,0.7,0.75)
 legBands2.SetTextSize(ltextsize)
 legBands2.SetFillStyle(0)
 legBands2.SetTextAlign(13)
-legBands2.AddEntry(hjetpt_s[0],"#splitline{Side bands (SB)}{4#sigma<|#it{M}(K#pi)-#it{M}_{D^{0}}|<9#sigma}","p");
+#legBands2.AddEntry(hjetpt_s[0],"#splitline{Side bands (SB)}{4#sigma<|#it{M}(K#pi)-#it{M}_{D^{0}}|<9#sigma}","p");
+legBands2.AddEntry(hjetpt_s[0],"Side bands (SB)","p");
 
-legBands23 = ROOT.TLegend(0.28,0.63,0.7,0.65,"normalised to signal region")
-legBands23.SetTextSize(ltextsize)
-legBands23.SetFillStyle(0)
-legBands23.SetTextAlign(11)
-
-legBands3 = ROOT.TLegend(0.15,0.55,0.7,0.6)
+legBands3 = ROOT.TLegend(0.45,0.8,0.85,0.85)#0.15,0.55,0.7,0.6)
 legBands3.SetTextSize(ltextsize)
 legBands3.SetFillStyle(0)
 legBands3.SetTextAlign(13)
@@ -134,7 +131,7 @@ pvALICE = ROOT.TPaveText(0.187,0.88,0.6,0.92,"brNDC")
 pvALICE.SetFillStyle(0);
 pvALICE.SetBorderSize(0);
 pvALICE.SetTextFont(42);
-pvALICE.SetTextSize(0.055);
+pvALICE.SetTextSize(ltextsize);
 pvALICE.SetTextAlign(11);
 pvALICE.AddText("ALICE")
 
@@ -142,31 +139,31 @@ pvEn = ROOT.TPaveText(0.25,0.88,0.8,0.92,"brNDC")
 pvEn.SetFillStyle(0);
 pvEn.SetBorderSize(0);
 pvEn.SetTextFont(42);
-pvEn.SetTextSize(0.053);
+pvEn.SetTextSize(ltextsize);
 pvEn.SetTextAlign(11);
 pvEn.AddText("pp, #sqrt{#it{s}} = "+energy+" TeV");
 
-pvD = ROOT.TPaveText(0.187,0.82,0.55,0.87,"brNDC")
+pvD = ROOT.TPaveText(0.25,0.88,0.55,0.92,"brNDC")#0.187,0.82,0.55,0.87,"brNDC")
 pvD.SetFillStyle(0)
 pvD.SetBorderSize(0)
 pvD.SetTextFont(42)
-pvD.SetTextSize(0.053)
+pvD.SetTextSize(ltextsize)
 pvD.SetTextAlign(11)
 pvD.AddText("D^{0} #rightarrow K^{-}#pi^{+} and charge conj.")
 
-pvJet = ROOT.TPaveText(0.189,0.77,0.55,0.82,"brNDC")
+pvJet = ROOT.TPaveText(0.25,0.80,0.55,0.84,"brNDC")#0.189,0.77,0.55,0.82,"brNDC")
 pvJet.SetFillStyle(0);
 pvJet.SetBorderSize(0);
 pvJet.SetTextFont(42);
-pvJet.SetTextSize(0.053);
+pvJet.SetTextSize(ltextsize);
 pvJet.SetTextAlign(11);
 pvJet.AddText("Charged Jets, Anti-#it{k}_{T}, #it{R} = 0."+str(int(Rpar)));
 
-pvEta = ROOT.TPaveText(0.187,0.72,0.6,0.77,"brNDC");
+pvEta = ROOT.TPaveText(0.6,0.63,0.85,0.67,"brNDC")#0.187,0.72,0.6,0.77,"brNDC");
 pvEta.SetFillStyle(0);
 pvEta.SetBorderSize(0);
 pvEta.SetTextFont(42);
-pvEta.SetTextSize(0.053);
+pvEta.SetTextSize(ltextsize);
 pvEta.SetTextAlign(11);
 pvEta.AddText("|#it{#eta}_{lab}^{jet}| < 0."+str(int(9-Rpar)));
 
@@ -174,26 +171,26 @@ pvpt1 = ROOT.TPaveText(0.58,0.66,0.85,0.71,"brNDC")
 pvpt1.SetFillStyle(0);
 pvpt1.SetBorderSize(0);
 pvpt1.SetTextFont(42);
-pvpt1.SetTextSize(0.053);
+pvpt1.SetTextSize(ltextsize);
 pvpt1.AddText("%.0f < #it{p}_{T,D^{0}} < %.0f GeV/#it{c}"%(ptDbins[bin1],ptDbins[bin1+1]))
 
 pvpt2 = ROOT.TPaveText(0.58,0.66,0.85,0.71,"brNDC");
 pvpt2.SetFillStyle(0);
 pvpt2.SetBorderSize(0);
 pvpt2.SetTextFont(42);
-pvpt2.SetTextSize(0.053);
+pvpt2.SetTextSize(ltextsize);
 pvpt2.AddText("%.0f < #it{p}_{T,D^{0}} < %.0f GeV/#it{c}"%(ptDbins[bin2],ptDbins[bin2+1]))
 
 pvpt3 = ROOT.TPaveText(0.31,0.88,0.65,0.92,"brNDC")
 pvpt3.SetFillStyle(0);
 pvpt3.SetBorderSize(0);
 pvpt3.SetTextFont(42);
-pvpt3.SetTextSize(0.053);
+pvpt3.SetTextSize(ltextsize);
 pvpt3.AddText("%.0f < #it{p}_{T,D^{0}} < %.0f GeV/#it{c}"%(ptDbins[bin3],ptDbins[bin3+1]))
 
 
 #cMass = ROOT.TCanvas("cMass","cMass",2160,1008)
-cMass = ROOT.TCanvas("cMass","cMass",3000,900)
+cMass = ROOT.TCanvas("cMass","cMass",3000,587)
 cMass.Divide(3,1);
 cMass.cd(1);
 ROOT.gPad.SetLogy(islog);
@@ -210,8 +207,8 @@ hjetptsub[bin1].Draw("same");
 hjetptsub[bin1].Draw("same");
 
 #change this line and leave out the "A" for axis.
-pvpt1.Draw("same");
-pvALICE.Draw("same");
+#pvpt1.Draw("same");
+#pvALICE.Draw("same");
 pvD.Draw("same");
 pvJet.Draw("same");
 pvEta.Draw("same");
@@ -225,8 +222,9 @@ hjetpt_s[bin2].Draw("same");
 hjetptsub[bin2].Draw("same");
 hjetptsub[bin2].Draw("same");
 
-pvpt2.Draw("same");
-pvEn.Draw("same");
+legBands1.Draw("same");
+#pvpt2.Draw("same");
+#pvEn.Draw("same");
 
 cMass.cd(3);
 ROOT.gPad.SetLogy(islog);
@@ -237,11 +235,9 @@ hjetpt_s[bin3].Draw("same");
 hjetptsub[bin3].Draw("same");
 hjetptsub[bin3].Draw("same");
 
-pvpt3.Draw("same");
+#pvpt3.Draw("same");
 
-legBands1.Draw("same");
 legBands2.Draw("same");
-legBands23.Draw("same");
 legBands3.Draw("same");
 
 if(islog):

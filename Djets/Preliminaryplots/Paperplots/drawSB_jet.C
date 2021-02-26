@@ -109,12 +109,6 @@ sst.clear(); sst.str("");
 
     }
 
-   // hjetpt[bin1]->SetMaximum(hjetpt[bin1]->GetMaximum()*1.1);
-   // hjetpt[bin2]->SetMaximum(1600);
-   // hjetpt[bin3]->SetMaximum(1600);
-   // hjetpt[bin1]->SetMaximum(1600);
-
-     //if(islog) hjetpt[bin3]->SetMaximum(hjetpt[bin3]->GetMaximum()*1000);
 
     TLegend *legBands1 = new TLegend(0.45,0.88,0.85,0.92);
     legBands1->SetTextSize(ltextsize);
@@ -130,8 +124,6 @@ sst.clear(); sst.str("");
     //legBands2->AddEntry(hjetpt_s[0],"#splitline{Side bands (SB)}{4#sigma<|#it{M}(K#pi)-#it{M}_{D^{0}}|<9#sigma}","p");
     legBands2->AddEntry(hjetpt_s[0],"Side bands (SB)","p");
 
-//    TLegend *legBands2 = new TLegend(0.45,0.67,0.85,0.77);
-    //TLegend *legBands3 = new TLegend(0.15,0.55,0.7,0.6);
     TLegend *legBands3 = new TLegend(0.45,0.8,0.85,0.85);
     legBands3->SetTextSize(ltextsize);
     legBands3->SetFillStyle(0);
