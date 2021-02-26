@@ -22,7 +22,7 @@ void SaveCanvas(TCanvas *c, string name = "tmp");
     //int markerstyle[] = { 20,21,33 };
     int markerstyle[] = { 24,25,27 };
 
-    double ltextsize = 0.053;
+    double ltextsize = 0.06;
 
 void drawSB_jet( int Rpar = 4 )
 {
@@ -81,10 +81,10 @@ sst.clear(); sst.str("");
 
             hjetpt[i]->SetMaximum(hjetpt[i]->GetMaximum()*1.55);
             hjetpt[i]->SetMaximum(1600);
-            if(islog) hjetpt[i]->SetMaximum(hjetpt[i]->GetMaximum()*10);
+//            if(islog) hjetpt[i]->SetMaximum(hjetpt[i]->GetMaximum()*1.1);
             //hjetpt[i]->SetMaximum(1600);
             hjetpt[i]->SetMinimum(-50);
-            if(islog) hjetpt[i]->SetMinimum(1);
+            if(islog) hjetpt[i]->SetMinimum(.5);
 
             TH1F *hjets = (TH1F*)inFile->Get(Form("hjetpt_sb_%d",i));
             hjetpt_s[i] = (TH1F*)hjets->Rebin(ptbinsJetN,Form("hjetpt_s_%d",i),ptJetbins);
@@ -105,7 +105,7 @@ sst.clear(); sst.str("");
             hjetptsub[i]->SetLineWidth(2);
           // hjetptsub[i]->SetMarkerStyle(27);
             hjetptsub[i]->SetMarkerStyle(markerstyle[2]);
-            hjetptsub[i]->SetMarkerSize(markersize+0.5);
+            hjetptsub[i]->SetMarkerSize(markersize+1.8);
 
     }
 
@@ -114,51 +114,35 @@ sst.clear(); sst.str("");
    // hjetpt[bin3]->SetMaximum(1600);
    // hjetpt[bin1]->SetMaximum(1600);
 
-     if(islog) hjetpt[bin3]->SetMaximum(hjetpt[bin3]->GetMaximum()*1000);
+     //if(islog) hjetpt[bin3]->SetMaximum(hjetpt[bin3]->GetMaximum()*1000);
 
-//     TH1F *hh = (TH1F*)hjetpt[0]->Clone("hh");
-//     hh->SetMarkerSize(0);
-
-    TLegend *legBands1 = new TLegend(0.15,0.76,0.7,0.86);
+    TLegend *legBands1 = new TLegend(0.45,0.88,0.85,0.92);
     legBands1->SetTextSize(ltextsize);
     legBands1->SetFillStyle(0);
     legBands1->SetTextAlign(13);
-    //legBands1->AddEntry(hjetpt[0],"#splitline{Signal region}{|#it{M}(K#pi)|<3#sigma}","p");
-    legBands1->AddEntry(hjetpt[0],"#splitline{Signal region}{|#it{M}(K#pi)-#it{M}_{D^{0}}|<2#sigma}","p");
+    //legBands1->AddEntry(hjetpt[0],"#splitline{Signal region}{|#it{M}(K#pi)-#it{M}_{D^{0}}|<2#sigma}","p");
+    legBands1->AddEntry(hjetpt[0],"Signal region","p");
 
-    TLegend *legBands2 = new TLegend(0.15,0.65,0.7,0.75);
+    TLegend *legBands2 = new TLegend(0.45,0.88,0.85,0.92);
     legBands2->SetTextSize(ltextsize);
     legBands2->SetFillStyle(0);
     legBands2->SetTextAlign(13);
-      legBands2->AddEntry(hjetpt_s[0],"#splitline{Side bands (SB)}{4#sigma<|#it{M}(K#pi)-#it{M}_{D^{0}}|<9#sigma}","p");
-  //  legBands2->AddEntry(hjetpt_s[0],"Side Bands (SB)","p");
+    //legBands2->AddEntry(hjetpt_s[0],"#splitline{Side bands (SB)}{4#sigma<|#it{M}(K#pi)-#it{M}_{D^{0}}|<9#sigma}","p");
+    legBands2->AddEntry(hjetpt_s[0],"Side bands (SB)","p");
 
-  //  TLegend *legBands22 = new TLegend(0.28,0.68,0.7,0.72,"4<|#it{M}(K#pi)|<9#sigma");
-  //  legBands22->SetTextSize(ltextsize);
-  //  legBands22->SetFillStyle(0);
-    //legBands22->AddEntry(hh,"|4<(#it{M}(K#pi))<9#sigma|","p");
-  //  legBands22->SetTextAlign(13);
-
-    TLegend *legBands23 = new TLegend(0.28,0.63,0.7,0.65,"normalised to signal region");
-    legBands23->SetTextSize(ltextsize);
-    legBands23->SetFillStyle(0);
-    legBands23->SetTextAlign(11);
-    //legBands23->AddEntry(hh,"normalised to Signal region","p");
-
-     TLegend *legBands3 = new TLegend(0.15,0.55,0.7,0.6);
+//    TLegend *legBands2 = new TLegend(0.45,0.67,0.85,0.77);
+    //TLegend *legBands3 = new TLegend(0.15,0.55,0.7,0.6);
+    TLegend *legBands3 = new TLegend(0.45,0.8,0.85,0.85);
     legBands3->SetTextSize(ltextsize);
     legBands3->SetFillStyle(0);
     legBands3->SetTextAlign(13);
     legBands3->AddEntry(hjetptsub[0],"Signal - SB","p");
 
-    //TPaveText *pvALICE = new TPaveText(0.25,0.88,0.6,0.92,"brNDC");
-    //TPaveText *pvALICE = new TPaveText(0.247,0.88,0.6,0.92,"brNDC");
-    //TPaveText *pvALICE = new TPaveText(0.187,0.88,0.6,0.92,"brNDC");
     TPaveText *pvALICE = new TPaveText(0.187,0.88,0.6,0.92,"brNDC");
     pvALICE->SetFillStyle(0);
     pvALICE->SetBorderSize(0);
     pvALICE->SetTextFont(42);
-    pvALICE->SetTextSize(0.055);
+    pvALICE->SetTextSize(ltextsize+0.002);
     pvALICE->SetTextAlign(11);
     pvALICE->AddText("ALICE");// Preliminary");
 
@@ -166,37 +150,35 @@ sst.clear(); sst.str("");
     pvEn->SetFillStyle(0);
     pvEn->SetBorderSize(0);
     pvEn->SetTextFont(42);
-    pvEn->SetTextSize(0.053);
+    pvEn->SetTextSize(ltextsize);
     pvEn->SetTextAlign(11);
     //pvEn->AddText("p-Pb, #sqrt{#it{s}_{NN}} = 5.02 TeV, 603M events");
     pvEn->AddText("pp, #sqrt{#it{s}} = 5.02 TeV");
 
     //TPaveText *pvD = new TPaveText(0.25,0.82,0.55,0.87,"brNDC");
     //TPaveText *pvD = new TPaveText(0.247,0.82,0.55,0.87,"brNDC");
-    TPaveText *pvD = new TPaveText(0.187,0.82,0.55,0.87,"brNDC");
+    TPaveText *pvD = new TPaveText(0.25,0.88,0.55,0.92,"brNDC");
     pvD->SetFillStyle(0);
     pvD->SetBorderSize(0);
     pvD->SetTextFont(42);
-    pvD->SetTextSize(0.053);
+    pvD->SetTextSize(ltextsize);
     pvD->SetTextAlign(11);
     pvD->AddText("D^{0} #rightarrow K^{-}#pi^{+} and charge conj.");
 
     //TPaveText *pvJet = new TPaveText(0.25,0.77,0.55,0.82,"brNDC");
-    TPaveText *pvJet = new TPaveText(0.189,0.77,0.55,0.82,"brNDC");
+    TPaveText *pvJet = new TPaveText(0.25,0.80,0.55,0.84,"brNDC");
     pvJet->SetFillStyle(0);
     pvJet->SetBorderSize(0);
     pvJet->SetTextFont(42);
-    pvJet->SetTextSize(0.053);
+    pvJet->SetTextSize(ltextsize);
     pvJet->SetTextAlign(11);
     pvJet->AddText(Form("Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.%d",(int)Rpar));
 
-    //TPaveText *pvEta = new TPaveText(0.25,0.72,0.6,0.77,"brNDC");
-    //TPaveText *pvEta = new TPaveText(0.247,0.72,0.6,0.77,"brNDC");
-    TPaveText *pvEta = new TPaveText(0.187,0.72,0.6,0.77,"brNDC");
+    TPaveText *pvEta = new TPaveText(0.6,0.63,0.85,0.67,"brNDC");
     pvEta->SetFillStyle(0);
     pvEta->SetBorderSize(0);
     pvEta->SetTextFont(42);
-    pvEta->SetTextSize(0.053);
+    pvEta->SetTextSize(ltextsize);
     pvEta->SetTextAlign(11);
     pvEta->AddText(Form("|#it{#eta}_{lab}^{jet}| < 0.%d",(int)9-Rpar));
     //pvEta->AddText("|#it{#eta}_{jet}| < 0.6");
@@ -205,7 +187,7 @@ sst.clear(); sst.str("");
     pvpt1->SetFillStyle(0);
     pvpt1->SetBorderSize(0);
     pvpt1->SetTextFont(42);
-    pvpt1->SetTextSize(0.053);
+    pvpt1->SetTextSize(ltextsize);
     pvpt1->AddText(Form("%.0f < #it{p}_{T,D^{0}} < %.0f GeV/#it{c}",ptDbins[bin1],ptDbins[bin1+1]));
 
     TPaveText *pvpt2 = new TPaveText(0.58,0.66,0.85,0.71,"brNDC");
@@ -213,7 +195,7 @@ sst.clear(); sst.str("");
     pvpt2->SetFillStyle(0);
     pvpt2->SetBorderSize(0);
     pvpt2->SetTextFont(42);
-    pvpt2->SetTextSize(0.053);
+    pvpt2->SetTextSize(ltextsize);
     pvpt2->AddText(Form("%.0f < #it{p}_{T,D^{0}} < %.0f GeV/#it{c}",ptDbins[bin2],ptDbins[bin2+1]));
 
 
@@ -223,7 +205,7 @@ sst.clear(); sst.str("");
     pvpt3->SetFillStyle(0);
     pvpt3->SetBorderSize(0);
     pvpt3->SetTextFont(42);
-    pvpt3->SetTextSize(0.053);
+    pvpt3->SetTextSize(ltextsize);
     pvpt3->AddText(Form("%.0f < #it{p}_{T,D^{0}} < %.0f GeV/#it{c}",ptDbins[bin3],ptDbins[bin3+1]));
 
 
@@ -238,7 +220,8 @@ sst.clear(); sst.str("");
     //cMass->SetBatch();
     
     //TCanvas *cMass = new TCanvas("cMass","cMass",1800,840);
-    TCanvas *cMass = new TCanvas("cMass","cMass",2160,1008);
+    //TCanvas *cMass = new TCanvas("cMass","cMass",2160,1008);
+    TCanvas *cMass = new TCanvas("cMass","cMass",3000,900);
 
 
 
@@ -262,8 +245,8 @@ sst.clear(); sst.str("");
   // change this line and leave out the "A" for axis.
 //   gr->Draw("CP");
 
-    pvpt1->Draw("same");
-    pvALICE->Draw("same");
+    //pvpt1->Draw("same");
+    //pvALICE->Draw("same");
     pvD->Draw("same");
     pvJet->Draw("same");
     pvEta->Draw("same");
@@ -279,10 +262,11 @@ sst.clear(); sst.str("");
     hjetptsub[bin2]->Draw("same");
     hjetptsub[bin2]->Draw("same");
 
-    pvpt2->Draw("same");
-    pvEn->Draw("same");
+    //pvpt2->Draw("same");
+    //pvEn->Draw("same");
 
     //legBands->Draw("same");
+    legBands1->Draw("same");
 
 
     cMass->cd(3);
@@ -295,13 +279,12 @@ sst.clear(); sst.str("");
     hjetptsub[bin3]->Draw("same");
 
    // pvEn->Draw("same");
-    pvpt3->Draw("same");
-    //pvEta->Draw("same");
+    //pvpt3->Draw("same");
 
-     legBands1->Draw("same");
+    //legBands1->Draw("same");
     legBands2->Draw("same");
     //legBands22->Draw("same");
-    legBands23->Draw("same");
+    //legBands23->Draw("same");
     legBands3->Draw("same");
 
 
