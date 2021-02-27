@@ -62,7 +62,7 @@ hResp.GetYaxis().SetTitleSize(0.04);
 #hResp.GetXaxis().SetRangeUser(2,100);
 #hResp.GetYaxis().SetRangeUser(2,100);
 #print(hResp.Integral())
-#hResp.Scale(1./hResp.Integral())
+hResp.Scale(1./hResp.Integral())
 ## HIST SETTINGS
 #hEmpty = ROOT.TH2D("hE","hE",100,plotmin,plotmax,100,plotmin,plotmax)
 hEmpty = ROOT.TH2D("hE","hE",fptbinsJN,array.array('d',fptbinsJlh),fptbinsJN,array.array('d',fptbinsJlh))
@@ -190,14 +190,15 @@ pvD4.SetTextSize(textsize);
 pvD4.SetTextAlign(11);
 pvD4.AddText("#it{p}_{T, D^{0}} > 2 GeV/#it{c}");
 
-pvjet1 = ROOT.TPaveText(x1+0.5,y1,x2+0.5,y2,"brNDC");
+#pvjet1 = ROOT.TPaveText(x1+0.5,y1,x2+0.5,y2,"brNDC");
+pvjet1 = ROOT.TPaveText(x1+0.4,y1,x2+0.5,y2,"brNDC");
 pvjet1.SetFillStyle(0);
 pvjet1.SetBorderSize(0);
 pvjet1.SetTextFont(42);
 pvjet1.SetTextSize(textsize);
 pvjet1.SetTextAlign(11);
-pvjet1.AddText("Charged Jets");
-#pvjet1.AddText("Charged Jets, Anti-#it{k}_{T}, #it{R} = 0."+str(R));
+#pvjet1.AddText("Charged Jets");
+pvjet1.AddText("Charged Jets, Anti-#it{k}_{T}, #it{R} = 0."+str(R));
 
 pvjet2 = ROOT.TPaveText(x1+0.5,y1-0.05,x2+0.5,y2-0.05,"brNDC");
 pvjet2.SetFillStyle(0);
@@ -207,7 +208,7 @@ pvjet2.SetTextSize(textsize);
 pvjet2.SetTextAlign(11);
 pvjet2.AddText("Anti-#it{k}_{T}, #it{R} = 0."+str(R));
 
-pvEta1 = ROOT.TPaveText(x1+0.5,y1-2*0.05,x2+0.5,y2-2*0.05,"brNDC");
+pvEta1 = ROOT.TPaveText(x1+0.5,y1-0.05,x2+0.5,y2-2*0.05,"brNDC");
 pvEta1.SetFillStyle(0);
 pvEta1.SetBorderSize(0);
 pvEta1.SetTextFont(42);
@@ -233,9 +234,9 @@ def GetDeltaProb(hDel2D,binLimLow,binLimHig,markerstyle,markersize,color,legend)
     hDel.SetLineColor(color);
     hDel.GetYaxis().SetTitle("Probability Density");
     hDel.GetXaxis().SetTitle("#Delta_{#it{p}_{T}}");
-    legend.AddEntry(hDel,str(binLimLow-1)+" < #it{p}_{T, gen jet}^{ch} < "+str(binLimHig)+" GeV/#it{c}","p");
+    legend.AddEntry(hDel,str(binLimLow)+" < #it{p}_{T, gen jet}^{ch} < "+str(binLimHig)+" GeV/#it{c}","p");
 
-    htemp = hDel2D.ProjectionX("",binLimLow,binLimHig,"")
+    htemp = hDel2D.ProjectionX("",binLimLow+1,binLimHig,"")
     hDel.Add(hDel,htemp,1,1)
 
     if(hDel.Integral()!=0):
@@ -243,15 +244,15 @@ def GetDeltaProb(hDel2D,binLimLow,binLimHig,markerstyle,markersize,color,legend)
     hDel.Scale(1,"width")
     return hDel
 
-leg = ROOT.TLegend(0.15,0.23,0.4,0.40);
+leg = ROOT.TLegend(0.55,0.53,0.82,0.70);
 leg.SetTextSize(textsize);
-hbin1 = GetDeltaProb(hDel2D,6,6,24,1.2,ROOT.kRed+2,leg)
-hbin2 = GetDeltaProb(hDel2D,9,10,25,1.2,ROOT.kBlue+2,leg)
-hbin3 = GetDeltaProb(hDel2D,21,30,27,1.8,ROOT.kGreen+2,leg)
+hbin1 = GetDeltaProb(hDel2D,5,10,24,1.2,ROOT.kRed+2,leg)
+hbin2 = GetDeltaProb(hDel2D,10,20,25,1.2,ROOT.kBlue+2,leg)
+hbin3 = GetDeltaProb(hDel2D,20,50,27,1.8,ROOT.kGreen+2,leg)
 ### CANVAS
 cDel = ROOT.TCanvas("cDel","cDel",950,800);
-cDel.SetLogz()
-hbin1.GetYaxis().SetRangeUser(0,30)
+cDel.SetLogy();hbin1.GetYaxis().SetRangeUser(0.001,1000)
+hbin1.GetXaxis().SetRangeUser(-1,1)
 hbin1.Draw()
 hbin2.Draw('same')
 hbin3.Draw('same')
@@ -260,21 +261,21 @@ pvpp.Draw('same')
 pvD2.Draw('same')
 pvD3.Draw('same')
 pvD4.Draw('same')
-pvjet1.Draw('same')
-pvjet2.Draw('same')
+#pvJet.Draw("same");
+pvjet1.Draw('same');#pvjet2.Draw('same')
 pvEta1.Draw('same')
 leg.Draw('same')
 cDel.SaveAs('plots/Delta_R0'+str(R)+jetorz+'_.pdf')
 #########################################################
-leg2 = ROOT.TLegend(0.15,0.23,0.4,0.40);
+leg2 = ROOT.TLegend(0.55,0.53,0.82,0.70);
 leg2.SetTextSize(textsize);
-hbin12 = GetDeltaProb(hDel2D_noeff,7,8,24,1.2,ROOT.kRed+2,leg2)
-hbin22 = GetDeltaProb(hDel2D_noeff,9,10,25,1.2,ROOT.kBlue+2,leg2)
-hbin32 = GetDeltaProb(hDel2D_noeff,21,30,27,1.8,ROOT.kGreen+2,leg2)
+hbin12 = GetDeltaProb(hDel2D_noeff,5,10,24,1.2,ROOT.kRed+2,leg2)
+hbin22 = GetDeltaProb(hDel2D_noeff,10,20,25,1.2,ROOT.kBlue+2,leg2)
+hbin32 = GetDeltaProb(hDel2D_noeff,20,50,27,1.8,ROOT.kGreen+2,leg2)
 #### CANVAS
 cDel2 = ROOT.TCanvas("cDel2","cDel2",950,800);
-cDel2.SetLogz()
-#hbin12.GetYaxis().SetRangeUser(0,30)
+cDel2.SetLogy();hbin12.GetYaxis().SetRangeUser(0.001,1000)
+hbin12.GetXaxis().SetRangeUser(-1,1)
 hbin12.Draw()
 hbin22.Draw('same')
 hbin32.Draw('same')
@@ -284,7 +285,7 @@ pvD2.Draw('same')
 pvD3.Draw('same')
 pvD4.Draw('same')
 pvjet1.Draw('same')
-pvjet2.Draw('same')
+#pvjet2.Draw('same')
 pvEta1.Draw('same')
 leg2.Draw('same')
 cDel2.SaveAs('plots/Delta2_R0'+str(R)+jetorz+'_.pdf')

@@ -261,9 +261,9 @@ def GetDeltaProb(hDel2D,binLimLow,binLimHig,markerstyle,markersize,color,legend,
     hDel.SetLineColor(color);
     hDel.GetYaxis().SetTitle("Probability Density");
     hDel.GetXaxis().SetTitle("#Delta_{#it{z}}");
-    legend.AddEntry(hDel,str(jetlow)+" < #it{z}_{||, gen}^{ch} < "+str(jethig)+" GeV/#it{c}","p");
+    legend.AddEntry(hDel,str(jetlow)+" < #it{z}_{||, gen}^{ch} < "+str(jethig),"p");
 
-    htemp = hDel2D.ProjectionX("",binLimLow,binLimHig,"")
+    htemp = hDel2D.ProjectionX("",binLimLow+1,binLimHig,"")
     hDelTemp.Add(hDelTemp,htemp,1,1)
 
     for i in range(1,hDel.GetNbinsX()+1):
@@ -283,35 +283,36 @@ leg1 = ROOT.TLegend(0.15,0.23,0.4,0.40);
 leg1.SetTextSize(textsize);
 leg2 = ROOT.TLegend(0.55,0.23,0.8,0.40);
 leg2.SetTextSize(textsize);
-hbin1 = GetDeltaProb(hDel2D,6,6,24,1.2,ROOT.kRed+2,leg1,0.4,0.6)
-hbin2 = GetDeltaProb(hDel2D,7,8,25,1.2,ROOT.kBlue+2,leg1,0.7,0.8)
-hbin3 = GetDeltaProb(hDel2D,9,10,27,1.8,ROOT.kGreen+2,leg1,0.9,1.0)
-hbin4 = GetDeltaProb(hDel2D,16,16,20,1.2,ROOT.kRed+2,leg2,0.4,0.6)
-hbin5 = GetDeltaProb(hDel2D,17,17,21,1.2,ROOT.kBlue+2,leg2,0.6,0.7)
-hbin6 = GetDeltaProb(hDel2D,19,19,33,1.8,ROOT.kGreen+2,leg2,0.8,0.9)
+hbin1 = GetDeltaProb(hDel2D,5,6,24,1.2,ROOT.kRed+2,leg1,0.4,0.6)
+hbin2 = GetDeltaProb(hDel2D,6,8,25,1.2,ROOT.kBlue+2,leg1,0.7,0.8)
+hbin3 = GetDeltaProb(hDel2D,8,10,27,1.8,ROOT.kGreen+2,leg1,0.9,1.0)
+hbin4 = GetDeltaProb(hDel2D,15,16,20,1.2,ROOT.kRed+2,leg2,0.4,0.6)
+hbin5 = GetDeltaProb(hDel2D,16,17,21,1.2,ROOT.kBlue+2,leg2,0.6,0.7)
+hbin6 = GetDeltaProb(hDel2D,18,19,33,1.8,ROOT.kGreen+2,leg2,0.8,0.9)
 ####################
 ######## CANVAS
 cDel = ROOT.TCanvas("cDel","cDel",950,800);
-cDel.SetLogz()
-hbin1.GetYaxis().SetRangeUser(0,30)
+cDel.SetLogy();hbin1.GetYaxis().SetRangeUser(0.0001,10000)
 hbin1.Draw()
 hbin2.Draw('same')
 hbin3.Draw('same')
-hbin4.Draw('same')
-hbin5.Draw('same')
-hbin6.Draw('same')
+pvD4.Draw('same')
+pvD4J.Draw('same')
+leg1.Draw('same')
+####=========
+#hbin4.Draw('same')
+#hbin5.Draw('same')
+#hbin6.Draw('same')
+#pvD5.Draw('same')
+#pvD5J.Draw('same')
+#leg2.Draw('same')
+####=========
 pvALICE2.Draw('same')
 pvpp.Draw('same')
 pvD2.Draw('same')
 pvD3.Draw('same')
-pvD4.Draw('same')
-pvD4J.Draw('same')
-pvD5.Draw('same')
-pvD5J.Draw('same')
 pvjet1.Draw('same')
 pvjet2.Draw('same')
 pvEta1.Draw('same')
-leg1.Draw('same')
-leg2.Draw('same')
 cDel.SaveAs('plots/Delta_R0'+str(R)+jetorz+'_.pdf')
 input()
