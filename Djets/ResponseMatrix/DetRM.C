@@ -189,6 +189,13 @@ void DetRM(
     TH1D *hGenDen = new TH1D("hGenDen","hGenDen",fptbinsJetMeasN,fptbinsJetMeasA);
     TH1D *hRecNum = new TH1D("hRecNum","hRecNum",fptbinsJetMeasN,fptbinsJetMeasA);
     TH1D *hRecDen = new TH1D("hRecDen","hRecDen",fptbinsJetMeasN,fptbinsJetMeasA);
+    //resolution
+    TH2D *hPtJet2d_resol = new TH2D("hjetRGResol","hjetRGResol", 50, -1.0, 1.0, 60, 0, 60); 
+    TH2D *hPtJet2dDjet_resol = new TH2D("hjetRecGenResol","hjetRecGenResol", 50, -1.0, 1.0, 60, 0, 60); 
+    TH1D *hR_resol = new TH1D("hR_resol","hR_resol",50,-1.0,1.0);
+    TH1D *hG_resol = new TH1D("hG_resol","hG_resol",fptbinsJetMeasN,fptbinsJetMeasA);
+    RooUnfoldResponse resol (hR_resol, hG_resol);
+    
     cout<<"Number of bins in the response: "<<hPtJetD3d->GetNbins()<<endl;
     for (int z = 0; z < hPtJetD3d->GetNbins(); z++){
         int coord[3]={0,0,0};
@@ -204,6 +211,9 @@ void DetRM(
         eff_c = effHist->GetBinContent(effHist->GetXaxis()->FindBin(DR_center));
         weight = weight/eff_c;
         hPtJet2dDjet->Fill(jR_center, jG_center, weight);
+        hPtJet2dDjet_resol->Fill((jR_center-jG_center)/jG_center,jG_center,weight);
+        resol.Fill((jR_center-jG_center)/jG_center,jG_center,weight);
+        hPtJet2d_resol->Fill((jR_center-jG_center)/jG_center,jG_center,content);
 
         hGenDen->Fill(jG_center, content); hRecDen->Fill(jR_center, weight);
         if(jR_center>=fptbinsJetMeasA[0] || jR_center <= fptbinsJetMeasA[fptbinsJetMeasN]){hGenNum->Fill(jG_center, content);}
@@ -227,6 +237,8 @@ void DetRM(
     
     hPtJet2d_noeff->SetName("hPtJet2d_noeff"); 
     hPtJet2dDjet->SetName("hPtJet2d");
+    TH2D* resolobj = (TH2D*)resol.Hresponse()->Clone();
+    resolobj->SetName("resolNow");
     hPtJet2d_noeff->GetXaxis()->SetTitle("p_{T,ch jet}^{rec.} (GeV/#it{c})");
     hPtJet2d_noeff->GetYaxis()->SetTitle("p_{T,ch jet}^{gen.} (GeV/#it{c})");
     hPtJet2dDjet->GetXaxis()->SetTitle("p_{T,ch jet}^{rec.} (GeV/#it{c})");
@@ -320,6 +332,7 @@ void DetRM(
         cout<<"datajets="<<datajets<<endl;
         //scaling the prompt jets and response for closure
         double RMscaling = 1-datajets/MCjets; //this is about RM 0.9, MCFD_reco 0.1
+        RMscaling = 0.8;
         cout<<RMscaling<<" :RMscaling"<<endl;
         //loop over sparse bins
         for(int i=0; i<tree_->GetEntries();i++){
@@ -364,6 +377,9 @@ void DetRM(
     hPtJetRec->Write();
     hPtJet2d_noeff->Write();
     hPtJet2dDjet->Write();//D-jet eff scaled response
+    hPtJet2dDjet_resol->Write();//resol
+    hPtJet2d_resol->Write();//resol
+    resolobj->Write();//resol
     if(bClosure){
         hPtJet2dDjet_clos->Write();//closure response
         //hMCjetD->Write();
@@ -376,9 +392,6 @@ void DetRM(
 
    return;
 }
-
-
-
 
 void SparseToTree(TString MCfile, Bool_t isPostfix, TString postfix)
 {
