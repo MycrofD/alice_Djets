@@ -268,13 +268,13 @@ void DetRM(
 
     //datajets
     double datajets = 0;
-    TFile *fileFD = new TFile(FDsubfile,"read");
-    TH1D *bFDspectrum = (TH1D*)fileFD->Get("hData_binned_sub");
-    datajets = bFDspectrum->Integral();
-    cout<<"datajets="<<datajets<<endl;
+//    TFile *fileFD = new TFile(FDsubfile,"read");
+//    TH1D *bFDspectrum = (TH1D*)fileFD->Get("hData_binned_sub");
+//    datajets = bFDspectrum->Integral();
+//    cout<<"datajets="<<datajets<<endl;
     //scaling the prompt jets and response for closure
-    double RMscaling = 1-datajets/MCjets; //this is about RM 0.9, MCFD_reco 0.1
-    RMscaling = 0.8;
+//    double RMscaling = 1-datajets/MCjets; //this is about RM 0.9, MCFD_reco 0.1
+    double RMscaling = 0.8;
     cout<<RMscaling<<" :RMscaling"<<endl;
     //loop over sparse bins
     for(int i=0; i<tree_->GetEntries();i++){
