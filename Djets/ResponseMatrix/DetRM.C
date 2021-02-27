@@ -210,10 +210,10 @@ void DetRM(
         double eff_c = 1;
         eff_c = effHist->GetBinContent(effHist->GetXaxis()->FindBin(DR_center));
         weight = weight/eff_c;
-        hPtJet2dDjet->Fill(jR_center, jG_center, weight);
-        hPtJet2dDjet_resol->Fill((jR_center-jG_center)/jG_center,jG_center,weight);
-        resol.Fill((jR_center-jG_center)/jG_center,jG_center,weight);
-        hPtJet2d_resol->Fill((jR_center-jG_center)/jG_center,jG_center,content);
+//        hPtJet2dDjet->Fill(jR_center, jG_center, weight);
+//        hPtJet2dDjet_resol->Fill((jR_center-jG_center)/jG_center,jG_center,weight);
+//        resol.Fill((jR_center-jG_center)/jG_center,jG_center,weight);
+//        hPtJet2d_resol->Fill((jR_center-jG_center)/jG_center,jG_center,content);
 
         hGenDen->Fill(jG_center, content); hRecDen->Fill(jR_center, weight);
         if(jR_center>=fptbinsJetMeasA[0] || jR_center <= fptbinsJetMeasA[fptbinsJetMeasN]){hGenNum->Fill(jG_center, content);}
@@ -232,6 +232,92 @@ void DetRM(
     hGenNum->Draw(); hRecNum->Draw("same");
     cc_kineEff->SaveAs(Form("%s/kineEff_%d.png",outDir.Data(),isPrompt));
 
+
+    //--Preparing ttree method for full response and closure test info
+    TH1D* hMCjetClosData = new TH1D("hMCjetClosData","hMCjetClosData",60,jetmin,jetmax);
+    TH1D* hMCjetClosTrue = new TH1D("hMCjetClosTrue","hMCjetClosTrue",60,jetmin,jetmax);
+    TH2D* hPtJet2dDjet_clos = new TH2D("hPtJet2dDjet_clos","hPtJet2dDjet_clos", 60, 0, 60, 60, 0, 60);
+    //==
+    TH1D* hMCjetD = (TH1D*)hPtJet2dDjet->ProjectionX("hMCjet");//reco level proj of eff scaled response: eff scaled MC jets
+    double MCjets = hMCjetD->Integral();cout<<"eff MC jets="<<MCjets<<endl;
+    hMCjetD->GetXaxis()->SetRangeUser(fptbinsJetMeasA[0],fptbinsJetMeasA[fptbinsJetMeasN]);
+    MCjets = hMCjetD->Integral();cout<<"eff MC jets="<<MCjets<<endl;//eff-scaled MC jets in range
+    //--
+    //get TTree. Create if it doesn't exist
+    TFile* fTreeSparse = nullptr;
+    Double_t jmatch[13];//Dzero
+    Double_t bincontent;
+    TTree* tree_ = NULL;
+    TString tmp(datafile);
+    TString treepost = "TTree";if(postfix) treepost+=listName;
+    treepost+=".root";
+    tmp.Remove(datafile.Length()-5,5).Append(treepost);
+    fTreeSparse = new TFile(tmp,"read");
+    if(!(fTreeSparse->IsOpen())){
+        //writing TTree
+        cout<<"TTree file not found, converting THnSparse to TTree right now!"<<endl;
+        SparseToTree(datafile, postfix,listName);
+        //reading TTree
+        cout<<"reading TTree: "<<tmp<<endl;
+        fTreeSparse = new TFile(tmp,"read");
+    }
+    cout<<"reading TTree done"<<tmp<<endl;
+    tree_ = (TTree*)fTreeSparse->Get("ResponseMatrixSum_tree");
+    tree_->SetBranchAddress("coord",&jmatch);
+    tree_->SetBranchAddress("bincontent",&bincontent);
+
+    //datajets
+    double datajets = 0;
+    TFile *fileFD = new TFile(FDsubfile,"read");
+    TH1D *bFDspectrum = (TH1D*)fileFD->Get("hData_binned_sub");
+    datajets = bFDspectrum->Integral();
+    cout<<"datajets="<<datajets<<endl;
+    //scaling the prompt jets and response for closure
+    double RMscaling = 1-datajets/MCjets; //this is about RM 0.9, MCFD_reco 0.1
+    RMscaling = 0.8;
+    cout<<RMscaling<<" :RMscaling"<<endl;
+    //loop over sparse bins
+    for(int i=0; i<tree_->GetEntries();i++){
+        tree_->GetEntry(i);
+        // loop over each jet-entry: why? to get a random value about the RMscaling
+        double RMw = 0;
+        for(int ientry = 0; ientry < bincontent; ientry++){
+            if(random1->Uniform(1) <= RMscaling) RMw++;
+        }
+        //efficiency
+        double eff_c = 1;
+        eff_c = effHist->GetBinContent(effHist->GetXaxis()->FindBin(jmatch[2]));
+        if(jetmin <= jmatch[6] && jmatch[6] <= jetmax){
+            if(Dptmin <= jmatch[7] && jmatch[7] <= Dptmax){
+                if(fRpar-0.9 <= jmatch[9] && jmatch[9] <= 0.9-fRpar){
+                    hMCjetClosTrue->Fill(jmatch[6],bincontent-RMw);//gen level closure hist
+                    if(jetmin <= jmatch[1] && jmatch[1] <= jetmax){
+                        if(Dptmin <= jmatch[2] && jmatch[2] <= Dptmax){
+                            if(fRpar-0.9 <= jmatch[4] && jmatch[4] <= 0.9-fRpar){
+                                hMCjetClosData->Fill(jmatch[1],(bincontent-RMw)/eff_c);
+                                hPtJet2dDjet_clos->Fill(jmatch[1],jmatch[6],RMw/eff_c);
+                                hPtJet2dDjet->Fill(jmatch[1], jmatch[6],bincontent/eff_c);
+                                hPtJet2dDjet_resol->Fill((jmatch[1]-jmatch[6])/jmatch[6],jmatch[6],bincontent/eff_c);
+                                hPtJet2d_resol->Fill((jmatch[1]-jmatch[6])/jmatch[6],jmatch[6],bincontent);
+                                resol.Fill((jmatch[1]-jmatch[6])/jmatch[6],jmatch[6],bincontent/eff_c);
+                                //KINE EFF to be implemented later
+//                                hGenDen->Fill(jmatch[6], bincontent); hRecDen->Fill(jmatch[1], bincontent/eff_c); //kine eff
+//        if(jR_center>=fptbinsJetMeasA[0] || jR_center <= fptbinsJetMeasA[fptbinsJetMeasN]){hGenNum->Fill(jG_center, content);}
+//        if(jG_center>=fptbinsJetMeasA[0] || jG_center <= fptbinsJetMeasA[fptbinsJetMeasN]){hRecNum->Fill(jR_center, weight);}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    TCanvas *cMCjetTD = new TCanvas("cMCjetTD","cMCjetTD",800,600);
+    cMCjetTD->SetLogy();
+    hMCjetClosTrue->Draw();
+    hMCjetClosData->Draw("same");
+    cMCjetTD->SaveAs(Form("%s/hMCjetTD_%s.png",outDir.Data(), isPrompt ? "prompt" : "nonPrompt"));
+    
+    // Main response stuff
     hPtJet2d_noeff->SetTitle(""); 
     hPtJet2dDjet->SetTitle("");
     
@@ -268,106 +354,6 @@ void DetRM(
     hPtJetGen->Draw();
     hPtJetRec->Draw("same");
     //cjetPt->SaveAs(Form("%s/pTdist_Dpt%d_%d.png",outDir, (int)Dptmin, (int)Dptmax));
-
-    //--Preparing closure test info
-    TH1D* hMCjetClosData = new TH1D("hMCjetClosData","hMCjetClosData",60,jetmin,jetmax);
-    TH1D* hMCjetClosTrue = new TH1D("hMCjetClosTrue","hMCjetClosTrue",60,jetmin,jetmax);
-    TH2D* hPtJet2dDjet_clos = new TH2D("hPtJet2dDjet_clos","hPtJet2dDjet_clos", 60, 0, 60, 60, 0, 60);
-    //==
-    TH1D* hMCjetD = (TH1D*)hPtJet2dDjet->ProjectionX("hMCjet");//reco level proj of eff scaled response: eff scaled MC jets
-    double MCjets = hMCjetD->Integral();cout<<"eff MC jets="<<MCjets<<endl;
-    hMCjetD->GetXaxis()->SetRangeUser(fptbinsJetMeasA[0],fptbinsJetMeasA[fptbinsJetMeasN]);
-    MCjets = hMCjetD->Integral();cout<<"eff MC jets="<<MCjets<<endl;//eff-scaled MC jets in range
-    //--
-    ////=============== something is not working
-    //TH1D* hMCjT[NDMC];TH1D* hMCjetT;
-    //TH1D* hMCjR[NDMC];TH1D* hMCjetR;
-    //for(int i=0; i<NDMC; i++){
-    //    hMCjT[i]=(TH1D*)GMC[i]->Projection(6,"E");//jetpt gen
-    //    hMCjT[i]->SetName(Form("hMCjT_%d",i));
-    //    hMCjT[i]->Sumw2();
-    //    if(!i){
-    //        hMCjetT = (TH1D*)hMCjT[0]->Clone("hMCjetT");
-    //    }
-    //    else{
-    //        hMCjetT->Add(hMCjT[i]);
-    //    }
-    //}
-    //hMCjetT->SetName("hMCjetT"); 
-    //TCanvas *cMCjetTD = new TCanvas("cMCjetTD","cMCjetTD",800,600);
-    //cMCjetTD->SetLogy();
-    //hMCjetD->Draw();
-    //hMCjetT->Draw("same");
-    //cMCjetTD->SaveAs(Form("%s/hMCjetTD_%s.png",outDir.Data(), isPrompt ? "prompt" : "nonPrompt"));
-    ////===============
-    //get TTree. Create if it doesn't exist
-    if(bClosure){
-        TFile* fTreeSparse = nullptr;
-        Double_t jmatch[13];//Dzero
-        Double_t bincontent;
-        TTree* tree_ = NULL;
-        TString tmp(datafile);
-        TString treepost = "TTree";if(postfix) treepost+=listName;
-        treepost+=".root";
-        tmp.Remove(datafile.Length()-5,5).Append(treepost);
-        fTreeSparse = new TFile(tmp,"read");
-        if(!(fTreeSparse->IsOpen())){
-            //writing TTree
-            cout<<"TTree file not found, converting THnSparse to TTree right now!"<<endl;
-            SparseToTree(datafile, postfix,listName);
-            //reading TTree
-            cout<<"reading TTree: "<<tmp<<endl;
-            fTreeSparse = new TFile(tmp,"read");
-        }
-        cout<<"reading TTree done"<<tmp<<endl;
-        tree_ = (TTree*)fTreeSparse->Get("ResponseMatrixSum_tree");
-        tree_->SetBranchAddress("coord",&jmatch);
-        tree_->SetBranchAddress("bincontent",&bincontent);
-
-        //datajets
-        double datajets = 0;
-        TFile *fileFD = new TFile(FDsubfile,"read");
-        TH1D *bFDspectrum = (TH1D*)fileFD->Get("hData_binned_sub");
-        datajets = bFDspectrum->Integral();
-        cout<<"datajets="<<datajets<<endl;
-        //scaling the prompt jets and response for closure
-        double RMscaling = 1-datajets/MCjets; //this is about RM 0.9, MCFD_reco 0.1
-        RMscaling = 0.8;
-        cout<<RMscaling<<" :RMscaling"<<endl;
-        //loop over sparse bins
-        for(int i=0; i<tree_->GetEntries();i++){
-            tree_->GetEntry(i);
-            // loop over each jet-entry: why? to get a random value about the RMscaling
-            double RMw = 0;
-            for(int ientry = 0; ientry < bincontent; ientry++){
-                if(random1->Uniform(1) <= RMscaling) RMw++;
-            }
-            //efficiency
-            double eff_c = 1;
-            eff_c = effHist->GetBinContent(effHist->GetXaxis()->FindBin(jmatch[2]));
-            if(jetmin <= jmatch[6] && jmatch[6] <= jetmax){
-                if(Dptmin <= jmatch[7] && jmatch[7] <= Dptmax){
-                    if(fRpar-0.9 <= jmatch[9] && jmatch[9] <= 0.9-fRpar){
-                        hMCjetClosTrue->Fill(jmatch[6],bincontent-RMw);//gen level closure hist
-                        if(jetmin <= jmatch[1] && jmatch[1] <= jetmax){
-                            if(Dptmin <= jmatch[2] && jmatch[2] <= Dptmax){
-                                if(fRpar-0.9 <= jmatch[4] && jmatch[4] <= 0.9-fRpar){
-                                    hMCjetClosData->Fill(jmatch[1],(bincontent-RMw)/eff_c);
-                                    hPtJet2dDjet_clos->Fill(jmatch[1],jmatch[6],RMw/eff_c);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        TCanvas *cMCjetTD = new TCanvas("cMCjetTD","cMCjetTD",800,600);
-        cMCjetTD->SetLogy();
-        hMCjetClosTrue->Draw();
-        hMCjetClosData->Draw("same");
-        cMCjetTD->SaveAs(Form("%s/hMCjetTD_%s.png",outDir.Data(), isPrompt ? "prompt" : "nonPrompt"));
-    }
-    
     //---------------------------------
     //TFile *ofile = new TFile(Form("%s/DetMatrix_Dpt%d_%d.root",outDir, (int)Dptmin, (int)Dptmax),"RECREATE");
     //if(Djet)...//introduce flag for efficiency scaling of the response matrix as an option
