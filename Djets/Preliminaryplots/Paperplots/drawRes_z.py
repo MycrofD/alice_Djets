@@ -49,11 +49,11 @@ ROOT.gStyle.SetPadRightMargin(1.)
 inFileZ = ROOT.TFile("/media/jackbauer/data/z_out/R_0"+str(R)+"_finaltry/unfolding/Bayes/alljetz2D/responseobject.root","read")
 
 hResp = inFileZ.Get("responseNow")
-hResp.GetXaxis().SetTitle("#it{z}_{||}^{ch} in #it{p}_{T,jet}^{ch} (RECO)")
+hResp.GetXaxis().SetTitle("#it{z}_{||}^{ch,det} in #it{p}_{T,ch jet}^{det}")
 hResp.GetXaxis().SetLabelSize(0.0);
 hResp.GetXaxis().SetTitleSize(0.04);
 hResp.GetXaxis().SetTitleOffset(1.7);
-hResp.GetYaxis().SetTitle("#it{z}_{||}^{ch} in #it{p}_{T,jet}^{ch} (GEN)")
+hResp.GetYaxis().SetTitle("#it{z}_{||}^{ch,part} in #it{p}_{T,ch jet}^{part}")
 hResp.GetYaxis().SetTitleOffset(1.5);
 hResp.GetYaxis().SetLabelSize(0.0);
 hResp.GetYaxis().SetTitleSize(0.04);
@@ -186,7 +186,8 @@ pvD3.SetTextSize(textsize);
 pvD3.SetTextAlign(11);
 pvD3.AddText("and charge conj.");
 
-pvD4 = ROOT.TPaveText(x1+0.02,y1-0.4,x2+0.02,y2-0.4,"brNDC");
+pvD4 = ROOT.TPaveText(x1+0.02,y1-0.3,x2+0.02,y2-0.3,"brNDC");
+#pvD4 = ROOT.TPaveText(0.7,0.3,0.85,0.4,"brNDC");
 pvD4.SetFillStyle(0);
 pvD4.SetBorderSize(0);
 pvD4.SetTextFont(42);
@@ -194,13 +195,14 @@ pvD4.SetTextSize(textsize);
 pvD4.SetTextAlign(11);
 pvD4.AddText("#it{p}_{T, D^{0}} > 2 GeV/#it{c}");
 
-pvD4J = ROOT.TPaveText(x1+0.02,y1-0.35,x2+0.02,y2-0.35,"brNDC");
+pvD4J = ROOT.TPaveText(x1+0.02,y1-0.25,x2+0.02,y2-0.25,"brNDC");
+#pvD4J= ROOT.TPaveText(0.65,0.35,0.85,0.4,"brNDC");
 pvD4J.SetFillStyle(0);
 pvD4J.SetBorderSize(0);
 pvD4J.SetTextFont(42);
 pvD4J.SetTextSize(textsize);
 pvD4J.SetTextAlign(11);
-pvD4J.AddText("5 < #it{p}_{T, gen jet}^{ch} < 7 GeV/#it{c}");
+pvD4J.AddText("5 < #it{p}_{T,ch jet}^{part} < 7 GeV/#it{c}");
 
 pvD5 = ROOT.TPaveText(x1+0.42,y1-0.4,x2+0.42,y2-0.4,"brNDC");
 pvD5.SetFillStyle(0);
@@ -216,7 +218,7 @@ pvD5J.SetBorderSize(0);
 pvD5J.SetTextFont(42);
 pvD5J.SetTextSize(textsize);
 pvD5J.SetTextAlign(11);
-pvD5J.AddText("10 < #it{p}_{T, gen jet}^{ch} < 15 GeV/#it{c}");
+pvD5J.AddText("10 < #it{p}_{T,ch jet}^{part} < 15 GeV/#it{c}");
 
 pvjet1 = ROOT.TPaveText(x1+0.5,y1,x2+0.5,y2,"brNDC");
 pvjet1.SetFillStyle(0);
@@ -261,7 +263,7 @@ def GetDeltaProb(hDel2D,binLimLow,binLimHig,markerstyle,markersize,color,legend,
     hDel.SetLineColor(color);
     hDel.GetYaxis().SetTitle("Probability Density");
     hDel.GetXaxis().SetTitle("#Delta_{#it{z}}");
-    legend.AddEntry(hDel,str(jetlow)+" < #it{z}_{||, gen}^{ch} < "+str(jethig),"p");
+    legend.AddEntry(hDel,str(jetlow)+" < #it{z}_{||}^{ch,part} < "+str(jethig));
 
     htemp = hDel2D.ProjectionX("",binLimLow+1,binLimHig,"")
     hDelTemp.Add(hDelTemp,htemp,1,1)
@@ -279,7 +281,7 @@ def GetDeltaProb(hDel2D,binLimLow,binLimHig,markerstyle,markersize,color,legend,
     return hDel
 
 
-leg1 = ROOT.TLegend(0.15,0.23,0.4,0.40);
+leg1 = ROOT.TLegend(0.6,0.2,0.85,0.35);
 leg1.SetTextSize(textsize);
 leg2 = ROOT.TLegend(0.55,0.23,0.8,0.40);
 leg2.SetTextSize(textsize);
@@ -292,7 +294,7 @@ hbin6 = GetDeltaProb(hDel2D,18,19,33,1.8,ROOT.kGreen+2,leg2,0.8,0.9)
 ####################
 ######## CANVAS
 cDel = ROOT.TCanvas("cDel","cDel",950,800);
-cDel.SetLogy();hbin1.GetYaxis().SetRangeUser(0.0001,10000)
+cDel.SetLogy();hbin1.GetYaxis().SetRangeUser(0.0001,1000)
 hbin1.Draw()
 hbin2.Draw('same')
 hbin3.Draw('same')
