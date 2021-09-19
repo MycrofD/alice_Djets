@@ -8,7 +8,7 @@ import yaml
 
 ROOT.gStyle.SetOptStat(000)
 ROOT.gStyle.SetLegendFont(42)
-ROOT.gStyle.SetPadLeftMargin(0.135)
+ROOT.gStyle.SetPadLeftMargin(0.19)
 ROOT.gStyle.SetPadRightMargin(0.03)
   
 ### Sanity check
@@ -17,6 +17,7 @@ if len(sys.argv)!=3:
 ### SETTINGS
 Rpar=int(sys.argv[1]) #R=2,3,4,6
 incIndex = {2:1,3:2,4:3,6:4}
+enumIndex= {2:"(a)",3:"(b)",4:"(c)",6:"(d)"}
 energy = "5.02"
 plotmin, plotmax = 5,50
 plotYmin, plotYmax = 0,0.17;
@@ -24,8 +25,10 @@ fptbinsJlh = [5,6,8,10,14,20,30,50]
 fptbinsJN = len(fptbinsJlh)-1
 Colors = [ROOT.kRed+1,ROOT.kBlue+2,ROOT.kGreen+2,ROOT.kViolet+2]
 Markers = [20,21,22,23,24,4]
-x_title = "#it{p}_{T,jet}^{ch}"
-y_title = "D^{0}-jets / Inclusive jets "
+x_title = "#it{p}_{T,ch. jet} (GeV/#it{c})" 
+y_title = "#frac{d^{2}#it{#sigma}^{D^{0}-jets}}{d#it{p}_{T,ch. jet}d#it{#eta}_{ch. jet}} / #frac{d^{2}#it{#sigma}^{inclusive jets}}{d#it{p}_{T,ch. jet}d#it{#eta}_{ch. jet}}"
+#y_title = "#sigma(D^{0}-jets) / #sigma(inclusive jets)"
+#y_title = "D^{0}-jet fraction "
 #y_title = "D^{0} tagged charged particle jet fraction  "
 ## Settings others
 textsize=0.035
@@ -49,9 +52,11 @@ print(type(systUncD_up))
 ## numpy does not work: so alternative.
 djetsUp=[0.0,0.0,0.0,0.0,0.0,0.0,0.0]
 djetsDo=[0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+BR=0.008
+LUMI=0.021
 for i in range(fptbinsJN):
-    djetsUp[i] = ROOT.TMath.Sqrt(systUncD_up[i]**2+systUncD_JES[i]**2+systUncD_CUTS[i]**2)
-    djetsDo[i] = ROOT.TMath.Sqrt(systUncD_do[i]**2+systUncD_JES[i]**2+systUncD_CUTS[i]**2)
+    djetsUp[i] = ROOT.TMath.Sqrt(systUncD_up[i]**2+systUncD_JES[i]**2+systUncD_CUTS[i]**2+BR**2+LUMI**2)
+    djetsDo[i] = ROOT.TMath.Sqrt(systUncD_do[i]**2+systUncD_JES[i]**2+systUncD_CUTS[i]**2+BR**2+LUMI**2)
 print(djetsUp)
 print(djetsDo)
 ####### GATHERING DATA
@@ -189,7 +194,7 @@ hR_pow8Err[1].SetLineColor(ROOT.kOrange+2)
 hR_pow8.SetLineColor(ROOT.kBlue+2)
 hR_mb.SetLineColor(ROOT.kOrange+2)
 hR_mb.SetMarkerColor(ROOT.kOrange+2)
-hR_mb.SetMarkerSize(markersize)
+hR_mb.SetMarkerSize(0)
 hR_mb.SetLineWidth(3)
 
 hR_Data.SetLineWidth(3)
@@ -202,30 +207,7 @@ hR_Data.GetYaxis().SetTitle(" cross section ratio for R=0."+str(Rpar)+", #frac{c
 
 hR_DatasystUp.SetLineColor(ROOT.kBlue+2)
 hR_DatasystDo.SetLineColor(ROOT.kBlue+2)
-#################################################### TCANVAS
-#leg = ROOT.TLegend(0.5, 0.8, 0.9, 0.9)
-#cRatio = ROOT.TCanvas("cRatio","cRatio",800,800)
-#hR_Data.GetYaxis().SetRangeUser(0.0,0.14)
-#hR_Data.Draw()
-#hR_DatasystUp.Draw("same")
-#hR_DatasystDo.Draw("same")
-#hR_mb.Draw("same")
-#hR_pow8.Draw("same")
-#hR_pow8Err[0].Draw("same")
-#hR_pow8Err[1].Draw("same")
-#
-#leg.AddEntry(hR_Data,"Data")
-#leg.AddEntry(hR_mb,"Pythia 8 Monash 2013")
-#leg.AddEntry(hR_pow8,"POWHEG+Pythia 8")
-#leg.Draw("same")
-#
-#cRatio.SaveAs("plots/DvIncJets.pdf")
-#cRatio.SaveAs("plots/DvIncJets.png")
-############################################################################
-#cRatio2 = ROOT.TCanvas("cRatio2","cRatio2",800,500)
-#hDJpowReb.Draw()
-#cRatio2.Update()
-################################################### TCANVAS
+####################################################
 ## theory and data uncertainty
 ##-------------------
 for i in range(fptbinsJN):
@@ -250,58 +232,86 @@ grsys.SetMarkerStyle(Markers[5])#71)#107)
 grsys.SetMarkerColor(Colors[1])
 grsys.SetMarkerSize(markersize);
 grsys.SetTitle('')
-grsys.GetXaxis().SetTitle(x_title);
-grsys.GetYaxis().SetTitle(y_title);
-grsys.GetXaxis().SetLabelSize(0.04);
-grsys.GetXaxis().SetTitleSize(0.04);
-grsys.GetXaxis().SetTitleOffset(1.);
-grsys.GetYaxis().SetTitleOffset(1.6);
-grsys.GetYaxis().SetLabelSize(0.04);
-grsys.GetYaxis().SetTitleSize(0.04);
-grsys.GetXaxis().SetRangeUser(plotmin,plotmax);
-grsys.GetYaxis().SetRangeUser(plotYmin,plotYmax);
+#grsys.GetXaxis().SetTitle(x_title);
+#grsys.GetYaxis().SetTitle(y_title);
+#grsys.GetXaxis().SetLabelSize(0.04);
+#grsys.GetXaxis().SetTitleSize(0.04);
+#grsys.GetXaxis().SetTitleOffset(1.1);
+#grsys.GetYaxis().SetTitleOffset(1.6);
+#grsys.GetYaxis().SetLabelSize(0.04);
+#grsys.GetYaxis().SetTitleSize(0.04);
+#grsys.GetXaxis().SetRangeUser(plotmin,plotmax);
+#grsys.GetYaxis().SetRangeUser(plotYmin,plotYmax);
 ### DATA SYS
 grdat = ROOT.TGraphAsymmErrors(fptbinsJN,array.array('d',ptval),array.array('d',valDA),array.array('d',ptvalunc),array.array('d',ptvalunc),array.array('d',valDAerrdo),array.array('d',valDAerrup))
-grdat.SetFillColor(ROOT.kBlack)
+grdat.SetFillColor(ROOT.TColor.GetColor("#cccccc"))
 grdat.SetLineColor(ROOT.TColor.GetColor("#cccccc"))#ROOT.TColor.GetColor("#000099")) 
-grdat.SetFillStyle(3002)
-grdat.SetTitle('')
-#grdat.GetXaxis().SetTitle(x_title);
-#grdat.GetYaxis().SetTitle(y_title);
-#grdat.GetXaxis().SetLabelSize(0.04);
-#grdat.GetXaxis().SetTitleSize(0.04);
-#grdat.GetXaxis().SetTitleOffset(1.);
-#grdat.GetYaxis().SetTitleOffset(1.3);
-#grdat.GetYaxis().SetLabelSize(0.04);
-#grdat.GetYaxis().SetTitleSize(0.04);
-#grdat.GetXaxis().SetRangeUser(plotmin,plotmax);
-#grdat.GetYaxis().SetRangeUser(plotYmin,plotYmax);
+#grdat.SetLineWidth(2)
+grdat.SetFillStyle(1001)
+grdat.SetMarkerStyle(Markers[0])
 grdat.SetMarkerColor(ROOT.kRed+2)
 grdat.SetMarkerSize(markersize)
-grdat.SetMarkerStyle(Markers[0])
+grdat.SetTitle('')
+grdat.GetXaxis().SetTitle(x_title);
+grdat.GetYaxis().SetTitle(y_title);
+grdat.GetXaxis().SetLabelSize(0.04);
+grdat.GetXaxis().SetTitleSize(0.04);
+grdat.GetXaxis().SetTitleOffset(1.1);
+grdat.GetYaxis().SetTitleOffset(1.9);
+grdat.GetYaxis().SetLabelSize(0.04);
+grdat.GetYaxis().SetTitleSize(0.04);
+grdat.GetXaxis().SetRangeUser(plotmin,plotmax);
+grdat.GetYaxis().SetRangeUser(plotYmin,plotYmax);
 
-### CANVAS
+############################## FORMAL STUFF
+ptL, ptR = [], []
+for i in range(4): # number of jet radii to be plotted
+    if(i==1):ptL.append(ROOT.TPaveText(0.22,0.80,0.65,0.95,"NB NDC"))
+    #elif(i==2):ptL.append(ROOT.TPaveText(0.22,0.80,0.65,0.95,"NB NDC"))
+    else:ptL.append(ROOT.TPaveText(0.22,0.87,0.65,0.95,"NB NDC"))
 
-leg = ROOT.TLegend(0.15,0.6,0.65,0.75);
+    ptL[i].SetBorderSize(0)
+    ptL[i].SetFillStyle(0)
+    ptL[i].SetTextAlign(13)
+    ptL[i].SetTextFont(43)
+    ptL[i].SetTextSize(20)
+
+    ptR.append(ROOT.TPaveText(0.75,0.87,0.85,0.95,"NB NDC"))
+    ptR[i].SetBorderSize(0)
+    ptR[i].SetFillStyle(0)
+    ptR[i].SetTextAlign(13)
+    ptR[i].SetTextFont(43)
+    ptR[i].SetTextSize(20)
+    
+    ptR[i].AddText(enumIndex[Rpar]+" #it{R} = 0.%d"%(int(Rpar)))
+
+ptL[0].AddText("ALICE")
+ptL[1].AddText("pp, #sqrt{#it{s}} = 5.02 TeV")
+ptL[1].AddText("Charged jets, Anti-#it{k}_{T}, |#it{#eta}_{lab}^{jet}| < 0.9 - #it{R}")
+ptL[2].AddText("2 < #it{p}_{T,D^{0}} < 36 GeV/#it{c}") 
+
+############################## CANVAS
+leg = ROOT.TLegend(0.22,0.7,0.65,0.85);
 leg.SetTextSize(textsize);
 leg.SetFillColor(0);
 leg.SetFillStyle(0);
 
 cDvI = ROOT.TCanvas("cDvI","cDvI",620,510);
-grsys.GetYaxis().SetDecimals() #POWHEG SYSTEMATICS
-grsys.Draw("ap2")
-grdat.Draw("2psame") # DATA SYSTEMATICS
+grdat.GetYaxis().SetDecimals() #POWHEG SYSTEMATICS
+grdat.Draw("2ap") # DATA SYSTEMATICS
+grsys.Draw("p2same")
 hR_Data.Draw("same p e0 x0")
-#hR_pow8.SetMarkerStyle(Markers[4])
-#hR_pow8.SetMarkerSize(1.2)
-#hR_pow8.Draw("2psame")
 hR_mb.Draw("same")
 
 leg.AddEntry(grdat,"Data","pf");
-leg.AddEntry(hR_mb,"Pythia 8","p");
-##leg.AddEntry(hR_pow8,"POWHEG hvq + Pythia 8","p");
-leg.AddEntry(grsys,"POWHEG hvq + Pythia 8","pf");
-leg.Draw("same");
+leg.AddEntry(hR_mb,"PYTHIA 8 Monash 2013","l");
+leg.AddEntry(grsys,"POWHEG hvq + PYTHIA 8","pf");
+if(Rpar==2):leg.Draw("same");
+ptL[incIndex[Rpar]-1].Draw()
+ptR[incIndex[Rpar]-1].Draw()
 
 cDvI.Update()
+
+cDvI.SaveAs("plots/DJetsVIncJets_R0"+str(Rpar)+".png")
+cDvI.SaveAs("plots/DJetsVIncJets_R0"+str(Rpar)+".pdf")
 wait=input()
