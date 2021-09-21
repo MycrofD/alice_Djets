@@ -36,16 +36,16 @@ bin1, bin2, bin3 = 1,2,3
 islog = 0
 ptbinsDNlist = [5,6,6,6];
 jetbinnames=['5_7','7_10','10_15','15_50']
-ptDbins_list = [[2,3,4,5,6,7], [3,4,5,6,7,8,10], [5,6,7,8,10,12,15], [5,6,7,8,10,12,16,24,36]]
+ptDbins_list = [[2,3,4,5,6,7], [3,4,5,6,7,8,10], [5,6,7,8,10,12,15], [5,8,10,12,16,24,36]]
 jetbinname=jetbinnames[jetbin-1]
 ptbinsDN = ptbinsDNlist[jetbin-1]
 ptDbins = ptDbins_list[jetbin-1]
 
-ptbinsJetN = 4;
-ptJetbins = [0.4,0.6,0.8,0.9,1.0]
+ptbinsJetN = 5;
+ptJetbins = [0.4,0.6,0.7,0.8,0.9,1.0]
 
 massColor = ROOT.kBlack; signalColor = ROOT.kRed+1; SBColor = ROOT.kGreen+3; subColor = ROOT.kBlue+1;
-markersize = 2.;
+markersize = 4.;
 markerstyle= [24,25,27]
 
 ltextsize = 0.06;
@@ -69,13 +69,14 @@ for i in range(ptbinsDN):
     hjetpt[i].SetMarkerStyle(markerstyle[0]);
     hjetpt[i].SetMarkerSize(markersize);
 
-    hjetpt[i].GetXaxis().SetTitle('#it{z}_{||}^{ch}')
-    hjetpt[i].GetYaxis().SetTitle("Entries");
     hjetpt[i].GetXaxis().SetLabelSize(0.045);
     hjetpt[i].GetXaxis().SetTitleSize(0.055);
+    hjetpt[i].GetXaxis().SetTitleOffset(1.);
+    hjetpt[i].GetXaxis().SetTitle('#it{z}_{||}^{ch}')
     hjetpt[i].GetYaxis().SetLabelSize(0.045);
     hjetpt[i].GetYaxis().SetTitleSize(0.055);
     hjetpt[i].GetYaxis().SetTitleOffset(1.4);
+    hjetpt[i].GetYaxis().SetTitle("Entries");
 
     hjetpt[i].SetMaximum(hjetpt[i].GetMaximum()*2.2);
     #hjetpt[i].SetMaximum(1600);
@@ -190,7 +191,8 @@ pvpt3.AddText("%.0f < #it{p}_{T,D^{0}} < %.0f GeV/#it{c}"%(ptDbins[bin3],ptDbins
 
 
 #cMass = ROOT.TCanvas("cMass","cMass",2160,1008)
-cMass = ROOT.TCanvas("cMass","cMass",3000,587)
+#cMass = ROOT.TCanvas("cMass","cMass",3000,587)
+cMass = ROOT.TCanvas("cMass","cMass",3000,900)
 cMass.Divide(3,1);
 cMass.cd(1);
 ROOT.gPad.SetLogy(islog);
