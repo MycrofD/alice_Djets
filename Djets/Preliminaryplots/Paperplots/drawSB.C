@@ -10,8 +10,10 @@ void setHistoDetails(TH1 *h, Color_t color, Style_t Mstyle, Width_t width);
     double jetmin = 0, jetmax = 50;
     double plotmin = 0, plotmax = 50;
 
-    const int ptbinsDN = 11;
-    float ptDbins[ptbinsDN+1] = {2,3,4,5,6,7,8,10,12,16,24,36 };
+    //const int ptbinsDN = 11;
+    //float ptDbins[ptbinsDN+1] = {2,3,4,5,6,7,8,10,12,16,24,36 };
+    const int ptbinsDN = 12;
+    float ptDbins[ptbinsDN+1] = {2,3,4,5,6,7,8,9,10,12,16,24,36 };
 
     double efficiency[ptbinsDN];// = { 0.0353325, 0.0678059, 0.109101, 0.168871, 0.243708, 0.307365, 0.324496, 0.361858 };
 
@@ -44,7 +46,7 @@ sst.clear(); sst.str("");
    TFile *inFile = new TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR04_paperCuts/Default/signalExtraction/JetPtSpectra_SB_eff.root"
 ,"read");
 
-     int bin1 = 1, bin2 = 5, bin3 = 7;
+     int bin1 = 1, bin2 = 5, bin3 = 8;
 
 
     TH1F *hmean = (TH1F*)inFile->Get("hmean");
@@ -190,21 +192,21 @@ sst.clear(); sst.str("");
     pvEta->AddText(Form("|#it{#eta}_{lab}^{jet}| < 0.%d",(int)9-Rpar));
     //pvEta->AddText("|#it{#eta}_{jet}| < 0.6");
 
-    TPaveText *pvpt1 = new TPaveText(0.25,0.62,0.5,0.61,"brNDC");
+    TPaveText *pvpt1 = new TPaveText(0.25,0.62,0.45,0.61,"brNDC");
     pvpt1->SetFillStyle(0);
     pvpt1->SetBorderSize(0);
     pvpt1->SetTextFont(42);
     pvpt1->SetTextSize(ltextsize);//0.046);
     pvpt1->AddText(Form("#splitline{%.0f < #it{p}_{T,D^{0}} < %.0f}{   GeV/#it{c}}",ptDbins[bin1],ptDbins[bin1+1]));
 
-    TPaveText *pvpt2 = new TPaveText(0.25,0.62,0.5,0.61,"brNDC");
+    TPaveText *pvpt2 = new TPaveText(0.25,0.62,0.45,0.61,"brNDC");
     pvpt2->SetFillStyle(0);
     pvpt2->SetBorderSize(0);
     pvpt2->SetTextFont(42);
     pvpt2->SetTextSize(ltextsize);//0.046);
     pvpt2->AddText(Form("#splitline{%.0f < #it{p}_{T,D^{0}} < %.0f}{   GeV/#it{c}}",ptDbins[bin2],ptDbins[bin2+1]));
 
-    TPaveText *pvpt3 = new TPaveText(0.25,0.62,0.5,0.61,"brNDC");
+    TPaveText *pvpt3 = new TPaveText(0.25,0.62,0.45,0.61,"brNDC");
     pvpt3->SetFillStyle(0);
     pvpt3->SetBorderSize(0);
     pvpt3->SetTextFont(42);

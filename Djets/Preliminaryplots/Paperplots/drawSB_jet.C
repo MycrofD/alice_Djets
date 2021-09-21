@@ -7,8 +7,10 @@
 void setHistoDetails(TH1 *h, Color_t color, Style_t Mstyle, Width_t width);
 void SaveCanvas(TCanvas *c, string name = "tmp");
 
-    const int ptbinsDN = 11;
-    float ptDbins[ptbinsDN+1] = {2,3,4,5,6,7,8,10,12,16,24,36 };
+    //const int ptbinsDN = 11;
+    //float ptDbins[ptbinsDN+1] = {2,3,4,5,6,7,8,10,12,16,24,36 };
+    const int ptbinsDN = 12;
+    float ptDbins[ptbinsDN+1] = {2,3,4,5,6,7,8,9,10,12,16,24,36 };
 
     const int ptbinsJetN = 7;
     double ptJetbins[ptbinsJetN+1] = { 5,6,8,10,14,20,30,50 };
@@ -46,7 +48,7 @@ sst.clear(); sst.str("");
 "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR04_paperCuts/Default/signalExtraction/JetPtSpectra_SB_eff.root"
 ,"read");
 
-    int bin1 = 1, bin2 = 5, bin3 = 7;
+    int bin1 = 1, bin2 = 5, bin3 = 8;
     int islog = 1;
 
 
@@ -213,7 +215,7 @@ sst.clear(); sst.str("");
     
     //TCanvas *cMass = new TCanvas("cMass","cMass",1800,840);
     //TCanvas *cMass = new TCanvas("cMass","cMass",2160,1008);
-    TCanvas *cMass = new TCanvas("cMass","cMass",3000,900);
+    TCanvas *cMass = new TCanvas("cMass","cMass",3000,583);
 
 
 
