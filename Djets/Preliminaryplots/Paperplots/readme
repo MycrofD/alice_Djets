@@ -1,0 +1,14 @@
+#### for resolution plot
+###########################
+aliroot -l drawRes.C, for resolution plot
+drawResz.C
+
+#### for response matrix plot
+###########################
+drawRes_jet.py for response matrix plot
+drawRes_z.py
+## drawResp_z.py #no, not this
+
+#### Feed down
+##########################
+drawFD_jet.py
