@@ -35,6 +35,11 @@ if len(sys.argv) != 2:
 ### SETTINGS
 plotmin,plotmax=2,50
 R=int(sys.argv[1]) #R=2,3,4,6
+PnP=int(sys.argv[2]) #0:non-prompt or 1:prompt
+if(PnP):
+    dirtext,labeltext="",""
+else:
+    dirtext,labeltext="nonPrompt","non-prompt"
 energy = "5.02"
 jetorz="z"
 textsize=0.032
@@ -176,174 +181,11 @@ palette.SetY2NDC(0.9);
 ROOT.gPad.Modified();
 ROOT.gPad.Update();
 
-cResp.SaveAs('plots/Resp_R0'+str(R)+jetorz+'_.pdf')
-cResp.SaveAs('plots/Resp_R0'+str(R)+jetorz+'_.png')
-cResp.SaveAs('plots/Resp_R0'+str(R)+jetorz+'_.eps')
+cResp.SaveAs('plots/Resp_R0'+str(R)+jetorz+'_'+PnP+'.pdf')
+cResp.SaveAs('plots/Resp_R0'+str(R)+jetorz+'_'+PnP+'.png')
+cResp.SaveAs('plots/Resp_R0'+str(R)+jetorz+'_'+PnP+'.eps')
 
 
 ####################################################
 ####################################################
 #################################################################################
-"""
-y1,y2=0.8,0.85
-x1,x2=0.12,0.8
-pvALICE2 = ROOT.TPaveText(x1,y1,x2,y2,"brNDC");
-pvALICE2.SetFillStyle(0);
-pvALICE2.SetBorderSize(0);
-pvALICE2.SetTextFont(42);
-pvALICE2.SetTextSize(textsize);
-pvALICE2.SetTextAlign(11);
-pvALICE2.AddText("ALICE PYTHIA6, pp, #sqrt{#it{s}} = "+energy+" TeV");
-
-shift = 0.05;
-#pvpp = ROOT.TPaveText(x1,y1-shift,x2,y2-shift,"brNDC");
-#pvpp.SetFillStyle(0);
-#pvpp.SetBorderSize(0);
-#pvpp.SetTextFont(42);
-#pvpp.SetTextSize(textsize);
-#pvpp.SetTextAlign(11);
-#pvpp.AddText("pp, #sqrt{#it{s}} = "+energy+" TeV");
-
-shift += 0.0;
-pvD2 = ROOT.TPaveText(x1,y1-shift,x2,y2-shift,"brNDC");
-pvD2.SetFillStyle(0);
-pvD2.SetBorderSize(0);
-pvD2.SetTextFont(42);
-pvD2.SetTextSize(textsize);
-pvD2.SetTextAlign(11);
-pvD2.AddText("Prompt D^{0} #rightarrow K^{-}#pi^{+} and charge conj.");
-
-shift += 0.05;
-pvjet1 = ROOT.TPaveText(x1,y1-shift,x2,y2-shift,"brNDC");
-pvjet1.SetFillStyle(0);
-pvjet1.SetBorderSize(0);
-pvjet1.SetTextFont(42);
-pvjet1.SetTextSize(textsize);
-pvjet1.SetTextAlign(11);
-#pvjet1.AddText("Charged Jets");
-pvjet1.AddText("Charged Jets, Anti-#it{k}_{T}, #it{R} = 0."+str(R));
-
-shift += 0.05;
-pvEta1 = ROOT.TPaveText(x1,y1-shift,x2,y2-shift,"brNDC");
-pvEta1.SetFillStyle(0);
-pvEta1.SetBorderSize(0);
-pvEta1.SetTextFont(42);
-pvEta1.SetTextSize(textsize);
-pvEta1.SetTextAlign(11);
-pvEta1.AddText("|#it{#eta}_{ch jet}| < 0."+str(9-R));
-
-pvD4J = ROOT.TPaveText(x1+0.5,y1-0.05,x2+0.5,y2-0.05,"brNDC");
-#pvD4J= ROOT.TPaveText(0.65,0.35,0.85,0.4,"brNDC");
-pvD4J.SetFillStyle(0);
-pvD4J.SetBorderSize(0);
-pvD4J.SetTextFont(42);
-pvD4J.SetTextSize(textsize);
-pvD4J.SetTextAlign(11);
-pvD4J.AddText("5 < #it{p}_{T,ch jet}^{part} < 7 GeV/#it{c}");
-
-pvD4 = ROOT.TPaveText(x1+0.5,y1-0.1,x2+0.5,y2-0.1,"brNDC");
-#pvD4 = ROOT.TPaveText(0.7,0.3,0.85,0.4,"brNDC");
-pvD4.SetFillStyle(0);
-pvD4.SetBorderSize(0);
-pvD4.SetTextFont(42);
-pvD4.SetTextSize(textsize);
-pvD4.SetTextAlign(11);
-pvD4.AddText("#it{p}_{T, D^{0}} > 2 GeV/#it{c}");
-
-pvD5 = ROOT.TPaveText(x1+0.42,y1-0.4,x2+0.42,y2-0.4,"brNDC");
-pvD5.SetFillStyle(0);
-pvD5.SetBorderSize(0);
-pvD5.SetTextFont(42);
-pvD5.SetTextSize(textsize);
-pvD5.SetTextAlign(11);
-pvD5.AddText("#it{p}_{T, D^{0}} > 5 GeV/#it{c}");
-
-pvD5J = ROOT.TPaveText(x1+0.42,y1-0.35,x2+0.42,y2-0.35,"brNDC");
-pvD5J.SetFillStyle(0);
-pvD5J.SetBorderSize(0);
-pvD5J.SetTextFont(42);
-pvD5J.SetTextSize(textsize);
-pvD5J.SetTextAlign(11);
-pvD5J.AddText("10 < #it{p}_{T,ch jet}^{part} < 15 GeV/#it{c}");
-
-
-#pvjet2 = ROOT.TPaveText(x1+0.5,y1-0.05,x2+0.5,y2-0.05,"brNDC");
-#pvjet2.SetFillStyle(0);
-#pvjet2.SetBorderSize(0);
-#pvjet2.SetTextFont(42);
-#pvjet2.SetTextSize(textsize);
-#pvjet2.SetTextAlign(11);
-#pvjet2.AddText("Anti-#it{k}_{T}, #it{R} = 0."+str(R));
-
-hDel2D = inFileZ.Get("resolNow")
-hDel2D_noeff = inFileZ.Get("resol_noeffNow")
-
-def GetDeltaProb(hDel2D,binLimLow,binLimHig,markerstyle,markersize,color,legend,jetlow,jethig):
-    hDelTemp = ROOT.TH1D("hDelTemp","hDelTemp",250,0,250)
-    hDel = ROOT.TH1D("hDel","hDel",50,-1.0,1.0)
-    hDel.GetXaxis().SetLabelSize(0.04);
-    hDel.GetXaxis().SetTitleSize(0.04);
-    hDel.GetXaxis().SetTitleOffset(1.);
-    hDel.GetYaxis().SetTitleOffset(1.3);
-    hDel.GetYaxis().SetLabelSize(0.04);
-    hDel.GetYaxis().SetTitleSize(0.04);
-    hDel.SetMarkerStyle(markerstyle);
-    hDel.SetMarkerSize(markersize);
-    hDel.SetMarkerColor(color);
-    hDel.SetLineColor(color);
-    hDel.GetYaxis().SetTitle("Probability Density");
-    hDel.GetXaxis().SetTitle("#Delta_{#it{z}}");
-    legend.AddEntry(hDel,str(jetlow)+" < #it{z}_{||}^{ch,part} < "+str(jethig));
-
-    htemp = hDel2D.ProjectionX("",binLimLow+1,binLimHig,"")
-    hDelTemp.Add(hDelTemp,htemp,1,1)
-
-    for i in range(1,hDel.GetNbinsX()+1):
-        bincontent = 0
-        for j in range(int(hDel2D.GetNbinsX()/hDel.GetNbinsX())):
-            bincontent += hDelTemp.GetBinContent(i+j*hDel.GetNbinsX())
-        hDel.SetBinContent(i,bincontent)
-
-    if(hDel.Integral()!=0):
-        hDel.Scale(1./hDel.Integral())
-    hDel.Scale(1,"width")
-
-    return hDel
-
-
-leg1 = ROOT.TLegend(0.5,0.2,0.75,0.35);
-leg1.SetTextSize(textsize);
-leg2 = ROOT.TLegend(0.55,0.23,0.8,0.40);
-leg2.SetTextSize(textsize);
-hbin1 = GetDeltaProb(hDel2D,5,6,24,1.2,ROOT.kRed+2,leg1,0.4,0.6)
-hbin2 = GetDeltaProb(hDel2D,6,8,25,1.2,ROOT.kBlue+2,leg1,0.7,0.8)
-hbin3 = GetDeltaProb(hDel2D,8,10,27,1.8,ROOT.kGreen+2,leg1,0.9,1.0)
-hbin4 = GetDeltaProb(hDel2D,15,16,20,1.2,ROOT.kRed+2,leg2,0.4,0.6)
-hbin5 = GetDeltaProb(hDel2D,16,17,21,1.2,ROOT.kBlue+2,leg2,0.6,0.7)
-hbin6 = GetDeltaProb(hDel2D,18,19,33,1.8,ROOT.kGreen+2,leg2,0.8,0.9)
-###################
-####### CANVAS
-ROOT.gStyle.SetPadRightMargin(1)
-cDel = ROOT.TCanvas("cDel","cDel",1150,800);
-cDel.SetLogy();hbin1.GetYaxis().SetRangeUser(0.0001,1000)
-hbin1.Draw()
-hbin2.Draw('same')
-hbin3.Draw('same')
-pvD4.Draw('same')
-pvD4J.Draw('same')
-leg1.Draw('same')
-####=========
-#hbin4.Draw('same')
-#hbin5.Draw('same')
-#hbin6.Draw('same')
-#pvD5.Draw('same')
-#pvD5J.Draw('same')
-#leg2.Draw('same')
-####=========
-pvALICE2.Draw('same')
-pvD2.Draw('same')
-pvjet1.Draw('same')
-pvEta1.Draw('same')
-#cDel.SaveAs('plots/Delta_R0'+str(R)+jetorz+'_.pdf')
-input()
-"""

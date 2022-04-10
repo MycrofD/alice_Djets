@@ -7,9 +7,9 @@ import style_settings
 import array
 
 Colors = [ROOT.kRed+1,ROOT.kBlue+2,ROOT.kGreen+2,ROOT.kViolet+2]
-Styles = [3003, 3001, 3005, 3004]
+Styles = [3003, 3365, 3005, 3004]
 #Markers = [20,23,22,21]
-Markers = [71,23,22,21]
+Markers = [71,72,75,85]
 plotmin, plotmax = 0.4,1.0
 plotYmin, plotYmax = 0.00001,1.0
 
@@ -19,10 +19,13 @@ ROOT.gStyle.SetPadLeftMargin(0.135)
 ROOT.gStyle.SetPadRightMargin(0.03)
 
 ############
-if len(sys.argv) != 2:
+if len(sys.argv) < 2:
     print("""
-            == usage example: python file.py R
+            == usage example for 0 and 3 from [0,1,2,3] jetpt bins: python file.py R
             R: 2,3,4,6
+            == usage example for individual jetpt bins: python file.py R jetpt_index
+            R: 2,3,4,6
+            jetpt_index: 0,1,2,3
             """)
 ### SETTINGS
 R=int(sys.argv[1]) #R=2,3,4,6
@@ -34,8 +37,14 @@ jetptLegends=["  5 < #it{p}_{T,ch jet} <   7 GeV/ #it{c}",
         "15 < #it{p}_{T,ch jet} < 50 GeV/ #it{c}"]
 fptbinsJN = 5
 fptbinsJlh=[0.4,0.6,0.7,0.8,0.9,1.0]
+ptD_min = [2,3,5,5]
+if R == 2:
+    ptD_min = [2,4,5,10]
 
-toPlot = [0,3]
+toPlot = [0,3] #paper
+if len(sys.argv) == 3:
+    jetpt_index=int(sys.argv[2])
+    toPlot = [jetpt_index]
 x_title = "#it{z}_{||}^{ch}"
 y_title = "b-hadron feed-down fraction"
 jetLegFD="b-hadron feed-down fraction"
@@ -137,7 +146,10 @@ pvPtD.SetBorderSize(0);
 pvPtD.SetTextFont(42);
 pvPtD.SetTextSize(textsize);
 pvPtD.SetTextAlign(11);
-pvPtD.AddText("#it{p}_{T, D^{0}} > 2 GeV/ #it{c}")
+text_pvPtD = "#it{p}_{T, D^{0}} > 2 GeV/ #it{c}"
+if len(sys.argv) == 3:
+    text_pvPtD = "#it{p}_{T, D^{0}} > "+str(ptD_min[jetpt_index])+" GeV/ #it{c}"
+pvPtD.AddText(text_pvPtD)
 ######
 #pvHist = ROOT.TPaveText(0.58,0.65,0.85,0.75,"brNDC");
 pvHist = ROOT.TPaveText(0.52,0.65,0.85,0.75,"brNDC");
@@ -159,11 +171,15 @@ pvSyst.AddText(jetLegFDsys);
 ########MULTIGRAPH
 mg = ROOT.TMultiGraph()
 mg.SetTitle(";"+x_title+";"+y_title)
-mg.Add(grsys[toPlot[0]])
-mg.Add(grsys[toPlot[1]])
+#mg.Add(grsys[toPlot[0]])
+#mg.Add(grsys[toPlot[1]])
+for i in range(len(toPlot)):
+    mg.Add(grsys[toPlot[i]])
 leg2 = ROOT.TLegend(0.52,0.35,0.88,0.5);
-leg2.AddEntry(grsys[toPlot[0]],jetptLegends[toPlot[0]],"f")
-leg2.AddEntry(grsys[toPlot[1]],jetptLegends[toPlot[1]],"f")
+#leg2.AddEntry(grsys[toPlot[0]],jetptLegends[toPlot[0]],"f")
+#leg2.AddEntry(grsys[toPlot[1]],jetptLegends[toPlot[1]],"f")
+for i in range(len(toPlot)):
+    leg2.AddEntry(grsys[toPlot[i]],jetptLegends[toPlot[i]],"f")
 mg.GetXaxis().SetLabelSize(0.04);
 mg.GetXaxis().SetTitleSize(0.045);
 mg.GetXaxis().SetTitleOffset(1.);
@@ -189,6 +205,10 @@ pvSyst.Draw("same")
 leg.Draw("same");
 leg2.Draw("same");
 
-cEff.SaveAs('plots/zFDratio_R0'+str(R)+'_'+str(int(float(energy)))+'.pdf')
-cEff.SaveAs('plots/zFDratio_R0'+str(R)+'_'+str(int(float(energy)))+'.png')
-cEff.SaveAs('plots/zFDratio_R0'+str(R)+'_'+str(int(float(energy)))+'.eps')
+suffix=''
+if len(sys.argv) == 3:
+    suffix = '_'+str(jetpt_index)
+
+cEff.SaveAs('plots/zFDratio_R0'+str(R)+'_'+str(int(float(energy)))+suffix+'.pdf')
+cEff.SaveAs('plots/zFDratio_R0'+str(R)+'_'+str(int(float(energy)))+suffix+'.png')
+cEff.SaveAs('plots/zFDratio_R0'+str(R)+'_'+str(int(float(energy)))+suffix+'.eps')
