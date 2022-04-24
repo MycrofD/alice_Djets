@@ -22,8 +22,9 @@ roounfoldpwd=$HOME/ALICE_HeavyFlavour/RooUnfold-1.1.1/libRooUnfold
 
 currDir=`pwd`
 #outputdirectorybase=$HOME/Work/alice/analysis/pp5TeV/D0jet/results_APW/DzeroR03_prelim
-outputdirectorybase=$HOME/Work/alice/analysis/pp5TeV/D0jet/results_APW/DzeroR03_
-outputdirectory=${outputdirectorybase}pPbCuts
+outputdirectorybase=$HOME/Work/alice/analysis/pp5TeV/D0jet/results_APW/DzeroR06_
+outputdirectory=${outputdirectorybase}QM19Cuts_Dpt3
+#outputdirectory=${outputdirectorybase}pPbCuts
 #outputdirectory=${outputdirectorybase}cuts2
 outputdirectorySignal=Default
 
@@ -32,22 +33,42 @@ anaoutfiledir=$HOME/Work/alice/analysis/pp5TeV/D0jet/outData
 MCoutfiledir=$HOME/Work/alice/analysis/pp5TeV/D0jet/outMC
 refoutfiledir=$HOME/Work/alice/analysis/pp5TeV/D0jet/outMC/reflections
 #simFilesDir=$HOME/Work/alice/analysis/pp5TeV/D0jet/outMC/POWHEGSimulations/fastSim_pp5TeV # POWHEG sim
+#simFilesDir=/home/jackbauer/ALICE_HeavyFlavour/work/Djets/out/outMC/allR
 simFilesDir=/home/jackbauer/ALICE_HeavyFlavour/work/Djets/out/outMC/all
 bkgRMDir=$currDir/ResponseMatrix/BkgRM03
 
 # ========== file names
-analysisdatafile=AnalysisResults_437.root
+###### R02
+#analysisdatafile=AnalysisResults_632_R02.root #R02
+#effMCfile=AnalysisResults_868_R02ppMC.root #R02 
+###### R04
+#analysisdatafileCut=CutSys/AnalysisResults_R04_693_cutsys.rtoot #R04
+#efficiencyfileCut=CutSys/AnalysisResults_803_R04ppMCcuts.root #R04
+#analysisdatafile=AnalysisResults_503_R04.root #R04
+#effMCfile=CutSys/AnalysisResults_R04_693_cutsys.root #R04 
+##### R06
+analysisdatafileCut=CutSys/AnalysisResults_587_R06ppcuts.root #R06
+efficiencyfileCut=CutSys/AnalysisResults_811_R06_cutsys2.root #R06
+analysisdatafile=AnalysisResults_504_R06.root
+effMCfile=AnalysisResults_871_R06ppMC.root #R06
+
+detRMpromptfile1=newMC_JES/AnalysisResults_R06_721.root  # R06 JES
+detRMnonpromptfile1=newMC_JES/AnalysisResults_R06_721.root  # R06 JES
+
+#analysisdatafile=AnalysisResults_437.root #R03 ?
 #analysisdatafile=AnalysisResults_LHC17pq_FASTwoSDD.root
 #analysisdatafile=AnalysisResults_503_R04.root
-#analysisdatafile=AnalysisResults_504_R06.root
 isMoreFiles=0                                     # 1 if there are more input files to be read
 prod=kl                                           # if there are more input files to be read
 reflfile=reflectionTemplates_pp.root
-effMCfile=AnalysisResults_454.root
+
+#effMCfile=AnalysisResults_454.root #R03 ?
 #effMCfile=AnalysisResults_fast_R03_D0MC_def.root
 #effMCfile=AnalysisResults_634_pp5TeV_z.root
 #effMCfile=AnalysisResults_642_pp5TeV_z.root
 #effMCfile=AnalysisResults_683_ppMC_R06.root
+
+#effMCfile=AnalysisResults_870_R04ppMC.root #R04
 MCfile=$effMCfile #AnalysisResults_fast_R03_D0MC_def.root
 #MCfile=AnalysisResults_fast_R03_D0MCPythia_JES96_1.root
 efficiencyfile=$effMCfile
@@ -55,17 +76,17 @@ detRMpromptfile=$MCfile
 detRMnonpromptfile=$MCfile
 isprefix=0                                       #  if prefix is one, postfix must be one.
 ispostfix=0                                       # if container in the analysis output file has different name than default you set here if and what is the postfix, this is set up in the signal, efficiency and RM extraction macros
-postfix=HP4 #cut2
-ispostfixFD=0                                     # if container in the analysis output file has different name than default you set here if and what is the postfix, for the FD part wagons are usually configured with additional "FD" string in the container name, you should adjust this to yours configuration
+postfix=HP2 #cut2
+ispostfixFD=$ispostfix #0                                     # if container in the analysis output file has different name than default you set here if and what is the postfix, for the FD part wagons are usually configured with additional "FD" string in the container name, you should adjust this to yours configuration
 #postfixFD=FD
-postfixFD=HP4 #FDcut2
+postfixFD=$postfix #FDcut2
+####
 
 isRefl=1
 isBkgRM=0
-
 ######## !!! POWHEG simulations config
-nSimFilesB=10                                    # have to correspond to number of files defined in the config file
-nSimFilesC=9                                    # have to correspond to number of files defined in the config file
+nSimFilesB=10                                    # have to correspond to number of files defined in the config file. Def 10
+nSimFilesC=9                                    # have to correspond to number of files defined in the config file. Def 9
 
 unfType=$1
 regPar=$2
@@ -109,10 +130,11 @@ fi
 
 if [ $doJESSys -eq 1 ]; then
 
-    detRMpromptfile1=AnalysisResults_fast_R03_D0MCPythia_JES96_1.root
+
+#    detRMpromptfile1=AnalysisResults_fast_R03_D0MCPythia_JES96_1.root
  # 	detRMnonpromptfile1=AnalysisResults_fast_R03_D0MCPythia_JES96_1.root
-detRMnonpromptfile1=AnalysisResults_fast_R03_D0MC_def.root
-  	eff=95
+#detRMnonpromptfile1=AnalysisResults_fast_R03_D0MC_def.root
+  	eff=96
   	outputdirectorySignal1=$outputdirectorySignal$eff
 
     ./run.csh $outputdirectory $outputdirectorySignal1 $conffile $Dmeson $anaoutfiledir $analysisdatafile $refoutfiledir $reflfile $isRefl $isMoreFiles $prod $ispostfix $postfix $ispostfixFD $postfixFD $MCoutfiledir $efficiencyfile $detRMpromptfile1 $detRMnonpromptfile1 $isBkgRM $bkgRMtype $bkgRMDir $bkgRMfileName $simFilesDir $unfType $regPar $isPrior $priorType 0 0 0 $nSimFilesB $nSimFilesC $roounfoldpwd $isprefix
@@ -136,35 +158,40 @@ fi
 ################################################
 ############### Cut Variation -- configure this !!!
 ################################################
-
 if [ $doCutVar -eq 1 ]; then
 
   # ========== file names
-  analysisdatafileCut=AnalysisResults_LHC16R03_CutVariation.root
-  efficiencyfileCut=AnalysisResults_fast_R03_D0MCPythia_CutVariation_1.root
-  detRMpromptfileCut=AnalysisResults_fast_R03_D0MCPythia_CutVariation_1.root
-  detRMnonpromptfileCut=AnalysisResults_fast_R03_D0MCPythia_CutVariation_1.root
+  ## R03
+  #analysisdatafileCut=AnalysisResults_LHC16R03_CutVariation.root
+  #efficiencyfileCut=AnalysisResults_fast_R03_D0MCPythia_CutVariation_1.root
+  # R06
+  #analysisdatafileCut=CutSys/AnalysisResults_587_R06ppcuts.root 
+  #efficiencyfileCut=CutSys/AnalysisResults_811_R06_cutsys2.root
+  detRMpromptfileCut=$efficiencyfileCut #AnalysisResults_fast_R03_D0MCPythia_CutVariation_1.root
+  detRMnonpromptfileCut=$efficiencyfileCut #AnalysisResults_fast_R03_D0MCPythia_CutVariation_1.root
   isReflCut=0
   outputdirectorySignalCut=Default
 
-  ispostfixCut=0
-  ispostfixFDCut=1
-  postfixCut=Cut
-  postfixFDCut=FD
+  ispostfixCut=$ispostfix 
+  ispostfixFDCut=$ispostfixFD 
+  postfixCut=$postfix 
+  postfixFDCut=$postfixFD 
   outputdirectoryCut=${outputdirectorybase}Cuts_VarDef
 	./run.csh $outputdirectoryCut $outputdirectorySignalCut $conffile $Dmeson $anaoutfiledir $analysisdatafileCut $refoutfiledir $reflfile $isReflCut $isMoreFiles $prod $ispostfixCut $postfixCut $ispostfixFDCut $postfixFDCut $MCoutfiledir $efficiencyfileCut $detRMpromptfileCut $detRMnonpromptfileCut $isBkgRM $bkgRMtype $bkgRMDir $bkgRMfileName $simFilesDir $unfType $regPar $isPrior $priorType 0 0 $doRawSpectra $nSimFilesB $nSimFilesC $roounfoldpwd $isprefix
 
 arraySize
-declare -a cutarray=( L0 L1 L2 L3 T0 T1 T2 ) #declare postfixes
+#declare -a cutarray=( L0 L1 L2 L3 T0 T1 T2 ) #declare postfixes
+declare -a cutarray=( HP2 ) #HP3 HP5 HP6 ) #declare postfixes
 
 for i in "${cutarray[@]}"
 do
   ispostfixCut=1
+  isprefixCut=1
   ispostfixFDCut=1
   postfixCut=${cutarray[$i]}
-  postfixFDCut=${cutarray[$i]}FD
+  postfixFDCut=${cutarray[$i]}
   outputdirectoryCut=${outputdirectorybase}Cuts_${cutarray[$i]}
-  ./run.csh $outputdirectoryCut $outputdirectorySignalCut $conffile $Dmeson $anaoutfiledir $analysisdatafileCut $refoutfiledir $reflfile $isReflCut $isMoreFiles $prod $ispostfixCut $postfixCut $ispostfixFDCut $postfixFDCut $MCoutfiledir $efficiencyfileCut $detRMpromptfileCut $detRMnonpromptfileCut $isBkgRM $bkgRMtype $bkgRMDir $bkgRMfileName $simFilesDir $unfType $regPar $isPrior $priorType 0 0 $doRawSpectra $nSimFilesB $nSimFilesC $roounfoldpwd $isprefix
+  ./run.csh $outputdirectoryCut $outputdirectorySignalCut $conffile $Dmeson $anaoutfiledir $analysisdatafileCut $refoutfiledir $reflfile $isReflCut $isMoreFiles $prod $ispostfixCut $postfixCut $ispostfixFDCut $postfixFDCut $MCoutfiledir $efficiencyfileCut $detRMpromptfileCut $detRMnonpromptfileCut $isBkgRM $bkgRMtype $bkgRMDir $bkgRMfileName $simFilesDir $unfType $regPar $isPrior $priorType 0 0 $doRawSpectra $nSimFilesB $nSimFilesC $roounfoldpwd $isprefixCut
 done
 
   # cut variation systematics

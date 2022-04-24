@@ -9,12 +9,12 @@
 #include "config.h"
 
 //====================== global =========================
-TH2D* fMatrixPP;
-TH2D* fMatrixProd;
+TH2D* fMatrixPP;TH2D* fMatrixPPClos;
+TH2D* fMatrixProd;TH2D* fMatrixProdClos;
 TH2D* fMatrixDeltaPt;
 TH1D* fRawSpectrum;
-TH1D* fTrueSpectrum;
-TH1D* fMeasSpectrum;
+TH1D* fTrueSpectrum;TH1D* fTrueSpectrumClos;
+TH1D* fMeasSpectrum;TH1D* fMeasSpectrumClos;
 
 	/***********************************
 	############# define your bins #####################
@@ -30,15 +30,17 @@ int linesytle[] = {1,2,3,4,5,6,7,8,9,10,11,12,13};
 int LoadRawSpectrum(TString fn, TString sname, int rebin = 0, TString spostfix="") ;
 int LoadBackgroundMatrix(TString fn, TString mxname) ;
 int LoadDetectorMatrix(TString fn, TString mxname, TString tsname, TString msname, bool norm = 1, TString spostfix="") ;
-TH2D * Rebin2D(const char* name, TH2D *h, int nx, const double *binx, int ny, const double *biny, bool crop) ;
-TH2D * ProductMatrix(TH2D * MtxA, TH2D * MtxB) ;
+TH2D* Rebin2D(const char* name, TH2D *h, int nx, const double *binx, int ny, const double *biny, bool crop) ;
+TH2D* ProductMatrix(TH2D * MtxA, TH2D * MtxB) ;
 TF1* getPriorFunction(int prior, TH1D* spect, int priorType = 0, TH1D* rawspectrum = NULL) ;
 void WeightMatrixY(TH2D * Mtx, TH1D * h, bool divide) ;
-TH2D * getPearsonCoeffs(const TMatrixD &covMatrix) ;
-int MtxPlots(TString outDir, TString outName) ;
+TH2D* getPearsonCoeffs(const TMatrixD &covMatrix) ;
+int MtxPlots(TString outDir, TString outName,bool doSvd) ;
 void NormMatrixY(TH2D * Mtx) ;
 TH2D* NormMatrixY(const char* name, TH2D* Mtx) ;
 int plotSlice(TVirtualPad * p, TH2D * hMtxPP, TH2D * hMtxDpt, TH2D * hMtxRe, TH2D * hMtxPro, const double ptmin, const double ptmax) ;
+
+int LoadDetectorMatrixClosure(TString fn, TString mxname, TString tsname, TString msname);
 
 void unfold_Bayes
 (
@@ -47,7 +49,7 @@ TString datafile = "file.root",
 TString detRMfile = "detRM.root",
 TString bkgRMfile = "bkgRM.root",
 TString outDir = "out", // output directory
-const int regBayes = 5,  // default reg. parameter for the bayes unfolding
+int regBayes = 5,  // default reg. parameter for the bayes unfolding
 bool isPrior = 0,  // if to use prior different than the true spectrum from the sim
 int priorType = 1,   // if isPrior == 1, choose type of the prior
 bool useDeltaPt = 1,  // if to use a separate bkg. fluctuation matrix
@@ -60,24 +62,18 @@ const int NTrials = 10,//10,  //number of total trials
 bool debug = 0
 )
 {
+bool doSvd=0;
+if(doSvd)regBayes=10;//needs to be adjusted according to the d-vector
 
 gSystem->Load(Form("%s",roounfoldpwd.Data()));
 gStyle->SetOptStat(0000); //Mean and RMS shown
 gSystem->Exec(Form("mkdir  %s",outDir.Data()));
 gSystem->Exec(Form("mkdir  %s/plots",outDir.Data()));
 
-	double plotmin = fptbinsJetTrueA[0] ;
+	double plotmin = fptbinsJetTrueA[0];
 	double plotmax = fptbinsJetTrueA[fptbinsJetTrueN];
 
-
 	TString outName = "unfoldedSpectrum";
-	//outName += "Bayes";
-	//outName += regBayes;
-	//if(fDoWeighting) outName += "_weight";
-	//if(isPrior) { outName += "_"; outName += priorName; }
-	//outName += "_PtMeas"; outName += fptbinsJetMeasA[0];	outName += "_"; outName += fptbinsJetMeasA[fptbinsJetMeasN];
-	//outName += "_PtTrue"; outName += fptbinsJetTrueA[0];	outName += "_"; outName += fptbinsJetTrueA[fptbinsJetTrueN];
-
 
 /***********************************
 ############# load raw spectrum and response matrices ##################
@@ -87,23 +83,42 @@ if(isFDUpSpec) LoadRawSpectrum(datafile.Data(),"hData_binned_sub_up",0);
 else if(isFDDownSpec) LoadRawSpectrum(datafile.Data(),"hData_binned_sub_down",0);
 else LoadRawSpectrum(datafile.Data(),"hData_binned_sub",0);
 if(useDeltaPt) LoadBackgroundMatrix(bkgRMfile.Data(),"hBkgM");
-LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
+LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0,"");
+
+LoadDetectorMatrixClosure(detRMfile.Data(),"hPtJet2d_clos","hPtJetGen","hPtJetRec");
 
 	if (!fRawSpectrum)  { Error("Unfold", "No raw spectrum!"); return 0;	}
 	if (!fTrueSpectrum) { Error("Unfold", "No true spectrum!");	return 0; }
 	if (!fMeasSpectrum) { Error("Unfold", "No reconstructed spectrum!"); return 0; }
 
-
+    //MC closure histograms
+    //---------------------
+    TFile* fileClosure = new TFile(Form("%s",detRMfile.Data()),"read");
+    TH2D* hRespClosure = (TH2D*)fileClosure->Get("hPtJet2d_clos")->Clone("hRespClosure");
+    TH1D* hMeasClosure = (TH1D*)fileClosure->Get("hPtJetRec_clos")->Clone("hMeasClosure");
+    TH1D* hTrueClosure = (TH1D*)fileClosure->Get("hPtJetGen_clos")->Clone("hTrueClosure");
+    TCanvas* cClosureHist = new TCanvas("closureHist","closureHist",900,800);
+    cClosureHist->SetLogy();
+    hMeasClosure->Draw();
+    hTrueClosure->Draw("same");
+    cClosureHist->SaveAs(Form("%s/cClosureHist.pdf",outDir.Data()));
+    cClosureHist->SaveAs(Form("%s/cClosureHist.png",outDir.Data()));
+    TCanvas* cClosureResp = new TCanvas("closureResp","closureResp",900,800);
+    cClosureResp->SetLogz();
+    hRespClosure->Draw("colz");
+    cClosureResp->SaveAs(Form("%s/cClosureResp.pdf",outDir.Data()));
+    cClosureResp->SaveAs(Form("%s/cClosureResp.png",outDir.Data()));
+    //---------------------
 	TH1D* truespec = (TH1D*)fTrueSpectrum->Clone("truespec"); //fTrueSpectrum is an (!un)initialized 1D histogram. 		//They are initialised by the LoadR/B/D....() functions above.
 	truespec->Scale(1./truespec->Integral());
 	TH2D* MatrixDeltaReb;
 	TH2D* MatrixComb;
 
 	if(useDeltaPt){
-	fMatrixDeltaPt->Sumw2();
-	//WeightMatrixY(fMatrixDeltaPt,fTrueSpectrum,0);
-	MatrixDeltaReb = Rebin2D("MatrixDeltaReb", fMatrixDeltaPt, fptbinsJetMeasN, fptbinsJetMeasA, fptbinsJetTrueN, fptbinsJetTrueA,0);
-	MatrixComb = ProductMatrix(fMatrixDeltaPt,fMatrixPP); //product of two matrices
+	    fMatrixDeltaPt->Sumw2();
+	    //WeightMatrixY(fMatrixDeltaPt,fTrueSpectrum,0);
+	    MatrixDeltaReb = Rebin2D("MatrixDeltaReb", fMatrixDeltaPt, fptbinsJetMeasN, fptbinsJetMeasA, fptbinsJetTrueN, fptbinsJetTrueA,0);
+	    MatrixComb = ProductMatrix(fMatrixDeltaPt,fMatrixPP); //product of two matrices
 	}
 
 	if(useDeltaPt) fMatrixProd = (TH2D*)MatrixComb->Clone("fMatrixProd");
@@ -112,42 +127,38 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
 
 	TH1D* priorhisto = (TH1D*) fTrueSpectrum->Clone("priorhisto");
 	TH1D *rawspectrum = (TH1D*)fRawSpectrum->Clone("rawspectrum");
-	//rawspectrum->Scale(1./rawspectrum->Integral());
 	rawspectrum->Scale(1,"width");
 
-	//if(isPrior && priorType == 0) priorhisto = (TH1D*) rawspectrum->Clone("priorhisto");
-	//if(isPrior && priorType == 0) priorhisto = (TH1D*) fRawSpectrum->Clone("priorhisto");
+    TF1* fPriorFunction;
+    if(isPrior) {
+		fPriorFunction = getPriorFunction(isPrior, priorhisto,priorType, rawspectrum);
+		priorhisto->SetTitle("");
+		priorhisto->GetXaxis()->SetTitle("p_{T, ch.jet}");
+		TCanvas* cPrior = new TCanvas("cPrior0", "cPrior0", 800, 600);
+		cPrior->SetLogy();
+		TH1D* histoPrior=(TH1D*)priorhisto->Clone();
+		histoPrior->Draw();
+		if(priorType == 8) rawspectrum->Draw();
+		fPriorFunction->Draw("same");
 
-        TF1* fPriorFunction;
-        if(isPrior) {
-					fPriorFunction = getPriorFunction(isPrior, priorhisto,priorType, rawspectrum);
-					priorhisto->SetTitle("");
-					priorhisto->GetXaxis()->SetTitle("p_{T, ch.jet}");
-					TCanvas* cPrior = new TCanvas("cPrior0", "cPrior0", 800, 600);
-					cPrior->SetLogy();
-					TH1D* histoPrior=(TH1D*)priorhisto->Clone();
-					histoPrior->Draw();
-					if(priorType == 8) rawspectrum->Draw();
-					fPriorFunction->Draw("same");
-
-					cPrior->SaveAs(Form("%s/plots/%s_prior.pdf",outDir.Data(),outName.Data()));
-					cPrior->SaveAs(Form("%s/plots/%s_prior.png",outDir.Data(),outName.Data()));
-				}
+		cPrior->SaveAs(Form("%s/plots/%s_prior%s.pdf",outDir.Data(),outName.Data(),doSvd?"SVD":"Bayes"));
+		cPrior->SaveAs(Form("%s/plots/%s_prior%s.png",outDir.Data(),outName.Data(),doSvd?"SVD":"Bayes"));
+	}
 
     TH1D* hNormY;
     // weighting the matrix
-		if (fDoWeighting) {
+	if (fDoWeighting) {
         cout << "==== weighting ==== " << endl;
-				hNormY=(TH1D*)fMatrixProd->ProjectionY("hNormY");
-				if (isPrior){
+		hNormY=(TH1D*)fMatrixProd->ProjectionY("hNormY");
+		if (isPrior){
 	        cout << "=== using prior function ====" << endl;
-					if (! hNormY->Divide(fPriorFunction) ) { cout << "\"divide\" failed "; return; }
+			if (! hNormY->Divide(fPriorFunction) ) { cout << "\"divide\" failed "; return; }
         }
-				else{
+		else{
 	        cout << "==== dividing ==== " << endl;
-					hNormY->Divide(priorhisto);
+			hNormY->Divide(priorhisto);
         }
-				WeightMatrixY(fMatrixProd,hNormY,fdivide);
+		WeightMatrixY(fMatrixProd,hNormY,fdivide);
 	}
 
     TH1D* hProjYeff=(TH1D*)fMatrixProd->ProjectionY("hProjYeff");
@@ -158,6 +169,41 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
     TH1D* hProjYeffRebin=(TH1D*)hProjYeff->Rebin(fptbinsJetTrueN, "hProjYeffRebin", fptbinsJetTrueA);
     TH1D* fRawRebin=(TH1D*)fRawSpectrum->Rebin(fptbinsJetMeasN, "fRawRebin", fptbinsJetMeasA);
 
+    //closure
+	fMatrixProdClos = (TH2D*)fMatrixPPClos->Clone("fMatrixProdClos");
+    TH1D* hProjYeffClos=(TH1D*)fMatrixProdClos->ProjectionY("hProjYeffClos");
+    TH1D* hProjXeffClos=(TH1D*)fMatrixProdClos->ProjectionX("hProjXeffClos");
+    TH2D* Matrix_clos = Rebin2D("Matrix_clos", fMatrixProdClos, fptbinsJetMeasN, fptbinsJetMeasA, fptbinsJetTrueN, fptbinsJetTrueA,0);
+    TH1D* hProjXeffRebinClos=(TH1D*)hProjXeffClos->Rebin(fptbinsJetMeasN, "hProjXeffRebinClos", fptbinsJetMeasA);
+    TH1D* hProjYeffRebinClos=(TH1D*)hProjYeffClos->Rebin(fptbinsJetTrueN, "hProjYeffRebinClos", fptbinsJetTrueA);
+    TH1D* hMeasClosRebin=(TH1D*)hMeasClosure->Rebin(fptbinsJetMeasN, "hMeasClosRebin", fptbinsJetMeasA);
+    TH1D* hTrueClosRebin=(TH1D*)hTrueClosure->Rebin(fptbinsJetMeasN, "hTrueClosRebin", fptbinsJetMeasA);
+
+    TCanvas* c_statunc_closure = new TCanvas("statunc_closure","statunc_closure",500,400);
+    TH1D* hreco_unc = (TH1D*)hMeasClosRebin->Clone("hreco_unc");
+    TH1D* htrue_unc = (TH1D*)hTrueClosRebin->Clone("htrue_unc");
+    TH1D* hdata_unc = (TH1D*)fRawRebin->Clone("hdata_unc");
+    for (int i=1;i<=fRawRebin->GetNbinsX();i++){
+        hreco_unc->SetBinContent(i,hMeasClosRebin->GetBinError(i)/hMeasClosRebin->GetBinContent(i));
+        hreco_unc->SetBinError(i,0);
+        htrue_unc->SetBinContent(i,hTrueClosRebin->GetBinError(i)/hTrueClosRebin->GetBinContent(i));
+        htrue_unc->SetBinError(i,0);
+        hdata_unc->SetBinContent(i,fRawRebin->GetBinError(i)/fRawRebin->GetBinContent(i));
+        hdata_unc->SetBinError(i,0);
+    }
+    hreco_unc->SetLineColor(kGreen+2);
+    htrue_unc->SetLineColor(kBlue+2);
+    hdata_unc->GetXaxis()->SetRangeUser(5,50);
+    hdata_unc->GetYaxis()->SetRangeUser(0,1);
+    hdata_unc->Draw();
+    hreco_unc->Draw("same");
+    //htrue_unc->Draw("same");
+    //hMeasClosRebin->GetXaxis()->SetRangeUser(5,50);
+    //hMeasClosRebin->Draw();
+    //hTrueClosRebin->Draw("same");
+
+    c_statunc_closure->SaveAs(Form("%s/stat_unc.pdf",outDir.Data()));
+    c_statunc_closure->SaveAs(Form("%s/stat_unc.png",outDir.Data()));
 
 /**************************************************
 ############# unfolding settings ##################
@@ -183,38 +229,111 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
 /***********************************
 ############# unfolding ##################
 ************************************/
-		RooUnfoldBayes unfold (&response, fRawRebin, ivar+1);
-		fUnfoldedBayes[ivar] = (TH1D*)unfold.Hreco();
-		folded[ivar] = (TH1D*)response.ApplyToTruth(fUnfoldedBayes[ivar]);
+        RooUnfoldBayes unfold (&response, fRawRebin, ivar+1);
+        RooUnfoldSvd   unfoldSvd(&response, fRawRebin, ivar+1);
+        fUnfoldedBayes[ivar] = (TH1D*)unfold.Hreco();
+        if(doSvd)fUnfoldedBayes[ivar] = (TH1D*)unfoldSvd.Hreco();
+        folded[ivar] = (TH1D*)response.ApplyToTruth(fUnfoldedBayes[ivar]);
 
-		// ------------ Get Person coefficient ------------
-		fPearsonCoeffs[ivar] = getPearsonCoeffs( unfold.Ereco(RooUnfold::kCovariance) );
-		fPearsonCoeffs[ivar]->SetName(Form("PearsonCoeffs%d",ivar));
+        // ------------ Get Person coefficient ------------
+        fPearsonCoeffs[ivar] = getPearsonCoeffs( unfold.Ereco(RooUnfold::kCovariance) );
+        if(doSvd)fPearsonCoeffs[ivar] = getPearsonCoeffs( unfoldSvd.Ereco(RooUnfold::kCovariance) );
+        fPearsonCoeffs[ivar]->SetName(Form("PearsonCoeffs%d",ivar));
 
-		fUnfoldedBayes[ivar]->SetLineColor(colortable[ivar]);
-		fUnfoldedBayes[ivar]->SetLineStyle(1);
-		fUnfoldedBayes[ivar]->SetMarkerColor(colortable[ivar]);
-		fUnfoldedBayes[ivar]->SetMarkerStyle(fMarkers[ivar]);
-		fUnfoldedBayes[ivar]->SetLineWidth(2);
-		fUnfoldedBayes[ivar]->GetXaxis()->SetTitle("p_{T,jet}^{ch} (GeV/#it{c})");
-		fUnfoldedBayes[ivar]->GetYaxis()->SetTitle("dN/dp_{T}");
-		fUnfoldedBayes[ivar]->SetTitle("Bayes unfolding");
-		fUnfoldedBayes[ivar]->GetXaxis()->SetRangeUser(plotmin,plotmax);
+        fUnfoldedBayes[ivar]->SetLineColor(colortable[ivar]);
+        fUnfoldedBayes[ivar]->SetLineStyle(1);
+        fUnfoldedBayes[ivar]->SetMarkerColor(colortable[ivar]);
+        fUnfoldedBayes[ivar]->SetMarkerStyle(fMarkers[ivar]);
+        fUnfoldedBayes[ivar]->SetLineWidth(2);
+        fUnfoldedBayes[ivar]->GetXaxis()->SetTitle("p_{T,jet}^{ch} (GeV/#it{c})");
+        fUnfoldedBayes[ivar]->GetYaxis()->SetTitle("dN/dp_{T}");
+        fUnfoldedBayes[ivar]->SetTitle(Form("%s unfolding",doSvd?"SVD":"Bayes"));
+        fUnfoldedBayes[ivar]->GetXaxis()->SetRangeUser(plotmin,plotmax);
 
-		if(ivar == 0) { fUnfoldedBayes[ivar]->Draw(); }
+        if(ivar == 0) {
+            fUnfoldedBayes[ivar]->GetYaxis()->SetRangeUser(fRawRebin->GetMinimum()*0.2,fRawRebin->GetMaximum()*2);
+            fUnfoldedBayes[ivar]->Draw(); 
+        }
 		fUnfoldedBayes[ivar]->Draw("same");
 		leg->AddEntry(fUnfoldedBayes[ivar],Form("Reg=%d",ivar+1),"p");
-
 	}
 	leg->Draw("same");
 
-	cUnfolded->SaveAs(Form("%s/plots/%s_unfSpectra.pdf",outDir.Data(),outName.Data()));
-	cUnfolded->SaveAs(Form("%s/plots/%s_unfSpectra.png",outDir.Data(),outName.Data()));
+	cUnfolded->SaveAs(Form("%s/plots/%s_unfSpectra%s.pdf",outDir.Data(),outName.Data(), doSvd ? "SVD" : "Bayes"));
+	cUnfolded->SaveAs(Form("%s/plots/%s_unfSpectra%s.png",outDir.Data(),outName.Data(), doSvd ? "SVD" : "Bayes"));
+//-------------- closure ---------------
+    RooUnfoldResponse response_clos(hProjXeffRebinClos,hProjYeffRebinClos, Matrix_clos, "response_clos","response_clos");
+    response_clos.UseOverflow(overflow);
+    RooUnfoldBayes unfoldClosBayes(&response_clos, hMeasClosRebin,regBayes);
+
+    RooUnfoldSvd   unfoldClosSvd(&response_clos, hMeasClosRebin,regBayes);
+    TH1D* unfoldedClos; 
+    unfoldedClos = (TH1D*)unfoldClosBayes.Hreco();
+    if(doSvd)unfoldedClos = (TH1D*)unfoldClosSvd.Hreco();
+    TCanvas* cClosureResp2 = new TCanvas("closureResp2","closureResp2",900,800);
+    cClosureResp2->SetLogz();
+    Matrix_clos->Draw("colz");
+    cClosureResp2->SaveAs(Form("%s/cClosureResp2.pdf",outDir.Data()));
+    cClosureResp2->SaveAs(Form("%s/cClosureResp2.png",outDir.Data()));
+
+    TCanvas* cClosureUnfold = new TCanvas("closureUnfold","closureUnfold",900,800);
+    cClosureUnfold->SetLogy();
+    hMeasClosRebin->SetLineColor(kBlue+2);hMeasClosRebin->SetMarkerColor(kBlue+2);
+    hTrueClosRebin->SetLineColor(kGreen+2);hTrueClosRebin->SetMarkerColor(kGreen+2);
+    unfoldedClos->SetLineColor(kRed+2);unfoldedClos->SetMarkerColor(kRed+2);
+    
+    hMeasClosRebin->Draw();
+    unfoldedClos->Draw("same");
+    hTrueClosRebin->Draw("same");
+	cClosureUnfold->SaveAs(Form("%s/closure_unfSpectra%s.pdf",outDir.Data(),doSvd?"SVD":"Bayes"));
+	cClosureUnfold->SaveAs(Form("%s/closure_unfSpectra%s.png",outDir.Data(),doSvd?"SVD":"Bayes"));
+    TCanvas* cClosureUnfoldRatio = new TCanvas("closureUnfoldRatio","closureUnfoldRatio",900,800);
+    TH1D* hRatioClos = (TH1D*)unfoldedClos->Clone("hRatioClos");
+    hRatioClos->Divide(hTrueClosRebin);
+    hRatioClos->GetYaxis()->SetRangeUser(0,2);
+    hRatioClos->Draw();
+    TLine *lineClos = new TLine(fptbinsJetMeasA[0],1,fptbinsJetMeasA[fptbinsJetMeasN],1);
+    lineClos->SetLineStyle(2); lineClos->SetLineWidth(2);
+    lineClos->Draw("same");
+	cClosureUnfoldRatio->SaveAs(Form("%s/closure_unfSpectraRatio%s.pdf",outDir.Data(), doSvd ? "SVD" : "Bayes"));
+	cClosureUnfoldRatio->SaveAs(Form("%s/closure_unfSpectraRatio%s.png",outDir.Data(), doSvd ? "SVD" : "Bayes"));
+
+//-------------- D vector for SVD---------------
+if(doSvd){
+    if(fptbinsJetMeasN==fptbinsJetTrueN){
+        TH1D* bdat = (TH1D*) fRawRebin->Clone();
+        TH1D* bini = (TH1D*) Matrix->ProjectionX()->Clone();
+        TH1D* xini = (TH1D*) Matrix->ProjectionY()->Clone();
+        TH2D* Adet = (TH2D*) Matrix->Clone();
+        int kreg = regBayes;
+        TSVDUnfold* tsvdunf = new TSVDUnfold(bdat=bdat, bini=bini, xini=xini, Adet=Adet);
+        TH1D* unfresult = tsvdunf->Unfold(regBayes);
+        TH1D* fDvector = (TH1D*)(tsvdunf->GetD())->Clone();
+        TH1D* singVec = tsvdunf->GetSV();
+
+        TCanvas* cSVD_Dvector = new TCanvas("Dvector","Dvector",1000,1000);
+        TLegend* legDvec = new TLegend(0.6,0.4,0.85,0.85);
+        legDvec->SetBorderSize(0);
+        cSVD_Dvector->SetLogy();
+        fDvector->Draw();
+
+        TCanvas* cSVD_singVal = new TCanvas("singVal","singVal",1000,1000);
+        TLegend* legsingVal = new TLegend(0.6,0.4,0.85,0.85);
+        legsingVal->SetBorderSize(0);
+        cSVD_singVal->SetLogy();
+        singVec->Draw();
+
+	    cSVD_Dvector->SaveAs(Form("%s/plots/%s_SVD_Dvector.pdf",outDir.Data(),outName.Data()));
+	    cSVD_Dvector->SaveAs(Form("%s/plots/%s_SVD_Dvector.png",outDir.Data(),outName.Data()));
+	    cSVD_singVal->SaveAs(Form("%s/plots/%s_SVD_singVal.pdf",outDir.Data(),outName.Data()));
+	    cSVD_singVal->SaveAs(Form("%s/plots/%s_SVD_singVal.png",outDir.Data(),outName.Data()));
+    }
+}
+//-------------- D vector for SVD---------------
 
 	TCanvas *cPearson = new TCanvas("cPearson","cPearson",1800,1800);
 	cPearson->Divide(3,3);
-	for(Int_t ivar=1; ivar<NTrials; ivar++)
-	{
+	for(Int_t ivar=1; ivar<NTrials; ivar++){
 		cPearson->cd(ivar);
 		fPearsonCoeffs[ivar]->SetTitle(Form("k=%d",ivar+1));
 		fPearsonCoeffs[ivar]->SetMaximum(1);
@@ -222,21 +341,21 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
 		fPearsonCoeffs[ivar]->Draw("colz");
 	}
 
-	cPearson->SaveAs(Form("%s/plots/%s_Pearson.pdf",outDir.Data(),outName.Data()));
-	cPearson->SaveAs(Form("%s/plots/%s_Pearson.png",outDir.Data(),outName.Data()));
+	cPearson->SaveAs(Form("%s/plots/%s_Pearson%s.pdf",outDir.Data(),outName.Data(),doSvd ? "SVD" : "Bayes"));
+	cPearson->SaveAs(Form("%s/plots/%s_Pearson%s.png",outDir.Data(),outName.Data(),doSvd ? "SVD" : "Bayes"));
 
     TCanvas *cRatio2 = new TCanvas("cRatio2","cRatio2",800,600);
     TLegend *legRatio2 =  new TLegend(0.4,0.15,0.6,0.5);//0.6,0.5,0.65,0.85
     legRatio2->SetBorderSize(0);
-		TH1D* hBaseMeasure = (TH1D*)fRawRebin->Clone("hBaseSpectrum");
+	TH1D* hBaseMeasure = (TH1D*)fRawRebin->Clone("hBaseSpectrum");
 
-		// =============== Refolded / Measured
-		THStack *hRatioS = new THStack("hRatioS","refolded/measured");
+	// =============== Refolded / Measured
+	THStack *hRatioS = new THStack("hRatioS","refolded/measured");
     for(Int_t ivar=0; ivar<NTrials; ivar++){
         hRatio[ivar] = (TH1D*) folded[ivar]->Clone(Form("hRatio%d",ivar));
         hRatio[ivar]->Divide(hBaseMeasure);
         hRatio[ivar]->GetYaxis()->SetTitle("refolded/measured");
-	hRatio[ivar]->SetTitle(Form("Reg=%d",ivar+1));
+	    hRatio[ivar]->SetTitle(Form("Reg=%d",ivar+1));
         //hRatio[ivar]->GetYaxis()->SetRangeUser(0,3.5);
         //hRatio[ivar]->SetTitle();
 
@@ -244,33 +363,26 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
         hRatio[ivar]->SetMarkerColor(colortable[ivar]);
         hRatio[ivar]->SetMarkerSize(0);
         hRatio[ivar]->SetLineColor(colortable[ivar]);
-	hRatio[ivar]->SetLineStyle(linesytle[ivar]);
-	hRatio[ivar]->SetLineWidth(2);
+	    hRatio[ivar]->SetLineStyle(linesytle[ivar]);
+	    hRatio[ivar]->SetLineWidth(2);
 
-	int counter = 0;
+	    int counter = 0;
         for(int kk=1; kk<fptbinsJetMeasN; kk++){
-                double val = fabs(1-hRatio[ivar]->GetBinContent(kk));
-                //cout << "==val: " << val << endl;
-                if(val<0.1) counter++;
+            double val = fabs(1-hRatio[ivar]->GetBinContent(kk));
+            if(val<0.1) counter++;
         }
-       //if(counter == fptbinsJetMeasN-2) cout << "!!!!!! bin found: " << ivar+1 << endl;
         hRatio[ivar]->GetXaxis()->SetRangeUser(fptbinsJetMeasA[0],fptbinsJetMeasA[fptbinsJetMeasN]);
+//        hRatio[ivar]->GetYaxis()->SetRangeUser(0.92,1.11);
 
-				if(ivar==0){ //hRatio[ivar]->GetXaxis()->SetRangeUser(plotmin,plotmax);
-						continue;
-				}
-				else hRatioS->Add(hRatio[ivar]);
-			//	else if(ivar==1)  hRatio[ivar]->Draw("hist");
-			//	else hRatio[ivar]->Draw("samehist");
-
-			//	legRatio2->AddEntry(hRatio[ivar],Form("Reg=%d",ivar+1),"l");
-
+		if(ivar==0){ continue;}
+		else hRatioS->Add(hRatio[ivar]);
     }
 
-		hRatioS->SetMinimum(hRatioS->GetMinimum("nostack"));
-		hRatioS->Draw("nostackhist");
-		//hRatioS->GetXaxis()->SetTitle("p_{T, ch.jet}");
-		gPad->BuildLegend(0.55,0.65,0.9,0.9,"");
+	hRatioS->SetMinimum(0.92);//hRatioS->GetMinimum("nostack"));
+	hRatioS->SetMaximum(1.08);//hRatio[regBayes-1]->GetMaximum()*1.1);
+	hRatioS->Draw("nostackhist");
+	//hRatioS->GetXaxis()->SetTitle("p_{T, ch.jet}");
+	gPad->BuildLegend(0.55,0.65,0.9,0.9,"");
     //legRatio2->Draw("same");
 
     TLine *line = new TLine(fptbinsJetMeasA[0],1,fptbinsJetMeasA[fptbinsJetMeasN],1);
@@ -279,42 +391,40 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
     line->Draw("same");
 
     //cRatio2->SaveAs(Form("%s/%s_foldedRatio.png",outDir.Data(),outName.Data()));
-    cRatio2->SaveAs(Form("%s/plots/%s_foldedRatio.pdf",outDir.Data(),outName.Data()));
-		cRatio2->SaveAs(Form("%s/plots/%s_foldedRatio.png",outDir.Data(),outName.Data()));
+    cRatio2->SaveAs(Form("%s/plots/%s_foldedRatio%s.pdf",outDir.Data(),outName.Data(),doSvd?"SVD":"Bayes"));
+	cRatio2->SaveAs(Form("%s/plots/%s_foldedRatio%s.png",outDir.Data(),outName.Data(),doSvd?"SVD":"Bayes"));
 
-		// =============== Unfolded
-		THStack *hRatioUnfS = new THStack("hRatioUnfS",Form("Unfolded RegX/Reg%d",regBayes));
-		TCanvas *cRatio = new TCanvas("cRatio","cRatio",800,600);
+	// =============== Unfolded
+	THStack *hRatioUnfS = new THStack("hRatioUnfS",Form("Unfolded RegX/Reg%d",regBayes));
+	TCanvas *cRatio = new TCanvas("cRatio","cRatio",800,600);
     TH1D *hBaseSpectrum = (TH1D*)fUnfoldedBayes[regBayes-1]->Clone("hBaseSpectrum");
-//    int iter = 0;
     for(Int_t ivar=0; ivar<NTrials; ivar++){
         hRatioSpectrum[ivar] = (TH1D*) fUnfoldedBayes[ivar]->Clone(Form("hRatioSpectrum%d",ivar));
         hRatioSpectrum[ivar]->Divide(hBaseSpectrum);
-				hRatioSpectrum[ivar]->GetYaxis()->SetTitle(Form("RegX/Reg%d",regBayes));
+		hRatioSpectrum[ivar]->GetYaxis()->SetTitle(Form("RegX/Reg%d",regBayes));
         hRatioSpectrum[ivar]->SetTitle(Form("Reg=%d",ivar+1));
         hRatioSpectrum[ivar]->SetMarkerStyle(fMarkers[ivar]);//[iter]);
         hRatioSpectrum[ivar]->SetMarkerColor(colortable[ivar]);//[iter]);//(colortable[iter+1]);
         hRatioSpectrum[ivar]->SetMarkerSize(0);
         hRatioSpectrum[ivar]->SetLineColor(colortable[ivar]);//[iter]);//(colortable[iter+1]);
-				hRatioSpectrum[ivar]->SetLineStyle(linesytle[ivar]);
-				hRatioSpectrum[ivar]->SetLineWidth(2);
+		hRatioSpectrum[ivar]->SetLineStyle(linesytle[ivar]);
+		hRatioSpectrum[ivar]->SetLineWidth(2);
+
+		//hRatioSpectrum[ivar]->GetYaxis()->SetRangeUser(0.9,1.1);
 
         if((ivar == 0)  || (ivar == regBayes-1)) continue;
         hRatioUnfS->Add(hRatioSpectrum[ivar]);
-
-        //if(ivar==1) { hRatioSpectrum[ivar]->GetYaxis()->SetRangeUser(0.8,1.3); hRatioSpectrum[ivar]->Draw("hist"); }
-        //else hRatioSpectrum[ivar]->Draw("samehist");
-
     }
-		hRatioUnfS->SetMinimum(hRatioUnfS->GetMinimum("nostack"));
-		//hRatioUnfS->SetMaximum(hRatioUnfS->GetMaximum("nostack")*0.8);
-		hRatioUnfS->Draw("nostackhist");
-		//hRatioUnfS->GetXaxis()->SetTitle("p_{T, ch.jet}");
-		gPad->BuildLegend(0.55,0.65,0.9,0.9,"");
+	hRatioUnfS->SetMinimum(0.85);//hRatioSpectrum[regBayes-1]->GetMinimum()*0.8);
+	hRatioUnfS->SetMaximum(1.15);//hRatioSpectrum[regBayes-1]->GetMaximum()*1.2);
+	//hRatioUnfS->SetMaximum(hRatioUnfS->GetMaximum("nostack")*0.8);
+	hRatioUnfS->Draw("nostackhist");
+	//hRatioUnfS->GetXaxis()->SetTitle("p_{T, ch.jet}");
+	gPad->BuildLegend(0.55,0.65,0.9,0.9,"");
     line->Draw("same");
 
-		cRatio->SaveAs(Form("%s/plots/%s_unfRatio.pdf",outDir.Data(),outName.Data()));
-		cRatio->SaveAs(Form("%s/plots/%s_unfRatio.png",outDir.Data(),outName.Data()));
+	cRatio->SaveAs(Form("%s/plots/%s_unfRatio%s.pdf",outDir.Data(),outName.Data(),doSvd?"SVD":"Bayes"));
+	cRatio->SaveAs(Form("%s/plots/%s_unfRatio%s.png",outDir.Data(),outName.Data(),doSvd?"SVD":"Bayes"));
 
     fRawRebin->SetLineColor(kBlue+1);
     fRawRebin->SetMarkerColor(kBlue+1);
@@ -323,7 +433,7 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
     fUnfoldedBayes[regBayes-1]->SetLineColor(kRed+1);
     fUnfoldedBayes[regBayes-1]->SetMarkerColor(kRed+1);
     fUnfoldedBayes[regBayes-1]->SetMarkerStyle(21);
-		fUnfoldedBayes[regBayes-1]->SetLineStyle(1);
+	fUnfoldedBayes[regBayes-1]->SetLineStyle(1);
     folded[regBayes-1]->SetLineColor(kGreen+1);//(kRed+1);
     folded[regBayes-1]->SetMarkerColor(kGreen+1);//(kRed+1);
 
@@ -348,8 +458,8 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
 	hUnfolded_Unc->SetMaximum(hUnfolded_Unc->GetMaximum()*1.2);
 	hUnfolded_Unc->SetMinimum(0);
 
-    TFile *outSpectra = new TFile(Form("%s/%s_unfoldedJetSpectrum.root",outDir.Data(),outName.Data()),"recreate");
-		//TFile *outSpectra = new TFile(Form("%s/%s_unfoldedJetSpectrum.root",outDir.Data(),outName.Data()),"recreate");
+    TFile *outSpectra = new TFile(Form("%s/%s_unfoldedJetSpectrum%s.root",outDir.Data(),outName.Data(),doSvd?"SVD":"Bayes"),"recreate");
+	//TFile *outSpectra = new TFile(Form("%s/%s_unfoldedJetSpectrum.root",outDir.Data(),outName.Data()),"recreate");
     hProjYeff ->Write();
     hProjXeff ->Write();
     hProjYeffRebin ->Write();
@@ -358,12 +468,10 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
     Matrix->Write();
 
     fRawRebin->SetTitle("");
-//    fUnfoldedBayes[regBayes-1]->SetLineColor(kRed+1);
-//    fUnfoldedBayes[regBayes-1]->SetMarkerColor(kRed+1);
     fRawRebin ->Write();
     fUnfoldedBayes[regBayes-1]->Write();
     folded[regBayes-1]->Write();
-		hUnfolded_Unc->Write();
+	hUnfolded_Unc->Write();
 
     outSpectra->Close();
 
@@ -373,55 +481,55 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
  /* ==================
 	* Scale with the bin width
 	================== */
-		 fRawRebin->Scale(1,"width");
-		 for(Int_t ivar=0; ivar<NTrials; ivar++){ fUnfoldedBayes[ivar]->Scale(1,"width"); }
-		 folded[regBayes-1]->Scale(1,"width");
-		 fUnfoldedBayes[regBayes-1]->SetTitle("");
+	fRawRebin->Scale(1,"width");
+	for(Int_t ivar=0; ivar<NTrials; ivar++){ fUnfoldedBayes[ivar]->Scale(1,"width"); }
+	folded[regBayes-1]->Scale(1,"width");
+	fUnfoldedBayes[regBayes-1]->SetTitle("");
 
-		 TPaveText *pvEn= new TPaveText(0.2,0.80,0.8,0.85,"brNDC");
-		 pvEn->SetFillStyle(0);
-		 pvEn->SetBorderSize(0);
-		 pvEn->SetTextFont(42);
-		 pvEn->SetTextSize(0.045);
-		 pvEn->SetTextAlign(11);
-		 pvEn->AddText(Form("%s",fSystemS.Data()));
+	TPaveText *pvEn= new TPaveText(0.2,0.80,0.8,0.85,"brNDC");
+	pvEn->SetFillStyle(0);
+	pvEn->SetBorderSize(0);
+	pvEn->SetTextFont(42);
+	pvEn->SetTextSize(0.045);
+	pvEn->SetTextAlign(11);
+	pvEn->AddText(Form("%s",fSystemS.Data()));
 
-		 double shift = 0.052;
-		 TPaveText *pvJet = new TPaveText(0.52,0.65-shift,0.9,0.7-shift,"brNDC");
-		 pvJet->SetFillStyle(0);
-		 pvJet->SetBorderSize(0);
-		 pvJet->SetTextFont(42);
-		 pvJet->SetTextSize(0.04);
-		 pvJet->SetTextAlign(11);
-		 pvJet->AddText(Form("Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.%d",Rpar));
+	double shift = 0.052;
+	TPaveText *pvJet = new TPaveText(0.52,0.65-shift,0.9,0.7-shift,"brNDC");
+	pvJet->SetFillStyle(0);
+	pvJet->SetBorderSize(0);
+	pvJet->SetTextFont(42);
+	pvJet->SetTextSize(0.04);
+	pvJet->SetTextAlign(11);
+	pvJet->AddText(Form("Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.%d",Rpar));
 
-		 shift+=0.07;
-		 TPaveText *pvD = new TPaveText(0.52,0.65-shift,0.9,0.7-shift,"brNDC");
-		 pvD->SetFillStyle(0);
-		 pvD->SetBorderSize(0);
-		 pvD->SetTextFont(42);
-		 pvD->SetTextSize(0.04);
-		 pvD->SetTextAlign(11);
-		 if(fDmesonSpecie) pvD->AddText("with D^{*+} #rightarrow D^{0}#pi^{+} and charge conj.");
-		 else pvD->AddText("with D^{0} #rightarrow K^{-}#pi^{+} and charge conj.");
+	shift+=0.07;
+	TPaveText *pvD = new TPaveText(0.52,0.65-shift,0.9,0.7-shift,"brNDC");
+	pvD->SetFillStyle(0);
+	pvD->SetBorderSize(0);
+	pvD->SetTextFont(42);
+	pvD->SetTextSize(0.04);
+	pvD->SetTextAlign(11);
+	if(fDmesonSpecie) pvD->AddText("with D^{*+} #rightarrow D^{0}#pi^{+} and charge conj.");
+	else pvD->AddText("with D^{0} #rightarrow K^{-}#pi^{+} and charge conj.");
 
-		 shift+=0.07;
-		 TPaveText *pvEta = new TPaveText(0.52,0.65-shift,0.9,0.7-shift,"brNDC");
-		 pvEta->SetFillStyle(0);
-		 pvEta->SetBorderSize(0);
-		 pvEta->SetTextFont(42);
-		 pvEta->SetTextSize(0.04);
-		 pvEta->SetTextAlign(11);
-		 pvEta->AddText(Form("|#it{#eta}_{jet}| < 0.%d",9-Rpar));
+	shift+=0.07;
+	TPaveText *pvEta = new TPaveText(0.52,0.65-shift,0.9,0.7-shift,"brNDC");
+	pvEta->SetFillStyle(0);
+	pvEta->SetBorderSize(0);
+	pvEta->SetTextFont(42);
+	pvEta->SetTextSize(0.04);
+	pvEta->SetTextAlign(11);
+	pvEta->AddText(Form("|#it{#eta}_{jet}| < 0.%d",9-Rpar));
 
-		 shift+=0.07;
-		 TPaveText *pv3 = new TPaveText(0.52,0.65-shift,0.9,0.7-shift,"brNDC");
-		 pv3->SetFillStyle(0);
-		 pv3->SetBorderSize(0);
-		 pv3->SetTextFont(42);
-		 pv3->SetTextSize(0.04);
-		 pv3->SetTextAlign(11);
-		 pv3->AddText(Form("%d < p_{T,%s} < %d GeV/#it{c}",(Int_t)fptbinsDA[0],fDmesonS.Data(),(Int_t)fptbinsDA[fptbinsDN]));
+	shift+=0.07;
+	TPaveText *pv3 = new TPaveText(0.52,0.65-shift,0.9,0.7-shift,"brNDC");
+	pv3->SetFillStyle(0);
+	pv3->SetBorderSize(0);
+	pv3->SetTextFont(42);
+	pv3->SetTextSize(0.04);
+	pv3->SetTextAlign(11);
+	pv3->AddText(Form("%d < p_{T,%s} < %d GeV/#it{c}",(Int_t)fptbinsDA[0],fDmesonS.Data(),(Int_t)fptbinsDA[fptbinsDN]));
 
     TCanvas* cSpectra = new TCanvas("cSpectra","cSpectra",800,600);
     cSpectra->SetLogy();
@@ -429,47 +537,46 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
     fUnfoldedBayes[regBayes-1]->Draw();
     folded[regBayes-1]->Draw("same");
     fRawRebin ->Draw("same");
-		pv3->Draw("same");
-		pvEn->Draw("same");
-		pvD->Draw("same");
-		pvJet->Draw("same");
-		pvEta->Draw("same");
+	pv3->Draw("same");
+	pvEn->Draw("same");
+	pvD->Draw("same");
+	pvJet->Draw("same");
+	pvEta->Draw("same");
 
     TLegend* ls = new TLegend(0.55,0.67,0.88,0.87);
     ls->SetBorderSize(0);
     ls->AddEntry(fRawRebin,"Measured","p");
     //ls->AddEntry(fUnfoldedBayes[regBayes-1], Form("Unfolded, Bayes reg=%d",regBayes,"p"));
-    ls->AddEntry(fUnfoldedBayes[regBayes-1], Form("Unfolded, Bayes reg=%d",regBayes));
+    ls->AddEntry(fUnfoldedBayes[regBayes-1], Form("Unfolded, %s reg=%d",doSvd?"SVD":"Bayes",regBayes));
     ls->AddEntry(folded[regBayes-1],"Refolded","l");
     ls->Draw("same");
 
-    cSpectra->SaveAs(Form("%s/plots/%s_UnfSpectrum.pdf",outDir.Data(),outName.Data()));
-		cSpectra->SaveAs(Form("%s/plots/%s_UnfSpectrum.png",outDir.Data(),outName.Data()));
+    cSpectra->SaveAs(Form("%s/plots/%s_UnfSpectrum%s.pdf",outDir.Data(),outName.Data(),doSvd?"SVD":"Bayes"));
+	cSpectra->SaveAs(Form("%s/plots/%s_UnfSpectrum%s.png",outDir.Data(),outName.Data(),doSvd?"SVD":"Bayes"));
 
-		pv3 = new TPaveText(0.2,0.65,0.6,0.75,"brNDC");
-		pv3->SetFillStyle(0);
-		pv3->SetBorderSize(0);
-		pv3->SetTextFont(42);
-		pv3->SetTextSize(0.04);
-		pv3->SetTextAlign(11);
-		pv3->AddText(Form("%d < p_{T,%s} < %d GeV/#it{c}",(Int_t)fptbinsDA[0],fDmesonS.Data(),(Int_t)fptbinsDA[fptbinsDN]));
+	pv3 = new TPaveText(0.2,0.65,0.6,0.75,"brNDC");
+	pv3->SetFillStyle(0);
+	pv3->SetBorderSize(0);
+	pv3->SetTextFont(42);
+	pv3->SetTextSize(0.04);
+	pv3->SetTextAlign(11);
+	pv3->AddText(Form("%d < p_{T,%s} < %d GeV/#it{c}",(Int_t)fptbinsDA[0],fDmesonS.Data(),(Int_t)fptbinsDA[fptbinsDN]));
 
-		TCanvas *cSpectrumRebinUnc = new TCanvas("cSpectrumRebinUnc","cSpectrumRebinUnc",800,500);
+	TCanvas *cSpectrumRebinUnc = new TCanvas("cSpectrumRebinUnc","cSpectrumRebinUnc",800,500);
+    hUnfolded_Unc->GetYaxis()->SetRangeUser(0,0.5);
     hUnfolded_Unc->Draw();
-		pvEn->Draw("same");
+	pvEn->Draw("same");
     pv3->Draw("same");
 
-		cSpectrumRebinUnc->SaveAs(Form("%s/plots/%s_UnfSpectrum_unc.pdf",outDir.Data(),outName.Data()));
-		cSpectrumRebinUnc->SaveAs(Form("%s/plots/%s_UnfSpectrum_unc.png",outDir.Data(),outName.Data()));
+	cSpectrumRebinUnc->SaveAs(Form("%s/plots/%s_UnfSpectrum_unc%s.pdf",outDir.Data(),outName.Data(),doSvd ? "SVD" : "Bayes"));
+	cSpectrumRebinUnc->SaveAs(Form("%s/plots/%s_UnfSpectrum_unc%s.png",outDir.Data(),outName.Data(),doSvd ? "SVD" : "Bayes"));
 
     TH1F* hratio = (TH1F*)fUnfoldedBayes[regBayes-1]->Rebin(fptbinsJetTrueN,"hratio",fptbinsJetTrueA);
     TH1D* fRawRebinClone;
     if (fptbinsJetTrueN != fptbinsJetMeasN){
         fRawRebinClone = new TH1D("fRawRebinClone","Measured hist, True rebinned",fptbinsJetTrueN,fptbinsJetTrueA);
-	int istart = 0;
-	while (fptbinsJetTrueA[0] != fptbinsJetMeasA[istart]){
-	    istart++;
-	}
+        int istart = 0;
+        while (fptbinsJetTrueA[0] != fptbinsJetMeasA[istart]){istart++;}
         for(int j=0; j<=fRawRebinClone->GetNbinsX()+1;j++){
             double cont = fRawRebin->GetBinContent(j+istart);
             double err = fRawRebin->GetBinError(j+istart);
@@ -477,19 +584,19 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
             fRawRebinClone->SetBinError(j, err);
         }
     }
-    else    fRawRebinClone = (TH1D*)fRawRebin->Clone("fRawRebinClone");
-//    TH1D* fRawRebinClone = (TH1D*)hBaseMeasure->Clone("fRawRebinClone");
+    else fRawRebinClone = (TH1D*)fRawRebin->Clone("fRawRebinClone");
     hratio->Divide(fRawRebinClone);
     hratio->SetLineColor(kMagenta+1);
     hratio->SetMarkerColor(kMagenta+1);
 
-  TCanvas* cr= new TCanvas("cr","cr",800,600);
+    TCanvas* cr= new TCanvas("cr","cr",800,600);
+	hratio->GetYaxis()->SetRangeUser(0.85,1.15);
 	hratio->GetYaxis()->SetTitle(Form("dN/dp_{T} Unfolded(Reg=%d)/Measured",regBayes));
 	hratio->SetTitle(Form("Unfolded(Reg=%d)/Measured",regBayes));
 	hratio->Draw("hist");
 	line->Draw("same");
-	cr->SaveAs(Form("%s/plots/%s_UnfMeasRatio.pdf",outDir.Data(),outName.Data()));
-  cr->SaveAs(Form("%s/plots/%s_UnfMeasRatio.png",outDir.Data(),outName.Data()));
+	cr->SaveAs(Form("%s/plots/%s_UnfMeasRatio%s.pdf",outDir.Data(),outName.Data(),doSvd?"SVD":"Bayes"));
+    cr->SaveAs(Form("%s/plots/%s_UnfMeasRatio%s.png",outDir.Data(),outName.Data(),doSvd?"SVD":"Bayes"));
 
     hProjXeff->GetXaxis()->SetRangeUser(plotmin,plotmax);
     hProjYeff->GetXaxis()->SetRangeUser(plotmin,plotmax);
@@ -497,13 +604,13 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
     TCanvas* cProjMatrix= new TCanvas("cProjMatrix","cProjMatrix",800,600);
     cProjMatrix->SetLogz();
     fMatrixProd->Draw("colz");
-		cProjMatrix->SaveAs(Form("%s/plots/%s_MatrixProd.pdf",outDir.Data(),outName.Data()));
+	cProjMatrix->SaveAs(Form("%s/plots/%s_MatrixProd.pdf",outDir.Data(),outName.Data()));
     cProjMatrix->SaveAs(Form("%s/plots/%s_MatrixProd.png",outDir.Data(),outName.Data()));
 
     TCanvas* cMatrix= new TCanvas("cMatrix","cMatrix",800,600);
     cMatrix->SetLogz();
     Matrix->Draw("colz");
-		cMatrix->SaveAs(Form("%s/plots/%s_Matrix.pdf",outDir.Data(),outName.Data()));
+	cMatrix->SaveAs(Form("%s/plots/%s_Matrix.pdf",outDir.Data(),outName.Data()));
     cMatrix->SaveAs(Form("%s/plots/%s_Matrix.png",outDir.Data(),outName.Data()));
 
     TCanvas* cProjMReb= new TCanvas("cProjMReb","cProjMReb",800,600);
@@ -517,27 +624,28 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
     hProjXeffRebin->Draw("same");
 
     cProjMReb->SaveAs(Form("%s/plots/%s_MatrixProdProjReb.pdf",outDir.Data(),outName.Data()));
-		cProjMReb->SaveAs(Form("%s/plots/%s_MatrixProdProjReb.png",outDir.Data(),outName.Data()));
+	cProjMReb->SaveAs(Form("%s/plots/%s_MatrixProdProjReb.png",outDir.Data(),outName.Data()));
 
-		if(fSystem) MtxPlots(outDir,outName);
+	if(fSystem) MtxPlots(outDir,outName,doSvd);
 }
 
 
+// ============================== usable functions
 int LoadDetectorMatrix(TString fn, TString mxname, TString tsname, TString msname, bool norm = 1, TString spostfix="") {
 	TFile *f  = TFile::Open(fn);
 	if (!f) { Error("LoadDetectorMatrix","Detector matrix file %s not found.",fn.Data()); return 0; }
 
     if(norm){
-	if (mxname == "") mxname = "Detectormatrix";
-        //fMatrixPP = (TH2D*)f->Get(mxname);
-        TH2D *matrix = (TH2D*)f->Get(mxname);
-        //if (!fMatrixPP) {
-        if (!matrix) {
-            Error("LoadDetectorMatrix","Detector matrix %s could not be gotten from file.",mxname.Data());
-            return 0;
+	    if (mxname == "") mxname = "Detectormatrix";
+            //fMatrixPP = (TH2D*)f->Get(mxname);
+            TH2D *matrix = (TH2D*)f->Get(mxname);
+            //if (!fMatrixPP) {
+            if (!matrix) {
+                Error("LoadDetectorMatrix","Detector matrix %s could not be gotten from file.",mxname.Data());
+                return 0;
+            }
+            fMatrixPP = NormMatrixY(mxname,matrix);
         }
-        fMatrixPP = NormMatrixY(mxname,matrix);
-    }
     else {
         fMatrixPP = (TH2D*)f->Get(mxname);
         if (!fMatrixPP) {
@@ -549,12 +657,10 @@ int LoadDetectorMatrix(TString fn, TString mxname, TString tsname, TString msnam
 
     for(int i=0; i<=fMatrixPP->GetNbinsX()+1;i++){
         for(int j=0; j<=fMatrixPP->GetNbinsY()+1;j++){
-
             double cont = fMatrixPP->GetBinContent(i,j);
             if(i==0 && j==0)fMatrixPP->SetBinContent(i,j,0);
             else if(i==fMatrixPP->GetNbinsX()+1 && j==fMatrixPP->GetNbinsY()+1)fMatrixPP->SetBinContent(i,j,0);
             else fMatrixPP->SetBinContent(i,j,cont);
-
         }
     }
 
@@ -619,7 +725,6 @@ int LoadRawSpectrum(TString fn, TString sname, int rebin = 0, TString spostfix="
 
 	if (sname == "") sname = "hReco";
 	sname += spostfix;
-
 
 	TH1D *spectrum = (TH1D*)f->Get(sname);
 	if (!spectrum) {
@@ -717,7 +822,7 @@ TH2D * ProductMatrix(TH2D * MtxA, TH2D * MtxB) {
 
 
 /// Plot probability matrices
-int MtxPlots(TString outDir, TString outName) {
+int MtxPlots(TString outDir, TString outName,bool doSvd) {
 
 	TString tag = "tag";
 	if (!fMatrixPP) { Error("MtxPlots","No unfolding matrix present."); return 1;}//kErr; }
@@ -765,8 +870,8 @@ int MtxPlots(TString outDir, TString outName) {
 		hMtxPro->Draw("colz");
 	}
 
-	cMtx->SaveAs(Form("%s/plots/%s_probMtx.pdf",outDir.Data(),outName.Data()));
-	cMtx->SaveAs(Form("%s/plots/%s_probMtx.png",outDir.Data(),outName.Data()));
+	cMtx->SaveAs(Form("%s/plots/%s_probMtx%s.pdf",outDir.Data(),outName.Data(),doSvd?"SVD":"Bayes"));
+	cMtx->SaveAs(Form("%s/plots/%s_probMtx%s.png",outDir.Data(),outName.Data(),doSvd?"SVD":"Bayes"));
 
 	TCanvas *cSlices=new TCanvas("ProbSlice", "Probability slices",1000,1000);
 	cSlices->Divide(3,2);
@@ -776,8 +881,8 @@ int MtxPlots(TString outDir, TString outName) {
 	plotSlice(cSlices->cd(4), hMtxPP,hMtxDpt,hMtxRe,hMtxPro,20,25);
 	plotSlice(cSlices->cd(5), hMtxPP,hMtxDpt,hMtxRe,hMtxPro,25,30);
 
-	cSlices->SaveAs(Form("%s/plots/%s_probSlices.pdf",outDir.Data(),outName.Data()));
-	cSlices->SaveAs(Form("%s/plots/%s_probSlices.png",outDir.Data(),outName.Data()));
+	cSlices->SaveAs(Form("%s/plots/%s_probSlices%s.pdf",outDir.Data(),outName.Data(),doSvd?"SVD":"Bayes"));
+	cSlices->SaveAs(Form("%s/plots/%s_probSlices%s.png",outDir.Data(),outName.Data(),doSvd?"SVD":"Bayes"));
 
 
 	return 0;
@@ -1044,4 +1149,42 @@ TH2D * getPearsonCoeffs(const TMatrixD &covMatrix) {
 	}
 
 	return PearsonCoeffs;
+}
+
+/// closure stuff. duplicate of LoadDetectorMatrix
+int LoadDetectorMatrixClosure(TString fn, TString mxname, TString tsname, TString msname) {
+	TFile *f  = TFile::Open(fn);
+	if (!f) { Error("LoadDetectorMatrix","Detector matrix file %s not found.",fn.Data()); return 0; }
+
+    fMatrixPPClos = (TH2D*)f->Get(mxname);
+    if (!fMatrixPPClos) {
+        Error("LoadDetectorMatrixClosure","ClosureDetector matrix %s could not be gotten from file.",mxname.Data());
+        return 0;
+    }
+
+    for(int i=0; i<=fMatrixPPClos->GetNbinsX()+1;i++){
+        for(int j=0; j<=fMatrixPPClos->GetNbinsY()+1;j++){
+            double cont = fMatrixPPClos->GetBinContent(i,j);
+            if(i==0 && j==0)fMatrixPPClos->SetBinContent(i,j,0);
+            else if(i==fMatrixPPClos->GetNbinsX()+1 && j==fMatrixPPClos->GetNbinsY()+1)fMatrixPPClos->SetBinContent(i,j,0);
+            else fMatrixPPClos->SetBinContent(i,j,cont);
+        }
+    }
+
+	fTrueSpectrumClos = (TH1D*) f->Get(tsname);
+	if (!fTrueSpectrumClos) {
+		Error("LoadDetectorMatrixCloures","ClosureTrue spectrum %s could not be gotten from file.",tsname.Data());
+		return 0;
+	}
+
+	fMeasSpectrumClos = (TH1D*) f->Get(msname);
+    if (!fMeasSpectrumClos) {
+		Error("LoadDetectorMatrixClosure","ClosureTrue spectrum %s could not be gotten from file.",msname.Data());
+		return 0;
+	}
+
+	Info("LoadDetectorMatrixClosure", "mtx=%s, ts=%s, ms=%s loaded.",
+		mxname.Data(), tsname.Data(), msname.Data());
+
+	return 1;
 }
