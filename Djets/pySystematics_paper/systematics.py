@@ -1,24 +1,23 @@
-import os, os.path, sys
+import sys
 import matplotlib as mpl
 mpl.use('Agg')
 import matplotlib.pyplot as plt
-import ROOT as ROOT
-import numpy as np
-import scipy as sp
+import ROOT
 import array
+import numpy
 from scipy.optimize import curve_fit
 
 from matplotlib import colors as mcolors
 ##----------------------------------------------------------------
-from ROOT import TCanvas, TLegend, TLine, TPad, TLatex, TF1
-##----------------------------------------------------------------
-from funcsettings import * # HistoMarkers#from stylesettings import * # HistoMarkers
+#from funcsettings import * # HistoMarkers#from stylesettings import * # HistoMarkers
+from funcsettings import funcLine, HistoStyle, rootRMS, GetDigitText # HistoMarkers#from stylesettings import * # HistoMarkers
 #--------------------------------------------------
 if len(sys.argv)==1:
     print("   === Usage example: python file.py R ")
     print("   === e.g.: python file.py 02")
     print("   === OR ===   ")
     print("   === Usage example: python file.py R jetbin")
+    print("   === R=02,03,04,06. jetbin=0,1,2,3,4")
     print("   === e.g.: python file.py 02 1")
     exit()
 wait=1
@@ -48,17 +47,17 @@ fptbinsJhi = fptbinsJlh[1:]
 ##--------------------------------------------------
 Rtitle=R #for accessing the directories
 ROOTColors = [ROOT.kRed+2, ROOT.kGreen+2, ROOT.kBlue+2, ROOT.kOrange+2, ROOT.kViolet+2, ROOT.kYellow+2, ROOT.kCyan-6, ROOT.kAzure+2, ROOT.kMagenta-6,ROOT.kGreen-8,ROOT.kYellow-8]
-datafileFinal = ROOT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/unfolding_Bayes_5/finalSpectra/JetPtSpectrum_final.root"%(R))
-datafileFD = ROOT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/FDsubtraction/JetPtSpectrum_FDsub.root"%(R))
+datafileFinal = ROOT.TFile("$cernbox/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/unfolding_Bayes_5/finalSpectra/JetPtSpectrum_final.root"%(R))
+datafileFD = ROOT.TFile("$cernbox/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/FDsubtraction/JetPtSpectrum_FDsub.root"%(R))
 #datafileJES = ROOT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/FinalSys/JESsysFinal_DzeroR%s_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"%(R))
 
-datafileUnf = ROOT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"%(R))
+datafileUnf = ROOT.TFile("$cernbox/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"%(R))
 if(lensysin>2):
-    datafileUnf= ROOT.TFile("/media/jackbauer/data/z_out/R_"+R+"_finaltry/unfolding/Bayes/alljetz2D/unfold2DoutFileRegBayesSys5.root","read")
+    datafileUnf= ROOT.TFile("$cernbox/media/jackbauer/data/z_out/R_"+R+"_finaltry/unfolding/Bayes/alljetz2D/unfold2DoutFileRegBayesSys5.root","read")
 
-datafileJES = ROOT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/JES/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"%(R))
+datafileJES = ROOT.TFile("$cernbox/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/JES/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"%(R))
 if(lensysin>2):
-    datafileJES = ROOT.TFile("/media/jackbauer/data/z_out/R_"+R+"_finaltry/JES/unfolding/Bayes/alljetz2D/unfold2DoutFileRegBayesSys5.root","read")
+    datafileJES = ROOT.TFile("$cernbox/media/jackbauer/data/z_out/R_"+R+"_finaltry/JES/unfolding/Bayes/alljetz2D/unfold2DoutFileRegBayesSys5.root","read")
 
 
 #######
@@ -93,9 +92,9 @@ else:
     JET_or_Z_title='#it{p}_{T,ch.jet}'
 ############## -----------------------------
 if(lensysin>2):
-    string_SYSTEMATICS_MULTI='/media/jackbauer/data/z_out/R_'+R+'_finaltry/RawSys_Multi/signalExtraction/plots/Z0to102_jetbin_'+whichJetInZBins[whichJetInZ]
+    string_SYSTEMATICS_MULTI='$cernbox/media/jackbauer/data/z_out/R_'+R+'_finaltry/RawSys_Multi/signalExtraction/plots/Z0to102_jetbin_'+whichJetInZBins[whichJetInZ]
 else:
-    string_SYSTEMATICS_MULTI='/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/FinalSys/RawSysFinal_DzeroR'+R+'_paperCuts/Default/signalExtraction_multitrial'
+    string_SYSTEMATICS_MULTI='$cernbox/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/FinalSys/RawSysFinal_DzeroR'+R+'_paperCuts/Default/signalExtraction_multitrial'
 #histos:
 # 0. Multi trial
 ## raw systematics files
@@ -121,10 +120,10 @@ if(flagMulti):
         except:
             pass
     #### -----------------------------
-    c_MultiRaw = TCanvas("cMultiRaw","cMultiRaw",900,600)
+    c_MultiRaw = ROOT.TCanvas("cMultiRaw","cMultiRaw",900,600)
     c_MultiRaw.Divide(4,3)
-    if(lensysin>2): c_MultiRaw = TCanvas("cMultiRaw","cMultiRaw",900,450);c_MultiRaw.Divide(3,2)
-    lMulti1 = TLegend(0.12,0.60,0.38,0.88);
+    if(lensysin>2): c_MultiRaw = ROOT.TCanvas("cMultiRaw","cMultiRaw",900,450);c_MultiRaw.Divide(3,2)
+    lMulti1 = ROOT.TLegend(0.12,0.60,0.38,0.88);
     hhMultiRaw=[]
     colorindex=30
     #for i in range(sizeMulti):
@@ -149,9 +148,9 @@ if(flagMulti):
     c_MultiRaw.SaveAs('plots/'+JET_or_Z+'/0_Multi/0_Multi_'+R+whichjetbin+'_sysRaw'+'.pdf')
     c_MultiRaw.SaveAs('plots/'+JET_or_Z+'/0_Multi/0_Multi_'+R+whichjetbin+'_sysRaw'+'.svg')
     #### -----------------------------Distribution of yields
-    c_MultiYieldDist = TCanvas("cMultiYieldDist","cMultiYieldDist",900,600)
+    c_MultiYieldDist = ROOT.TCanvas("cMultiYieldDist","cMultiYieldDist",900,600)
     c_MultiYieldDist.Divide(4,3)
-    if(lensysin>2): c_MultiYieldDist = TCanvas("cMultiYieldDist","cMultiYieldDist",1000,600); c_MultiYieldDist.Divide(3,2)
+    if(lensysin>2): c_MultiYieldDist = ROOT.TCanvas("cMultiYieldDist","cMultiYieldDist",1000,600); c_MultiYieldDist.Divide(3,2)
     hTrialsDist=[]
     for i in range(fptbinsJN):
         c_MultiYieldDist.cd(i+1)
@@ -165,9 +164,9 @@ if(flagMulti):
     c_MultiYieldDist.SaveAs('plots/'+JET_or_Z+'/0_Multi/0_Multi_'+R+whichjetbin+'_yieldDist'+'.pdf')
     c_MultiYieldDist.SaveAs('plots/'+JET_or_Z+'/0_Multi/0_Multi_'+R+whichjetbin+'_yieldDist'+'.svg')
     #### -----------------------------
-    c_MultiYieldTrialsJetpt = TCanvas("cMultiYieldTrials","cMultiYieldTrials",900,600)
+    c_MultiYieldTrialsJetpt = ROOT.TCanvas("cMultiYieldTrials","cMultiYieldTrials",900,600)
     c_MultiYieldTrialsJetpt.Divide(4,3)
-    if(lensysin>2): c_MultiYieldTrialsJetpt = TCanvas("cMultiYieldTrials","cMultiYieldTrials",1000,600); c_MultiYieldTrialsJetpt.Divide(3,2)
+    if(lensysin>2): c_MultiYieldTrialsJetpt = ROOT.TCanvas("cMultiYieldTrials","cMultiYieldTrials",1000,600); c_MultiYieldTrialsJetpt.Divide(3,2)
     hTrialsPerPt = []
 
     meanYPT,line_YPT=[],[]
@@ -227,8 +226,8 @@ if(flagMulti):
     c_MultiYieldTrialsJetpt.SaveAs('plots/'+JET_or_Z+'/0_Multi/0_Multi_'+R+whichjetbin+'_YieldTrials'+'.pdf')
     c_MultiYieldTrialsJetpt.SaveAs('plots/'+JET_or_Z+'/0_Multi/0_Multi_'+R+whichjetbin+'_YieldTrials'+'.svg')
     #### -----------------------------
-    c_MultiRatio = TCanvas("cMultiRatio","cMultiRatio",900,600)
-    lMulti3 = TLegend(0.12,0.60,0.38,0.88);
+    c_MultiRatio = ROOT.TCanvas("cMultiRatio","cMultiRatio",900,600)
+    lMulti3 = ROOT.TLegend(0.12,0.60,0.38,0.88);
     hhMultiratio=[]
     for i in range(len(datafileMulti)):
         try:
@@ -244,8 +243,8 @@ if(flagMulti):
     c_MultiRatio.SaveAs('plots/'+JET_or_Z+'/0_Multi/0_Multi_'+R+whichjetbin+'_sysRatio'+'.pdf')
     c_MultiRatio.SaveAs('plots/'+JET_or_Z+'/0_Multi/0_Multi_'+R+whichjetbin+'_sysRatio'+'.svg')
     #### -----------------------------RMS
-    c_MultiRMS = TCanvas("cMultiRMS","cMultiRMS",900,600)
-    lMulti4 = TLegend(0.12,0.60,0.38,0.88);
+    c_MultiRMS = ROOT.TCanvas("cMultiRMS","cMultiRMS",900,600)
+    lMulti4 = ROOT.TLegend(0.12,0.60,0.38,0.88);
     histMultiRMS = rootRMS_mt(hhMultiratio,sigUp,sigDo);
     histMultiRMS.SetLineColor(ROOT.kRed+2);histMultiRMS.SetFillColor(ROOT.kRed+2);histMultiRMS.SetFillStyle(3354);
     histMultiRMS.GetYaxis().SetRangeUser(0,0.25);histMultiRMS.GetYaxis().SetTitle("RMS");
@@ -270,15 +269,15 @@ if(flagClos):
     dataClosure=[]
     hhClosure=[]
     #### -----------------------------
-    c_close = TCanvas("cClose","cClose",900,600)
-    lClose = TLegend(0.12,0.80,0.38,0.88);
+    c_close = ROOT.TCanvas("cClose","cClose",900,600)
+    lClose = ROOT.TLegend(0.12,0.80,0.38,0.88);
     #### -----------------------------
     for i in range(size_closure):
         if(lensysin>2):
-            dataClosure.append(ROOT.TFile("/media/jackbauer/data/z_out/R_"+R+"_finaltry/unfolding/Bayes/alljetz2D/MCClosure_"+str(i)+".root","read"))
+            dataClosure.append(ROOT.TFile("$cernbox/media/jackbauer/data/z_out/R_"+R+"_finaltry/unfolding/Bayes/alljetz2D/MCClosure_"+str(i)+".root","read"))
             hhClosure.append(dataClosure[i].Get('unfByTruth'+str(int(jetbin)+1)).Clone('hRawVTrue'+str(i)))
         else:
-            dataClosure.append(ROOT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/unfolding_Bayes_5/plots/Closure/unfoldedSpectrum_closure%d.root"%(R,i),"read"))
+            dataClosure.append(ROOT.TFile("$cernbox/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/unfolding_Bayes_5/plots/Closure/unfoldedSpectrum_closure%d.root"%(R,i),"read"))
             hhClosure.append(dataClosure[i].Get('hRawVTrue').Clone('hRawVTrue'+str(i)))
         hhClosure[i].GetYaxis().SetTitle("ratio")
         hhClosure[i].GetYaxis().SetRangeUser(0,2)
@@ -287,8 +286,8 @@ if(flagClos):
     c_close.SaveAs('plots/'+JET_or_Z+'9_Closure/9_Close'+R+whichjetbin+'.pdf')
     c_close.SaveAs('plots/'+JET_or_Z+'9_Closure/9_Close'+R+whichjetbin+'.png')
     #### -----------------------------RMS
-    c_CloRMS = TCanvas("cCloRMS","cCloRMS",900,600)
-    lCloRMS = TLegend(0.12,0.80,0.38,0.88);
+    c_CloRMS = ROOT.TCanvas("cCloRMS","cCloRMS",900,600)
+    lCloRMS = ROOT.TLegend(0.12,0.80,0.38,0.88);
     #skip = 0;histCloRMS = ratioRMS(hhClosure[:skip]+hhClosure[skip+1:])
     histCloRMS = ratioRMS(hhClosure)
     histCloRMS.GetYaxis().SetRangeUser(0,0.5);histCloRMS.SetLineColor(ROOT.kGreen+2);
@@ -300,8 +299,8 @@ if(flagClos):
     c_CloRMS.SaveAs('plots/'+JET_or_Z+'9_Closure/9_CloRMS'+R+whichjetbin+'.pdf')
     c_CloRMS.SaveAs('plots/'+JET_or_Z+'9_Closure/9_CloRMS'+R+whichjetbin+'.png')
     #### -----------------------------Mean
-    c_CloMean = TCanvas("cCloMean","cCloMean",900,600)
-    lCloMean = TLegend(0.12,0.80,0.38,0.88);
+    c_CloMean = ROOT.TCanvas("cCloMean","cCloMean",900,600)
+    lCloMean = ROOT.TLegend(0.12,0.80,0.38,0.88);
     histCloMean = ratioMEAN(hhClosure)
     histCloMean.GetYaxis().SetRangeUser(0,0.5);histCloMean.SetLineColor(ROOT.kGreen+2);
     histCloMean.SetFillColor(ROOT.kGreen+2);histCloMean.SetFillStyle(3654)
@@ -317,11 +316,11 @@ if(flagClos):
 ############## -----------------------------
 ############## -----------------------------
 if(lensysin>2):
-    string_SYSTEMATICS_REF="/media/jackbauer/data/z_out/R_"+R+"_finaltry/signalExtraction/plots/Z0to102_jetbin_"+whichJetInZBins[whichJetInZ]
+    string_SYSTEMATICS_REF="$cernbox/media/jackbauer/data/z_out/R_"+R+"_finaltry/signalExtraction/plots/Z0to102_jetbin_"+whichJetInZBins[whichJetInZ]
     datafileSig = ROOT.TFile(string_SYSTEMATICS_REF+"/JetPtSpectra_SB_eff.root","read")
 else:
-    string_SYSTEMATICS_REF="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/FinalSys/RawSysFinal_DzeroR"+R+"_paperCuts/Default/signalExtraction_refsys"
-    datafileSig = ROOT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/signalExtraction/JetPtSpectra_SB_eff.root"%(R))
+    string_SYSTEMATICS_REF="$cernbox/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/FinalSys/RawSysFinal_DzeroR"+R+"_paperCuts/Default/signalExtraction_refsys"
+    datafileSig = ROOT.TFile("$cernbox/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/signalExtraction/JetPtSpectra_SB_eff.root"%(R))
 #histos:
 # 1. Reflection
 ## 
@@ -332,7 +331,7 @@ if(flagRef):
     hRf0 = datafileRf0.Get('hjetptspectrumRebScaled').Clone('hRf0')
     hRf1 = datafileRf1.Get('hjetptspectrumRebScaled').Clone('hRf1')
     #### -----------------------------
-    c_Ref = TCanvas("cRef","cRef",900,600)
+    c_Ref = ROOT.TCanvas("cRef","cRef",900,600)
     leg_Ref = ROOT.TLegend(0.7,0.7,0.88,0.88)
     hRf0ratio=hRf0.Clone('hRf0ratio');hRf0ratio.Divide(hRdf);HistoStyle(hRf0ratio,1,2,21,0,ROOT.kRed+2);
     hRf1ratio=hRf1.Clone('hRf1ratio');hRf1ratio.Divide(hRdf);HistoStyle(hRf1ratio,1,2,21,0,ROOT.kGreen+2);
@@ -352,10 +351,10 @@ if(flagRef):
     if(wait):input()
 ############## -----------------------------
 if(lensysin>2):
-    string_SYSTEMATICS_SIGSB='/media/jackbauer/data/z_out/R_'+R+'_finaltry/RawSys_SBSig/signalExtraction/plots/Z0to102_jetbin_'+whichJetInZBins[whichJetInZ]
+    string_SYSTEMATICS_SIGSB='$cernbox/media/jackbauer/data/z_out/R_'+R+'_finaltry/RawSys_SBSig/signalExtraction/plots/Z0to102_jetbin_'+whichJetInZBins[whichJetInZ]
 else:
     #string_SYSTEMATICS_SIGSB="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/FinalSys/RawSysFinal_DzeroR"+R+"_paperCuts/Default/signalExtraction_SigSBranges/"
-    string_SYSTEMATICS_SIGSB="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR"+R+"_paperCuts/RawSys_SBSig/Default/signalExtraction/"
+    string_SYSTEMATICS_SIGSB="$cernbox/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR"+R+"_paperCuts/RawSys_SBSig/Default/signalExtraction/"
 #histos:
 # 2. Signal and SB ranges
 ## raw systematics files
@@ -386,8 +385,8 @@ if(flagSigSB):
             hSigSB.append( datafileSigSB[i].Get('hjetptspectrumRebScaled').Clone('hSigSB_'+str(i)) )
         except: pass
     #### -----------------------------
-    c_SigSB = TCanvas("cSigSB","cSigSB",900,600)
-    lSigSB1 = TLegend(0.12,0.50,0.38,0.88);
+    c_SigSB = ROOT.TCanvas("cSigSB","cSigSB",900,600)
+    lSigSB1 = ROOT.TLegend(0.12,0.50,0.38,0.88);
     hhSigSBratio=[]
     excludedSigSB=[]#6,7,8,9,10,11]
     excludedSigSB=[2,5,8,11]
@@ -413,8 +412,8 @@ if(flagSigSB):
     for i in range(len(hhSigSBratio)):
         if(i in excludedSigSB):continue
         else:hhSigSBratio_o.append(hhSigSBratio[i])
-    c_SigSBRMS = TCanvas("cSigSBRMS","cSigSBRMS",900,600)
-    lSigSB2 = TLegend(0.12,0.80,0.38,0.88);
+    c_SigSBRMS = ROOT.TCanvas("cSigSBRMS","cSigSBRMS",900,600)
+    lSigSB2 = ROOT.TLegend(0.12,0.80,0.38,0.88);
     histSigSBRMS = rootRMS(hhSigSBratio_o)
     histSigSBRMS.GetYaxis().SetRangeUser(0,0.6);histSigSBRMS.SetLineColor(ROOT.kGreen+2);
     histSigSBRMS.SetFillColor(ROOT.kGreen+2);histSigSBRMS.SetFillStyle(3654)
@@ -436,10 +435,10 @@ Cutstitles=['def','cut1','cut2','cut3','cut4']
 sizeCutsys=5#
 if(flagCutsys):
     if(lensysin>2):
-        datafileCutsys=[ROOT.TFile("/media/jackbauer/data/z_out/R_"+R+"_finaltry/FDsubtraction/outFD_1.root ","read")]
+        datafileCutsys=[ROOT.TFile("$cernbox/media/jackbauer/data/z_out/R_"+R+"_finaltry/FDsubtraction/outFD_1.root ","read")]
         hCuts=[datafileCutsys[0].Get('hsub_c'+str(int(jetbin)+1)).Clone('hCuts_0')];
         for i in range(1,sizeCutsys):
-            datafileCutsys.append(ROOT.TFile("/media/jackbauer/data/z_out/R_"+R+"_finaltry/SQ"+cutindices[i]+"/FDsubtraction/outFD_1.root ","read"))
+            datafileCutsys.append(ROOT.TFile("$cernbox/media/jackbauer/data/z_out/R_"+R+"_finaltry/SQ"+cutindices[i]+"/FDsubtraction/outFD_1.root ","read"))
             hCuts.append(datafileCutsys[i].Get('hsub_c'+str(int(jetbin)+1)).Clone('hCuts_'+str(i)))
         print(hCuts)
     else:
@@ -448,13 +447,13 @@ if(flagCutsys):
         for i in range(1,sizeCutsys):
             datafileCutsys.append(
                     #ROOT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/FinalSys/CutSys%sFinal_DzeroR%s_paperCuts/Default/FDsubtraction/JetPtSpectrum_FDsub.root"%(cutindices[i],R))
-                    ROOT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR"+R+"_paperCuts/SQ"+cutindices[i]+"/Default/FDsubtraction/JetPtSpectrum_FDsub.root")
+                    ROOT.TFile("$cernbox/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR"+R+"_paperCuts/SQ"+cutindices[i]+"/Default/FDsubtraction/JetPtSpectrum_FDsub.root")
                     )
             hCuts.append(datafileCutsys[i].Get('hData_binned_sub').Clone('hCuts_'+str(i)))
     #### -----------------------------
-    c_Cuts = TCanvas("cCuts","cCuts",900,600)
-    lCuts1 = TLegend(0.12,0.70,0.38,0.88);
-    if(lensysin>2):lCuts1 = TLegend(0.72,0.70,0.88,0.88);
+    c_Cuts = ROOT.TCanvas("cCuts","cCuts",900,600)
+    lCuts1 = ROOT.TLegend(0.12,0.70,0.38,0.88);
+    if(lensysin>2):lCuts1 = ROOT.TLegend(0.72,0.70,0.88,0.88);
     hhCutsratio=[]
     for i in range(sizeCutsys):
         hhCutsratio.append(hCuts[i].Clone('hCutsRatio_'+str(i)))
@@ -476,7 +475,7 @@ if(flagCutsys):
     c_Cuts.SaveAs('plots/'+JET_or_Z+'3_Cuts/3_Cuts_ratio'+R+whichjetbin+'.pdf')
     c_Cuts.SaveAs('plots/'+JET_or_Z+'3_Cuts/3_Cuts_ratio'+R+whichjetbin+'.png')
     #### -----------------------------RMS
-    c_CutsRMS = TCanvas("cCutsRMS","cCutsRMS",900,600)
+    c_CutsRMS = ROOT.TCanvas("cCutsRMS","cCutsRMS",900,600)
     histCutsRMS = rootRMS(hhCutsratio)
     histCutsRMS.GetYaxis().SetRangeUser(0,1);histCutsRMS.SetLineColor(ROOT.kBlue+2);
     histCutsRMS.SetFillColor(ROOT.kBlue+2);histCutsRMS.SetFillStyle(3654)
@@ -516,33 +515,38 @@ if(flagCutsys):
     c_CutsRMS.SaveAs('plots/'+JET_or_Z+'3_Cuts/3_Cuts_sysRMS'+R+whichjetbin+'.png')
 
     ##FITTING plot
+    yCUTS = array.array('d',histCutsRMS)[1:-1]
+    yCUTS2= array.array('d',histCutsRMS)[1:-1]
+    xCUTS = array.array('d',fptbinsJC)
     if(lensysin>2):
-        yCUTS = hist2array(histCutsRMS)
-        xCUTS = np.array(fptbinsJC)
+        print(f'xCUTS{xCUTS}')
+        print(f'yCUTS{yCUTS}')
         if(R=='02'):
             if(whichJetInZ==2 or 4):
                 xCUTS=xCUTS[1:]
                 yCUTS=yCUTS[1:]
                 print('this works!!!!!!!!')
     else:
-        yCUTS = hist2array(histCutsRMS)[3:-1]
-        xCUTS = np.array(fptbinsJC)[3:-1]
-    xCUTSlh= np.array(fptbinsJlh[:])
+        yCUTS = yCUTS[3:-1]
+        xCUTS = xCUTS[3:-1]
+    xCUTSlh= numpy.array(array.array('d',fptbinsJlh[:]))
     print(xCUTS, yCUTS)
     funcCUTS = funcLine #funcJES = funcBola
+    print(f'curve_fit parameters:{funcCUTS}, {xCUTS}, {yCUTS}')
     try:
-        popt, pcov = curve_fit(funcCUTS, xCUTS, yCUTS)
-        print(popt)
-    except:pass
-    print(popt)
-    
+        popt, pcov = curve_fit(funcCUTS, numpy.array(xCUTS), numpy.array(yCUTS))
+        print(f'popt:{popt}')
+        print(f'pcov:{pcov}')
+    except RuntimeError:
+        print("Error")
+
     fig=plt.figure(1);plt.grid(axis='both',color='0.95');plt.ylim(0,0.5);#plt.xticks(np.arange(min(xJESall),max(xJESall)+5,5.0));
     plt.xlim(fptbinsJlh[0],fptbinsJlh[-1])
     plt.plot(xCUTSlh, funcCUTS(xCUTSlh,*popt),'r-', label='fit');
-    plt.plot(fptbinsJlo[0:2],[hist2array(histCutsRMS)[0],hist2array(histCutsRMS)[0]],'k')
-    if(lensysin==2 and R=='02'):plt.step(fptbinsJlh[1:], hist2array(histCutsRMS2),'k', label="test");
-    else:plt.step(fptbinsJlh[1:], hist2array(histCutsRMS),'k', label="test");
-    plt.errorbar(fptbinsJC,hist2array(histCutsRMS),fmt='.k');
+    plt.plot(fptbinsJlo[0:2],[array.array('d',histCutsRMS)[0],array.array('d',histCutsRMS)[0]],'k')
+    if(lensysin==2 and R=='02'):plt.step(fptbinsJlh[1:], array.array('d',histCutsRMS2),'k', label="test");
+    else:plt.step(fptbinsJlh[1:], array.array('d',histCutsRMS)[1:-1],'k', label="test");
+    plt.errorbar(fptbinsJC,numpy.array(array.array('d',histCutsRMS)[1:-1]),fmt='.k');
     if(lensysin==2):
         plt.xlabel(r'jet $p_T$')
         locCUTS = 0.4
@@ -552,7 +556,7 @@ if(flagCutsys):
     plt.ylabel('RMS');
     plt.title("CUTS unc: R=0."+str(int(R)))
     uncCUTSvals = ""
-    valsCUTS = abs(100*(funcCUTS(np.array(fptbinsJC),*popt))) #100*(valsJES[i]-1)
+    valsCUTS = abs(100*(funcCUTS(numpy.array(array.array('d',fptbinsJC)),*popt))) #100*(valsJES[i]-1)
     for i in range(len(valsCUTS)):
         uncCUTSvals += "%.1f, "%(valsCUTS[i]) #"R%s"%(R))
     uncCUTSvals = uncCUTSvals[:-1]+' in %'
@@ -578,7 +582,7 @@ if(flagFD):
     if(lensysin>2):
         xtitle = "z_{||}"
         textpos = 0.5
-        datafileFD=ROOT.TFile("/media/jackbauer/data/z_out/R_"+R+"_finaltry/FDsubtraction/outFD_1.root","read")
+        datafileFD=ROOT.TFile("$cernbox/media/jackbauer/data/z_out/R_"+R+"_finaltry/FDsubtraction/outFD_1.root","read")
         hFD_ce = datafileFD.Get('hsub_c'+str(int(jetbin)+1)).Clone('hFD_ce')
         hFD_up = datafileFD.Get('hsub_u'+str(int(jetbin)+1)).Clone('hFD_up')
         hFD_do = datafileFD.Get('hsub_d'+str(int(jetbin)+1)).Clone('hFD_do')
@@ -589,7 +593,7 @@ if(flagFD):
         hFD_up = datafileFD.Get('hData_binned_sub_up').Clone('hFD_up')
         hFD_do = datafileFD.Get('hData_binned_sub_down').Clone('hFD_do')
     #### -----------------------------
-    c_FD = TCanvas("cFD","cFD",900,600)
+    c_FD = ROOT.TCanvas("cFD","cFD",900,600)
     hFD_upratio = hFD_up.Clone('hFD_upratio')
     hFD_doratio = hFD_do.Clone('hFD_doratio')
     hFD_upratio.Divide(hFD_ce)
@@ -616,9 +620,9 @@ if(flagFD):
 # 5. UnfBayes Iterations
 if(flagUIter):
     if(lensysin>2):
-        datafileUIter4 = ROOT.TFile("/media/jackbauer/data/z_out/R_"+R+"_finaltry/unfolding/Bayes/alljetz2D/unfold2DoutFileRegBayesSys4.root","read")
-        datafileUIter6= ROOT.TFile("/media/jackbauer/data/z_out/R_"+R+"_finaltry/unfolding/Bayes/alljetz2D/unfold2DoutFileRegBayesSys6.root","read")
-        datafileUIter5= ROOT.TFile("/media/jackbauer/data/z_out/R_"+R+"_finaltry/unfolding/Bayes/alljetz2D/unfold2DoutFileRegBayesSys5.root","read")
+        datafileUIter4 = ROOT.TFile("$cernbox/media/jackbauer/data/z_out/R_"+R+"_finaltry/unfolding/Bayes/alljetz2D/unfold2DoutFileRegBayesSys4.root","read")
+        datafileUIter6= ROOT.TFile("$cernbox/media/jackbauer/data/z_out/R_"+R+"_finaltry/unfolding/Bayes/alljetz2D/unfold2DoutFileRegBayesSys6.root","read")
+        datafileUIter5= ROOT.TFile("$cernbox/media/jackbauer/data/z_out/R_"+R+"_finaltry/unfolding/Bayes/alljetz2D/unfold2DoutFileRegBayesSys5.root","read")
         datafileUIter = [datafileUIter5,datafileUIter4,datafileUIter6]
         hIters=[datafileUIter[0].Get('UnfProjectX_'+jetbin).Clone('hIter_5'),datafileUIter[1].Get('UnfProjectX_'+jetbin).Clone('hIter_4'),datafileUIter[2].Get('UnfProjectX_'+jetbin).Clone('hIter_6')]
     else:
@@ -634,7 +638,7 @@ if(flagUIter):
     for i in range(hIterRat1.GetNbinsX()): hIterRat1.SetBinError(i+1,0);hIterRat2.SetBinError(i+1,0);
     hIterRat1.SetLineColor(ROOT.kRed+2);hIterRat2.SetLineColor(ROOT.kBlue+2)
     #### -----------------------------
-    c_Iter = TCanvas("cIter","cIter",900,500)
+    c_Iter = ROOT.TCanvas("cIter","cIter",900,500)
     if(lensysin>2):
         lower_limit=0.9;upper_limit=1.1
     else:
@@ -652,7 +656,7 @@ if(flagUIter):
     c_Iter.SaveAs('plots/'+JET_or_Z+'5_Iter/5_Iter_ratio'+R+whichjetbin+'.pdf')
     c_Iter.SaveAs('plots/'+JET_or_Z+'5_Iter/5_Iter_ratio'+R+whichjetbin+'.png')
     #### -----------------------------
-    c_IterSys= TCanvas("cIterSys","cIterSys",900,500)
+    c_IterSys= ROOT.TCanvas("cIterSys","cIterSys",900,500)
     histIterRMS = rootRMS([hIterRat0,hIterRat1,hIterRat2])
     if(lensysin>2):histIterRMS.GetYaxis().SetRangeUser(0,0.2);histIterRMS.SetLineColor(ROOT.kBlue+2);
     else:histIterRMS.GetYaxis().SetRangeUser(0,0.016);histIterRMS.SetLineColor(ROOT.kBlue+2);
@@ -666,7 +670,7 @@ if(flagUIter):
     c_IterSys.SaveAs('plots/'+JET_or_Z+'5_Iter/5_Iter_rat'+R+whichjetbin+'.pdf')
     c_IterSys.SaveAs('plots/'+JET_or_Z+'5_Iter/5_Iter_rat'+R+whichjetbin+'.png')
     ##### -----------------------------
-    c_It= TCanvas("cIt","cIt",900,500)
+    c_It= ROOT.TCanvas("cIt","cIt",900,500)
     histIterRMSIT = histIterRMS.Clone('histIterRMSIT')
     histIterRMSIT.SetMarkerSize(0)
     for i in range(histIterRMS.GetNbinsX()):
@@ -696,7 +700,7 @@ if(flagUPrior):
         hUPrior=[dataUPrior[0].Get('UnfProjectX_'+jetbin).Clone('hPriorMC')]
         hUPriorratio=[hUPrior[0].Clone('hratPriorMC')]
         for i in range(1,sizePrior):
-            dataUPrior.append(ROOT.TFile("/media/jackbauer/data/z_out/R_%s_finaltry/unfolding/Bayes/alljetz2D/unfold2DoutFileAPW%d.root"%(R,i)))
+            dataUPrior.append(ROOT.TFile("$cernbox/media/jackbauer/data/z_out/R_%s_finaltry/unfolding/Bayes/alljetz2D/unfold2DoutFileAPW%d.root"%(R,i)))
             hUPrior.append(dataUPrior[i].Get('UnfProjectX_'+jetbin).Clone('hPrior'+str(i-1)))
             hUPriorratio.append(dataUPrior[i].Get('UnfProjectX_'+jetbin).Clone('hPriorratio'+str(i-1)))
     else:
@@ -704,12 +708,12 @@ if(flagUPrior):
         hUPrior=[dataUPrior[0].Get('unfoldedSpectrum').Clone('hPriorMC')]
         hUPriorratio=[hUPrior[0].Clone('hratPriorMC')]
         for i in range(1,sizePrior):
-            dataUPrior.append(ROOT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/unfolding_Bayes_5_priorType%d/unfoldedSpectrum_unfoldedJetSpectrum.root"%(R,i-1)))
+            dataUPrior.append(ROOT.TFile("$cernbox/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/unfolding_Bayes_5_priorType%d/unfoldedSpectrum_unfoldedJetSpectrum.root"%(R,i-1)))
             hUPrior.append(dataUPrior[i].Get('unfoldedSpectrum').Clone('hPrior'+str(i-1)))
             hUPriorratio.append(dataUPrior[i].Get('unfoldedSpectrum').Clone('hPriorratio'+str(i-1)))
     #### -----------------------------
     limYpriorDo=0.94;limYpriorUp=1.07
-    c_Prior = TCanvas("cPrior","cPrior",900,500)
+    c_Prior = ROOT.TCanvas("cPrior","cPrior",900,500)
     leg_Prior=ROOT.TLegend(0.15,0.55,0.3,0.87)
     hUPriorratio[0].GetYaxis().SetRangeUser(limYpriorDo,limYpriorUp)
     hUPriorratio[0].GetYaxis().SetTitle('ratio');hUPriorratio[0].SetTitle('Bayes unfolding: priors')
@@ -729,7 +733,7 @@ if(flagUPrior):
     c_Prior.SaveAs('plots/'+JET_or_Z+'6_Priors/6_Priors_ratio'+R+whichjetbin+'.pdf')
     c_Prior.SaveAs('plots/'+JET_or_Z+'6_Priors/6_Priors_ratio'+R+whichjetbin+'.png')
     #### -----------------------------
-    c_PriorRMS = TCanvas("cPriorRMS","cPriorRMS",900,500)
+    c_PriorRMS = ROOT.TCanvas("cPriorRMS","cPriorRMS",900,500)
     if(lensysin>2):histPriorRMS=rootRMS(hUPriorratio[:])
     else:histPriorRMS=rootRMS(hUPriorratio[0:1]+hUPriorratio[2:6]+hUPriorratio[7:])
     #else:histPriorRMS=rootRMS(hUPriorratio[:])
@@ -741,7 +745,7 @@ if(flagUPrior):
     c_PriorRMS.SaveAs('plots/'+JET_or_Z+'6_Priors/6_Priors_RMS'+R+whichjetbin+'.pdf')
     c_PriorRMS.SaveAs('plots/'+JET_or_Z+'6_Priors/6_Priors_RMS'+R+whichjetbin+'.png')
     #### -----------------------------
-    c_PriorRMSFinal = TCanvas("cPriorRMSFinal","cPriorRMSFinal",900,500)
+    c_PriorRMSFinal = ROOT.TCanvas("cPriorRMSFinal","cPriorRMSFinal",900,500)
     leg_PriorFinal=ROOT.TLegend(0.15,0.55,0.3,0.87)
     histPriorRMSIT = histPriorRMS.Clone('histPriorsRMSIT')
     for i in range(histPriorRMSIT.GetNbinsX()):
@@ -780,11 +784,11 @@ if(flagUSvd):
     hUSvd=[dataUSvd[0].Get('unfoldedSpectrum').Clone('hBayes')]
     hUSvdratio=[hUSvd[0].Clone('hratSvd0')]
     for i in range(sizeSVD-1): #default bayes already in
-        dataUSvd.append(ROOT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/unfolding_SVD_%d/unfoldedSpectrum_unfoldedJetSpectrum.root"%(R,i+6+radiusSVD)))
+        dataUSvd.append(ROOT.TFile("$cernbox/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR%s_paperCuts/Default/unfolding_SVD_%d/unfoldedSpectrum_unfoldedJetSpectrum.root"%(R,i+6+radiusSVD)))
         hUSvd.append(dataUSvd[i+1].Get('unfoldedSpectrum').Clone('hSvd_'+str(i+1)))
         hUSvdratio.append(dataUSvd[i+1].Get('unfoldedSpectrum').Clone('hratSvd'+str(i+1)))
     #### -----------------------------
-    c_Svd = TCanvas("cSvd","cSvd",900,500)
+    c_Svd = ROOT.TCanvas("cSvd","cSvd",900,500)
     leg_Svd=ROOT.TLegend(0.7,0.7,0.85,0.85)
     hUSvdratio[0].GetYaxis().SetRangeUser(0.6,1.4)
     hUSvdratio[0].GetYaxis().SetTitle('ratio to Bayes 5')
@@ -799,7 +803,7 @@ if(flagUSvd):
     c_Svd.SaveAs('plots/7_Svd/7_Svd_ratio'+R+'.pdf')
     c_Svd.SaveAs('plots/7_Svd/7_Svd_ratio'+R+'.png')
     #### -----------------------------
-    c_SvdSys = TCanvas("cSvdSys","cSvdSys",900,500)
+    c_SvdSys = ROOT.TCanvas("cSvdSys","cSvdSys",900,500)
     leg_SvdSys=ROOT.TLegend(0.13,0.7,0.5,0.85)
     histSvdRMS = rootRMS(hUSvdratio);histSvdMean= rootMEAN(hUSvdratio)
     histSvdRMS.GetYaxis().SetRangeUser(0,0.35);histSvdMean.GetYaxis().SetRangeUser(0,0.35)
@@ -831,7 +835,7 @@ if(flagJES):
         hJES_0 = datafileUnf.Get('unfoldedSpectrum').Clone('hJES_0') #default
         hJES_1 = datafileJES.Get('unfoldedSpectrum').Clone('hJES_1') #jes
     #### -----------------------------
-    c_JES = TCanvas("cJES","cJES",900,600)
+    c_JES = ROOT.TCanvas("cJES","cJES",900,600)
     hJES_0ratio = hJES_0.Clone('hJES_0ratio')
     hJES_1ratio = hJES_1.Clone('hJES_1ratio')
     hJES_1ratio.Divide(hJES_0)
@@ -849,10 +853,10 @@ if(flagJES):
     for i in range(len(fptbinsJC)):
         corJ = hJES_1ratio.GetBinContent(i+1)
         corrJES.append(corJ)
-    print(np.array(corrJES))
+    print(array.array('d',corrJES))
     print("correlated JES end")
     #### -----------------------------
-    c_JESsys = TCanvas("cJESsys","cJESsys",900,600)
+    c_JESsys = ROOT.TCanvas("cJESsys","cJESsys",900,600)
     lJES = ROOT.TLine(2, 1, 50, 1);lJES.SetLineStyle(2);lJES.Draw("same")
     hJES_sys = hJES_1ratio.Clone("hJES_sys");hJES_sys.GetYaxis().SetRangeUser(0.95,1.15)
     for i in range(hJES_sys.GetNbinsX()): hJES_sys.SetBinError(i+1,0)
@@ -861,9 +865,9 @@ if(flagJES):
     c_JESsys.SaveAs('plots/8_JES/8_JES_sys'+R+'.pdf')
     c_JESsys.SaveAs('plots/8_JES/8_JES_sys'+R+'.png')
 
-    yJES = hist2array(hJES_1ratio)[:]
-    xJES = np.array(fptbinsJC)[:]
-    xJESlh= np.array(fptbinsJlh[:])
+    yJES = array.array('d',hJES_1ratio)[:]
+    xJES = array.array('d',fptbinsJC)[:]
+    xJESlh= array.array('d',fptbinsJlh[:])
     print(xJES, yJES)
     funcJES = funcLine #funcJES = funcBola
     try:
@@ -874,7 +878,7 @@ if(flagJES):
     yerrJES = [];
     for i in range(hJES_1ratio.GetNbinsX()): 
         yerrJES.append(hJES_1ratio.GetBinError(i+1));
-    yerrJES=np.array(yerrJES)
+    yerrJES=array.array('d',yerrJES)
     fig=plt.figure(1);plt.grid(axis='both',color='0.95');plt.ylim(0.6,1.8);#plt.xticks(np.arange(min(xJESall),max(xJESall)+5,5.0));
     plt.xlim(fptbinsJlh[0],fptbinsJlh[-1])
     plt.plot(xJESlh, funcJES(xJESlh,*popt),'r-', label='fit');plt.step(xJESlh[1:], yJES,'k', label="test");plt.plot(fptbinsJlh[0:2],[yJES[0],yJES[0]],'k')
@@ -912,16 +916,16 @@ if(flagJES):
 if(flagStat):
     if(lensysin>2):
         ### post unfolding
-        fileString="/media/jackbauer/data/z_out/R_"+R+"_finaltry/unfolding/Bayes/alljetz2D/unfold2DoutFileAPW.root"
+        fileString="$cernbox/media/jackbauer/data/z_out/R_"+R+"_finaltry/unfolding/Bayes/alljetz2D/unfold2DoutFileAPW.root"
         statSignal=ROOT.TFile(fileString)
         hSignal = statSignal.Get('UnfProjectX_'+jetbin).Clone('hStat')
         ### pre unfolding
-        fileStringFD="/media/jackbauer/data/z_out/R_"+R+"_finaltry/FDsubtraction/outFD_1.root"
+        fileStringFD="$cernbox/media/jackbauer/data/z_out/R_"+R+"_finaltry/FDsubtraction/outFD_1.root"
         statSignalFD=ROOT.TFile(fileStringFD)
         hSignalFD = statSignalFD.Get('hsub_c'+jetbin).Clone('hStatFD')
 
     else:
-        fileString="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR"+R+"_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"
+        fileString="$cernbox/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR"+R+"_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root"
         statSignal=ROOT.TFile(fileString)
         hSignal = statSignal.Get('unfoldedSpectrum').Clone('hStat')
 
@@ -937,12 +941,12 @@ if(flagStat):
             staterrorFD=round(100*hSignalFD.GetBinError(i+1)/hSignalFD.GetBinContent(i+1),1)
             statErrFD.append(staterrorFD)
             hStatFD.SetBinContent(i+1,staterrorFD);hStatFD.SetBinError(i+1,0)
-    c_Stat = TCanvas("cStat","cStat",900,600)
+    c_Stat = ROOT.TCanvas("cStat","cStat",900,600)
     hStat.SetLineColor(ROOT.kRed+2)
     hStat.SetMinimum(0)
     hStat.SetMaximum(100)
     hStat.Draw();
-    lstat = TLegend(0.12,0.60,0.38,0.88);
+    lstat = ROOT.TLegend(0.12,0.60,0.38,0.88);
     lstat.AddEntry(hStat,"unfolded")
     if(lensysin>2): 
         hStatFD.SetLineColor(ROOT.kBlue+2)
