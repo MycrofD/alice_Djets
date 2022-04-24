@@ -1,6 +1,7 @@
 import os, os.path, sys
 import ROOT
 ROOT.TH1.AddDirectory(False)
+ROOT.gROOT.SetBatch()
 import style_settings
 import array
 
@@ -45,30 +46,18 @@ R=int(sys.argv[1]) #R=2,3,4,6
 energy = "5.02"
 fptbinsJN = 7
 fptbinsJlh=[5,6,8,10,14,20,30,50]
-jetLegFD="Raw B Feed-Down Fraction"
-jetLegFDsys="Sys. Unc. (POWHEG+PYTHIA6)"
-x_title = "#it{p}_{T,jet}^{ch}"
-y_title = "B Feed-Down Fraction"
+jetLegFD="b-hadron feed-down fraction" #"Raw B Feed-Down Fraction"
+jetLegFDsys="Sys. unc. (POWHEG+PYTHIA6)"
+x_title = "#it{p}_{T,ch jet}"
+y_title = "b-hadron feed-down fraction" #"B Feed-Down Fraction"
+textsize=0.035
 
-hEmpty = ROOT.TH1D("hE","hE",100,plotmin,plotmax)
-## HIST SETTINGS
-hEmpty.SetTitle('')
-hEmpty.GetXaxis().SetTitle(x_title);
-hEmpty.GetYaxis().SetTitle(y_title);
-#hEmpty.GetXaxis().SetLabelSize(0.04);
-#hEmpty.GetXaxis().SetTitleSize(0.04);
-#hEmpty.GetXaxis().SetTitleOffset(1.);
-#hEmpty.GetYaxis().SetTitleOffset(1.3);
-#hEmpty.GetYaxis().SetLabelSize(0.04);
-#hEmpty.GetYaxis().SetTitleSize(0.04);
-hEmpty.GetXaxis().SetRangeUser(plotmin,plotmax);
-hEmpty.GetYaxis().SetRangeUser(plotYmin,plotYmax);
 ### READING INPUT FILE
 leg = ROOT.TLegend(0.15,0.6,0.65,0.75);
 #pvALICE = ROOT.TPaveText(0.15,0.85,0.8,0.9,"brNDC");
-leg.SetTextSize(0.035);
+leg.SetTextSize(textsize);
 
-inFile=ROOT.TFile('/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR0'+str(R)+'_paperCuts/Default/FDsubtraction/JetPtSpectrum_FDsub.root','read')
+inFile=ROOT.TFile('/eos/user/a/amohanty/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR0'+str(R)+'_paperCuts/Default/FDsubtraction/JetPtSpectrum_FDsub.root','read')
 hh = inFile.Get('hFD_ratio').Clone("h")
 hhUp = inFile.Get('hFD_ratio_up').Clone("hup")
 hhDo = inFile.Get('hFD_ratio_down').Clone("hdo")
@@ -80,7 +69,7 @@ hFD.SetTitle('')
 hFD.SetMarkerColor(Colors[0]);
 hFD.SetLineColor(Colors[0]);
 hFD.SetMarkerStyle(Markers[0]);
-hFD.SetMarkerSize(1.2);
+hFD.SetMarkerSize(2);
 #hFD.GetXaxis().SetLabelSize(0.04);
 #hFD.GetXaxis().SetTitleSize(0.05);
 #hFD.GetXaxis().SetTitleOffset(1.);
@@ -123,11 +112,11 @@ grsys.SetTitle('')
 grsys.GetXaxis().SetTitle(x_title);
 grsys.GetYaxis().SetTitle(y_title);
 grsys.GetXaxis().SetLabelSize(0.04);
-grsys.GetXaxis().SetTitleSize(0.04);
+grsys.GetXaxis().SetTitleSize(0.045);
 grsys.GetXaxis().SetTitleOffset(1.);
 grsys.GetYaxis().SetTitleOffset(1.3);
 grsys.GetYaxis().SetLabelSize(0.04);
-grsys.GetYaxis().SetTitleSize(0.04);
+grsys.GetYaxis().SetTitleSize(0.045);
 grsys.GetXaxis().SetRangeUser(plotmin,plotmax);
 grsys.GetYaxis().SetRangeUser(plotYmin,plotYmax);
 
@@ -143,7 +132,7 @@ pvALICE = ROOT.TPaveText(0.15,0.85,0.8,0.9,"brNDC");
 pvALICE.SetFillStyle(0);
 pvALICE.SetBorderSize(0);
 pvALICE.SetTextFont(42);
-pvALICE.SetTextSize(0.035);
+pvALICE.SetTextSize(0.04);
 pvALICE.SetTextAlign(11);
 pvALICE.AddText("ALICE, pp, #sqrt{#it{s}} = "+energy+" TeV");
 
@@ -152,27 +141,23 @@ pvJet = ROOT.TPaveText(0.15,0.85-shift,0.8,0.9-shift,"brNDC");
 pvJet.SetFillStyle(0);
 pvJet.SetBorderSize(0);
 pvJet.SetTextFont(42);
-pvJet.SetTextSize(0.035);
+pvJet.SetTextSize(textsize);
 pvJet.SetTextAlign(11);
-pvJet.AddText("Charged Jets, Anti-#it{k}_{T}, #it{R} = 0."+str(R)+", |#it{#eta}_{lab}^{jet}| < 0."+str(9-R));
+pvJet.AddText("charged jets, anti-#scale[0.5]{ }#it{k}_{T}, #it{R} = 0."+str(R)+", | #it{#eta}_{ch jet}| < 0."+str(9-R));
 
 shift += 0.05;
 pvD = ROOT.TPaveText(0.15,0.85-shift,0.8,0.9-shift,"brNDC");
 pvD.SetFillStyle(0);
 pvD.SetBorderSize(0);
 pvD.SetTextFont(42);
-pvD.SetTextSize(0.035);
+pvD.SetTextSize(textsize);
 pvD.SetTextAlign(11);
-pvD.AddText("with D^{0} #rightarrow K^{-}#pi^{+} and charge conj.");
+pvD.AddText("with D^{0} #rightarrow K^{#font[122]{-}}#pi^{+} and charge conj.,  #it{p}_{T, D^{0}} > 2 GeV/#it{c}");
 
 ### CANVAS
 cEff = ROOT.TCanvas("cEff","cEff",1000,800);
-#cEff.SetLogy();
-hEmpty.Draw()
-grsys.Draw("a2same")
+grsys.Draw("a2")
 hFD.Draw("same");
-#hFD_up.Draw("same");
-#hFD_do.Draw("same");
 
 pvALICE.Draw("same");
 pvJet.Draw("same");
@@ -184,4 +169,3 @@ cEff.SaveAs('plots/jetFDratio_R0'+str(R)+'_'+str(int(float(energy)))+'.pdf')
 cEff.SaveAs('plots/jetFDratio_R0'+str(R)+'_'+str(int(float(energy)))+'.png')
 cEff.SaveAs('plots/jetFDratio_R0'+str(R)+'_'+str(int(float(energy)))+'.eps')
 
-input()
