@@ -4,7 +4,7 @@
 #include <iostream>
 #include <TPDF.h>
 
-void setHistoDetails(TH1 *h, Color_t color, Style_t Mstyle, Width_t width);
+// /home/jackbauer/ALICE_HeavyFlavour/work/Djets/alice_Djets/Djets/Preliminaryplots/Paperplots
 void SaveCanvas(TCanvas *c, string name = "tmp");
 
     //const int ptbinsDN = 11;
@@ -19,7 +19,7 @@ void SaveCanvas(TCanvas *c, string name = "tmp");
     int signalColor = kRed+1;
     int SBColor = kGreen+3;
     int subColor = kBlue+1;
-    double markersize = 2.;
+    double markersize = 2.7;
     //double markersize = 1.6;
     //int markerstyle[] = { 20,21,33 };
     int markerstyle[] = { 24,25,27 };
@@ -45,7 +45,8 @@ sst.clear(); sst.str("");
 
   // TFile *inFile = new TFile("JetPtSpectra_SB_eff.root","read");
     TFile *inFile = new TFile(
-"/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR04_paperCuts/Default/signalExtraction/JetPtSpectra_SB_eff.root"
+//"/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR04_paperCuts/Default/signalExtraction/JetPtSpectra_SB_eff.root"
+"../../../../../../../Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR04_paperCuts/Default/signalExtraction/JetPtSpectra_SB_eff.root"
 ,"read");
 
     int bin1 = 1, bin2 = 5, bin3 = 8;
@@ -73,7 +74,7 @@ sst.clear(); sst.str("");
             hjetpt[i]->SetMarkerSize(markersize);
 
             hjetpt[i]->GetXaxis()->SetTitle("#it{p}_{T,ch jet} (GeV/#it{c})");
-            hjetpt[i]->GetYaxis()->SetTitle("Entries");
+            hjetpt[i]->GetYaxis()->SetTitle("Raw yields ");
             hjetpt[i]->GetXaxis()->SetLabelSize(0.045);
             hjetpt[i]->GetXaxis()->SetTitleSize(0.055);
             hjetpt[i]->GetYaxis()->SetLabelSize(0.045);
@@ -107,7 +108,7 @@ sst.clear(); sst.str("");
             hjetptsub[i]->SetLineWidth(2);
           // hjetptsub[i]->SetMarkerStyle(27);
             hjetptsub[i]->SetMarkerStyle(markerstyle[2]);
-            hjetptsub[i]->SetMarkerSize(markersize+1.8);
+            hjetptsub[i]->SetMarkerSize(markersize+1.1);
 
     }
 
@@ -117,28 +118,28 @@ sst.clear(); sst.str("");
     legBands1->SetFillStyle(0);
     legBands1->SetTextAlign(13);
     //legBands1->AddEntry(hjetpt[0],"#splitline{Signal region}{|#it{M}(K#pi)-#it{M}_{D^{0}}|<2#sigma}","p");
-    legBands1->AddEntry(hjetpt[0],"Signal region","p");
+    legBands1->AddEntry(hjetpt[0],"signal region","p");
 
     TLegend *legBands2 = new TLegend(0.45,0.88,0.85,0.92);
     legBands2->SetTextSize(ltextsize);
     legBands2->SetFillStyle(0);
     legBands2->SetTextAlign(13);
-    //legBands2->AddEntry(hjetpt_s[0],"#splitline{Side bands (SB)}{4#sigma<|#it{M}(K#pi)-#it{M}_{D^{0}}|<9#sigma}","p");
-    legBands2->AddEntry(hjetpt_s[0],"Side bands (SB)","p");
+    //legBands2->AddEntry(hjetpt_s[0],"#splitline{sidebands (SB)}{4#sigma<|#it{M}(K#pi)-#it{M}_{D^{0}}|<9#sigma}","p");
+    legBands2->AddEntry(hjetpt_s[0],"sidebands (SB)","p");
 
     TLegend *legBands3 = new TLegend(0.45,0.8,0.85,0.85);
     legBands3->SetTextSize(ltextsize);
     legBands3->SetFillStyle(0);
     legBands3->SetTextAlign(13);
-    legBands3->AddEntry(hjetptsub[0],"Signal - SB","p");
+    legBands3->AddEntry(hjetptsub[0],"signal #font[122]{-} SB","p");
 
-    TPaveText *pvALICE = new TPaveText(0.187,0.88,0.6,0.92,"brNDC");
-    pvALICE->SetFillStyle(0);
-    pvALICE->SetBorderSize(0);
-    pvALICE->SetTextFont(42);
-    pvALICE->SetTextSize(ltextsize+0.002);
-    pvALICE->SetTextAlign(11);
-    pvALICE->AddText("ALICE");// Preliminary");
+    //TPaveText *pvALICE = new TPaveText(0.187,0.88,0.6,0.92,"brNDC");
+    //pvALICE->SetFillStyle(0);
+    //pvALICE->SetBorderSize(0);
+    //pvALICE->SetTextFont(42);
+    //pvALICE->SetTextSize(ltextsize+0.002);
+    //pvALICE->SetTextAlign(11);
+    //pvALICE->AddText("ALICE");// Preliminary");
 
     TPaveText *pvEn = new TPaveText(0.25,0.88,0.8,0.92,"brNDC");
     pvEn->SetFillStyle(0);
@@ -157,7 +158,8 @@ sst.clear(); sst.str("");
     pvD->SetTextFont(42);
     pvD->SetTextSize(ltextsize);
     pvD->SetTextAlign(11);
-    pvD->AddText("D^{0} #rightarrow K^{-}#pi^{+} and charge conj.");
+    //pvD->AddText("D^{0} #rightarrow K^{-}#pi^{+} and charge conj.");
+    pvD->AddText("D^{0} #rightarrow K^{#font[122]{-}}#pi^{+} and charge conj.");
 
     //TPaveText *pvJet = new TPaveText(0.25,0.77,0.55,0.82,"brNDC");
     TPaveText *pvJet = new TPaveText(0.25,0.80,0.55,0.84,"brNDC");
@@ -166,7 +168,7 @@ sst.clear(); sst.str("");
     pvJet->SetTextFont(42);
     pvJet->SetTextSize(ltextsize);
     pvJet->SetTextAlign(11);
-    pvJet->AddText(Form("Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.%d",(int)Rpar));
+    pvJet->AddText(Form("charged jets, anti-#scale[0.5]{ }#it{k}_{T}, #it{R} = 0.%d",(int)Rpar));
 
     TPaveText *pvEta = new TPaveText(0.6,0.63,0.85,0.67,"brNDC");
     pvEta->SetFillStyle(0);
@@ -174,7 +176,8 @@ sst.clear(); sst.str("");
     pvEta->SetTextFont(42);
     pvEta->SetTextSize(ltextsize);
     pvEta->SetTextAlign(11);
-    pvEta->AddText(Form("|#it{#eta}_{lab}^{jet}| < 0.%d",(int)9-Rpar));
+    pvEta->AddText(Form("|#it{#eta}_{ch jet}| < 0.%d",(int)9-Rpar));
+    //pvEta->AddText(Form("|#it{#eta}_{lab}^{jet}| < 0.%d",(int)9-Rpar));
     //pvEta->AddText("|#it{#eta}_{jet}| < 0.6");
 
     TPaveText *pvpt1 = new TPaveText(0.58,0.66,0.85,0.71,"brNDC");
@@ -215,7 +218,8 @@ sst.clear(); sst.str("");
     
     //TCanvas *cMass = new TCanvas("cMass","cMass",1800,840);
     //TCanvas *cMass = new TCanvas("cMass","cMass",2160,1008);
-    TCanvas *cMass = new TCanvas("cMass","cMass",3000,583);
+    //TCanvas *cMass = new TCanvas("cMass","cMass",3000,583);//worked in ubuntu, not in cernbox/lxplus
+    TCanvas *cMass = new TCanvas("cMass","cMass",2000,610);
 
 
 
@@ -293,20 +297,6 @@ sst.clear(); sst.str("");
 
 }
 
-void setHistoDetails(TH1 *h, Color_t color, Style_t Mstyle, Size_t size = 0.9, Width_t width=2, int scale = 0){
-
-    if(scale)h->Scale(1,"width");
-    h->SetMarkerStyle(Mstyle);
-    h->SetMarkerColor(color);
-    h->SetMarkerSize(size);
-    h->SetLineColor(color);
-    h->SetLineWidth(width);
-    h->SetTitle(0);
-    h->GetXaxis()->SetTitle("p_{T}^{#D^0}(GeV/c)");
-
-    return;
-
-}
 
 void SaveCanvas(TCanvas *c, string name = "tmp"){
 
