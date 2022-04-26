@@ -42,12 +42,13 @@ void drawResz()
     gStyle->SetPadBottomMargin(0.1);
     gStyle->SetPadTopMargin(1);
     gStyle->SetPadRightMargin(0.13);
+    gROOT->SetBatch();
 
 
    TFile *File = new TFile(
            //"/home/kvapil/work/analysis/pp_run2/D0jet/data_200519/MC/AnalysisResults_Run2.root"
            //"/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/AnalysisResults_745_R04_pp_5cuts.root"
-           "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/AnalysisResults_1061_R04_ppMC_5cuts.root"
+           "/eos/user/a/amohanty/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/AnalysisResults_1061_R04_ppMC_5cuts.root"
            ,"read");
    if(!File) { std::cout << "==== WRONG FILE WITH DATA =====\n\n"; return ;}
    TDirectoryFile *dir=dynamic_cast<TDirectoryFile*>(File->Get("DmesonsForJetCorrelations"));
@@ -96,7 +97,7 @@ void drawResz()
             hbin1->SetMarkerStyle(24);//20
             hbin1->SetMarkerSize(1.2);
             hbin1->GetXaxis()->SetTitle("#Delta_{#it{z}}");
-            hbin1->GetYaxis()->SetTitle("Probability Density");
+            hbin1->GetYaxis()->SetTitle("Probability density");
             hbin1->GetXaxis()->SetLabelSize(0.04);
             hbin1->GetXaxis()->SetTitleSize(0.04);
             hbin1->GetXaxis()->SetTitleOffset(1.);
@@ -116,7 +117,7 @@ void drawResz()
             hbin2->SetMarkerStyle(25);//21
             hbin2->SetMarkerSize(1.2);
             hbin2->GetXaxis()->SetTitle("#Delta#it{p}_{T}");
-            hbin2->GetYaxis()->SetTitle("Probability Density");
+            hbin2->GetYaxis()->SetTitle("Probability density");
             hbin2->Scale(1./hbin2->GetEntries());
             hbin2->Scale(1,"width");
 
@@ -127,7 +128,7 @@ void drawResz()
             hbin3->SetMarkerStyle(27);//22
             hbin3->SetMarkerSize(2);
             hbin3->GetXaxis()->SetTitle("#Delta#it{p}_{T}");
-            hbin3->GetYaxis()->SetTitle("Probability Density");
+            hbin3->GetYaxis()->SetTitle("Probability density");
             hbin3->Scale(1./hbin3->GetEntries());
             hbin3->Scale(1,"width");;
 
@@ -146,21 +147,30 @@ void drawResz()
     leg->AddEntry(hbin3,"0.8 < #it{z}_{||}^{ch,part} < 1.0 GeV/#it{c}","p");
 
 
+    TPaveText *pt0 = new TPaveText(0.15,0.85,0.5,0.88,"NB NDC");
+    pt0->SetBorderSize(0);
+    pt0->SetFillStyle(0);
+    pt0->SetTextAlign(13);
+    pt0->SetTextFont(42);
+    pt0->SetTextSize(0.04);
 
-    TPaveText *pt = new TPaveText(0.15,0.56,0.5,0.88,"NB NDC");
+    TPaveText *pt = new TPaveText(0.15,0.6,0.5,0.83,"NB NDC");
     pt->SetBorderSize(0);
     pt->SetFillStyle(0);
     pt->SetTextAlign(13);
     pt->SetTextFont(42);
     pt->SetTextSize(0.032);
     //TText *text = pt->AddText("ALICE Preliminary");
+    TText *text0 = new TText;
+    text0 = pt0->AddText("ALICE, pp, #sqrt{#it{s}} = 5.02 TeV");
     TText *text = new TText;
-    text = pt->AddText("ALICE PYTHIA6, pp, #sqrt{#it{s}} = 5.02 TeV"); //uncomment
-    text = pt->AddText("Prompt D^{0} #rightarrow K^{-}#pi^{+} and charge conj.");
-    text = pt->AddText("Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.4");
-    text = pt->AddText("|#it{#eta}_{lab}^{jet}| < 0.5");
+    pt->SetBorderSize(0);
+    //text = pt->AddText("ALICE, pp, #sqrt{#it{s}} = 5.02 TeV"); //uncomment
+    text = pt->AddText("charged jets, anti-#it{k}_{T}, #it{R} = 0.4");
+    text = pt->AddText("with prompt D^{0} #rightarrow K^{#font[122]{-}}#pi^{+} and charge conj.");
+    text = pt->AddText("|#it{#eta}_{ch jet}| < 0.5");
     text = pt->AddText("#it{p}_{T, D^{0}} > 2 GeV/#it{c}");
-    text = pt->AddText("5 < #it{p}_{T, ch. jet}^{part} < 7 GeV/#it{c}");
+    text = pt->AddText("5 < #it{p}_{T, ch jet}^{part} < 7 GeV/#it{c}");
     //text = pt->AddText("ALICE Simulation"); //uncomment
     //text = pt->AddText("PYTHIA6, pp, #sqrt{#it{s}} = 13 TeV");
     //text = pt->AddText(Form("charged jets, anti-#it{k}_{T}, #it{R} = 0.%d, |#it{#eta}_{lab}^{jet}| < 0.%d",4,5));
@@ -171,6 +181,7 @@ void drawResz()
     hbin1->Draw();
     hbin2->Draw("same");
     hbin3->Draw("same");
+    pt0->Draw("same");
     pt->Draw("same");
 
 
