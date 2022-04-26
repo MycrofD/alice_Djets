@@ -2,15 +2,7 @@ import os, os.path, sys
 import ROOT
 from style_settings import *
 import array
-
-def setHistoDetails(h, color, mstyle, size, width):
-    h.SetMarkerStyle(mstyle)
-    h.SetMarkerColor(color)
-    h.SetMarkerSize(size)
-    h.SetLineColor(color)
-    h.SetLineWidth(width)
-    h.SetTitle(0)
-    h.GetXaxis().SetTitle('#it{z}_{||}^{ch}')
+ROOT.gROOT.SetBatch()
 
 def SaveCanvas(c, name):
     #c.SaveAs(name+".png");
@@ -52,7 +44,7 @@ ltextsize = 0.06;
 ROOT.gStyle.SetOptStat(000);ROOT.gStyle.SetLegendFont(42);ROOT.gStyle.SetPadLeftMargin(0.15);ROOT.gStyle.SetPadRightMargin(0.02);ROOT.gStyle.SetPadTopMargin(0.02);
 
 ### READING INPUT FILE
-inFile = ROOT.TFile('/media/jackbauer/data/z_out/R_0'+str(Rpar)+'_finaltry/signalExtraction/plots/Z0to102_jetbin_'+str(jetbinname)+'/JetPtSpectra_SB_eff.root','read')
+inFile = ROOT.TFile('/eos/user/a/amohanty/media/jackbauer/data/z_out/R_0'+str(Rpar)+'_finaltry/signalExtraction/plots/Z0to102_jetbin_'+str(jetbinname)+'/JetPtSpectra_SB_eff.root','read')
 hjetpt=[] #ptbinsDN;
 hjetpt_s=[] #ptbinsDN;
 hjetptsub=[] #ptbinsDN
@@ -76,7 +68,7 @@ for i in range(ptbinsDN):
     hjetpt[i].GetYaxis().SetLabelSize(0.045);
     hjetpt[i].GetYaxis().SetTitleSize(0.055);
     hjetpt[i].GetYaxis().SetTitleOffset(1.4);
-    hjetpt[i].GetYaxis().SetTitle("Entries");
+    hjetpt[i].GetYaxis().SetTitle("Raw yields ");
 
     hjetpt[i].SetMaximum(hjetpt[i].GetMaximum()*2.2);
     #hjetpt[i].SetMaximum(1600);
@@ -112,21 +104,20 @@ legBands1 = ROOT.TLegend(0.45,0.88,0.85,0.92)#0.15,0.76,0.7,0.86)
 legBands1.SetTextSize(ltextsize)
 legBands1.SetFillStyle(0);
 legBands1.SetTextAlign(13);
-#legBands1.AddEntry(hjetpt[0],"#splitline{Signal region}{|#it{M}(K#pi)-#it{M}_{D^{0}}|<2#sigma}","p");
-legBands1.AddEntry(hjetpt[0],"Signal region","p");
+legBands1.AddEntry(hjetpt[0],"signal region","p");
 
 legBands2 = ROOT.TLegend(0.45,0.88,0.85,0.92)#0.15,0.65,0.7,0.75)
 legBands2.SetTextSize(ltextsize)
 legBands2.SetFillStyle(0)
 legBands2.SetTextAlign(13)
 #legBands2.AddEntry(hjetpt_s[0],"#splitline{Side bands (SB)}{4#sigma<|#it{M}(K#pi)-#it{M}_{D^{0}}|<9#sigma}","p");
-legBands2.AddEntry(hjetpt_s[0],"Side bands (SB)","p");
+legBands2.AddEntry(hjetpt_s[0],"sidebands (SB)","p");
 
 legBands3 = ROOT.TLegend(0.45,0.8,0.85,0.85)#0.15,0.55,0.7,0.6)
 legBands3.SetTextSize(ltextsize)
 legBands3.SetFillStyle(0)
 legBands3.SetTextAlign(13)
-legBands3.AddEntry(hjetptsub[0],"Signal - SB","p")
+legBands3.AddEntry(hjetptsub[0],"signal #font[122]{-} SB","p")
 
 pvALICE = ROOT.TPaveText(0.187,0.88,0.6,0.92,"brNDC")
 pvALICE.SetFillStyle(0);
@@ -150,7 +141,8 @@ pvD.SetBorderSize(0)
 pvD.SetTextFont(42)
 pvD.SetTextSize(ltextsize)
 pvD.SetTextAlign(11)
-pvD.AddText("D^{0} #rightarrow K^{-}#pi^{+} and charge conj.")
+#pvD.AddText("D^{0} #rightarrow K^{-}#pi^{+} and charge conj.")
+pvD.AddText("D^{0} #rightarrow K^{#font[122]{-}}#pi^{+} and charge conj.")
 
 pvJet = ROOT.TPaveText(0.25,0.80,0.55,0.84,"brNDC")#0.189,0.77,0.55,0.82,"brNDC")
 pvJet.SetFillStyle(0);
@@ -158,7 +150,7 @@ pvJet.SetBorderSize(0);
 pvJet.SetTextFont(42);
 pvJet.SetTextSize(ltextsize);
 pvJet.SetTextAlign(11);
-pvJet.AddText("Charged Jets, Anti-#it{k}_{T}, #it{R} = 0."+str(int(Rpar)));
+pvJet.AddText("charged jets, anti-#scale[0.5]{ }#it{k}_{T}, #it{R} = 0."+str(int(Rpar)));
 
 pvEta = ROOT.TPaveText(0.6,0.63,0.85,0.67,"brNDC")#0.187,0.72,0.6,0.77,"brNDC");
 pvEta.SetFillStyle(0);
@@ -166,7 +158,8 @@ pvEta.SetBorderSize(0);
 pvEta.SetTextFont(42);
 pvEta.SetTextSize(ltextsize);
 pvEta.SetTextAlign(11);
-pvEta.AddText("|#it{#eta}_{lab}^{jet}| < 0."+str(int(9-Rpar)));
+#pvEta.AddText("|#it{#eta}_{lab}^{jet}| < 0."+str(int(9-Rpar)));
+pvEta.AddText("|#it{#eta}_{ch jet}| < 0."+str(int(9-Rpar)));
 
 pvpt1 = ROOT.TPaveText(0.58,0.66,0.85,0.71,"brNDC")
 pvpt1.SetFillStyle(0);
