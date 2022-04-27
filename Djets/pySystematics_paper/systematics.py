@@ -1,13 +1,13 @@
 import sys
-import matplotlib as mpl
-mpl.use('Agg')
+#import matplotlib as mpl
+#mpl.use('Agg')
 import matplotlib.pyplot as plt
 import ROOT
 import array
 import numpy
 from scipy.optimize import curve_fit
 
-from matplotlib import colors as mcolors
+#from matplotlib import colors as mcolors
 ##----------------------------------------------------------------
 #from funcsettings import * # HistoMarkers#from stylesettings import * # HistoMarkers
 from funcsettings import funcLine, HistoStyle, rootRMS, GetDigitText # HistoMarkers#from stylesettings import * # HistoMarkers
@@ -78,6 +78,8 @@ ROOT.gStyle.SetLegendBorderSize(0)
 ############## -----------------------------
 JET_or_Z=''
 JET_or_Z_title=''
+whichjetbin = ''
+whichjetbintitle = whichjetbin
 whichJetInZBins=['2_5','5_7','7_10','10_15','15_50']
 if(lensysin>2):
     whichJetInZ=int(str(sys.argv[2]))
@@ -85,11 +87,11 @@ if(lensysin>2):
     whichjetbin = '_'+whichJetInZBins[whichJetInZ]
     whichjetbintitle = whichjetbin[1:]+' GeV'
     JET_or_Z_title='#it{z}_{||,ch.jet}'
+    JET_or_Z_text=whichjetbintitle.replace('_', ' < $p_\mathrm{T,ch.jet}$ < ')
 else:
     JET_or_Z+='JET/'
-    whichjetbin = ''
-    whichjetbintitle = whichjetbin
     JET_or_Z_title='#it{p}_{T,ch.jet}'
+    JET_or_Z_text=''
 ############## -----------------------------
 if(lensysin>2):
     string_SYSTEMATICS_MULTI='$cernbox/media/jackbauer/data/z_out/R_'+R+'_finaltry/RawSys_Multi/signalExtraction/plots/Z0to102_jetbin_'+whichJetInZBins[whichJetInZ]
@@ -540,41 +542,51 @@ if(flagCutsys):
     except RuntimeError:
         print("Error")
 
-    fig=plt.figure(1);plt.grid(axis='both',color='0.95');plt.ylim(0,0.5);#plt.xticks(np.arange(min(xJESall),max(xJESall)+5,5.0));
+    fig=plt.figure(1);
+    fig.tight_layout()
+    fig.subplots_adjust(bottom=0.15)
+    plt.grid(axis='both',color='0.95');
+    plt.ylim(0,0.5);#plt.xticks(np.arange(min(xJESall),max(xJESall)+5,5.0));
     plt.xlim(fptbinsJlh[0],fptbinsJlh[-1])
     plt.plot(xCUTSlh, funcCUTS(xCUTSlh,*popt),'r-', label='fit');
     plt.plot(fptbinsJlo[0:2],[array.array('d',histCutsRMS)[0],array.array('d',histCutsRMS)[0]],'k')
-    if(lensysin==2 and R=='02'):plt.step(fptbinsJlh[1:], array.array('d',histCutsRMS2),'k', label="test");
-    else:plt.step(fptbinsJlh[1:], array.array('d',histCutsRMS)[1:-1],'k', label="test");
+    if(lensysin==2 and R=='02'):
+        plt.step(fptbinsJlh[:], array.array('d',histCutsRMS2),'k', label="test");
+    else:
+        plt.step(fptbinsJlh[:], array.array('d',histCutsRMS)[:-1],'k', label="test");
     plt.errorbar(fptbinsJC,numpy.array(array.array('d',histCutsRMS)[1:-1]),fmt='.k');
     if(lensysin==2):
-        plt.xlabel(r'jet $p_T$')
+        plt.xlabel(r'jet $p_T$', fontsize=12)
         locCUTS = 0.4
+        locCUTS_x = 3
     elif(lensysin>2):
-        plt.xlabel(r'$z_{||}^{ch}$')
-        locCUTS = 0.4
+        plt.xlabel(r'$z_{||}^{ch}$', fontsize=12)
+        locCUTS = 0.47
+        locCUTS_x = 0.42
     plt.ylabel('RMS');
-    plt.title("CUTS unc: R=0."+str(int(R)))
+    #plt.title("Topological selections, R = 0."+str(int(R)))
     uncCUTSvals = ""
     valsCUTS = abs(100*(funcCUTS(numpy.array(array.array('d',fptbinsJC)),*popt))) #100*(valsJES[i]-1)
     for i in range(len(valsCUTS)):
         uncCUTSvals += "%.1f, "%(valsCUTS[i]) #"R%s"%(R))
-    uncCUTSvals = uncCUTSvals[:-1]+' in %'
-    text_title = 'Topological selection, $R=0.'+str(int(R))
-    if(lensysin>2):
-        text_title += '\n '
-    plt.text(fptbinsJlh[1], locCUTS, uncCUTSvals,
+    uncCUTSvals = uncCUTSvals[:-2]+' in %'
+    text_title = 'Topological selections, $R$=0.'+str(int(R))
+    text_title +='\n'+JET_or_Z_text
+    text_title +='\n'+uncCUTSvals
+    plt.text(locCUTS_x, locCUTS, text_title,#uncCUTSvals,
          #rotation=45,
          horizontalalignment='left',
          verticalalignment='top',
          #multialignment='center'
+         fontsize=12,
+         linespacing = 1.5,
          )
     plt.draw()
     plt.savefig('plots/'+JET_or_Z+'3_Cuts/3_Cut_FIT'+R+whichjetbin+'.pdf')
     plt.savefig('plots/'+JET_or_Z+'3_Cuts/3_Cut_FIT'+R+whichjetbin+'.png')
     plt.waitforbuttonpress(1);input()
     plt.close()
-    if(wait):input()
+    #if(wait):input()
 ############## -----------------------------
 #histos:
 # 4. B-FD
