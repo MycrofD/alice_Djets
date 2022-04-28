@@ -563,7 +563,7 @@ if(flagCutsys):
         plt.xlabel(r'$z_{||}^{ch}$', fontsize=12)
         locCUTS = 0.47
         locCUTS_x = 0.42
-    plt.ylabel('RMS');
+    plt.ylabel('RMS', fontsize=12);
     #plt.title("Topological selections, R = 0."+str(int(R)))
     uncCUTSvals = ""
     valsCUTS = abs(100*(funcCUTS(numpy.array(array.array('d',fptbinsJC)),*popt))) #100*(valsJES[i]-1)
