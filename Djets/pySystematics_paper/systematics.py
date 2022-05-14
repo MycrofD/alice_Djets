@@ -1,6 +1,6 @@
 import sys
-#import matplotlib as mpl
-#mpl.use('Agg')
+import matplotlib as mpl
+mpl.use('Agg')
 import matplotlib.pyplot as plt
 import ROOT
 import array
@@ -471,6 +471,9 @@ if(flagCutsys):
             hhCutsratio[i].Draw('same')
         lCuts1.AddEntry(hhCutsratio[i],Cutstitles[i],"l");
     lCuts1.Draw("same");
+    print('errors:')
+    for i in range(hhCutsratio[1].GetNbinsX()):
+        print(hhCutsratio[1].GetBinContent(i+1), ':', hhCutsratio[1].GetBinError(i+1)/hhCutsratio[1].GetBinContent(i+1))
 
     #c_Cuts.SaveAs('plots/3_Cuts/3_Cuts_ratio'+R+'.pdf')
     #c_Cuts.SaveAs('plots/3_Cuts/3_Cuts_ratio'+R+'.png')
@@ -521,8 +524,8 @@ if(flagCutsys):
     yCUTS2= array.array('d',histCutsRMS)[1:-1]
     xCUTS = array.array('d',fptbinsJC)
     if(lensysin>2):
-        print(f'xCUTS{xCUTS}')
-        print(f'yCUTS{yCUTS}')
+        print('xCUTS',xCUTS)
+        print('yCUTS',yCUTS)
         if(R=='02'):
             if(whichJetInZ==2 or 4):
                 xCUTS=xCUTS[1:]
@@ -534,11 +537,11 @@ if(flagCutsys):
     xCUTSlh= numpy.array(array.array('d',fptbinsJlh[:]))
     print(xCUTS, yCUTS)
     funcCUTS = funcLine #funcJES = funcBola
-    print(f'curve_fit parameters:{funcCUTS}, {xCUTS}, {yCUTS}')
+    print('curve_fit parameters:',funcCUTS, xCUTS, yCUTS)
     try:
         popt, pcov = curve_fit(funcCUTS, numpy.array(xCUTS), numpy.array(yCUTS))
-        print(f'popt:{popt}')
-        print(f'pcov:{pcov}')
+        print('popt:',popt)
+        print('pcov:',pcov)
     except RuntimeError:
         print("Error")
 
@@ -584,7 +587,7 @@ if(flagCutsys):
     plt.draw()
     plt.savefig('plots/'+JET_or_Z+'3_Cuts/3_Cut_FIT'+R+whichjetbin+'.pdf')
     plt.savefig('plots/'+JET_or_Z+'3_Cuts/3_Cut_FIT'+R+whichjetbin+'.png')
-    plt.waitforbuttonpress(1);input()
+    #plt.waitforbuttonpress(1);input()
     plt.close()
     #if(wait):input()
 ############## -----------------------------
