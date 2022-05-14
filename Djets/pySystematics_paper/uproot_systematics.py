@@ -18,6 +18,7 @@ import mplhep
 #mplhep.style.use("ALICE")
 plt.style.use(mplhep.style.ALICE)
 def uncertainty(hist_A, hist_B, operation):
+    f = 0*hist_A.values()
     if operation == 'divide':
         f = hist_A.values() / hist_B.values()
     if operation == 'mupltiply':
@@ -65,13 +66,13 @@ Rtitle=R #for accessing the directories
 
 #ROOTColors = [ROOT.kRed+2, ROOT.kGreen+2, ROOT.kBlue+2, ROOT.kOrange+2, ROOT.kViolet+2, ROOT.kYellow+2, ROOT.kCyan-6, ROOT.kAzure+2, ROOT.kMagenta-6,ROOT.kGreen-8,ROOT.kYellow-8]
 cernbox = os.environ['cernbox']
-datafileFinal = uproot.open(f"{cernbox}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR{R}_paperCuts/Default/unfolding_Bayes_5/finalSpectra/JetPtSpectrum_final.root")
-datafileFD = uproot.open(f"{cernbox}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR{R}_paperCuts/Default/FDsubtraction/JetPtSpectrum_FDsub.root")
-datafileUnf = uproot.open(f"{cernbox}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR{R}_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root")
-datafileJES = uproot.open(f"{cernbox}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR{R}_paperCuts/JES/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root")
+datafileFinal = uproot.open(f"{cernbox}//home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR{R}_paperCuts/Default/unfolding_Bayes_5/finalSpectra/JetPtSpectrum_final.root")
+datafileFD = uproot.open(f"{cernbox}//home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR{R}_paperCuts/Default/FDsubtraction/JetPtSpectrum_FDsub.root")
+datafileUnf = uproot.open(f"{cernbox}//home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR{R}_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root")
+datafileJES = uproot.open(f"{cernbox}//home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR{R}_paperCuts/JES/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root")
 if(lensysin>2):
-    datafileUnf = uproot.open(f"{cernbox}/media/jackbauer/data/z_out/R_{R}_finaltry/unfolding/Bayes/alljetz2D/unfold2DoutFileRegBayesSys5.root")
-    datafileJES = uproot.open(f"{cernbox}/media/jackbauer/data/z_out/R_{R}_finaltry/JES/unfolding/Bayes/alljetz2D/unfold2DoutFileRegBayesSys5.root")
+    datafileUnf = uproot.open(f"{cernbox}//media/jackbauer/data/z_out/R_{R}_finaltry/unfolding/Bayes/alljetz2D/unfold2DoutFileRegBayesSys5.root")
+    datafileJES = uproot.open(f"{cernbox}//media/jackbauer/data/z_out/R_{R}_finaltry/JES/unfolding/Bayes/alljetz2D/unfold2DoutFileRegBayesSys5.root")
 
 #######
 flagMulti=0
@@ -87,52 +88,70 @@ flagJES=0
 flagStat=0
 #######
 ############### -----------------------------
+sys_files = {
+        'zch':{
+            'file_cuts':[
+                f"{cernbox}//media/jackbauer/data/z_out/R_{R}_finaltry/FDsubtraction/outFD_1.root",
+                f"{cernbox}//media/jackbauer/data/z_out/R_{R}_finaltry/SQ2/FDsubtraction/outFD_1.root",
+                f"{cernbox}//media/jackbauer/data/z_out/R_{R}_finaltry/SQ3/FDsubtraction/outFD_1.root",
+                f"{cernbox}//media/jackbauer/data/z_out/R_{R}_finaltry/SQ5/FDsubtraction/outFD_1.root",
+                f"{cernbox}//media/jackbauer/data/z_out/R_{R}_finaltry/SQ6/FDsubtraction/outFD_1.root",
+                ]
+            }
+        }
 ##histos:
 # 3. Cutsys
-cutindices=['','2','3','5','6']
 Cutstitles=['def','cut1','cut2','cut3','cut4']
-sizeCutsys=5#
+size_sys=5
+
+file_sys = ''
+hist_sub = ''
 if(flagCutsys):
-    if(lensysin>2):
-        datafileCutsys=[uproot.open(f"{cernbox}/media/jackbauer/data/z_out/R_{R}_finaltry/FDsubtraction/outFD_1.root")]
-        hCuts=[datafileCutsys[0][f'hsub_c{int(jetbin)+1}']]
-        for i in range(1,sizeCutsys):
-            datafileCutsys.append(uproot.open(f"{cernbox}/media/jackbauer/data/z_out/R_{R}_finaltry/SQ{cutindices[i]}/FDsubtraction/outFD_1.root"))
-            hCuts.append(datafileCutsys[i][f'hsub_c{int(jetbin)+1}'])
-    else:
-        datafileCutsys = [datafileFD]
-        hCuts=[datafileFD['hData_binned_sub']];
-        for i in range(1,sizeCutsys):
-            datafileCutsys.append(
-                    uproot.open(f"{cernbox}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR{R}_paperCuts/SQ{cutindices[i]}/Default/FDsubtraction/JetPtSpectrum_FDsub.root")
-                    )
-            hCuts.append(datafileCutsys[i]['hData_binned_sub'])
-    #### -----------------------------
-    hhCutsratio=[]
-    print(uncertainty(hCuts[1],hCuts[0], 'divide')['relative_uncertainty'])
-    for i in range(sizeCutsys):
-        hhCutsratio.append(Hist(hCuts[i]))
-        hhCutsratio[i].values = hCuts[i].values()/hCuts[0].values()
-        hhCutsratio[i].errors = uncertainty(hCuts[i],hCuts[0], 'divide')['sigma']
+    file_sys = 'file_cuts'
+    hist_sub = 'hsub_c'
+
+datafiles = []
+hists = []
+observable = 'zch' if lensysin > 2 else 'jetpt'
+
+for i in range(size_sys):
+    datafiles.append(uproot.open(sys_files[observable][file_sys][i]))
+    hists.append(datafiles[i][f'{hist_sub}{int(jetbin)+1}'])
 
 
-    # plot:
-    fig, ax = plt.subplots()
-    
-    y    = hhCutsratio[1].values
-    yerr = hhCutsratio[1].errors
-    xerr = [0.1,0.05,0.05,0.05,0.06]
-    x = fptbinsJC
-    ax.errorbar(x, y, yerr, xerr, fmt='o', linewidth=2)
-    
-    ax.set(xlim=(0.4, 1.02), #xticks=numpy.arange(1, 8),
-           ylim=(-0.1, 2.5), #yticks=numpy.arange(1, 8)
-    )
-    
-    plt.draw()
-    plt.waitforbuttonpress(1)
-    input()
-    plt.close()
+    # datafile = [datafileFD]
+    # hists=[datafileFD['hData_binned_sub']];
+    # for i in range(1,size_sys):
+    #     datafile.append(
+    #             uproot.open(f"{cernbox}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR{R}_paperCuts/SQ{cutindices[i]}/Default/FDsubtraction/JetPtSpectrum_FDsub.root")
+    #             )
+    #     hists.append(datafile[i]['hData_binned_sub'])
+#### -----------------------------
+hist_ratios = []
+print(uncertainty(hists[1],hists[0], 'divide')['relative_uncertainty'])
+for i in range(size_sys):
+    hist_ratios.append(Hist(hists[i]))
+    hist_ratios[i].values = hists[i].values()/hists[0].values()
+    hist_ratios[i].errors = uncertainty(hists[i],hists[0], 'divide')['sigma']
+
+
+# plot:
+fig, ax = plt.subplots()
+
+y    = hist_ratios[1].values
+yerr = hist_ratios[1].errors
+xerr = [0.1,0.05,0.05,0.05,0.06]
+x = fptbinsJC
+ax.errorbar(x, y, yerr, xerr, fmt='o', linewidth=2)
+
+ax.set(xlim=(0.4, 1.02), #xticks=numpy.arange(1, 8),
+       ylim=(-0.1, 2.5), #yticks=numpy.arange(1, 8)
+)
+
+plt.draw()
+plt.waitforbuttonpress(1)
+input()
+plt.close()
 
 
     
