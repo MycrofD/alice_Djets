@@ -142,6 +142,8 @@ def funcLine(x, a, b):
     return a*x + b
 
 def funcBola(x, a, b, c):
-    return a + np.sqrt(b*(x-c))
+    #return a + np.sqrt(b*(x-c))
+    return a*x*x + b*x + c
+
 def funcBola2(x, a, b, c):
     return a - np.sqrt(b*(x-c))
