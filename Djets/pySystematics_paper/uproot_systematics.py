@@ -88,6 +88,21 @@ flagJES=0
 flagStat=0
 #######
 ############### -----------------------------
+## MULTI-TRIAL
+size_multi = 96
+string_SYSTEMATICS_MULTI=f"{cernbox}//home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/FinalSys/RawSysFinal_DzeroR{R}_paperCuts/RawSys_Multi/Default/signalExtraction"
+if(flagMulti):
+    datafile_multi = [uproot.open(string_SYSTEMATICS_MULTI+"/JetPtSpectra_SB_eff.root")]
+    h_multi = [datafile_multi[0]['hjetptspectrumReb']]
+
+    for i in range(size_multi):
+        try:
+            datafile_multi.append(uproot.open(string_SYSTEMATICS_MULTI+"/JetPtSpectra_SB_eff.root"))
+            h_multi.append(datafile_multi[0]['hjetptspectrumReb'])
+
+
+
+############### -----------------------------
 sys_files = {
         'zch':{
             'file_cuts':[
