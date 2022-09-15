@@ -130,6 +130,22 @@ fi
 #     boundSigma=0, fixedMass=1
 # fixed width σ = σMC, fixed mean mD0 = mPDG
 #     boundSigma=1, fsigmafactor=1, fixedMass=1
+#
+# what is missing from sigma mass combination?
+# 4 sigma, 2 mass
+# free s, free m- OK
+# free s, fixed m-OK
+# MC s, free m-OK
+# MC s, fixed m-OK
+# 1.1 s, free m-OK
+# 1.1 s, fixed m
+# 0.9 s, free m-OK
+# 0.9 s, fixed m
+# So, 162 free sigma OK.
+# Next 162: MC sigma OK.
+# From third 162, 162/3, /2
+# From fourth 162, 162/3, /2
+#
 
 # background functions: exponential, linear,
 #     bkgType [0, 1]
