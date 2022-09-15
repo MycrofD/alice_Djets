@@ -103,3 +103,55 @@ fsigmafactor=1
 
 fi
 ########################################################
+## for compatibility with 7 TeV and 13 TeV:
+#• free width σ, free mean mD0 ,
+#• fixed width σ = σMC, free mean mD0 ,
+#• fixed width σ = 0.85 · σMC, free mean mD0 ,
+#• fixed width σ = 1.15 · σMC, free mean mD0 ,
+#• free width σ, fixed mean mD0 = mPDG,
+#• fixed width σ = σMC, fixed mean mD0 = mPDG.
+
+#and following variations were considered on the fitting procedure
+#• background functions: exponential, linear,
+#• lower limit of fit range: 1.72, 1.74 GeV/c2,
+#• upper limit of fit range: 2.00, 2.03 GeV/c2,
+#• mass bin width: 5 MeV/c2, 10 MeV/c2
+
+# So, which numbers do they belong to in our trials 
+# free width σ, free mean mD0 - 
+#     boundSigma=0, fixedMass=0
+# fixed width σ = σMC, free mean mD0
+#     boundSigma=1, fsigmafactor=1, fixedMass=0
+# fixed width σ = 0.85 (0.9) · σMC, free mean mD0
+#     boundSigma=1, fsigmafactor=0.9, fixedMass=0
+# fixed width σ = 1.15 (1.1) · σMC, free mean mD0 ,
+#     boundSigma=1, fsigmafactor=1.1, fixedMass=0
+# free width σ, fixed mean mD0 = mPDG,
+#     boundSigma=0, fixedMass=1
+# fixed width σ = σMC, fixed mean mD0 = mPDG
+#     boundSigma=1, fsigmafactor=1, fixedMass=1
+
+# background functions: exponential, linear,
+#     bkgType [0, 1]
+# lower limit of fit range: 1.72, 1.74 GeV/c2,
+#     minfSys in 
+# upper limit of fit range: 2.00, 2.03 GeV/c2,
+# mass bin width: 5 MeV/c2, 10 MeV/c2
+#     fMassBinWidthFactor in [2, 1]
+
+
+
+
+
+# background: polynomials
+# (648/4) = 162 for each sigma
+# bkgtype: polynomial. divide by 3, remove third component.
+# index number is 1 less than plotted trial number 
+# 162/3 = 54
+# index number in [108, 161], [270, 323], [432, 485], [594, 647]
+#
+# mass bin width: remove 2.5 MeV, use only 5, 10 MeV. 
+# i.e. remove 1 from [2,4,1] from the for loop
+# e.g. index number, remove 2 from 0,1,2. Remove 5 from 3, 4, 5 etc.
+# index number in [3x-1] for x in range(1,648/3=216)
+#
