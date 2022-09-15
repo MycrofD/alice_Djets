@@ -43,17 +43,47 @@ boundSigma=0;fsigmafactor=1;fixedMass=0;bkgType=0;minfSys=1.71;maxfSys=2.1;fMass
 
 # Side-Band Signal ranges
 if [ $dorawsysSB -eq 1 ]; then
-boundSigma=0;fsigmafactor=1;fixedMass=0;bkgType=0;minfSys=1.71;maxfSys=2.1;fMassBinWidthFactor=2                                                                                                                   
-ctry=0
-  for sigmaWindow in 2 3; do
-    for SBout in 9 8; do
-      for SBint in 4 3.5 4.5; do
+boundSigma=0;fsigmafactor=1;fixedMass=0;bkgType=0;minfSys=1.71;maxfSys=2.1;fMassBinWidthFactor=2                                                                                   
+
+ctry=1
+# 2, (3,8)
+sigmaWindow=2;SBout=8;SBint=3
     root -l -b -q signalExtraction_SB.C'("'$dataFile'", '$isEff', "'$effFile'",'$isRefl', "'$refFile'", '$ispostfix', "'$postfix'", "'$dirOut'", 1, '$isMoreFile',"'$prod'",'$isprefix','$boundSigma','$fsigmafactor','$fixedMass','$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$ctry','$dorawsysSB','$sigmaWindow','-$SBout','-$SBint','$SBint','$SBout')'
 ctry=$[ctry+1]
-      done
-    done
-  done
+# 2, (4,10)
+sigmaWindow=2;SBout=10;SBint=4
+    root -l -b -q signalExtraction_SB.C'("'$dataFile'", '$isEff', "'$effFile'",'$isRefl', "'$refFile'", '$ispostfix', "'$postfix'", "'$dirOut'", 1, '$isMoreFile',"'$prod'",'$isprefix','$boundSigma','$fsigmafactor','$fixedMass','$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$ctry','$dorawsysSB','$sigmaWindow','-$SBout','-$SBint','$SBint','$SBout')'
+ctry=$[ctry+1]
+# 2, (4,12)
+sigmaWindow=2;SBout=12;SBint=4
+    root -l -b -q signalExtraction_SB.C'("'$dataFile'", '$isEff', "'$effFile'",'$isRefl', "'$refFile'", '$ispostfix', "'$postfix'", "'$dirOut'", 1, '$isMoreFile',"'$prod'",'$isprefix','$boundSigma','$fsigmafactor','$fixedMass','$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$ctry','$dorawsysSB','$sigmaWindow','-$SBout','-$SBint','$SBint','$SBout')'
+ctry=$[ctry+1]
+# 2, (4,15)
+sigmaWindow=2;SBout=15;SBint=4
+    root -l -b -q signalExtraction_SB.C'("'$dataFile'", '$isEff', "'$effFile'",'$isRefl', "'$refFile'", '$ispostfix', "'$postfix'", "'$dirOut'", 1, '$isMoreFile',"'$prod'",'$isprefix','$boundSigma','$fsigmafactor','$fixedMass','$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$ctry','$dorawsysSB','$sigmaWindow','-$SBout','-$SBint','$SBint','$SBout')'
+ctry=$[ctry+1]
+# 3, (4,9)
+sigmaWindow=3;SBout=9;SBint=4
+    root -l -b -q signalExtraction_SB.C'("'$dataFile'", '$isEff', "'$effFile'",'$isRefl', "'$refFile'", '$ispostfix', "'$postfix'", "'$dirOut'", 1, '$isMoreFile',"'$prod'",'$isprefix','$boundSigma','$fsigmafactor','$fixedMass','$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$ctry','$dorawsysSB','$sigmaWindow','-$SBout','-$SBint','$SBint','$SBout')'
+ctry=$[ctry+1]
+# 3, (4,12)
+sigmaWindow=3;SBout=12;SBint=4
+    root -l -b -q signalExtraction_SB.C'("'$dataFile'", '$isEff', "'$effFile'",'$isRefl', "'$refFile'", '$ispostfix', "'$postfix'", "'$dirOut'", 1, '$isMoreFile',"'$prod'",'$isprefix','$boundSigma','$fsigmafactor','$fixedMass','$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$ctry','$dorawsysSB','$sigmaWindow','-$SBout','-$SBint','$SBint','$SBout')'
+ctry=$[ctry+1]
+
 fi
+
+
+#ctry=0
+#  for sigmaWindow in 2 3; do
+#    for SBout in 9 8; do
+#      for SBint in 4 3.5 4.5; do
+#    root -l -b -q signalExtraction_SB.C'("'$dataFile'", '$isEff', "'$effFile'",'$isRefl', "'$refFile'", '$ispostfix', "'$postfix'", "'$dirOut'", 1, '$isMoreFile',"'$prod'",'$isprefix','$boundSigma','$fsigmafactor','$fixedMass','$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$ctry','$dorawsysSB','$sigmaWindow','-$SBout','-$SBint','$SBint','$SBout')'
+#ctry=$[ctry+1]
+#      done
+#    done
+#  done
+#fi
 
 ################################################
 ############### :->Multi-trial
