@@ -69,12 +69,13 @@ if [ $dorawsysMT -eq 1 ]; then
 ctry=1
 fsigmafactor=1
 
+# (1)*2*2*2*2*2=32
   for boundSigma in 0; do
-    for bkgType in 0 1 2; do
+    for bkgType in 0 1; do
       for fixedMass in 0 1; do
-        for minfSys in 1.71 1.72 1.70; do
-          for maxfSys in 2.1 2.09 2.11; do
-            for fMassBinWidthFactor in 2 4 1; do
+        for minfSys in 1.72 1.74; do
+          for maxfSys in 2.00 2.03; do
+            for fMassBinWidthFactor in 2 4; do
     root -l -b -q signalExtraction_SB.C'("'$dataFile'", '$isEff', "'$effFile'",'$isRefl', "'$refFile'", '$ispostfix', "'$postfix'", "'$dirOut'", 1, '$isMoreFile',"'$prod'",'$isprefix','$boundSigma','$fsigmafactor','$fixedMass','$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$ctry','$dorawsysMT')'
     ctry=$[ctry+1]
             done #massbinwidth
@@ -84,13 +85,33 @@ fsigmafactor=1
     done #bkgtype
   done #boundsigma
 
+
+# (1*1*)2*2*2*2*2=32
   for boundSigma in 1; do
-  for fsigmafactor in 1 1.1 0.9; do
-    for bkgType in 0 1 2; do
+  for fsigmafactor in 1; do
+    for bkgType in 0 1; do
       for fixedMass in 0 1; do
-        for minfSys in 1.71 1.72 1.70; do
-          for maxfSys in 2.1 2.09 2.11; do
-            for fMassBinWidthFactor in 2 4 1; do
+        for minfSys in 1.72 1.74; do
+          for maxfSys in 2.00 2.03; do
+            for fMassBinWidthFactor in 2 4; do
+    root -l -b -q signalExtraction_SB.C'("'$dataFile'", '$isEff', "'$effFile'",'$isRefl', "'$refFile'", '$ispostfix', "'$postfix'", "'$dirOut'", 1, '$isMoreFile',"'$prod'",'$isprefix','$boundSigma','$fsigmafactor','$fixedMass','$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$ctry','$dorawsysMT')'
+    ctry=$[ctry+1]
+            done #massbinwidth
+          done #maxfsys
+        done #minfsys
+      done #fixedMass
+    done #bkgtype
+  done #fsigmafactor
+  done #boundsigma
+
+# (1*)*2*2*1*2*2*2=32
+  for boundSigma in 1; do
+  for fsigmafactor in 1.1 0.9; do
+    for bkgType in 0 1; do
+      for fixedMass in 0; do
+        for minfSys in 1.72 1.74; do
+          for maxfSys in 2.00 2.03; do
+            for fMassBinWidthFactor in 2 4; do
     root -l -b -q signalExtraction_SB.C'("'$dataFile'", '$isEff', "'$effFile'",'$isRefl', "'$refFile'", '$ispostfix', "'$postfix'", "'$dirOut'", 1, '$isMoreFile',"'$prod'",'$isprefix','$boundSigma','$fsigmafactor','$fixedMass','$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$ctry','$dorawsysMT')'
     ctry=$[ctry+1]
             done #massbinwidth
@@ -102,6 +123,7 @@ fsigmafactor=1
   done #boundsigma
 
 fi
+
 ########################################################
 ## for compatibility with 7 TeV and 13 TeV:
 #• free width σ, free mean mD0 ,
