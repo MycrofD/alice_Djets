@@ -11,22 +11,23 @@
 roounfoldpwd=${34}
 ############### set up the output directory name (the whole analysis output will be saved there)
 currDir=`pwd`
-outdirBase=$1
-outdir=$2
-conffile=$3
-Dmeson=$4           # 0: D0, 1: D*
+outdirBase=${1}
+outdir=${2}
+conffile=${3}
+Dmeson=${4}           # 0: D0, 1: D*
 
 ###### !!!! CONFIGURE THE FLAGS BELOW !!!!!!!!
 ############### analysis flags (you can switch some of the flags to run on a part of the analysis chain)
 # usually you don't need to change this part
-isSignal=0          # if to extract signal from the inv. mass
-isEffPrompt=0       # if to extract prompt D-jet efficiency
-isEffNonPrompt=0    # if to extract non-prompt D-jet efficiency
-isDetRMPrompt=0     # if to extract prompt D-jet response matrix
-isDetRMNonPrompt=0  # if to extract non-prompt D-jet response matrix
-isFDSub=0           # if to subtract feed-down
-isUnfolding=0       # if to perform unfolding
-isFinalSpectra=1    # if to extract the final x-section
+isSignal=1          # if to extract signal from the inv. mass
+isEffPrompt=1       # if to extract prompt D-jet efficiency
+isEffNonPrompt=1    # if to extract non-prompt D-jet efficiency
+isDetRMPrompt=1     # if to extract prompt D-jet response matrix
+isDetRMNonPrompt=1  # if to extract non-prompt D-jet response matrix
+isFDSub=1           # if to subtract feed-down
+isUnfolding=1       # if to perform unfolding
+isClosure=1         # if to do closure test. requires FD. separates MC into RM and MCdata
+isFinalSpectra=0    # if to extract the final x-section
 
 isCsim=0            # switch this flag on if you haven't prepared output of the simulations yet, it takes time -- if the simulation output directory is empty the simulations will be run anyway
 isBsim=0            # switch this flag on if you haven't prepared output of the simulations yet with a current efficiencies, it takes time -- if the simulation output directory is empty the simulations will be run anyway
@@ -236,11 +237,11 @@ fi
 cd $RMDir
 
 if [ $isDetRMPrompt -eq 1 ]; then
-    aliroot -l -b -q DetRM.C'(1,"'$detRMPrompt'","'$RMDirOut'",'$ispostfix',"'$postfix'",'$isprefix')'
+    aliroot -l -b -q DetRM.C'(1,"'$detRMPrompt'","'$RMDirOut'",'$ispostfix',"'$postfix'",'$isprefix',"'$effFilePrompt'")'
 fi
 
 if [ $isDetRMNonPrompt -eq 1 ]; then
-  aliroot -l -b -q DetRM.C'(0,"'$detRMNonPrompt'","'$RMDirOut'",'$ispostfixFD',"'$postfixFD'",'$isprefix')'
+  aliroot -l -b -q DetRM.C'(0,"'$detRMNonPrompt'","'$RMDirOut'",'$ispostfixFD',"'$postfixFD'",'$isprefix',"'$effFileNonPrompt'")'
 fi
 
 detRMFilePrompt=$RMDirOut/DetMatrix_prompt.root
@@ -323,12 +324,24 @@ fi
 
 
 ################################################
+############### Closure test: Detector Response
+################################################
+cd $RMDir
+
+if [ $isDetRMPrompt -eq 1 ]; then
+    aliroot -l -b -q DetRM.C'(1,"'$detRMPrompt'","'$RMDirOut'",'$ispostfix',"'$postfix'",'$isprefix',"'$effFilePrompt'","'$signalBCorrFile'",1)'
+fi
+
+detRMFilePrompt=$RMDirOut/DetMatrix_prompt.root
+cd $currDir
+
+################################################
 ############### Unfolding
 ################################################
 if [ $isUnfolding -eq 1 ]; then
 
   if [ ! -f $detRMFilePrompt ]; then
-    echo "!!! Non-prompt det RM file: \"$detRMFilePrompt\"  does not exist !!!! "
+    echo "!!! Prompt det RM file: \"$detRMFilePrompt\"  does not exist !!!! "
     exit 1
   fi
 
@@ -338,12 +351,14 @@ if [ $isUnfolding -eq 1 ]; then
   cd $currDir
 
   cd $unfoldingDir
-      if [ $unfType -eq  0 ]; then
-          aliroot -l -b -q unfold_Bayes.C'("'$roounfoldpwd'","'$signalBCorrFile'","'$detRMFilePrompt'","'$bkgRMFile'","'$unfoldingDirOut'",'$regPar','$isPrior','$priorType','$isBkgRM','$isFDUpSys','$isFDDownSys')'
-      fi
-      if [ $unfType -eq  1 ]; then
-          aliroot -l -b -q unfold_SVD.C'("'$roounfoldpwd'","'$signalBCorrFile'","'$detRMFilePrompt'","'$bkgRMFile'","'$unfoldingDirOut'",'$regPar','$isPrior','$priorType','$isBkgRM','$isFDUpSys','$isFDDownSys')'
-      fi
+#      if [ $unfType -eq  0 ]; then
+#          #aliroot -l -b -q unfold_Bayes.C'("'$roounfoldpwd'","'$signalBCorrFile'","'$detRMFilePrompt'","'$bkgRMFile'","'$unfoldingDirOut'",'$regPar','$isPrior','$priorType','$isBkgRM','$isFDUpSys','$isFDDownSys')'
+#          aliroot -l -b -q unfold.C'("'$roounfoldpwd'","'$signalBCorrFile'","'$detRMFilePrompt'","'$bkgRMFile'","'$unfoldingDirOut'",'$regPar','$isPrior','$priorType','$isBkgRM','$isFDUpSys','$isFDDownSys','$unfType')'
+#      fi
+#      if [ $unfType -eq  1 ]; then
+#          #aliroot -l -b -q unfold_SVD.C'("'$roounfoldpwd'","'$signalBCorrFile'","'$detRMFilePrompt'","'$bkgRMFile'","'$unfoldingDirOut'",'$regPar','$isPrior','$priorType','$isBkgRM','$isFDUpSys','$isFDDownSys')'
+#      fi
+      aliroot -l -b -q unfold.C'("'$roounfoldpwd'","'$signalBCorrFile'","'$detRMFilePrompt'","'$bkgRMFile'","'$unfoldingDirOut'",'$regPar','$isPrior','$priorType','$isBkgRM','$isFDUpSys','$isFDDownSys','$unfType','$isClosure')'
 
   cd $currDir
 fi
@@ -367,7 +382,7 @@ if [ ! -d "$PromptSimDirOut" ] || [ $isCsim -eq 1 ]; then
 cd $SimDir
   ./doGetSimOut.csh $nSimFilesC $simFilesDir 0 1 1 0 $effFilePrompt $effFileNonPrompt $PromptSimDirOut
   #plot all the variations
-  aliroot -l -b -q plotSimSpectra.C'(0,1,1,0,"'$PromptSimDirOut'","'$PromptSimDirOut'")'
+  #aliroot -l -b -q plotSimSpectra.C'(0,1,1,0,"'$PromptSimDirOut'","'$PromptSimDirOut'")'
 cd $currDir
 fi
 
