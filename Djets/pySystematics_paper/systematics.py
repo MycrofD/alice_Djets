@@ -10,7 +10,7 @@ from scipy.optimize import curve_fit
 #from matplotlib import colors as mcolors
 ##----------------------------------------------------------------
 #from funcsettings import * # HistoMarkers#from stylesettings import * # HistoMarkers
-from funcsettings import funcLine, HistoStyle, rootRMS, GetDigitText # HistoMarkers#from stylesettings import * # HistoMarkers
+from funcsettings import funcLine, HistoStyle, rootRMS, GetDigitText, yieldPtrials # HistoMarkers#from stylesettings import * # HistoMarkers
 #--------------------------------------------------
 if len(sys.argv)==1:
     print("   === Usage example: python file.py R ")
@@ -481,10 +481,13 @@ if(flagCutsys):
     c_Cuts.SaveAs('plots/'+JET_or_Z+'3_Cuts/3_Cuts_ratio'+R+whichjetbin+'.png')
     #### -----------------------------RMS
     c_CutsRMS = ROOT.TCanvas("cCutsRMS","cCutsRMS",900,600)
+    l_CutsRMS = ROOT.TLegend(0.12,0.70,0.38,0.88);
     histCutsRMS = rootRMS(hhCutsratio)
     histCutsRMS.GetYaxis().SetRangeUser(0,1);histCutsRMS.SetLineColor(ROOT.kBlue+2);
     histCutsRMS.SetFillColor(ROOT.kBlue+2);histCutsRMS.SetFillStyle(3654)
-    histCutsRMS.GetYaxis().SetTitle("RMS");histCutsRMS.Draw()
+    histCutsRMS.GetYaxis().SetTitle("RMS      ");
+    histCutsRMS.SetTitle("")
+    histCutsRMS.Draw()
     # extra for R 02
     #histCutsRMS2= rootRMS(hhCutsratio[0:1]+hhCutsratio[3:])
     if(lensysin==2):
@@ -492,6 +495,7 @@ if(flagCutsys):
     elif(lensysin>2):
         histCutsRMS2 = rootRMS(hhCutsratio,0.6)
     histCutsRMS3 = histCutsRMS.Clone('histCutsRMS3')
+
 
     ttCuts2 = ROOT.TText(fptbinsJlh[-2],0.8,GetDigitText(histCutsRMS2,fptbinsJC))#[-10:])
     #ttCuts2 = ROOT.TText(5,0.6,GetDigitText(histCutsRMS3,fptbinsJC))
@@ -536,7 +540,8 @@ if(flagCutsys):
         xCUTS = xCUTS[3:-1]
     xCUTSlh= numpy.array(array.array('d',fptbinsJlh[:]))
     print(xCUTS, yCUTS)
-    funcCUTS = funcLine #funcJES = funcBola
+    funcCUTS = funcLine  
+    #funcCUTS = funcBola
     print('curve_fit parameters:',funcCUTS, xCUTS, yCUTS)
     try:
         popt, pcov = curve_fit(funcCUTS, numpy.array(xCUTS), numpy.array(yCUTS))
@@ -585,8 +590,8 @@ if(flagCutsys):
          linespacing = 1.5,
          )
     plt.draw()
-    plt.savefig('plots/'+JET_or_Z+'3_Cuts/3_Cut_FIT'+R+whichjetbin+'.pdf')
-    plt.savefig('plots/'+JET_or_Z+'3_Cuts/3_Cut_FIT'+R+whichjetbin+'.png')
+    plt.savefig('plots/'+JET_or_Z+'3_Cuts/3_Cut_FIT_2'+R+whichjetbin+'.pdf')
+    plt.savefig('plots/'+JET_or_Z+'3_Cuts/3_Cut_FIT_2'+R+whichjetbin+'.png')
     #plt.waitforbuttonpress(1);input()
     plt.close()
     #if(wait):input()
