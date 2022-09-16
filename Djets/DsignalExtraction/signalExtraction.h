@@ -39,10 +39,16 @@
 
     TString fReflFilename;
     TString plotsDir;
-    // mass fit params
+    // raw yield multi trial
+    int bSigma=0;
+    bool fMass=0;
+    double fsigfactor=1;
 
+    // mass fit params
     //------- efficiency
     double *efficiency = 0x0;
+    double *sigmaMC = 0x0;
+    double *meanMC = 0x0;
 
     TH1F* hmass[fptbinsDN];
     TH1F *hmass_l[fptbinsDN];
