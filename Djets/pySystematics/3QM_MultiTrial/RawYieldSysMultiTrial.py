@@ -9,7 +9,7 @@
 #matplotlib.use('Agg')
 #matplotlib.use('TkAgg')
 ##matplotlib.use('Qt5Agg')
-import os, os.path
+import os, os.path, sys
 import array
 import matplotlib.pyplot as plt
 import ROOT as RT
@@ -26,38 +26,6 @@ import random
 # 2: which runs zrun_mainsys.csh
 # 3: which runs zrun_sys.csh
 # reading bin contents of each bin of a histogram
-def BinValues(myhist): # return array of bin contents
-    c = [] # initializing empty list to store bin contents
-    bins = myhist.GetXaxis().GetNbins()
-    for i in range(1,bins+1):
-        bincenter = myhist.GetBinCenter(i)
-        binnum = myhist.GetXaxis().FindBin(bincenter)
-        c.append(myhist.GetBinContent(binnum))
-    return np.array(c)
-
-# FinalRMS()
-def FinalRMS(histarrays, defaulthist): # needs array of arrays, i.e. array of TH1 histograms
-    squaresum, trials = 0, len(histarrays)
-    for i in range(trials):
-        squaresum += ( BinValues(histarrays[i]) - BinValues(defaulthist) )**2
-    meansquare = squaresum/trials
-    rms = np.sqrt(meansquare)/BinValues(defaulthist)
-    return rms*100
-
-# Unnecessary FinalAverage()
-def FinalAverage(arrays): # return average array of given arrays
-    sumi, trials = 0, len(arrays)
-    for i in range(trials):
-        sumi += BinValues(myhist)
-    return sumi/trials
-        #print(m/count,count)
-# variation ratios
-def varRatio(histarrays, defaulthist): # needs array of arrays, i.e. array of TH1 histograms
-    trials = len(histarrays)
-    listOfRatios = []
-    for i in range(trials):
-        listOfRatios.append(BinValues(histarrays[i]) / BinValues(defaulthist))
-    return np.array(listOfRatios)
 #--------------------------------------------------
 # variable/constant values used
 fptbinsZN = 6

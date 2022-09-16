@@ -1,4 +1,4 @@
-import os, os.path
+import os, os.path, sys
 import matplotlib.pyplot as plt
 import ROOT as RT
 import rootpy as rp
@@ -6,7 +6,6 @@ import numpy as np
 import scipy as sp
 from rootpy.io import root_open
 import array
-import sys
 
 from matplotlib import colors as mcolors
 ##----------------------------------------------------------------
@@ -20,8 +19,6 @@ from ROOT import TCanvas, TLegend, TLine
 
 ## for R04 and R06, hDataProjectX_4 was corresponding to hUnfProjectX_3
 ## Rerun unfolding for R04 and R06 to get new better settings as is happening for R02
-
-
 
 
 if len(sys.argv)==1:
