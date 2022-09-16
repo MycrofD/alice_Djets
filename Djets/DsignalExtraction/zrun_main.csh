@@ -21,8 +21,8 @@ EOS_local=
 oneD=1    #SUPREME FLAG FOR 1D, in case only 2D stuff is needed
 #--------------------------
 flagEff=1 #1 Getting efficiencies and MC sigmas in different jetpt intervals for all Dpt bins
-flagRef=1 #2 Reflections for different jetpt intervals for all Dpt bins
-flagSBs=1 #3 Side Band subtraction method
+flagRef=0 #2 Reflections for different jetpt intervals for all Dpt bins
+flagSBs=0 #3 Side Band subtraction method
 flagSim=0 #4 Simulation for non-prompt and prompt D-jets
 
 # 2D settings
@@ -31,11 +31,12 @@ doUnfold=0
 
 OUT=${EOS_local}/media/jackbauer/data/z_out/R_0
 OUTsuffix=_finaltry
+#OUTsuffix=_finaltry_pPb
 
 # Running for all required bins of jet pT
 #----------------------------------------- #{5.0, 7.0, 10.0, 15.0, 36.0, 5.0, 15.0, 30.0, 15.0, 50.0, 10.0, 16.0, 36.0, 3.0, 5.0};
-#for R in 2; do 
-for R in 4 6; do
+#for R in 2 3 4 6; do
+for R in 3; do
 if [ $defaultrun -eq 1 ]; then
     if [ $oneD -eq 1 ]; then
 	    for thing in 1 2 3 9 24; do
