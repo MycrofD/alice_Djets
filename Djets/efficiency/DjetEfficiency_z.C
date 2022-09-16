@@ -10,7 +10,7 @@
 using namespace std;
 
 //float Dptmin = fptbinsDA[0], Dptmax = fptbinsDA[fptbinsDN];
-float jetptmin = (int)fptbinsJetA[(int)zjetbin-1], jetptmax = (int)fptbinsJetA[(int)zjetbin];
+float jetptmin = fptbinsJetA[(int)zjetbin-1], jetptmax = fptbinsJetA[(int)zjetbin];
 TF1* fullfit[fptbinsDN];
 TH1D* hmassfit[fptbinsDN];
 TH1D* hmasst[fptbinsDN];
@@ -22,7 +22,6 @@ TFitResultPtr r[fptbinsDN];
 
 void setHistoDetails(TH1 *h, Color_t color, Style_t Mstyle, Size_t size = 0.9, Width_t width=2);
 void SaveCanvas(TCanvas *c, TString name = "tmp");
-
 
 void DjetEfficiency_z(
 bool isPrompt = 1, 
@@ -80,6 +79,7 @@ bool isprefix = 0 )
     //------- getting MC true mass sigma and mean
         THnSparseF* shsDphiz = (THnSparseF*)histList[i]->FindObject("hsDphiz");
         sparsehsDphiz[i] = (THnSparseF*)shsDphiz->Clone(Form("sparsehsDphiz_%d",i));
+        //if(zjetbin)sparsehsDphiz[i]->GetAxis(6)->SetRangeUser(fptbinsJetA[(int)zjetbin-1],fptbinsJetA[(int)zjetbin]);
         if(zjetbin)sparsehsDphiz[i]->GetAxis(1)->SetRangeUser(fptbinsJetA[(int)zjetbin-1],fptbinsJetA[(int)zjetbin]);
         
         if(i==0){htruemass = (TH3D*)sparsehsDphiz[i]->Projection(6,1,2);}
@@ -104,9 +104,9 @@ bool isprefix = 0 )
         }
         else {
           if(fDmesonSpecie)sparsereco[i]->GetAxis(5)->SetRangeUser(jetptmin,jetptmax); // Dstar tmp
-          else //sparsereco[i]->GetAxis(6)->SetRangeUser(jetptmin,jetptmax); // jet pT gen
-    	   //sparsereco[i]->GetAxis(1)->SetRangeUser(0,100); // jet pT reco
-    	   sparsereco[i]->GetAxis(1)->SetRangeUser(jetptmin,jetptmax); // jet pT reco, to account for 2D unfolding with eff correction and 1D unfolding
+          else {sparsereco[i]->GetAxis(6)->SetRangeUser(jetptmin,jetptmax); // jet pT gen
+          }
+    	sparsereco[i]->GetAxis(1)->SetRangeUser(0,100); // jet pT reco
         }
         if(!fDmesonSpecie) sparsereco[i]->GetAxis(4)->SetRangeUser(-(0.9-fRpar),0.9-fRpar); // reco jet eta
     //	sparsereco[i]->GetAxis(9)->SetRangeUser(-(0.9-fRpar),0.9-fRpar);
@@ -173,45 +173,42 @@ bool isprefix = 0 )
 	out = Form("%s/DjetEff_%s_jetpt%d_%d", outDir.Data(), isPrompt ? "prompt" : "nonPrompt", (int)jetptmin,(int)jetptmax );
 	SaveCanvas(cEffReb,out);
     //------- getting MC true mass sigma and mean
-        for(int i=0; i<fptbinsDN; i++){
-            TH1D* hht=(TH1D*)htruemass->ProjectionX(
-                Form("hht_%d",i),
-		htruemass->GetYaxis()->FindBin(jetptmin),
-                htruemass->GetYaxis()->FindBin(jetptmax)-1,
-                htruemass->GetZaxis()->FindBin(fptbinsDA[i]),
-                htruemass->GetZaxis()->FindBin(fptbinsDA[i+1])-1
-
-            );
-            //hht->Rebin(fRebinMass);
-            hht->GetXaxis()->SetRangeUser(minf,maxf);
+    for(int i=0; i<fptbinsDN; i++){
+        TH1D* hht=(TH1D*)htruemass->ProjectionX(
+            Form("hht_%d",i),
+	        htruemass->GetYaxis()->FindBin(jetptmin),
+            htruemass->GetYaxis()->FindBin(jetptmax)-1,
+            htruemass->GetZaxis()->FindBin(fptbinsDA[i]),
+            htruemass->GetZaxis()->FindBin(fptbinsDA[i+1])-1
+        );
+        //hht->Rebin(fRebinMass);
+        hht->GetXaxis()->SetRangeUser(minf,maxf);
 	    hht->SetTitle(Form("%.1lf < pt^{%s} < %.1lf",fptbinsDA[i],fDmesonS.Data(),fptbinsDA[i+1]));
-            hmassfit[i] = (TH1D*)hht->Clone(Form("hmassfit_%d",i));
-            hmasst[i] = (TH1D*)hht->Clone(Form("hmasst_%d",i));
+        hmassfit[i] = (TH1D*)hht->Clone(Form("hmassfit_%d",i));
+        hmasst[i] = (TH1D*)hht->Clone(Form("hmasst_%d",i));
 
-            float hmin = TMath::Max(minf,hmassfit[i]->GetBinLowEdge(2));
-            float hmax = TMath::Min(maxf,hmassfit[i]->GetBinLowEdge(hmassfit[i]->GetNbinsX()));
+        float hmin = TMath::Max(minf,hmassfit[i]->GetBinLowEdge(2));
+        float hmax = TMath::Min(maxf,hmassfit[i]->GetBinLowEdge(hmassfit[i]->GetNbinsX()));
 
 	    if(hmassfit[i]){		// fit the histo
-		r[i] = hmassfit[i]->Fit("gaus","S");
-		fullfit[i] = hmassfit[i]->GetFunction("gaus");
-		if(fullfit[i]) fullfit[i]->SetName(Form("fullfit_%d",i));
-		if(!r[i]){
-			double sigma = r[i]->Parameter(2);
-			double sigmaErr = r[i]->ParError(2);
-			double mean = r[i]->Parameter(1);
-			double meanErr = r[i]->ParError(1);
-			hmassSigma->SetBinContent(i+1,sigma);
-			hmassSigmaMeV->SetBinContent(i+1,sigma*1000);
-			hmassSigma->SetBinError(i+1,sigmaErr);
-			hmassSigmaMeV->SetBinError(i+1,sigmaErr*1000);
-			hmassMean->SetBinContent(i+1,mean);
-			hmassMean->SetBinError(i+1,meanErr);
-			r[i]->SetName(Form("fitresult_%d",i));
-		}
+	        r[i] = hmassfit[i]->Fit("gaus","S");
+	        fullfit[i] = hmassfit[i]->GetFunction("gaus");
+	        if(fullfit[i]) fullfit[i]->SetName(Form("fullfit_%d",i));
+	        if(!r[i]){
+	        	double sigma = r[i]->Parameter(2);
+	        	double sigmaErr = r[i]->ParError(2);
+	        	double mean = r[i]->Parameter(1);
+	        	double meanErr = r[i]->ParError(1);
+	        	hmassSigma->SetBinContent(i+1,sigma);
+	        	hmassSigmaMeV->SetBinContent(i+1,sigma*1000);
+	        	hmassSigma->SetBinError(i+1,sigmaErr);
+	        	hmassSigmaMeV->SetBinError(i+1,sigmaErr*1000);
+	        	hmassMean->SetBinContent(i+1,mean);
+	        	hmassMean->SetBinError(i+1,meanErr);
+	        	r[i]->SetName(Form("fitresult_%d",i));
+	        }
 	    }
-
-
-        }
+    }
     //-------finish getting MC true mass sigma and mean
 	TFile *outFile = new TFile(Form("%s/DjetEff_%s_jetpt%d_%d.root", outDir.Data(), isPrompt ? "prompt" : "nonPrompt", (int)jetptmin, (int)jetptmax ),"RECREATE");
 	hEff->Write();
@@ -227,7 +224,7 @@ bool isprefix = 0 )
     for(int i=0; i<fptbinsDN; i++){
         if(hmasst[i]) hmasst[i]->Write();
         if(fullfit[i]) fullfit[i]->Write();
-	if(!r[i])r[i]->Write();
+    	if(!r[i])r[i]->Write();
     }
 
 	outFile->Close();
