@@ -27,6 +27,12 @@ flagSim=$7 #4 Simulation for non-prompt and prompt D-jets
 # change flagCUT, flagJES  in zrun_settings.csh
 finerunfold=0
 boundSigma=0 #also see bin_zjet=24	# if needed to fit certain Dpt bins with a bounded sigma: sigma +/- some fraction of this sigma
+#if [ $R -eq 2 ]; then
+#  if [ $bin_zjet -eq 2 ]; then
+#    boundSigma=5
+#  fi
+#fi
+## boundSigma is 5 below for cut systematics
 if [ $bin_zjet -eq 24 ]; then #2-5
  boundSigma=0
 fi
@@ -122,6 +128,10 @@ isMoreFiles=0
 prod=kl
 saveDir=Z0to102
 
+if [ $flagCUT -eq 1 ]; then
+    boundSigma=5
+fi
+
 if [ $flagSBs -eq 1 ]; then
  root -l -b -q signalExtraction_SBz.C'("'$data'", '$flagEff', "'$prompteff'", '$flagRef', "'$refFile'", '$ispostfix', "'$listName'", "'$out'", '$save', '$isMoreFiles', "'$prod'", '$isprefix', "'$saveDir'", '$boundSigma')'
 fi
@@ -167,9 +177,9 @@ ctry=$[ctry+1]
     done
   done
   done
-fi 
+
 # Side-Band Signal ranges
-if [ $flagSBSig -eq 1 ]; then
+elif [ $flagSBSig -eq 1 ]; then
 boundSigma=0;fsigmafactor=1;fixedMass=0;bkgType=0;minfSys=1.71;maxfSys=2.1;fMassBinWidthFactor=2
 out=$OUT/signalExtraction
 ctry=0
