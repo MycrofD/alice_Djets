@@ -6,17 +6,23 @@ if [ $R -eq 2 ]; then
  effFile=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/AnalysisResults_1059_R02_ppMC_5cuts.root
  effFileJES=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/newMC_JES/AnalysisResults_1060_R02_JESMC.root #JES 4%
 elif [ $R -eq 3 ]; then
- #data=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/AnalysisResults_757_R03_pp_5cuts.root 
- #effFile=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/AnalysisResults_1071_R03_ppMC_5cuts.root
+#-- pp
+ data=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/AnalysisResults_757_R03_pp_5cuts.root 
+ effFile=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/AnalysisResults_1071_R03_ppMC_5cuts.root
+ effFileJES=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/newMC_JES/AnalysisResults_R03_JES_1078.root #JES 4%
+#-- p Pb
+# data=${EOS_local}/home/jackbauer/Work/alice/analysis/pPb5TeV/pPb_trains/AnalysisResults_pPb_data_438_R03.root
+# effFile=${EOS_local}/home/jackbauer/Work/alice/analysis/pPb5TeV/pPb_trains/AnalysisResults_pPbMC_186_cuts_R03.root
+# effFileJES=${EOS_local}/home/jackbauer/Work/alice/analysis/pPb5TeV/pPb_trains/AnalysisResults_pPbMC_185_JES_R03_96.root #JES 4%
  #data_pPb=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/test/AnalysisResults_465_pPb.root
  #data_PbPb=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/test/AnalysisResults_40_PbPb.root
- data=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/AnalysisResults_769_R03_pp_TPC.root
- effFile=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/AnalysisResults_1090_R03_ppMC_TPC.root
+ #data=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/AnalysisResults_769_R03_pp_TPC.root
+ #effFile=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/AnalysisResults_1090_R03_ppMC_TPC.root
 elif [ $R -eq 4 ]; then
  data=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/AnalysisResults_745_R04_pp_5cuts.root 
  effFile=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/AnalysisResults_1061_R04_ppMC_5cuts.root 
  effFileJES=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/newMC_JES/AnalysisResults_R04_JES4_722.root #JES 4%
- data_pp13=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/test/AnalysisResults_pp13TeV.root #13 TeV
+ #data_pp13=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/test/AnalysisResults_pp13TeV.root #13 TeV
 elif [ $R -eq 6 ]; then
  data=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/AnalysisResults_751_R06_pp_5cuts.root 
  effFile=${EOS_local}/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outMC/AnalysisResults_1062_R06_ppMC_5cuts.root 
@@ -32,13 +38,13 @@ isprefix=0 #
 ispostfix=0 #
 ##################################### RAW SYS multi trial
 flagMulti=0
-flagSBSig=1
+flagSBSig=0
 ##################################### JES SYS
 flagJES=0
 ##################################### CUT SYS
 # remember to change ND (number of Dmesons in config file) if needed
 flagCUT=0
-cutfileNo=0 #2,3,5,6
+cutfileNo=2 #2,3,5,6
 ##################################### THINGS TO CHANGE
 if [ $flagMulti -eq 1 ]; then
     OUT=${OUT}/RawSys_Multi
