@@ -26,23 +26,67 @@
 #include "signalExtraction.h"
 
 bool isRefSys=0;
-double refScale = 1.5;
+double refScale = 1.5;int refpc = 1;// 0(0.5) or 1(1.5) to be entered for "refpc" 
 
 void signalExtraction_SB(
-  TString data = "$HOME/Work/alice/analysis/out/AnalysisResults.root",
-  bool isEff = 0, 
-  TString efffile = "../efficiency/DjetEff_prompt.root",
-  bool isRef = 0, 
-  TString refFile = "test.root",
-  bool postfix = 0, 
-  TString listName = "Cut",
-  TString out = "signalExtraction",
-  bool save = 1,
-  bool isMoreFiles = 0,
-  TString prod = "kl",   // for more than 1 file, for one file leave it empty)
-  bool isprefix=0
+  TString data = "$HOME/Work/alice/analysis/out/AnalysisResults.root"
+  ,bool isEff = 0
+  ,TString efffile = "../efficiency/DjetEff_prompt.root"
+  ,bool isRef = 0
+  ,TString refFile = "test.root"
+  ,bool postfix = 0
+  ,TString listName = "Cut"
+  ,TString out = "signalExtraction"
+  ,bool save = 1
+  ,bool isMoreFiles = 0
+  ,TString prod = "kl"   // for more than 1 file, for one file leave it empty)
+  ,bool isprefix=0
+  //
+  //
+  //below are raw systematics for multi-trial
+//raw yield systematics configs follow// also remember to turn bool rawsys on
+  ,int boundSigma = 0 //secondary default: fix sigma of last bin
+  ,double fsigmafactor = 1 //secondary default: fix sigma of last bin
+  ,bool fixedMass = 0
+  ,int bkgType=0
+  ,double minfSys=1.71
+  ,double maxfSys=2.1
+  ,int fMassBinWidthFactor=2
+  ,int sysNum=1 //or ctry
+  ,bool rawsys=0 //end of multi-trial systematics
+//SB systematics configs follow
+  ,Int_t sigmaSignal = fsigmaSignal
+  ,Float_t sigmaBkgll=fsigmaBkg[0] //ll=left low
+  ,Float_t sigmaBkglh=fsigmaBkg[1] //lh=left high
+  ,Float_t sigmaBkgrl=fsigmaBkg[2] //rl=right low
+  ,Float_t sigmaBkgrh=fsigmaBkg[3] //rh=right high
 )
 {
+    //raw sys for multi trials=======
+    TString sysnum = "";
+    if(rawsys)sysnum = Form("%d",(int)sysNum);
+
+    bSigma = boundSigma;
+    fsigfactor=fsigmafactor;
+    fbkgtype=bkgType;
+    minf=minfSys;
+    maxf=maxfSys;
+    fRebinMass=fMassBinWidthFactor;
+    //SB systematics configs follow
+    fsigmaSignal = sigmaSignal;
+    fsigmaBkg[0]=sigmaBkgll;
+    fsigmaBkg[1]=sigmaBkglh;
+    fsigmaBkg[2]=sigmaBkgrl;
+    fsigmaBkg[3]=sigmaBkgrh;
+    //cut sys and fixing sigma to the default=======
+    bool dataSigMean=0;
+        TString defaultCuts=Form("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR0%d_paperCuts/Default/signalExtraction/JetPtSpectra_SB_eff.root",(int)Rpar);
+        TFile *FileEffDataSigMean = new TFile(defaultCuts.Data(),"read");
+        if(dataSigMean){
+            bSigma=2;fsigfactor=1;
+        }
+
+    //===============================
 
     fUseRefl = isRef;
     if(fUseRefl) fReflFilename = refFile;
@@ -123,12 +167,28 @@ else {          if(postfix) histList =  (TList*)dir->Get(Form("%s%sMBN%d",histNa
     }
 
     efficiency = new double[fptbinsDN];
+    sigmaMC = new double[fptbinsDN];
+    meanMC = new double[fptbinsDN];
     if(bEff){
         TFile *FileEff = new TFile(efffile.Data(),"read");
         TH1F *hEff = (TH1F*)FileEff->Get("hEff_reb");
+        TH1D* hmassSigma;
+        TH1D* hmassMean;
+        hmassSigma = (TH1D*)FileEff->Get("hmassSigma");
+        hmassMean  = (TH1D*)FileEff->Get("hmassMean");
+            if(dataSigMean){
+                hmassSigma = (TH1D*)FileEffDataSigMean->Get("hsigma");
+                hmassMean  = (TH1D*)FileEffDataSigMean->Get("hmean");
+            }
+
         for(int i=0;i<fptbinsDN;i++){
             double pt = (fptbinsDA[i]+fptbinsDA[i+1]) / 2.;
             efficiency[i] = hEff->GetBinContent(hEff->GetXaxis()->FindBin(pt));
+            sigmaMC[i] = hmassSigma->GetBinContent(hmassSigma->GetXaxis()->FindBin(pt));
+            if(dataSigMean){
+                sigmaMC[i] = 0.001*hmassSigma->GetBinContent(hmassSigma->GetXaxis()->FindBin(pt));
+            }
+            meanMC[i] = hmassMean->GetBinContent(hmassMean->GetXaxis()->FindBin(pt));
         }
     }
     else {
@@ -152,7 +212,9 @@ else {          if(postfix) histList =  (TList*)dir->Get(Form("%s%sMBN%d",histNa
 
     // --------------------------------------------------------
     // ----------- write to output file
-    TFile *ofile = new TFile(Form("%s/JetPtSpectra_SB_%s.root",outdir.Data(), bEff ? "eff" : "noEff"),"RECREATE");
+    //TFile *ofile = new TFile(Form("%s/JetPtSpectra_SB_%s.root",outdir.Data(), bEff ? "eff" : "noEff"),"RECREATE");
+    //TFile *ofile = new TFile(Form("%s/JetPtSpectra_SB_%s%s.root",outdir.Data(), bEff ? "eff" : "noEff",sysnum.Data()),"RECREATE");
+    TFile *ofile = new TFile(Form("%s/JetPtSpectra_SB_%s%s%s.root",outdir.Data(), bEff ? "eff" : "noEff",sysnum.Data(),isRefSys ? Form("refSys%d",(int)refpc) : ""),"RECREATE");
     hmean->Write();
     hsigma->Write();
     hsign->Write();
@@ -174,7 +236,7 @@ else {          if(postfix) histList =  (TList*)dir->Get(Form("%s%sMBN%d",histNa
         if(hmass_u[i]) hmass_u[i]->Write();
         if(hmass_c[i]) hmass_c[i]->Write();
         if(fullfit[i]) fullfit[i]->Write();
-        if(massfit[i]) massfit[i]->Write();
+        if(massfit[i]) massfit[i]->Write();//"funcmass";same as fullfit[i] above
         if(bkgfit[i]) bkgfit[i]->Write();
         if(bkgRfit[i] && fUseRefl && fDmesonSpecie == 0) {   bkgRfit[i]->Write(); }
         if(hjetptcorr[i]) hjetptcorr[i]->Write();
@@ -213,7 +275,7 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
     pvCuts->SetBorderSize(0);
     pvCuts->AddText(Form("%s",outdir.Data()));
 
-    TPaveText *pvEn= new TPaveText(0.2,0.80,0.8,0.85,"brNDC");
+    TPaveText *pvEn= new TPaveText(0.15,0.80,0.8,0.85,"brNDC");
     pvEn->SetFillStyle(0);
     pvEn->SetBorderSize(0);
     pvEn->SetTextFont(42);
@@ -228,7 +290,7 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
     pvD->SetTextFont(42);
     pvD->SetTextSize(0.085);
     pvD->SetTextAlign(11);
-    if(fDmesonSpecie) pvD->AddText("D^{*+} #rightarrow D^{0}#pi^{+} and charge conj.");
+    if(fDmesonSpecie) pvD->AddText("D^{*+} #rightarrow D^{0}#pi^{+} and cc.");
     else pvD->AddText("D^{0} #rightarrow K^{-}#pi^{+} and charge conj.");
 
     TPaveText *pvJet = new TPaveText(0.15,0.55-shift,0.9,0.6-shift,"brNDC");
@@ -250,10 +312,10 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
     int xnx = 3, xny=4;
     if(fptbinsDN>4 && fptbinsDN<7) { xnx = 2; xny=3; }
     else if(fptbinsDN>6 && fptbinsDN<10) { xnx = 3; xny=3; }
-    else if(fptbinsDN>9 && fptbinsDN<13) { xnx = 3; xny=4; }
-    else { xnx = 4; xny=4; }
+    else if(fptbinsDN>9 && fptbinsDN<12) { xnx = 3; xny=4; }
+    else { xnx = 3; xny=5; }
 
-    TCanvas *c2 = new TCanvas("c2","c2",1200,1200);
+    TCanvas *c2 = new TCanvas("c2","c2",1200,1300);
     c2->Divide(xnx,xny);
     TCanvas *c2jet = new TCanvas("c2jet","c2jet",1200,1200);
     c2jet->Divide(xnx,xny);
@@ -298,6 +360,23 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         fitterp->SetInitialGaussianMean(fDmass);
         fitterp->SetInitialGaussianSigma(fDsigma);
         //fitterp->SetFixGaussianSigma(fDsigmafix[i]);
+        
+        if(bSigma == 1){
+            double fDsigmafix = fsigfactor*sigmaMC[i];
+            fitterp->SetFixGaussianSigma(fDsigmafix);
+        }
+        if(bSigma == 2){//fixing the last 3 bins
+            if(i==fptbinsDN-1 || i==fptbinsDN-2 ||i==fptbinsDN-3 ){
+                double fDsigmafix = fsigfactor*sigmaMC[i];
+                double fMassDfix = meanMC[i];
+                fitterp->SetFixGaussianSigma(fDsigmafix);
+                fitterp->SetFixGaussianMean(fMassDfix);
+            }
+        }
+        if(fMass){ // fix gaussian mean
+            double fMassDfix = fDmass;
+            fitterp->SetFixGaussianMean(fMassDfix);
+        }
 
         if(fUseRefl && fDmesonSpecie == 0) {
           if(fSystem) SetReflection(fitterp,hmin,hmax,RS,i+firstPtBin); // older way from Fabio's templates for p-Pb
@@ -307,11 +386,11 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         fitterp->MassFitter(kFALSE);
         //fitterp->PrintFunctions();
 
-        TH1F* h=fitterp->GetHistoClone();
-        massfit[i] = fitterp->GetMassFunc();
+        TH1F* h=fitterp->GetHistoClone();//total histogram to fit
+        massfit[i] = fitterp->GetMassFunc();//fTotFunc;total fit function
         massfit[i]->SetRange(hmin,hmax);
         massfit[i]->SetLineColor(4);
-        fullfit[i] = h->GetFunction("funcmass");
+        fullfit[i] = h->GetFunction("funcmass");//total fit function
         if(fullfit[i]) fullfit[i]->SetName(Form("fullfit_%d",i));
         hmass[i] = (TH1F*)h->Clone(Form("hmass_%d",i));
         hmass[i]->SetName(Form("hmass_%d",i));
@@ -375,9 +454,9 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
         Double_t s=0, serr=0, srelerr=0, bkg=0, bkgerr=0, bkgref=0, ref=0;
         Double_t sb1=0, sb2=0, ref1=0, ref2=0;
         fitterp->Signal(fsigmaSignal, s, serr);
-        fitterp->Background(min, max ,bkg, bkgerr);
+        fitterp->Background(min, max ,bkg, bkgerr);//stores background integral from signal region (w/o ref) in bkg
         //fitterp->Background(fsigmaSignal,b,berr);
-        sb1 = bkgfit[i]->Integral(min_sb1,max_sb1)/(Double_t)hmass[i]->GetBinWidth(1);
+        sb1 = bkgfit[i]->Integral(min_sb1,max_sb1)/(Double_t)hmass[i]->GetBinWidth(1);//bkgfit[i] = fitterp->GetBackgroundRecalcFunc();
         sb2 = bkgfit[i]->Integral(min_sb2,max_sb2)/(Double_t)hmass[i]->GetBinWidth(1);
         if(fUseRefl && fDmesonSpecie == 0) {
           bkgref = bkgRfit[i]->Integral(min,max)/(Double_t)hmass[i]->GetBinWidth(1);
@@ -500,6 +579,7 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
 
         if(fUseRefl && fDmesonSpecie == 0) {
           scalingS = s / ( s+ref - ( (ref1+ref2)*bkg ) / (sb1+sb2) );
+          //scalingS = s / ( s+ref);// - ( (ref1+ref2)*bkg ) / (sb1+sb2) );
         }
 
         hjetpt_sb[i]->Scale(scalingB);
@@ -865,6 +945,7 @@ void  saveFitParams(TString outdir,TString prod){
     if(isdetails) pvCuts->Draw("same");
     lm->Draw("same");
     cMassFit->cd(2);
+    hsigma->GetYaxis()->SetRangeUser(0,hsigma->GetMaximum()*2.0);
     hsigma->Draw();
     if(isdetails) pvProd->Draw("same");
     if(isdetails) pvCuts->Draw("same");
