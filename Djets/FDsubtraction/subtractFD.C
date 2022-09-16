@@ -204,7 +204,7 @@ void subtractB_afterFolding(TString matrixFile,TH1D *hFD_central_binned,TH1D *hF
     //-------------- data to sim ratio - B feed-down fraction
     TH1D *hFD_ratio = (TH1D*)hFD_central_binned_fold->Clone("hFD_ratio");
     hFD_ratio->Divide(hData_binned);
-    hFD_ratio->GetYaxis()->SetTitle("FD raw sim/data");
+    hFD_ratio->GetYaxis()->SetTitle("(FD from sim)/data");
     hFD_ratio->SetMinimum(0);
     setHistoDetails(hFD_ratio,8,20);
 
@@ -265,45 +265,45 @@ void subtractB_afterFolding(TString matrixFile,TH1D *hFD_central_binned,TH1D *hF
      pvEn->SetFillStyle(0);
      pvEn->SetBorderSize(0);
      pvEn->SetTextFont(42);
-     pvEn->SetTextSize(0.045);
+     pvEn->SetTextSize(0.04);
      pvEn->SetTextAlign(11);
      pvEn->AddText(Form("%s",fSystemS.Data()));
 
      double shift = 0.09;
      double dshift = 0.06;
-     TPaveText *pvJet = new TPaveText(0.5,0.65-shift,0.9,0.7-shift,"brNDC");
+     TPaveText *pvJet = new TPaveText(0.57,0.65-shift,0.8,0.7-shift,"brNDC");
      pvJet->SetFillStyle(0);
      pvJet->SetBorderSize(0);
      pvJet->SetTextFont(42);
-     pvJet->SetTextSize(0.04);
+     pvJet->SetTextSize(0.03);
      pvJet->SetTextAlign(11);
-     pvJet->AddText(Form("Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.%d",Rpar));
+     pvJet->AddText(Form("charged jets, anti-#it{k}_{T}, #it{R} = 0.%d",Rpar));
 
      shift+=dshift;
-     TPaveText *pvD = new TPaveText(0.5,0.65-shift,0.9,0.7-shift,"brNDC");
+     TPaveText *pvD = new TPaveText(0.57,0.65-shift,0.8,0.7-shift,"brNDC");
      pvD->SetFillStyle(0);
      pvD->SetBorderSize(0);
      pvD->SetTextFont(42);
-     pvD->SetTextSize(0.04);
+     pvD->SetTextSize(0.03);
      pvD->SetTextAlign(11);
      if(fDmesonSpecie) pvD->AddText("with D^{*+} #rightarrow D^{0}#pi^{+} and charge conj.");
      else pvD->AddText("with D^{0} #rightarrow K^{-}#pi^{+} and charge conj.");
 
      shift+=dshift;
-     TPaveText *pvEta = new TPaveText(0.5,0.65-shift,0.9,0.7-shift,"brNDC");
+     TPaveText *pvEta = new TPaveText(0.57,0.65-shift,0.8,0.7-shift,"brNDC");
      pvEta->SetFillStyle(0);
      pvEta->SetBorderSize(0);
      pvEta->SetTextFont(42);
-     pvEta->SetTextSize(0.04);
+     pvEta->SetTextSize(0.03);
      pvEta->SetTextAlign(11);
      pvEta->AddText(Form("|#it{#eta}_{jet}| < 0.%d",9-Rpar));
 
      shift+=dshift;
-     TPaveText *pv3 = new TPaveText(0.5,0.65-shift,0.9,0.7-shift,"brNDC");
+     TPaveText *pv3 = new TPaveText(0.57,0.65-shift,0.8,0.7-shift,"brNDC");
      pv3->SetFillStyle(0);
      pv3->SetBorderSize(0);
      pv3->SetTextFont(42);
-     pv3->SetTextSize(0.04);
+     pv3->SetTextSize(0.03);
      pv3->SetTextAlign(11);
      pv3->AddText(Form("%d < p_{T,%s} < %d GeV/#it{c}",(Int_t)fptbinsDA[0],fDmesonS.Data(),(Int_t)fptbinsDA[fptbinsDN]));
 
@@ -325,6 +325,7 @@ void subtractB_afterFolding(TString matrixFile,TH1D *hFD_central_binned,TH1D *hF
     TCanvas *cSpectra = new TCanvas("cSpectra","cSpectra",1000,800);
     cSpectra->SetLogy();
     hData_binned->GetXaxis()->SetRangeUser(plotmin,plotmax);
+    hData_binned->SetMinimum(0.1*hData_binned->GetMinimum());
     hData_binned->Draw();
     //hFD_central_binned ->Draw("same");
     hFD_central_binned_fold ->Draw("same");
@@ -345,7 +346,7 @@ void subtractB_afterFolding(TString matrixFile,TH1D *hFD_central_binned,TH1D *hF
     pvJet->Draw("same");
     pvEta->Draw("same");
 
-    TLegend *leg1 = new TLegend(0.55,0.65,0.95,0.89);
+    TLegend *leg1 = new TLegend(0.47,0.7,0.89,0.89);
     leg1->SetBorderSize(0);
     //leg1->SetStyle(0);
     leg1->AddEntry(hData_binned,"Uncorrected D-Jet yield","p");
@@ -434,7 +435,7 @@ void subtractB_beforeFolding(TH1D *hFD_central_binned,TH1D *hFD_up,TH1D *hFD_dow
     //-------------- data to sim ratio - B feed-down fraction
     TH1D *hFD_ratio = (TH1D*)hFD_central_binned->Clone("hFD_ratio");
     hFD_ratio->Divide(hData_binned);
-    hFD_ratio->GetYaxis()->SetTitle("data/FD raw sim");
+    hFD_ratio->GetYaxis()->SetTitle("FD from sim/data");
     hFD_ratio->SetMinimum(0);
     setHistoDetails(hFD_ratio,8,20);
 
