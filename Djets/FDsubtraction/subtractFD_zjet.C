@@ -36,6 +36,7 @@ void subtractFD_zjet(
 )
 {
     gStyle->SetOptStat(0000);
+    gSystem->Exec(Form("mkdir %s",outDir.Data()));
 //0.Data Luminousity
 //--------------------------------------------------------------
     TFile* Filedata = new TFile(dataAnalysisFile,"read");
@@ -157,7 +158,7 @@ void subtractFD_zjet(
             else{cout<<"BLAH, BLAH, BLAH....."<<endl;return;}
         }
         else{
-            if(ispostfix){histList[i] =  (TList*)dir->Get(Form("%s%sMBN%dFDMCrec",histName.Data(),listName.Data(),i));}
+            if(ispostfix) {histList[i]=(TList*)dirMC->Get(Form("%s%sMBN%dFDMCrec",histName.Data(),listName.Data(),i));}
             else{cout<<"BLAH, BLAH, BLAH....."<<endl;return;}
         }
         sparseMC[i] = (THnSparseD*)histList[i]->FindObject("ResponseMatrix");
@@ -382,7 +383,11 @@ void subtractFD_zjet(
         hhratDo->Write();
 
         TH1D* hhdata_sub  =(TH1D*)hData_sub  ->ProjectionX("",binjet,binjet,"E")->Clone(Form("hsub_c%d",binjet));
-        hhdata_sub->Write();
+        TH1D* hhdata_subup=(TH1D*)hData_subup->ProjectionX("",binjet,binjet,"E")->Clone(Form("hsub_u%d",binjet));
+        TH1D* hhdata_subdo=(TH1D*)hData_subdo->ProjectionX("",binjet,binjet,"E")->Clone(Form("hsub_d%d",binjet));
+        hhdata_sub  ->Write();
+        hhdata_subup->Write();
+        hhdata_subdo->Write();
     }
     outFile->Close();
 return;
