@@ -32,7 +32,7 @@
 
     double jetmin = 0, jetmax = 50;
     double jetplotmin = 2, jetplotmax = 50;
-    double zplotmin = 0, zplotmax = 1.0;
+    double zplotmin = 0.4, zplotmax = 1.0;
     bool isEta = 0; double jetEta = 0.4;
 
     bool savePlots = 1;
@@ -46,10 +46,12 @@
     TString fReflFilename;
     TString plotsDir;
     // mass fit params
-
     //------- efficiency
     double *efficiency = 0x0;
     double *sigmaMC = 0x0;
+    double *meanMC = 0x0;
+    double *sigmaData = 0x0;
+    double *meanData = 0x0;
 
     TH1F* hmass[fptbinsDN];
     TH1F* hmass_l[fptbinsDN];
