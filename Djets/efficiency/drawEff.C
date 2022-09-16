@@ -36,6 +36,7 @@ double plotmin = 2, double plotmax = 36)
     hEffPrompt->SetMarkerSize(1.2);
     hEffPrompt->GetXaxis()->SetTitle(Form("#it{p}_{T,%s} (GeV/#it{c})",fDmesonS.Data()));
     hEffPrompt->GetYaxis()->SetTitle("Acceptance #times Efficiency");
+    hEffPrompt->GetYaxis()->SetTitleOffset(0.95);
     hEffPrompt->GetXaxis()->SetLabelSize(0.04);
     hEffPrompt->GetXaxis()->SetTitleSize(0.04);
     hEffPrompt->GetXaxis()->SetTitleOffset(1.);
@@ -53,6 +54,7 @@ double plotmin = 2, double plotmax = 36)
     hEffNonPrompt->SetMarkerSize(1.2);
     hEffNonPrompt->GetXaxis()->SetTitle(Form("#it{p}_{T,%s} (GeV/#it{c})",fDmesonS.Data()));
     hEffNonPrompt->GetYaxis()->SetTitle("Acceptance #times Efficiency");
+    hEffNonPrompt->GetYaxis()->SetTitleOffset(1.);
     hEffNonPrompt->GetXaxis()->SetLabelSize(0.04);
     hEffNonPrompt->GetXaxis()->SetTitleSize(0.05);
     hEffNonPrompt->GetXaxis()->SetTitleOffset(1.);
