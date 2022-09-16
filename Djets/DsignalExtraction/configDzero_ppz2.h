@@ -43,22 +43,7 @@
     //======= set up here names of your simulation files =======
     TString fRunB[] = {
 //Event Gen
-//       "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1536649348"//evtgen central R0346
        "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1579613250"//evtgen central R02346
-////POWHEG+PYTHIA6
-////,      "AnalysisResults_FastSim_powheg+pythia6_beauty_150593961473"	//central R=0.3
-// ,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1554981915"	//central R=0.3,0.4,0.6
-//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504284947"	//R1F05
-//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504259653"	//R05F1
-//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1506803374"	//R2F1
-//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504296768"	//R1F2
-//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504212024"	//R05F05
-//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504318569"	//R2F2
-//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504202511"	//mb5
-//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504197966"	//mb4.5
-//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504197460"	//pdf 21200
-//,      "AnalysisResults_FastSim_powheg+pythia6_beauty_1504199953"	//pdf 10800
-//Event Gen
 ,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1579857760"//mb4.5
 ,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1579795653"//mb5
 ,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1579792457"//F2R2
@@ -68,16 +53,6 @@
 ,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1580141878"//uF= 2, uR=1
 ,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1580122386"//uF=1 , uR=2
 ,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1580201087"//PDF=21200
-// ,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1549115009"//mb4.5
-// ,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1549110628"//mb5
-// ,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1549275841"//F2R2
-// ,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1549119403"//F1R05
-// ,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1549019046"//uF=0.5 , uR=0.5
-// ,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1549035201"//uF=0.5 , uR=1
-// ,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1549219132"//uF= 2, uR=1
-// ,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1549203018"//uF=1 , uR=2
-// ,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1550591180"//PDF=21200
-//,      "AnalysisResults_FastSim_powheg+pythia6+evtgen_beauty_1550780125"//PDF=10042
     };
 
     TString fDescB[] = {
@@ -92,54 +67,45 @@
 ,      "m_{b}=4.5"
 ,      "PDF 21200"
 ,      "PDF 10800"
-//,      "Evt gen"
     };
 
     TString fRunC[] = {
 // POWHEG+Pythia6 hvq
-      "AnalysisResults_FastSim_powheg+pythia6_charm_1580461941"
-//-----      "AnalysisResults_FastSim_powheg+pythia6_charm_central"
-//-----,"AnalysisResults_FastSim_powheg+pythia6_charm_m13_1536595965"
-//-----,"AnalysisResults_FastSim_powheg+pythia6_charm_m17_1536655729"
-//-----,"AnalysisResults_FastSim_powheg+pythia6_charm_F2R2_1535895146"
-//-----,"AnalysisResults_FastSim_powheg+pythia6_charm_F1R2_1536594271"
-//-----,"AnalysisResults_FastSim_powheg+pythia6_charm_F2R1_1535916012"
-//-----,"AnalysisResults_FastSim_powheg+pythia6_charm_F05R05_1535894261"
-//-----,"AnalysisResults_FastSim_powheg+pythia6_charm_F1R05_1536598175"
-//-----,"AnalysisResults_FastSim_powheg+pythia6_charm_F05R1_1536604800"
-//// POWHEG+Pythia6 dijets
-//,"AnalysisResults_FastSim_powheg+pythia6_dijet_bb160_1553275404"
-//,"AnalysisResults_FastSim_powheg+pythia6_dijet_central_1553968405"
-//,"AnalysisResults_FastSim_powheg+pythia6_dijet_F1R2_1557481772"
-//,"AnalysisResults_FastSim_powheg+pythia6_dijet_F1R05_1556385744"
-//,"AnalysisResults_FastSim_powheg+pythia6_dijet_F2R1_1557918376"
-//,"AnalysisResults_FastSim_powheg+pythia6_dijet_F2R2_1560328228"
-//,"AnalysisResults_FastSim_powheg+pythia6_dijet_F05R1_1558465083"
-//,"AnalysisResults_FastSim_powheg+pythia6_dijet_F05R05_1556195307"
-//,"AnalysisResults_FastSim_powheg+pythia6_dijet_mc13_1554197229"
-//,"AnalysisResults_FastSim_powheg+pythia6_dijet_mc17_1558464708"
-//,"AnalysisResults_FastSim_powheg+pythia6_dijet_PDF212_1561024691"
-//Pythia6
-//-----,"AnalysisResults_FastSim_pythia6_charm_1552224706"
-//,"AnalysisResults_FastSim_pythia6_dijet_1552223980"
-//,"AnalysisResults_FastSim_pythia6_mb_1563284959"
-//Pythia8
-//----- ,"AnalysisResults_FastSim_pythia8_charm_1552144258"
-//,"AnalysisResults_FastSim_pythia8_dijet_1552144719"
-//,"AnalysisResults_FastSim_pythia8_mb_1563297890"
-////Herwig
-//,"AnalysisResults_FastSim_herwig_charm_lo_1548973692"
-//,"AnalysisResults_FastSim_herwig_dijet_lo_1563298593"
-//,"AnalysisResults_FastSim_herwig_mb_1551799518"
+//      "AnalysisResults_FastSim_powheg+pythia6_charm_1580461941"
+////=pow+pythia8
+ "AnalysisResults_FastSim_powheg+pythia8_charm_central_1593017599"//"AnalysisResults_FastSim_powheg+pythia6_charm_1580461941" //central for R02
+,"AnalysisResults_FastSim_powheg+pythia8_charm_m13_1593091148"
+,"AnalysisResults_FastSim_powheg+pythia8_charm_m17_1593090378"
+,"AnalysisResults_FastSim_powheg+pythia8_charm_F2R2_1593354950"
+,"AnalysisResults_FastSim_powheg+pythia8_charm_F1R2_1593339352"
+,"AnalysisResults_FastSim_powheg+pythia8_charm_F2R1_1593341637"
+,"AnalysisResults_FastSim_powheg+pythia8_charm_F05R05_1593334134"
+,"AnalysisResults_FastSim_powheg+pythia8_charm_F1R05_1593338244"
+,"AnalysisResults_FastSim_powheg+pythia8_charm_F05R1_1593337904"
+,"AnalysisResults_FastSim_pythia6_charm_1594235514"
+,"AnalysisResults_FastSim_pythia8_charm_1594137862"
+,"AnalysisResults_FastSim_pythia8_charm_soft2color_1598639645"
     };
     TString fDescC[] = {
-      "central"
-,      "m_{c}=1.3"
-,      "m_{c}=1.7"
-,      "muR=2,muF=2"
-,      "muR=1,muF=2"
-,      "muR=2,muF=1"
-,      "muR=0.5,muF=0.5"
-,      "muR=1,muF=0.5"
-,      "muR=0.5,muF=1"
+//      "central"
+//,      "m_{c}=1.3"
+//,      "m_{c}=1.7"
+//,      "muR=2,muF=2"
+//,      "muR=1,muF=2"
+//,      "muR=2,muF=1"
+//,      "muR=0.5,muF=0.5"
+//,      "muR=1,muF=0.5"
+//,      "muR=0.5,muF=1"
+       "PP8:central"
+,      "PP8:m_{c}=1.3"
+,      "PP8:m_{c}=1.7"
+,      "PP8:muR=2,muF=2"
+,      "PP8:muR=1,muF=2"
+,      "PP8:muR=2,muF=1"
+,      "PP8:muR=0.5,muF=0.5"
+,      "PP8:muR=1,muF=0.5"
+,      "PP8:muR=0.5,muF=1"
+,      "Pythia6"
+,      "Pythia8"
+,      "Pythia8:Soft-mode-2"
     };
