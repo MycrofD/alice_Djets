@@ -19,8 +19,10 @@ nSimFilesB=$2     # have to correspond to number of files defined in the config 
 nSimFilesC=$3     # have to correspond to number of files defined in the config file
 BFDSimDirOut=$OUT/SimFiles/BFeedDown #$outdirBase/Simulations/BFeedDown
 CSimDirOut=$OUT/SimFiles/Prompt
-simFilesDir=/home/jackbauer/ALICE_HeavyFlavour/work/Djets/out/outMC/beauty/
-simFilesDirC=/home/jackbauer/ALICE_HeavyFlavour/work/Djets/out/outMC/charm/
+#simFilesDir=/home/jackbauer/ALICE_HeavyFlavour/work/Djets/out/outMC/beauty/
+simFilesDir=/home/jackbauer/ALICE_HeavyFlavour/work/Djets/out/outMC/allR/
+#simFilesDirC=/home/jackbauer/ALICE_HeavyFlavour/work/Djets/out/outMC/charm/
+simFilesDirC=/home/jackbauer/ALICE_HeavyFlavour/work/Djets/out/outMC/allR/
 #effFilePrompt=/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts/Default/efficiency/DjetEff_prompt_jetpt5_50.root
 #effFileNonPrompt=/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results/DzeroR03_pPbCuts/Default/efficiency/DjetEff_nonPrompt_jetpt5_50.root
 effFilePrompt=$4
@@ -45,10 +47,10 @@ cd $SimDir
 # ./doGetSimOut_z.csh $nSimFilesB $simFilesDir 1 1 1 1 $effFilePrompt $effFileNonPrompt $BFDSimDirOut
  ./doGetSimOut_z.csh $nSimFilesB $simFilesDir 1 1 1 $isEff $effFilePrompt $effFileNonPrompt $BFDSimDirOut
 #plot all the variations
-
-elif [ ! -d "$CSimDirOut" ] || [ $isCsim -eq 1 ]; then
+fi
+if [ ! -d "$CSimDirOut" ] || [ $isCsim -eq 1 ]; then
 cd $SimDir
- ./doGetSimOut_z.csh $nSimFilesC $simFilesDirC 0 1 1 $isEff $effFilePrompt $effFileNonPrompt $CSimDirOut
+ ./doGetSimOut_z.csh $nSimFilesC $simFilesDirC 0 1 1 0 $effFilePrompt $effFileNonPrompt $CSimDirOut
 
 cd $currDir
 fi
