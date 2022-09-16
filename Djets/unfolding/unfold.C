@@ -7,7 +7,7 @@
 //http://hep.physics.utoronto.ca/~orr/wwwroot/Unfolding/d-agostini.pdf
 
 #include "config.h"
-int rand_sl=19;//serial number for random distribution for closure test
+int rand_sl=0;//serial number for random distribution for closure test
 //====================== global =========================
 TH2D* fMatrixPP;
 TH2D* fMatrixProd;TH2D* fMatrixProdClos; //responses
@@ -487,7 +487,9 @@ else {cout<<"----- D vector cannot be found using TSVDUnfold if histograms do no
     folded[regBayes-1]->SetLineColor(kGreen+1);//(kRed+1);
     folded[regBayes-1]->SetMarkerColor(kGreen+1);//(kRed+1);
 
+    fUnfoldedBayes[regBayes-2]->SetName("unfoldedSpectrum_minusone");
     fUnfoldedBayes[regBayes-1]->SetName("unfoldedSpectrum");
+    fUnfoldedBayes[regBayes]->SetName("unfoldedSpectrum_plusone");
     folded[regBayes-1]->SetName("foldedSpectrum");
     fRawRebin->SetName("fRawRebin");
 
@@ -521,7 +523,9 @@ else {cout<<"----- D vector cannot be found using TSVDUnfold if histograms do no
     //fUnfoldedBayes[regBayes-1]->SetLineColor(kRed+1);
     //fUnfoldedBayes[regBayes-1]->SetMarkerColor(kRed+1);
     fRawRebin ->Write();
+    fUnfoldedBayes[regBayes-2]->Write();
     fUnfoldedBayes[regBayes-1]->Write();
+    fUnfoldedBayes[regBayes]->Write();
     folded[regBayes-1]->Write();
     hUnfolded_Unc->Write();
 
