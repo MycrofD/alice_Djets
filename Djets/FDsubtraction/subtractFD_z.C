@@ -2,7 +2,7 @@
 // Macro to subtract B feed-down from inclusive z_||,ch spectrum before unfolding
 //
 // Author: B.Trzeciak (barbara.antonina.trzeciak@cern.ch)
-// [Modified]: A.Mohanty  (auro.mohantyk@cern.ch)
+// [Modified]: A.Mohanty  (auro.mohanty@cern.ch)
 //
 
 #include "../DsignalExtraction/configDzero_ppz.h"
@@ -90,21 +90,6 @@ cout<<"---------dataLum = nEv/(sigma_in*1000)----"<<dataLum<<"--------------"<<e
     TH1D *hData;
     hData = (TH1D*)GetInputHist(dataFile, "hjetptspectrum", hData);
     TH1D *hData_binned = (TH1D*)hData->Rebin(fptbinsZMeasN,"hData_binned", fptbinsZMeasA);
-//TH1D *hData_binned = (TH1D*)hData->Rebin(5);
-//hData_binned->SetName("hData_binned");
-//TCanvas *cSpec = new TCanvas("data v databin","cSpec",1000,800);
-//cSpec->SetLogy();
-//hData_binned->SetMarkerColor(kRed);
-//hData->SetMarkerColor(kGreen+1);
-//hData->SetLineColor(kGreen+1);
-//    TLegend *leg_inf = new TLegend(0.65,0.45,0.80,0.59);
-//    leg_inf->SetBorderSize(0);
-//    leg_inf->AddEntry(hData_binned,"rebinned","p");
-//    leg_inf->AddEntry(hData,"normal","p");
-//hData_binned->Draw();
-//hData->Draw("same");hData_binned
-//    leg_inf->Draw("same");
-//return;
     // ----------------- B->D simulation ---------------------
     int cent = 0;
     bool jet = 1; // this code is for jet spectra subtraction
