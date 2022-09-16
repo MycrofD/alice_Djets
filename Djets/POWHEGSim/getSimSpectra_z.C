@@ -125,15 +125,15 @@ TH1* GetInputSimHistJet(TString inFile, TH1 *hPt, bool isEff, TString effFilePro
       return NULL;
     }
 
-    TH1D *hxsection;
-    if(!isNPrompt)	hxsection = (TH1D*)dir->FindObject("fHistXsection");
-    else { 
-          //if(SimNr == 0 || SimNr > 11)  
-		hxsection = (TH1D*)dir->FindObject("fHistXsection");//for eventgen
-          //else hxsection = (TH1D*)dir->FindObject("fHistXsectionVsPtHard");//for normal
-          ////else hxsection = (TH1D*)dir->FindObject("fHistXsection");
-          //hxsection = (TH1D*)dir->FindObject("fHistXsectionVsPtHard");
-    }   
+    TH1D *hxsection = (TH1D*)dir->FindObject("fHistXsection");
+//    if(!isNPrompt)	hxsection = (TH1D*)dir->FindObject("fHistXsection");
+//    else { 
+//          //if(SimNr == 0 || SimNr > 11)  
+//		hxsection = (TH1D*)dir->FindObject("fHistXsection");//for eventgen
+//          //else hxsection = (TH1D*)dir->FindObject("fHistXsectionVsPtHard");//for normal
+//          ////else hxsection = (TH1D*)dir->FindObject("fHistXsection");
+//          //hxsection = (TH1D*)dir->FindObject("fHistXsectionVsPtHard");
+//    }   
  
     if(!hxsection) {
       std::cout << "Error in getting x-section hist! Exiting..." << std::endl;
@@ -146,6 +146,7 @@ TH1* GetInputSimHistJet(TString inFile, TH1 *hPt, bool isEff, TString effFilePro
     TTree *tree;
     if(!fDmesonSpecie) tree = (TTree*)fileInput->Get("AliAnalysisTaskDmesonJets_D0_MCTruth");
     else tree = (TTree*)fileInput->Get("AliAnalysisTaskDmesonJets_DStar_MCTruth");
+
     AliAnalysisTaskDmesonJets::AliDmesonMCInfoSummary *brD = 0;
 
     AliAnalysisTaskDmesonJets::AliJetInfoSummary *brJet = 0;
@@ -166,13 +167,15 @@ TH1* GetInputSimHistJet(TString inFile, TH1 *hPt, bool isEff, TString effFilePro
     TH1D *hjetpt[fptbinsDN];
     for (int j=0; j<fptbinsDN; j++) {
         //hjetpt[j] = new TH1D(Form("hjetpt_%d",j),"hjetpt",10,0,1.0);
-        hjetpt[j] = new TH1D(Form("hjetpt_%d",j),"hjetpt",fptbinsZMeasN,fptbinsZMeasA);
+        hjetpt[j] = new TH1D(Form("hjetpt_%d",j),"hjetpt",fptbinsZSimN,fptbinsZSimA);
         hjetpt[j]->Sumw2();
     }
     double effC, effB, eff;
     //hPt = new TH1D("hPt","hjetpt",10,0.0,1.0);
-    hPt = new TH1D("hPt","hjetpt",fptbinsZMeasN,fptbinsZMeasA);
+    hPt = new TH1D("hPt","hjetpt",fptbinsZSimN,fptbinsZSimA);
 
+//  ofstream myfile;
+//  myfile.open (Form("example%f.txt",fptbinsJetA[(int)zjetbin-1]));
     for (int k=0; k<tree->GetEntries(); k++) {
     tree->GetEntry(k);
     if (brJet->fEta < -jetEta || brJet->fEta > jetEta) continue;
@@ -182,18 +185,20 @@ TH1* GetInputSimHistJet(TString inFile, TH1 *hPt, bool isEff, TString effFilePro
       if(brD->fPartonType != 5) continue;
     }
     else if(brD->fPartonType != 4) continue;
-    if(brD->fAncestorPDG == 2212) continue; // check if not coming from proton
+    //if(brD->fAncestorPDG == 2212) continue; // check if not coming from proton
 
-    if (brJet->fPt < (int)fptbinsJetA[(int)zjetbin-1] || brJet->fPt >= (int)fptbinsJetA[(int)zjetbin]) continue;
+    if (brJet->fPt < fptbinsJetA[(int)zjetbin-1] || brJet->fPt >= fptbinsJetA[(int)zjetbin]) continue;
     if(isDptcut){
       for (int j=0; j<fptbinsDN; j++) {
         if  (brD->fPt < fptbinsDA[j] || brD->fPt >= fptbinsDA[j+1])
 	    continue;
         hjetpt[j]->Fill(brJet->fZ);
+  //myfile <<k<<" "<<brD->fPt<<" "<<brJet->fPt<<" "<<brJet->fZ<<std::endl;
       }//end of D-meson pT bin loop
     }
     else hPt->Fill(brJet->fZ);
     }
+  //myfile.close();
 
 if(isDptcut){
   for (int j=0; j<fptbinsDN; j++){
