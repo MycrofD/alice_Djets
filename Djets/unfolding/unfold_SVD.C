@@ -3,6 +3,9 @@
 //  Utrecht University
 //  barbara.antonina.trzeciak@cern.ch
 //-----------------------------------------------------------------------
+//https://arxiv.org/pdf/1105.1160.pdf
+//http://hep.physics.utoronto.ca/~orr/wwwroot/Unfolding/d-agostini.pdf
+
 #include "config.h"
 
 //====================== global =========================
@@ -24,6 +27,19 @@ int linesytle[] = {1,2,3,4,5,6,7,8,9,10,11,12,13};
 /***********************************
 ############# begining of the macro ##################
 ************************************/
+int LoadRawSpectrum(TString fn, TString sname, int rebin = 0, TString spostfix="") ;
+int LoadBackgroundMatrix(TString fn, TString mxname) ;
+int LoadDetectorMatrix(TString fn, TString mxname, TString tsname, TString msname, bool norm = 1, TString spostfix="") ;
+TH2D * Rebin2D(const char* name, TH2D *h, int nx, const double *binx, int ny, const double *biny, bool crop) ;
+TH2D * ProductMatrix(TH2D * MtxA, TH2D * MtxB) ;
+TF1* getPriorFunction(int prior, TH1D* spect, int priorType = 0, TH1D* rawspectrum = NULL) ;
+void WeightMatrixY(TH2D * Mtx, TH1D * h, bool divide) ;
+TH2D * getPearsonCoeffs(const TMatrixD &covMatrix) ;
+int MtxPlots(TString outDir, TString outName) ;
+void NormMatrixY(TH2D * Mtx) ;
+TH2D* NormMatrixY(const char* name, TH2D* Mtx) ;
+int plotSlice(TVirtualPad * p, TH2D * hMtxPP, TH2D * hMtxDpt, TH2D * hMtxRe, TH2D * hMtxPro, const double ptmin, const double ptmax) ;
+
 void unfold_SVD
 (
 TString roounfoldpwd = "",
@@ -40,7 +56,7 @@ bool isFDDownSpec = 0,
 bool fDoWeighting = 1,
 bool fdivide = 1,
 bool overflow = 1,  // if to use overflow in the unfolding
-const int NTrials = 9,//10,  //number of total trials
+const int NTrials = 10,//10,  //number of total trials
 bool debug = 0
 )
 {
@@ -98,7 +114,7 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
         TF1* fPriorFunction;
         if(isPrior) {
 					fPriorFunction = getPriorFunction(isPrior, priorhisto,priorType, rawspectrum);
-					priorhisto->SetTitle();
+					priorhisto->SetTitle("");
 					priorhisto->GetXaxis()->SetTitle("p_{T, ch.jet}");
 					TCanvas* cPrior = new TCanvas("cPrior0", "cPrior0", 800, 600);
 					cPrior->SetLogy();
@@ -160,7 +176,7 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
 /***********************************
 ############# unfolding ##################
 ************************************/
-		RooUnfoldSvd unfold (&response, fRawRebin, ivar+1);
+    RooUnfoldSvd unfold (&response, fRawRebin, ivar+1);
 		fUnfoldedSVD[ivar] = (TH1D*)unfold.Hreco();
 		folded[ivar] = (TH1D*)response.ApplyToTruth(fUnfoldedSVD[ivar]);
 
@@ -181,104 +197,12 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
 		if(ivar == 0) { fUnfoldedSVD[ivar]->Draw(); }
 		fUnfoldedSVD[ivar]->Draw("same");
 		leg->AddEntry(fUnfoldedSVD[ivar],Form("Reg=%d",ivar+1),"p");
-
 	}
 	leg->Draw("same");
 
 	cUnfolded->SaveAs(Form("%s/plots/%s_unfSpectra.pdf",outDir.Data(),outName.Data()));
 	cUnfolded->SaveAs(Form("%s/plots/%s_unfSpectra.png",outDir.Data(),outName.Data()));
 /**************************************
-###### SVD unfolding: D vector ########
-**************************************/
-/*
-https://arxiv.org/abs/1112.2226
-https://indico.cern.ch/event/107747/contributions/32650/attachments/24324/35008/svd_kerstin2.pdf#search=svd%20unfolding
-https://indico.cern.ch/event/107747/contributions/32647/attachments/24320/35004/svd-vk.20.01.2011.pdf#search=svd%20unfolding
-https://indico.cern.ch/event/107747/contributions/32650/attachments/24325/35009/tackmann.pdf#search=svd%20unfolding
-*/
-if (fptbinsJetMeasN==fptbinsJetTrueN){
-TH1D* bdat = (TH1D*) fRawRebin->Clone();
-TH1D* bini = (TH1D*) Matrix->ProjectionX()->Clone();
-TH1D* xini = (TH1D*) Matrix->ProjectionY()->Clone();
-TH2D* Adet = (TH2D*) Matrix->Clone();
-int kreg = regSVD;
-//TSVDUnfold* tsvdunf = new TSVDUnfold(bdat, Bcov, bini, xini, Adet);
-TSVDUnfold* tsvdunf = new TSVDUnfold(bdat=bdat, bini=bini, xini=xini, Adet=Adet);
-TH1D* unfresult = tsvdunf->Unfold(kreg);
-TH1D* singVec = tsvdunf->GetSV();
-
-    TCanvas* cUnfoldedD = new TCanvas("cUnfoldedD","cUnfoldedD",1000,1000);
-    cUnfoldedD->SetLogy();
-    TLegend* leg2 =  new TLegend(0.6,0.4,0.85,0.85);
-    leg2->SetBorderSize(0);
-
-TH1D* fUnfoldedClone = (TH1D*)fUnfoldedSVD[regSVD-1]->Clone();
-TH1D* fDvector = (TH1D*)(tsvdunf->GetD())->Clone();
-unfresult->Scale(1,"width");
-bdat->Scale(1,"width");
-unfresult->SetLineColor(kBlue);
-bdat->SetLineColor(kGreen+2);
-
-fUnfoldedClone->Scale(1,"width");
-fUnfoldedClone->Draw();//unfolded
-leg2->AddEntry(fUnfoldedClone,"fUnfoldedSVD");
-unfresult->Draw("same");//unfolded
-leg2->AddEntry(unfresult,"unfresult");
-bdat->Draw("same");//data
-leg2->AddEntry(bdat,"bdat");
-leg2->Draw("same");
-
-//    TH1D* fRegSVD = new TH1D("RegSVD","RegSVD",fDvector->GetNbinsX(),0,fDvector->GetNbinsX());
-//    fRegSVD->SetBinContent(kreg,1);
-//    fRegSVD->SetLineColor(2);
-TCanvas* cSVD_Dvector = new TCanvas("Dvector","Dvector",1000,1000);
-TLegend* legDvec =  new TLegend(0.6,0.4,0.85,0.85);
-legDvec->SetBorderSize(0);
-
-cSVD_Dvector->SetLogy();
-fDvector->Draw();
-
-TCanvas* cSVD_singVal = new TCanvas("singVal","singVal",1000,1000);
-TLegend* legsingVal =  new TLegend(0.6,0.4,0.85,0.85);
-legsingVal->SetBorderSize(0);
-
-cSVD_singVal->SetLogy();
-singVec->Draw();
-
-//fRegSVD->Draw("same");
-//legDvec->AddEntry(fRegSVD,Form("Reg=%d",kreg),"l");
-//legDvec->Draw("same");
-///////////----can't remember the idea behind determining `regCount'----////////////////////////////
-//int regCount = 0;
-//double oldN = 1; double newN = 0;
-//int nbinsy=fptbinsJetTrueN;
-//for (int i =0; i<NTrials-1; i++){ //for every unfolded histo to the penultimate histo
-//        int secCount = 0;
-//        for (int ll =0; ll<nbinsy; ll++){
-//                oldN=fUnfoldedSVD[i]->GetBinContent(ll);
-//                newN=fUnfoldedSVD[i+1]->GetBinContent(ll);
-//cout<<"------------oldN and newN are: "<<oldN<<" and "<<newN<<endl;
-//
-//                if(fabs((oldN - newN))>0.1*oldN) break;
-//                else secCount += 1;
-//        }
-//cout<<"------------secCount is: "<<secCount<<endl;
-//        if (secCount == nbinsy) {regCount = i;break;}
-//}
-//cout<<"-------------regCount is: "<<regCount<<endl;
-////////////////////////////////////////
-
-	cUnfoldedD->SaveAs(Form("%s/plots/%s_unfoldedD.pdf",outDir.Data(),outName.Data()));
-	cUnfoldedD->SaveAs(Form("%s/plots/%s_unfoldedD.png",outDir.Data(),outName.Data()));
-
-	cSVD_Dvector->SaveAs(Form("%s/plots/%s_SVD_Dvector.pdf",outDir.Data(),outName.Data()));
-	cSVD_Dvector->SaveAs(Form("%s/plots/%s_SVD_Dvector.png",outDir.Data(),outName.Data()));
-	
-	cSVD_singVal->SaveAs(Form("%s/plots/%s_SVD_singVector.pdf",outDir.Data(),outName.Data()));
-	cSVD_singVal->SaveAs(Form("%s/plots/%s_SVD_singVector.png",outDir.Data(),outName.Data()));
-}
-else {cout<<"----- D vector cannot be found using TSVDUnfold if histograms do not have same dimensions!!! -----"<<endl; }	
-/*---- end of `finding D vector' ---*/
 
 	TCanvas *cPearson = new TCanvas("cPearson","cPearson",1800,1800);
 	cPearson->Divide(3,3);
@@ -291,8 +215,8 @@ else {cout<<"----- D vector cannot be found using TSVDUnfold if histograms do no
 		fPearsonCoeffs[ivar]->Draw("colz");
 	}
 
-	cPearson->SaveAs(Form("%s/plots/%s_Pearson.pdf",outDir.Data(),outName.Data()));
-	cPearson->SaveAs(Form("%s/plots/%s_Pearson.png",outDir.Data(),outName.Data()));
+	cPearson->SaveAs(Form("%s/plots/%s_Pearson%s.pdf",outDir.Data(),outName.Data(),SVD?"SVD":""));
+	cPearson->SaveAs(Form("%s/plots/%s_Pearson%s.png",outDir.Data(),outName.Data(),SVD?"SVD":""));
 
     TCanvas *cRatio2 = new TCanvas("cRatio2","cRatio2",800,600);
     TLegend *legRatio2 =  new TLegend(0.4,0.15,0.6,0.5);//0.6,0.5,0.65,0.85
@@ -305,7 +229,7 @@ else {cout<<"----- D vector cannot be found using TSVDUnfold if histograms do no
         hRatio[ivar] = (TH1D*) folded[ivar]->Clone(Form("hRatio%d",ivar));
         hRatio[ivar]->Divide(hBaseMeasure);
         hRatio[ivar]->GetYaxis()->SetTitle("refolded/measured");
-				hRatio[ivar]->SetTitle(Form("Reg=%d",ivar+1));
+	hRatio[ivar]->SetTitle(Form("Reg=%d",ivar+1));
         //hRatio[ivar]->GetYaxis()->SetRangeUser(0,3.5);
         //hRatio[ivar]->SetTitle();
 
@@ -313,10 +237,10 @@ else {cout<<"----- D vector cannot be found using TSVDUnfold if histograms do no
         hRatio[ivar]->SetMarkerColor(colortable[ivar]);
         hRatio[ivar]->SetMarkerSize(0);
         hRatio[ivar]->SetLineColor(colortable[ivar]);
-				hRatio[ivar]->SetLineStyle(linesytle[ivar]);
-				hRatio[ivar]->SetLineWidth(2);
+	hRatio[ivar]->SetLineStyle(linesytle[ivar]);
+	hRatio[ivar]->SetLineWidth(2);
 
-				int counter = 0;
+	int counter = 0;
         for(int kk=1; kk<fptbinsJetMeasN; kk++){
                 double val = fabs(1-hRatio[ivar]->GetBinContent(kk));
                 //cout << "==val: " << val << endl;
@@ -338,7 +262,7 @@ else {cout<<"----- D vector cannot be found using TSVDUnfold if histograms do no
 
 		hRatioS->SetMinimum(hRatioS->GetMinimum("nostack"));
 		hRatioS->Draw("nostackhist");
-		hRatioS->GetXaxis()->SetTitle("p_{T, ch.jet}");
+		//hRatioS->GetXaxis()->SetTitle("p_{T, ch.jet}");
 		gPad->BuildLegend(0.55,0.65,0.9,0.9,"");
     //legRatio2->Draw("same");
 
@@ -348,18 +272,18 @@ else {cout<<"----- D vector cannot be found using TSVDUnfold if histograms do no
     line->Draw("same");
 
     //cRatio2->SaveAs(Form("%s/%s_foldedRatio.png",outDir.Data(),outName.Data()));
-    cRatio2->SaveAs(Form("%s/plots/%s_foldedRatio.pdf",outDir.Data(),outName.Data()));
-		cRatio2->SaveAs(Form("%s/plots/%s_foldedRatio.png",outDir.Data(),outName.Data()));
+    cRatio2->SaveAs(Form("%s/plots/%s_foldedRatio%s.pdf",outDir.Data(),outName.Data(),SVD?"SVD":""));
+	cRatio2->SaveAs(Form("%s/plots/%s_foldedRatio%s.png",outDir.Data(),outName.Data(),SVD?"SVD":""));
 
 		// =============== Unfolded
-		THStack *hRatioUnfS = new THStack("hRatioUnfS",Form("Unfolded RegX/Reg%d",regSVD));
+		THStack *hRatioUnfS = new THStack("hRatioUnfS",Form("Unfolded RegX/Reg%d",regBayes));
 		TCanvas *cRatio = new TCanvas("cRatio","cRatio",800,600);
-    TH1D *hBaseSpectrum = (TH1D*)fUnfoldedSVD[regSVD-1]->Clone("hBaseSpectrum");
+    TH1D *hBaseSpectrum = (TH1D*)fUnfoldedBayes[regBayes-1]->Clone("hBaseSpectrum");
 //    int iter = 0;
     for(Int_t ivar=0; ivar<NTrials; ivar++){
-        hRatioSpectrum[ivar] = (TH1D*) fUnfoldedSVD[ivar]->Clone(Form("hRatioSpectrum%d",ivar));
+        hRatioSpectrum[ivar] = (TH1D*) fUnfoldedBayes[ivar]->Clone(Form("hRatioSpectrum%d",ivar));
         hRatioSpectrum[ivar]->Divide(hBaseSpectrum);
-				hRatioSpectrum[ivar]->GetYaxis()->SetTitle(Form("RegX/Reg%d",regSVD));
+				hRatioSpectrum[ivar]->GetYaxis()->SetTitle(Form("RegX/Reg%d",regBayes));
         hRatioSpectrum[ivar]->SetTitle(Form("Reg=%d",ivar+1));
         hRatioSpectrum[ivar]->SetMarkerStyle(fMarkers[ivar]);//[iter]);
         hRatioSpectrum[ivar]->SetMarkerColor(colortable[ivar]);//[iter]);//(colortable[iter+1]);
@@ -368,7 +292,7 @@ else {cout<<"----- D vector cannot be found using TSVDUnfold if histograms do no
 				hRatioSpectrum[ivar]->SetLineStyle(linesytle[ivar]);
 				hRatioSpectrum[ivar]->SetLineWidth(2);
 
-        if((ivar == 0)  || (ivar == regSVD-1)) continue;
+        if((ivar == 0)  || (ivar == regBayes-1)) continue;
         hRatioUnfS->Add(hRatioSpectrum[ivar]);
 
         //if(ivar==1) { hRatioSpectrum[ivar]->GetYaxis()->SetRangeUser(0.8,1.3); hRatioSpectrum[ivar]->Draw("hist"); }
@@ -378,45 +302,46 @@ else {cout<<"----- D vector cannot be found using TSVDUnfold if histograms do no
 		hRatioUnfS->SetMinimum(hRatioUnfS->GetMinimum("nostack"));
 		//hRatioUnfS->SetMaximum(hRatioUnfS->GetMaximum("nostack")*0.8);
 		hRatioUnfS->Draw("nostackhist");
-		hRatioUnfS->GetXaxis()->SetTitle("p_{T, ch.jet}");
+		//hRatioUnfS->GetXaxis()->SetTitle("p_{T, ch.jet}");
 		gPad->BuildLegend(0.55,0.65,0.9,0.9,"");
     line->Draw("same");
 
-		cRatio->SaveAs(Form("%s/plots/%s_unfRatio.pdf",outDir.Data(),outName.Data()));
-		cRatio->SaveAs(Form("%s/plots/%s_unfRatio.png",outDir.Data(),outName.Data()));
+		cRatio->SaveAs(Form("%s/plots/%s_unfRatio%s.pdf",outDir.Data(),outName.Data(),SVD?"SVD":""));
+		cRatio->SaveAs(Form("%s/plots/%s_unfRatio%s.png",outDir.Data(),outName.Data(),SVD?"SVD":""));
 
     fRawRebin->SetLineColor(kBlue+1);
     fRawRebin->SetMarkerColor(kBlue+1);
     fRawSpectrum->SetLineColor(kBlue+1);
     fRawSpectrum->SetMarkerColor(kBlue+1);
-    fUnfoldedSVD[regSVD-1]->SetLineColor(kRed+1);
-    fUnfoldedSVD[regSVD-1]->SetMarkerColor(kRed+1);
-    fUnfoldedSVD[regSVD-1]->SetMarkerStyle(21);
-		fUnfoldedSVD[regSVD-1]->SetLineStyle(1);
-    folded[regSVD-1]->SetLineColor(kGreen+1);//(kRed+1);
-    folded[regSVD-1]->SetMarkerColor(kGreen+1);//(kRed+1);
+    fUnfoldedBayes[regBayes-1]->SetLineColor(kRed+1);
+    fUnfoldedBayes[regBayes-1]->SetMarkerColor(kRed+1);
+    fUnfoldedBayes[regBayes-1]->SetMarkerStyle(21);
+	fUnfoldedBayes[regBayes-1]->SetLineStyle(1);
+    folded[regBayes-1]->SetLineColor(kGreen+1);//(kRed+1);
+    folded[regBayes-1]->SetMarkerColor(kGreen+1);//(kRed+1);
 
-    fUnfoldedSVD[regSVD-1]->SetName("unfoldedSpectrum");
-    folded[regSVD-1]->SetName("foldedSpectrum");
+    fUnfoldedBayes[regBayes-1]->SetName("unfoldedSpectrum");
+    folded[regBayes-1]->SetName("foldedSpectrum");
     fRawRebin->SetName("fRawRebin");
 
-		TH1F *hUnfolded_Unc = (TH1F*)fUnfoldedSVD[regSVD-1]->Clone("hUnfolded_Unc");
-		hUnfolded_Unc->GetYaxis()->SetTitle("Rel. unc.");
-		hUnfolded_Unc->SetLineColor(kGreen+1);
-		hUnfolded_Unc->SetMarkerColor(kGreen+1);
+	TH1F *hUnfolded_Unc = (TH1F*)fUnfoldedBayes[regBayes-1]->Clone("hUnfolded_Unc");
+	hUnfolded_Unc->GetYaxis()->SetTitle("Rel. unc.");
+	hUnfolded_Unc->SetLineColor(kGreen+1);
+	hUnfolded_Unc->SetMarkerColor(kGreen+1);
 
-		for(int j=1; j<=fUnfoldedSVD[regSVD-1]->GetNbinsX();j++){
-								double err;
-								if(fUnfoldedSVD[regSVD-1]->GetBinContent(j)) err = fUnfoldedSVD[regSVD-1]->GetBinError(j)/fUnfoldedSVD[regSVD-1]->GetBinContent(j);
-								else err = 0;
-								hUnfolded_Unc->SetBinContent(j,err);
-								hUnfolded_Unc->SetBinError(j,0);
-		}
-		hUnfolded_Unc->SetTitle();
-		hUnfolded_Unc->SetMaximum(hUnfolded_Unc->GetMaximum()*1.2);
-		hUnfolded_Unc->SetMinimum(0);
+	for(int j=1; j<=fUnfoldedBayes[regBayes-1]->GetNbinsX();j++){
+	    double err;
+	    if(fUnfoldedBayes[regBayes-1]->GetBinContent(j)) err = fUnfoldedBayes[regBayes-1]->GetBinError(j)/fUnfoldedBayes[regBayes-1]->GetBinContent(j);
+	    else err = 0;
+	    hUnfolded_Unc->SetBinContent(j,err);
+	    hUnfolded_Unc->SetBinError(j,0);
+	}
 
-    TFile *outSpectra = new TFile(Form("%s/%s_unfoldedJetSpectrum.root",outDir.Data(),outName.Data()),"recreate");
+	hUnfolded_Unc->SetTitle("");
+	hUnfolded_Unc->SetMaximum(hUnfolded_Unc->GetMaximum()*1.2);
+	hUnfolded_Unc->SetMinimum(0);
+
+    TFile *outSpectra = new TFile(Form("%s/%s_unfoldedJetSpectrum%s.root",outDir.Data(),outName.Data(), SVD ? "SVD" : ""),"recreate");
 		//TFile *outSpectra = new TFile(Form("%s/%s_unfoldedJetSpectrum.root",outDir.Data(),outName.Data()),"recreate");
     hProjYeff ->Write();
     hProjXeff ->Write();
@@ -425,13 +350,13 @@ else {cout<<"----- D vector cannot be found using TSVDUnfold if histograms do no
     fMatrixProd->Write();
     Matrix->Write();
 
-    fRawRebin->SetTitle();
-//    fUnfoldedSVD[regSVD-1]->SetLineColor(kRed+1);
-//    fUnfoldedSVD[regSVD-1]->SetMarkerColor(kRed+1);
+    fRawRebin->SetTitle("");
+//    fUnfoldedBayes[regBayes-1]->SetLineColor(kRed+1);
+//    fUnfoldedBayes[regBayes-1]->SetMarkerColor(kRed+1);
     fRawRebin ->Write();
-    fUnfoldedSVD[regSVD-1]->Write();
-    folded[regSVD-1]->Write();
-		hUnfolded_Unc->Write();
+    fUnfoldedBayes[regBayes-1]->Write();
+    folded[regBayes-1]->Write();
+	hUnfolded_Unc->Write();
 
     outSpectra->Close();
 
@@ -442,9 +367,9 @@ else {cout<<"----- D vector cannot be found using TSVDUnfold if histograms do no
 	* Scale with the bin width
 	================== */
 		 fRawRebin->Scale(1,"width");
-		 for(Int_t ivar=0; ivar<NTrials; ivar++){ fUnfoldedSVD[ivar]->Scale(1,"width"); }
-		 folded[regSVD-1]->Scale(1,"width");
-		 fUnfoldedSVD[regSVD-1]->SetTitle();
+		 for(Int_t ivar=0; ivar<NTrials; ivar++){ fUnfoldedBayes[ivar]->Scale(1,"width"); }
+		 folded[regBayes-1]->Scale(1,"width");
+		 fUnfoldedBayes[regBayes-1]->SetTitle("");
 
 		 TPaveText *pvEn= new TPaveText(0.2,0.80,0.8,0.85,"brNDC");
 		 pvEn->SetFillStyle(0);
@@ -494,8 +419,8 @@ else {cout<<"----- D vector cannot be found using TSVDUnfold if histograms do no
     TCanvas* cSpectra = new TCanvas("cSpectra","cSpectra",800,600);
     cSpectra->SetLogy();
     //fRawSpectrum ->Draw();
-    fUnfoldedSVD[regSVD-1]->Draw();
-    folded[regSVD-1]->Draw("same");
+    fUnfoldedBayes[regBayes-1]->Draw();
+    folded[regBayes-1]->Draw("same");
     fRawRebin ->Draw("same");
 		pv3->Draw("same");
 		pvEn->Draw("same");
@@ -506,12 +431,14 @@ else {cout<<"----- D vector cannot be found using TSVDUnfold if histograms do no
     TLegend* ls = new TLegend(0.55,0.67,0.88,0.87);
     ls->SetBorderSize(0);
     ls->AddEntry(fRawRebin,"Measured","p");
-    ls->AddEntry(fUnfoldedSVD[regSVD-1], Form("Unfolded, SVD reg=%d",regSVD,"p"));
-    ls->AddEntry(folded[regSVD-1],"Refolded","l");
+    //ls->AddEntry(fUnfoldedBayes[regBayes-1], Form("Unfolded, Bayes reg=%d",regBayes,"p"));
+    if(SVD){ls->AddEntry(fUnfoldedBayes[regBayes-1], Form("Unfolded, SVD reg=%d",regBayes));}
+    else{ls->AddEntry(fUnfoldedBayes[regBayes-1], Form("Unfolded, Bayes reg=%d",regBayes));}
+    ls->AddEntry(folded[regBayes-1],"Refolded","l");
     ls->Draw("same");
 
-    cSpectra->SaveAs(Form("%s/plots/%s_UnfSpectrum.pdf",outDir.Data(),outName.Data()));
-		cSpectra->SaveAs(Form("%s/plots/%s_UnfSpectrum.png",outDir.Data(),outName.Data()));
+    cSpectra->SaveAs(Form("%s/plots/%s_UnfSpectrum%s.pdf",outDir.Data(),outName.Data(),SVD?"SVD":""));
+	cSpectra->SaveAs(Form("%s/plots/%s_UnfSpectrum%s.png",outDir.Data(),outName.Data(),SVD?"SVD":""));
 
 		pv3 = new TPaveText(0.2,0.65,0.6,0.75,"brNDC");
 		pv3->SetFillStyle(0);
@@ -526,36 +453,37 @@ else {cout<<"----- D vector cannot be found using TSVDUnfold if histograms do no
 		pvEn->Draw("same");
     pv3->Draw("same");
 
-		cSpectrumRebinUnc->SaveAs(Form("%s/plots/%s_UnfSpectrum_unc.pdf",outDir.Data(),outName.Data()));
-		cSpectrumRebinUnc->SaveAs(Form("%s/plots/%s_UnfSpectrum_unc.png",outDir.Data(),outName.Data()));
+		cSpectrumRebinUnc->SaveAs(Form("%s/plots/%s_UnfSpectrum_unc%s.pdf",outDir.Data(),outName.Data(),SVD?"SVD":""));
+		cSpectrumRebinUnc->SaveAs(Form("%s/plots/%s_UnfSpectrum_unc%s.png",outDir.Data(),outName.Data(),SVD?"SVD":""));
 
-    TH1F* hratio = (TH1F*)fUnfoldedSVD[regSVD-1]->Rebin(fptbinsJetTrueN,"hratio",fptbinsJetTrueA);
-		if (fptbinsJetTrueN != fptbinsJetMeasN){
-	    TH1D* fRawRebinClone = new TH1D("fRawRebinClone","Measured hist, True rebinned",fptbinsJetTrueN,fptbinsJetTrueA);
-			int istart = 0;
-			while (fptbinsJetTrueA[0] != fptbinsJetMeasA[istart]){
-			istart++;
-			}
-      for(int j=0; j<=fRawRebinClone->GetNbinsX()+1;j++){
-        double cont = fRawRebin->GetBinContent(j+istart);
-        double err = fRawRebin->GetBinError(j+istart);
-        fRawRebinClone->SetBinContent(j, cont);
-        fRawRebinClone->SetBinError(j, err);
-      }
+    TH1F* hratio = (TH1F*)fUnfoldedBayes[regBayes-1]->Rebin(fptbinsJetTrueN,"hratio",fptbinsJetTrueA);
+    TH1D* fRawRebinClone;
+    if (fptbinsJetTrueN != fptbinsJetMeasN){
+        fRawRebinClone = new TH1D("fRawRebinClone","Measured hist, True rebinned",fptbinsJetTrueN,fptbinsJetTrueA);
+	int istart = 0;
+	while (fptbinsJetTrueA[0] != fptbinsJetMeasA[istart]){
+	    istart++;
 	}
-	else    TH1D* fRawRebinClone = (TH1D*)fRawRebin->Clone("fRawRebinClone");
+        for(int j=0; j<=fRawRebinClone->GetNbinsX()+1;j++){
+            double cont = fRawRebin->GetBinContent(j+istart);
+            double err = fRawRebin->GetBinError(j+istart);
+            fRawRebinClone->SetBinContent(j, cont);
+            fRawRebinClone->SetBinError(j, err);
+        }
+    }
+    else    fRawRebinClone = (TH1D*)fRawRebin->Clone("fRawRebinClone");
 //    TH1D* fRawRebinClone = (TH1D*)hBaseMeasure->Clone("fRawRebinClone");
-	hratio->Divide(fRawRebinClone);
-	hratio->SetLineColor(kMagenta+1);
-	hratio->SetMarkerColor(kMagenta+1);
+    hratio->Divide(fRawRebinClone);
+    hratio->SetLineColor(kMagenta+1);
+    hratio->SetMarkerColor(kMagenta+1);
 
   TCanvas* cr= new TCanvas("cr","cr",800,600);
-	hratio->GetYaxis()->SetTitle(Form("dN/dp_{T} Unfolded(Reg=%d)/Measured",regSVD));
-	hratio->SetTitle(Form("Unfolded(Reg=%d)/Measured",regSVD));
+	hratio->GetYaxis()->SetTitle(Form("dN/dp_{T} Unfolded(Reg=%d)/Measured",regBayes));
+	hratio->SetTitle(Form("Unfolded(Reg=%d)/Measured",regBayes));
 	hratio->Draw("hist");
 	line->Draw("same");
-	cr->SaveAs(Form("%s/plots/%s_UnfMeasRatio.pdf",outDir.Data(),outName.Data()));
-  cr->SaveAs(Form("%s/plots/%s_UnfMeasRatio.png",outDir.Data(),outName.Data()));
+	cr->SaveAs(Form("%s/plots/%s_UnfMeasRatio%s.pdf",outDir.Data(),outName.Data(),SVD?"SVD":""));
+    cr->SaveAs(Form("%s/plots/%s_UnfMeasRatio%s.png",outDir.Data(),outName.Data(),SVD?"SVD":""));
 
     hProjXeff->GetXaxis()->SetRangeUser(plotmin,plotmax);
     hProjYeff->GetXaxis()->SetRangeUser(plotmin,plotmax);
@@ -563,14 +491,14 @@ else {cout<<"----- D vector cannot be found using TSVDUnfold if histograms do no
     TCanvas* cProjMatrix= new TCanvas("cProjMatrix","cProjMatrix",800,600);
     cProjMatrix->SetLogz();
     fMatrixProd->Draw("colz");
-		cProjMatrix->SaveAs(Form("%s/plots/%s_MatrixProd.pdf",outDir.Data(),outName.Data()));
-    cProjMatrix->SaveAs(Form("%s/plots/%s_MatrixProd.png",outDir.Data(),outName.Data()));
+	cProjMatrix->SaveAs(Form("%s/plots/%s_MatrixProd%s.pdf",outDir.Data(),outName.Data(),SVD?"SVD":""));
+    cProjMatrix->SaveAs(Form("%s/plots/%s_MatrixProd%s.png",outDir.Data(),outName.Data(),SVD?"SVD":""));
 
     TCanvas* cMatrix= new TCanvas("cMatrix","cMatrix",800,600);
     cMatrix->SetLogz();
     Matrix->Draw("colz");
-		cMatrix->SaveAs(Form("%s/plots/%s_Matrix.pdf",outDir.Data(),outName.Data()));
-    cMatrix->SaveAs(Form("%s/plots/%s_Matrix.png",outDir.Data(),outName.Data()));
+	cMatrix->SaveAs(Form("%s/plots/%s_Matrix%s.pdf",outDir.Data(),outName.Data(),SVD?"SVD":""));
+    cMatrix->SaveAs(Form("%s/plots/%s_Matrix%s.png",outDir.Data(),outName.Data(),SVD?"SVD":""));
 
     TCanvas* cProjMReb= new TCanvas("cProjMReb","cProjMReb",800,600);
     cProjMReb->SetLogy();
@@ -582,8 +510,8 @@ else {cout<<"----- D vector cannot be found using TSVDUnfold if histograms do no
     hProjXeffRebin->SetLineColor(4);
     hProjXeffRebin->Draw("same");
 
-    cProjMReb->SaveAs(Form("%s/plots/%s_MatrixProdProjReb.pdf",outDir.Data(),outName.Data()));
-		cProjMReb->SaveAs(Form("%s/plots/%s_MatrixProdProjReb.png",outDir.Data(),outName.Data()));
+    cProjMReb->SaveAs(Form("%s/plots/%s_MatrixProdProjReb%s.pdf",outDir.Data(),outName.Data(),SVD?"SVD":""));
+	cProjMReb->SaveAs(Form("%s/plots/%s_MatrixProdProjReb%s.png",outDir.Data(),outName.Data(),SVD?"SVD":""));
 
 		if(fSystem) MtxPlots(outDir,outName);
 }
@@ -786,7 +714,7 @@ TH2D * ProductMatrix(TH2D * MtxA, TH2D * MtxB) {
 int MtxPlots(TString outDir, TString outName) {
 
 	TString tag = "tag";
-	if (!fMatrixPP) { Error("MtxPlots","No unfolding matrix present."); return kErr; }
+	if (!fMatrixPP) { Error("MtxPlots","No unfolding matrix present."); return 1;}//kErr; }
 
 	TH2D * hMtxPP = NULL;
 	TH2D * hMtxDpt = NULL;
@@ -815,7 +743,7 @@ int MtxPlots(TString outDir, TString outName) {
 		//if(!fMatrixProd)
 		//	fMatrixProd = getResponseMatrix( fMatrixDeltaPt );
 
-		if (!fMatrixProd) { Error("MtxPlots", "Error getting product matrix!"); return kErr; }
+		if (!fMatrixProd) { Error("MtxPlots", "Error getting product matrix!"); return 1;}//kErr; }
 
 		//hMtxRe = (TH2D*)NormMatrixY("hMtxRe"+tag,fMatrixProd);
 
@@ -831,8 +759,8 @@ int MtxPlots(TString outDir, TString outName) {
 		hMtxPro->Draw("colz");
 	}
 
-	cMtx->SaveAs(Form("%s/plots/%s_probMtx.pdf",outDir.Data(),outName.Data()));
-	cMtx->SaveAs(Form("%s/plots/%s_probMtx.png",outDir.Data(),outName.Data()));
+	cMtx->SaveAs(Form("%s/plots/%s_probMtx%s.pdf",outDir.Data(),outName.Data(),SVD?"SVD":""));
+	cMtx->SaveAs(Form("%s/plots/%s_probMtx%s.png",outDir.Data(),outName.Data(),SVD?"SVD":""));
 
 	TCanvas *cSlices=new TCanvas("ProbSlice", "Probability slices",1000,1000);
 	cSlices->Divide(3,2);
@@ -842,9 +770,8 @@ int MtxPlots(TString outDir, TString outName) {
 	plotSlice(cSlices->cd(4), hMtxPP,hMtxDpt,hMtxRe,hMtxPro,20,25);
 	plotSlice(cSlices->cd(5), hMtxPP,hMtxDpt,hMtxRe,hMtxPro,25,30);
 
-	cSlices->SaveAs(Form("%s/plots/%s_probSlices.pdf",outDir.Data(),outName.Data()));
-	cSlices->SaveAs(Form("%s/plots/%s_probSlices.png",outDir.Data(),outName.Data()));
-
+	cSlices->SaveAs(Form("%s/plots/%s_probSlices%s.pdf",outDir.Data(),outName.Data(),SVD?"SVD":""));
+	cSlices->SaveAs(Form("%s/plots/%s_probSlices%s.png",outDir.Data(),outName.Data(),SVD?"SVD":""));
 
 	return 0;
 }
@@ -925,6 +852,8 @@ int plotSlice(TVirtualPad * p, TH2D * hMtxPP, TH2D * hMtxDpt, TH2D * hMtxRe, TH2
 		l->SetHeader(stitle);
 		l->Draw();
 	}
+
+	return 0;
 
 }
 
@@ -1041,17 +970,17 @@ TF1* getPriorFunction(int prior, TH1D* spect, int priorType = 0, TH1D* rawspectr
 
 	//PriorFunction = new TF1("PriorFunction","[0]*pow(1+(sqrt([1]*[1]+x*x)-[1])/([2]*[3]),-1*[2])",0,50);
 	//PriorFunction->SetParameters(10,0.14,6.6,0.145);/
-    PriorFunction = new TF1("PriorFunction","[0]* pow(x,-[1]) * exp(-[1]*[2]/x)",fitlo,fithi);
+TF1*    PriorFunction = new TF1("PriorFunction","[0]* pow(x,-[1]) * exp(-[1]*[2]/x)",fitlo,fithi);
 
 		PriorFunction->SetParLimits(1,2,8);
-    if(priorType == 0)  		{ PriorFunction->FixParameter(1,4.6); PriorFunction->FixParameter(2,4);}
+    		if(priorType == 0) 	{ PriorFunction->FixParameter(1,4.6); PriorFunction->FixParameter(2,4);}
 		else if(priorType == 1) { PriorFunction->FixParameter(1,3);   PriorFunction->FixParameter(2,4);}
-  	else if(priorType == 2) { PriorFunction->FixParameter(1,4);   PriorFunction->FixParameter(2,4);}
+	  	else if(priorType == 2) { PriorFunction->FixParameter(1,4);   PriorFunction->FixParameter(2,4);}
 		else if(priorType == 3) { PriorFunction->FixParameter(1,5);   PriorFunction->FixParameter(2,4);}
 		else if(priorType == 4) { PriorFunction->FixParameter(1,6);   PriorFunction->FixParameter(2,4);}
 		else if(priorType == 5) { PriorFunction->FixParameter(1,7);   PriorFunction->FixParameter(2,4);}
-		else if(priorType == 6) { PriorFunction->FixParameter(1,4.5); PriorFunction->FixParameter(2,3); }
-		else if(priorType == 7) { PriorFunction->FixParameter(1,4.5); PriorFunction->FixParameter(2,5); }
+		else if(priorType == 6) { PriorFunction->FixParameter(1,4.5); PriorFunction->FixParameter(2,3);}
+		else if(priorType == 7) { PriorFunction->FixParameter(1,4.5); PriorFunction->FixParameter(2,5);}
 		else if(priorType == 8) { PriorFunction->SetParLimits(1,2,8); PriorFunction->SetParLimits(2,2,8); fitlo = fptbinsJetMeasA[0]; }
 		if(priorType == 8) { rawspectrum->Fit(PriorFunction, fitopt,"",fitlo,fithi); }
 		else spect->Fit(PriorFunction, fitopt,"",fitlo,fithi);
