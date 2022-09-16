@@ -66,18 +66,11 @@ gStyle->SetOptStat(0000); //Mean and RMS shown
 gSystem->Exec(Form("mkdir  %s",outDir.Data()));
 gSystem->Exec(Form("mkdir  %s/plots",outDir.Data()));
 
-	double plotmin = fptbinsJetTrueA[0] ;
-	double plotmax = fptbinsJetTrueA[fptbinsJetTrueN];
+double plotmin = fptbinsJetTrueA[0] ;
+double plotmax = fptbinsJetTrueA[fptbinsJetTrueN];
 
 
-	TString outName = "unfoldedSpectrum";
-	//outName += "Bayes";
-	//outName += regBayes;
-	//if(fDoWeighting) outName += "_weight";
-	//if(isPrior) { outName += "_"; outName += priorName; }
-	//outName += "_PtMeas"; outName += fptbinsJetMeasA[0];	outName += "_"; outName += fptbinsJetMeasA[fptbinsJetMeasN];
-	//outName += "_PtTrue"; outName += fptbinsJetTrueA[0];	outName += "_"; outName += fptbinsJetTrueA[fptbinsJetTrueN];
-
+TString outName = "unfoldedSpectrum";
 
 /***********************************
 ############# load raw spectrum and response matrices ##################
@@ -497,13 +490,13 @@ LoadDetectorMatrix(detRMfile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
     TCanvas* cProjMatrix= new TCanvas("cProjMatrix","cProjMatrix",800,600);
     cProjMatrix->SetLogz();
     fMatrixProd->Draw("colz");
-		cProjMatrix->SaveAs(Form("%s/plots/%s_MatrixProd.pdf",outDir.Data(),outName.Data()));
+	cProjMatrix->SaveAs(Form("%s/plots/%s_MatrixProd.pdf",outDir.Data(),outName.Data()));
     cProjMatrix->SaveAs(Form("%s/plots/%s_MatrixProd.png",outDir.Data(),outName.Data()));
 
     TCanvas* cMatrix= new TCanvas("cMatrix","cMatrix",800,600);
     cMatrix->SetLogz();
     Matrix->Draw("colz");
-		cMatrix->SaveAs(Form("%s/plots/%s_Matrix.pdf",outDir.Data(),outName.Data()));
+	cMatrix->SaveAs(Form("%s/plots/%s_Matrix.pdf",outDir.Data(),outName.Data()));
     cMatrix->SaveAs(Form("%s/plots/%s_Matrix.png",outDir.Data(),outName.Data()));
 
     TCanvas* cProjMReb= new TCanvas("cProjMReb","cProjMReb",800,600);
