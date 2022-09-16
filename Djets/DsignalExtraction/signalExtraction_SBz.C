@@ -29,12 +29,11 @@
 
 #include "signalExtraction_z.h"
 //--------------------------
+bool defDirCheck=0;//defined globally here//CUT SYS
+bool bool_pPb=0;
 
-  //MCclosureTest
-bool MCclosure=0;
 bool isRefSys=0;
-double refScale = 1.5;// 0(0.5) or 1(1.5)
-int refpc = 1;
+double refScale = 1.5;int refpc=1;// 0(0.5) or 1(1.5) to be entered for "refpc"
 
 void signalExtraction_SBz(
 //  TString data = "$HOME/Work/alice/analysis/out/AnalysisResults.root"
@@ -61,17 +60,27 @@ void signalExtraction_SBz(
   ,double minfSys=1.71
   ,double maxfSys=2.1
   ,int fMassBinWidthFactor=2
-  ,int sysNum=1
+  ,int sysNum=0
+  ,bool rawsys=0
 //SB systematics configs follow
-  ,Float_t sigmaSignal = 2
-  ,Float_t sigmaBkgll=-9
-  ,Float_t sigmaBkglh=-4
-  ,Float_t sigmaBkgrl=4
-  ,Float_t sigmaBkgrh=9
+  ,Int_t sigmaSignal = fsigmaSignal
+  ,Float_t sigmaBkgll=fsigmaBkg[0]
+  ,Float_t sigmaBkglh=fsigmaBkg[1]
+  ,Float_t sigmaBkgrl=fsigmaBkg[2]
+  ,Float_t sigmaBkgrh=fsigmaBkg[3]
 )
 {
-cout<<"MC closure is -------------------"<<MCclosure<<endl;
-TString sysnum = "";bool rawsys = 0; if (rawsys){TString sysnum = Form("%d",(int)sysNum);}
+//list of special additions: 
+//1.  for R=0.2, first Dpt bin side bands are fixed (search Rpar)
+//2.  for R=0.2, extra cut systematics checks are added (search bSigma)
+//2.1 this is for fixing sigma to default values of fit to data
+//bool defDirCheck=1;//defined globally above
+TString defDir=Form("/media/jackbauer/data/z_out/R_0%d_finaltry%s/signalExtraction/plots/Z0to102_jetbin_%d_%d/JetPtSpectra_SB_eff.root",(int)Rpar,bool_pPb ? "_pPb" : "",(int)fptbinsJetA[(int)zjetbin-1], (int)fptbinsJetA[(int)zjetbin]);
+cout<<defDir.Data()<<endl;
+// for multi trial systematics
+TString sysnum = ""; 
+if(rawsys)sysnum = Form("%d",(int)sysNum);
+
 	fsigfactor=fsigmafactor;
 	fMass=fixedMass;
 	fbkgtype=bkgType;
@@ -82,9 +91,34 @@ TString sysnum = "";bool rawsys = 0; if (rawsys){TString sysnum = Form("%d",(int
   fsigmaSignal = sigmaSignal;
   fsigmaBkg[0]=sigmaBkgll;
   fsigmaBkg[1]=sigmaBkglh;
-  fsigmaBkg[3]=sigmaBkgrh;
   fsigmaBkg[2]=sigmaBkgrl;
+  fsigmaBkg[3]=sigmaBkgrh;
 //gInterpreter->LoadMacro("AliHFInvMassFitterDJET.cxx++g");//to load custom cxx macro by entering ROOT environment.
+
+
+///////////////////////// FOR R=0.2 
+//
+//   AND ONLY FOR SPECIFIC BINS
+//
+//   ///////////////////////////////////
+
+//if (((int)fptbinsJetA[(int)zjetbin-1] == 5) && (fptbinsDA[0]-2<0.3)){// || (int)fptbinsJetA[(int)zjetbin-1] == 10 || (int)fptbinsJetA[(int)zjetbin-1] == 15){
+//            fsigmaBkg[0]=-40;
+//            fsigmaBkg[1]=-7;
+//            fsigmaBkg[2]=7;
+//            fsigmaBkg[3]=40;
+//    }
+//else if (((int)fptbinsJetA[(int)zjetbin-1] == 10) && (fptbinsDA[0]-4<0.3)){// || (int)fptbinsJetA[(int)zjetbin-1] == 10 || (int)fptbinsJetA[(int)zjetbin-1] == 15){
+//    }
+//else if (((int)fptbinsJetA[(int)zjetbin-1] == 15) && (fptbinsDA[0]-4<0.3)){// || (int)fptbinsJetA[(int)zjetbin-1] == 10 || (int)fptbinsJetA[(int)zjetbin-1] == 15){
+//            fsigmaBkg[0]=-40;
+//            fsigmaBkg[1]=-7;
+//            fsigmaBkg[2]=7;
+//            fsigmaBkg[3]=40;
+//    }
+//
+//}
+
 
 efffile+=Form("%d_%d.root",(int)fptbinsJetA[(int)zjetbin-1], (int)fptbinsJetA[(int)zjetbin]);
 refFile+= Form("R0%d_%d_%d.root",(int)Rpar,(int)fptbinsJetA[(int)zjetbin-1], (int)fptbinsJetA[(int)zjetbin]);
@@ -95,12 +129,23 @@ cout<<efffile<<endl;
     savePlots = save;
     bEff = isEff;
     bSigma = boundSigma;
-    TString plotsDir;
-    if(bEff)plotsDir=Form("/plots/%s_jetbin_%d_%d", saveDir.Data(),(int)fptbinsJetA[(int)zjetbin-1], (int)fptbinsJetA[(int)zjetbin]);
-    else plotsDir = Form("/plotsNoEff/%s_jetbin_%d_%d",saveDir.Data(),(int)fptbinsJetA[(int)zjetbin-1], (int)fptbinsJetA[(int)zjetbin]);
+    TString plotsX,plotsDir;
+    if(bEff)
+    {
+        plotsX= "/plots/";
+        plotsDir=Form("/%s/%s_jetbin_%d_%d",plotsX.Data(), saveDir.Data(),(int)fptbinsJetA[(int)zjetbin-1], (int)fptbinsJetA[(int)zjetbin]);
+    }
+    else 
+    {
+        plotsX = "/plotsNoEff/";
+        plotsDir = Form("/%s/%s_jetbin_%d_%d",plotsX.Data(),saveDir.Data(),(int)fptbinsJetA[(int)zjetbin-1], (int)fptbinsJetA[(int)zjetbin]);
+    }
     TString outdir = out;
     gSystem->Exec(Form("mkdir %s",outdir.Data()));
+    cout<<"SUCCESS-----------------------------------------------------------------------------------------------------------------------------------------"<<endl;
+    gSystem->Exec(Form("mkdir %s%s",outdir.Data(),plotsX.Data()));
     gSystem->Exec(Form("mkdir %s%s",outdir.Data(),plotsDir.Data()));
+    cout<<"SUCCESS-----------------------------------------------------------------------------------------------------------------------------------------"<<endl;
 
 //--------to be checked: temporary
 outdir += plotsDir;
@@ -112,6 +157,7 @@ outdir += plotsDir;
     TString histName;
 		if(!isprefix){
 		    if(fDmesonSpecie) histName = "histosDStarMBN";
+		    else if(fSystem==2)histName = "histosD0N";//Pb--Pb
 		    else histName = "histosD0MBN";
 		}
 		else{
@@ -144,7 +190,6 @@ cout<<"-------------------------------------"<<endl;
       for(int i=0;i<ND; i++){
 		if(!isprefix){
 		          if(postfix) histList =  (TList*)dir->Get(Form("%s%d%s",histName.Data(),i,listName.Data()));
-              else if(MCclosure){histList = (TList*)dir->Get(Form("%s%dMCrec",histName.Data(),i));}
 		          else {histList =  (TList*)dir->Get(Form("%s%d",histName.Data(),i));cout<<histList<<endl;}
 		}
 		else{    if(postfix){ histList =  (TList*)dir->Get(Form("%s%sMBN%d",histName.Data(),listName.Data(),i));}
@@ -185,14 +230,33 @@ cout<<"-------------------------------------"<<endl;
 
     efficiency = new double[fptbinsDN];
     sigmaMC = new double[fptbinsDN];
+    sigmaData = new double[fptbinsDN];
+    meanMC = new double[fptbinsDN];
+    meanData = new double[fptbinsDN];
     if(bEff){
         TFile *FileEff = new TFile(efffile.Data(),"read");
         TH1F* hEff = (TH1F*)FileEff->Get("hEff_reb");
         TH1D* hmassSigma = (TH1D*)FileEff->Get("hmassSigma");
+        TH1D* hmassMean  = (TH1D*)FileEff->Get("hmassMean");
+
         for(int i=0;i<fptbinsDN;i++){
             double pt = (fptbinsDA[i]+fptbinsDA[i+1]) / 2.;
             efficiency[i] = hEff->GetBinContent(hEff->GetXaxis()->FindBin(pt));
             sigmaMC[i] = hmassSigma->GetBinContent(hmassSigma->GetXaxis()->FindBin(pt));
+            meanMC[i] = hmassMean->GetBinContent(hmassMean->GetXaxis()->FindBin(pt));
+        }
+
+        if(defDirCheck){
+            TFile *FileDataEff = new TFile(defDir.Data(),"read");
+            TH1D* hmassDataSigma = (TH1D*)FileDataEff->Get("hsigma");
+            TH1D* hmassDataMean  = (TH1D*)FileDataEff->Get("hmean");
+            for(int i=0;i<fptbinsDN;i++){
+                double pt = (fptbinsDA[i]+fptbinsDA[i+1]) / 2.;
+                sigmaData[i] = hmassDataSigma->GetBinContent(hmassDataSigma->GetXaxis()->FindBin(pt))*0.001;
+                meanData[i] = hmassDataMean->GetBinContent(hmassDataMean->GetXaxis()->FindBin(pt));
+//                cout<<sigmaData[i]<<"===="<<meanData[i]<<endl;
+//                cout<<sigmaMC[i]<<"===="<<meanMC[i]<<endl;return;
+            }
         }
     }
     else {
@@ -224,6 +288,7 @@ cout<<"-------------------------------------"<<endl;
 
     // --------------------------------------------------------
     // ----------- write to output file
+    //TFile *ofile = new TFile(Form("%s/JetPtSpectra_SB_%s%s%s%s.root",outdir.Data(), bEff ? "eff" : "noEff",sysnum.Data(),isRefSys ? Form("refSys%d",(int)refpc) : "", isprefix ? listName.Data() : ""),"RECREATE");
     TFile *ofile = new TFile(Form("%s/JetPtSpectra_SB_%s%s%s.root",outdir.Data(), bEff ? "eff" : "noEff",sysnum.Data(),isRefSys ? Form("refSys%d",(int)refpc) : ""),"RECREATE");
     hmean->Write();
     hsigma->Write();
@@ -377,24 +442,87 @@ Bool_t rawJetSpectra(TString outdir, TString prod){
 	if(bSigma == 1){
 		if(i == fptbinsDN-1){
 			double fDsigmafix = sigmaMC[i];
-        		fitterp->SetBoundGaussianSigma(fDsigmafix, 0.1);
+        	fitterp->SetBoundGaussianSigma(fDsigmafix, 0.1);
 		}
 	}
 	else if(bSigma == 2){
 			double fDsigmafix = sigmaMC[i];
-        		fitterp->SetBoundGaussianSigma(fDsigmafix, 0.1);
+        	fitterp->SetBoundGaussianSigma(fDsigmafix, 0.1);
 	}
 	else if(bSigma == 3){
 			double fDsigmafix = sigmaMC[i];
-        		fitterp->SetBoundGaussianSigma(fDsigmafix, 0.2);
+        	fitterp->SetBoundGaussianSigma(fDsigmafix, 0.2);
 	}
 	else if(bSigma == 4){ // fix gaussian sigma
 			double fDsigmafix = fsigfactor*sigmaMC[i];
-        		fitterp->SetFixGaussianSigma(fDsigmafix);
+        	fitterp->SetFixGaussianSigma(fDsigmafix);
 	}
-	if(fMass){ // fix gaussian sigma
+	else if(bSigma == 5){ // CUT SYS checks 
+        //if (Rpar == 2){//this was a check for R=0.2 inv mass plots for the first Dpt bin
+        {//this was a check for R=0.2 inv mass plots for the first Dpt bin
+            //fix sigma
+            if ((int)fptbinsJetA[(int)zjetbin-1] == 5 || (int)fptbinsJetA[(int)zjetbin-1] == 7){ // for jetbins 5-7, 7-10
+    	    	//if(i == 0){
+    	    		double fDsigmafix = fsigfactor*sigmaMC[i];
+                    if(defDirCheck){fDsigmafix = fsigfactor*sigmaData[i];}
+                	fitterp->SetFixGaussianSigma(fDsigmafix);
+    	    	//}
+            }
+            //fix sigma
+            if ((int)fptbinsJetA[(int)zjetbin-1] == 10){ // for jetbin 10-15
+    	    	//if(i < 3){
+    	    		double fDsigmafix = fsigfactor*sigmaMC[i];
+                    if(defDirCheck){fDsigmafix = fsigfactor*sigmaData[i];}
+                	fitterp->SetFixGaussianSigma(fDsigmafix);
+    	    	//}
+            }
+            //fix sigma
+            if ((int)fptbinsJetA[(int)zjetbin-1] == 15){ // for jetbins 15-50
+    	    	//if(i < 2 ){
+    	    		double fDsigmafix = fsigfactor*sigmaMC[i];
+                    if(defDirCheck){fDsigmafix = fsigfactor*sigmaData[i];}
+                	fitterp->SetFixGaussianSigma(fDsigmafix);
+    	    	//}
+            }
+            //fix mu
+            //if ((int)fptbinsJetA[(int)zjetbin-1] == 5 || (int)fptbinsJetA[(int)zjetbin-1] == 7 || (int)fptbinsJetA[(int)zjetbin-1] == 15){
+            if ((int)fptbinsJetA[(int)zjetbin-1] == 7){
+    	    	if(i == 0){
+    	    		double fDmeanfix = meanMC[i];
+                    cout<<"======================================================"<<endl;
+                    cout<<"=====            MC mean fix        =================="<<endl;
+                    cout<<"======================================================"<<endl;
+                    if(defDirCheck){fDmeanfix = meanData[i];}
+                	fitterp->SetFixGaussianMean(fDmeanfix);
+    	    	}
+            }
+        }
+        //else if (Rpar == 4){
+        //    //fix sigma
+        //    if ((int)fptbinsJetA[(int)zjetbin-1] == 5 || (int)fptbinsJetA[(int)zjetbin-1] == 7 || (int)fptbinsJetA[(int)zjetbin-1] == 10){ // for jetbins 5-7, 7-10, 15-50
+    	//    	if(i == 0){
+    	//    		double fDsigmafix = fsigfactor*sigmaMC[i];
+        //            if(defDirCheck){fDsigmafix = fsigfactor*sigmaData[i];}
+        //        	fitterp->SetFixGaussianSigma(fDsigmafix);
+    	//    	}
+        //    }
+        //}
+        //else if (Rpar == 6){
+        //    //fix sigma
+        //    if ((int)fptbinsJetA[(int)zjetbin-1] == 5){ // for jetbins 5-7, 7-10, 15-50
+    	//    	if(i == 0){
+    	//    		double fDsigmafix = fsigfactor*sigmaMC[i];
+        //            if(defDirCheck){fDsigmafix = fsigfactor*sigmaData[i];}
+        //        	fitterp->SetFixGaussianSigma(fDsigmafix);
+    	//    	}
+        //    }
+        //}
+	}
+    // bSigma = 6 is defined below.. nope it's been removed
+
+	if(fMass){ // fix gaussian mean
 			double fMassDfix = fDmass;
-        		fitterp->SetFixGaussianMean(fMassDfix);
+        	fitterp->SetFixGaussianMean(fMassDfix);
 	}
 
 //        if(fUseRefl && fDmesonSpecie == 0) {
@@ -462,6 +590,20 @@ cout<<"-------------------------------------------------------------------------
         Double_t signal_l_max = Dmean+fsigmaBkg[1]*Dsigma;
         Double_t signal_u_min = Dmean+fsigmaBkg[2]*Dsigma;
         Double_t signal_u_max = Dmean+fsigmaBkg[3]*Dsigma;
+
+	if(Rpar==2){ // For R=0.2, setting side bands for first Dpt bin for all jet bins
+        if ((int)fptbinsJetA[(int)zjetbin-1] == 5 || (int)fptbinsJetA[(int)zjetbin-1] == 7 || (int)fptbinsJetA[(int)zjetbin-1] == 10){
+    		if(i == 0){
+                signal_l_min=Dmean-40*Dsigma;
+                signal_l_max=Dmean-7*Dsigma;
+                signal_u_min=Dmean+7*Dsigma;
+                signal_u_max=Dmean+40*Dsigma;
+    		}
+        }
+	}
+
+
+
         if(signal_l_min<hmin) signal_l_min = hmin;
         if(signal_u_max>hmax) signal_u_max = hmax;
 
@@ -512,14 +654,15 @@ cout<<"-------------------------------------------------------------------------
         pvSig->SetBorderSize(0);
         Bool_t twodigits=kTRUE;
         if(soberr*100. > 35.) twodigits=kFALSE;
+
         //if(twodigits) pv->AddText(Form("S/B (3#sigma) = (%.2f #pm %.2f)", sob,soberr));
         //else pv->AddText(Form("S/B (3#sigma) = (%.1f #pm %.1f)", sob,soberr));
-        if(twodigits) pvSig->AddText(Form("S (2#sigma) = %.2f #pm %.2f", s,serr));
-        else pvSig->AddText(Form("S (2#sigma) = %.1f #pm %.1f", s,serr));
-        if(twodigits) pvSig->AddText(Form("B (2#sigma) = %.2f #pm %.2f", bkg,bkgerr));
-        else pvSig->AddText(Form("B (2#sigma) = %.1f #pm %.1f", bkg,bkgerr));
-        pvSig->AddText(Form("Signif.(2#sigma) = %.1f #pm %.1f", signf,signferr));
-        pvSig->AddText(Form("S/B(2#sigma) = %.2f #pm %.2f", sob,soberr));
+        if(twodigits) pvSig->AddText(Form("S (%d#sigma) = %.2f #pm %.2f", fsigmaSignal,s,serr));
+        else pvSig->AddText(Form("S (%d#sigma) = %.1f #pm %.1f", fsigmaSignal,s,serr));
+        if(twodigits) pvSig->AddText(Form("B (%d#sigma) = %.2f #pm %.2f", fsigmaSignal,bkg,bkgerr));
+        else pvSig->AddText(Form("B (%d#sigma) = %.1f #pm %.1f", fsigmaSignal,bkg,bkgerr));
+        pvSig->AddText(Form("Signif.(%d#sigma) = %.1f #pm %.1f", fsigmaSignal,signf,signferr));
+        pvSig->AddText(Form("S/B(%d#sigma) = %.2f #pm %.2f", fsigmaSignal,sob,soberr));
         if(fUseRefl && fDmesonSpecie == 0) pvSig->AddText(Form("R/S = %.2f", RS));
         pvSig->Draw("same");
         //if(isdetails) pvProd->Draw("same");
@@ -984,7 +1127,7 @@ void  saveFitParams(TString outdir,TString prod){
     }
     else {
       hmean->GetYaxis()->SetRangeUser(1.855,1.885);
-      hsigma->GetYaxis()->SetRangeUser(6,45);
+      hsigma->GetYaxis()->SetRangeUser(2,45);
     }
 
     hSignal->SetName("hSignal");
