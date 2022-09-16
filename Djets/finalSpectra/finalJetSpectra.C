@@ -64,16 +64,28 @@ TString histBase = "unfoldedSpectrum"
     xAxis = new double[fptbinsJetFinalN+1];
     for(int k=0; k<fptbinsJetFinalN+1; k++) xAxis[k] = fptbinsJetFinalA[k];
     systuncP = new double[fptbinsJetFinalN];
-//    for(int k=0; k<fptbinsJetFinalN; k++) systuncP[k] = 0.15;
-//    systuncErr_pp[ptbinsN] = {0.104599235179,0.0886904729946,0.114415907985,0.111763142404,0.15895282319,0.180252600536,0.199602104197};
-//    sysUncErr_pp[ptbinsN] = {0.104599395179,0.0886906329946,0.114416067985,0.111763302404,0.15895298319,0.180252760536,0.199602264197};//with BR 0.04% incl
-systuncP[0]=0.104599395179;
-systuncP[1]=0.0886906329946;
-systuncP[2]=0.114416067985;
-systuncP[3]=0.111763302404;
-systuncP[4]=0.15895298319;
-systuncP[5]=0.180252760536;
-systuncP[6]=0.199602264197;
+////    for(int k=0; k<fptbinsJetFinalN; k++) systuncP[k] = 0.15;
+////    systuncErr_pp[ptbinsN] = {0.104599235179,0.0886904729946,0.114415907985,0.111763142404,0.15895282319,0.180252600536,0.199602104197};
+////    sysUncErr_pp[ptbinsN] = {0.104599395179,0.0886906329946,0.114416067985,0.111763302404,0.15895298319,0.180252760536,0.199602264197};//with BR 0.04% incl
+//systuncP[0]=0.104599395179;
+//systuncP[1]=0.0886906329946;
+//systuncP[2]=0.114416067985;
+//systuncP[3]=0.111763302404;
+//systuncP[4]=0.15895298319;
+//systuncP[5]=0.180252760536;
+//systuncP[6]=0.199602264197;
+//0.1,0.08,0.11,0.09, 0.08, 0.09, 0.10, 0.11, 0.13, 0.15, 0.19
+systuncP[0]=0.08;
+systuncP[1]=0.09;
+systuncP[2]=0.09;
+systuncP[3]=0.09;
+systuncP[4]=0.08;
+systuncP[5]=0.09;
+systuncP[6]=0.10;
+systuncP[7]=0.11;
+systuncP[8]=0.13;
+systuncP[9]=0.15;
+systuncP[10]=0.19;
     sysCutVar = new double[fptbinsJetFinalN];
     for(int k=0; k<fptbinsJetFinalN; k++) sysCutVar[k] = 0.05;
 
