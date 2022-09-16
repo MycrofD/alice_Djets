@@ -17,6 +17,7 @@ double jetptmin = 5, jetptmax = 50; // for D pT spectra
 double jetEta = 0.9-fRpar;
 int BFDsim;
 
+TH1* GetInputSimHistJetInc(TString inFile, TH1 *hPt, bool isEff, TString effFilePrompt, TString effFileNonPrompt,bool isDptcut);
 TH1* GetInputSimHistJet(TString inFile, TH1 *hPt, bool isEff, TString effFilePrompt, TString effFileNonPrompt,bool isDptcut);
 TH1* GetInputSimHistD(TString inFile, TH1 *hPt, bool isjetptcut);
 //quark: 1 = beauty, 0 = charm
@@ -65,7 +66,14 @@ void getSimSpectra(
     simFile += ".root";
 
     TH1D *hPt;
-    if(jet) hPt = (TH1D*) GetInputSimHistJet(simFile.Data(),hPt, isEff, effFilePrompt.Data(), effFileNonPrompt.Data(),isDptcut);
+    if(jet) {
+        if(!simFile.Contains("charm") && quark==0){
+            hPt = (TH1D*) GetInputSimHistJetInc(simFile.Data(),hPt, isEff, effFilePrompt.Data(), effFileNonPrompt.Data(),isDptcut);
+        }
+        else{
+            hPt = (TH1D*) GetInputSimHistJet(simFile.Data(),hPt, isEff, effFilePrompt.Data(), effFileNonPrompt.Data(),isDptcut);
+        }
+    }
     else hPt = (TH1D*) GetInputSimHistD(simFile.Data(),hPt,isjetptcut);
 
     TString out = outFileDir;
@@ -89,6 +97,7 @@ void getSimSpectra(
     else out += "_Dzero";
     out += ".root";
 
+
     TFile *ofile = new TFile( out.Data() ,"RECREATE");
     hPt->Write();
     ofile->Close();
@@ -104,6 +113,79 @@ TH1* GetInputHist(TString inFile, string histName,TH1 *hh){
     //hh = (TH1F*)hh_tmp->Rebin(ptbinsJetN,"hh",ptbinsJet);
     return hh;
 }
+
+TH1* GetInputSimHistJetInc(TString inFile, TH1 *hPt, bool isEff, TString effFilePrompt, TString effFileNonPrompt,bool isDptcut){
+
+    TFile *fileInput = new TFile(inFile,"read");
+    if(!fileInput){
+      std::cout << "File " << fileInput << " cannot be opened! check your file path!" << std::endl; return NULL;
+    }
+
+    TList* dir;
+    dir=(TList*)fileInput->Get("AliAnalysisTaskDmesonJets_histos");
+    if(!dir) {dir=(TList*)fileInput->Get("AliAnalysisTaskEmcalJetTree_histos");}
+    if(!dir) {
+      std::cout << "Error in getting dir! Exiting..." << std::endl;
+      return NULL;
+    }
+
+    TH1D *hxsection = (TH1D*)dir->FindObject("fHistXsection");
+    if(!hxsection) {
+      std::cout << "Error in getting x-section hist! Exiting..." << std::endl;
+      return NULL;
+    }
+    double xsection = hxsection->GetMean(2);
+    double events = (double)hxsection->GetEntries();
+    //double scaling = xsection/events;
+
+    TH1D *htrialsVpthard = (TH1D*)dir->FindObject("fHistTrialsVsPtHard");
+    if(!htrialsVpthard) {
+      std::cout << "Error in getting trialsVpthard hist! Exiting..." << std::endl;
+      return NULL;
+    }
+    double trialsVpthard = htrialsVpthard->Integral();
+    double scaling = xsection/trialsVpthard;
+    //double scaling = 1.0/trialsVpthard;
+
+    TTree *tree;
+    //--------
+    tree = (TTree*)fileInput->Get("AliAnalysisTaskEmcalJetTree_jets");
+    vector<AliAnalysisTaskEmcalJetTreeBase::AliEmcalJetInfoSummaryPPCharged> *brJetInc = 0;
+    tree->SetBranchAddress(Form("Jet_AKTChargedR0%d0_mcparticles_pT0000_pt_scheme",Rpar),&brJetInc);
+    //--------
+
+    if(!tree || !brJetInc ) {
+      std::cout << "Error in setting the tree/branch names! Exiting..." << std::endl;
+      return NULL;
+    }
+
+    hPt = new TH1D("hPt","hjetpt",100,0,100);
+
+    for (int k=0; k<tree->GetEntries(); k++) {
+        tree->GetEntry(k);
+        if(brJetInc->size()==6){
+            if (brJetInc->operator[](0).fEta < -jetEta || brJetInc->operator[](0).fEta > jetEta) continue;
+        //cout<<"============= ============ ============"<<brJetInc->operator[](0).fEta <<endl; //< -jetEta || brJetInc->operator[](0).fEta > jetEta) continue;
+
+//    cout<<"OKAY TILL HERE"<<endl;return NULL;
+
+        hPt->Fill(brJetInc->operator[](0).fPt);
+        }
+        else continue;
+    }
+
+
+hPt->Scale(scaling);
+
+ if(!hPt) {
+   std::cout << "Error in extracting the mass plot! Exiting..." << std::endl;
+   return NULL;
+ }
+
+return hPt;
+
+}
+
 
 TH1* GetInputSimHistJet(TString inFile, TH1 *hPt, bool isEff, TString effFilePrompt, TString effFileNonPrompt,bool isDptcut){
 
@@ -134,7 +216,7 @@ TH1* GetInputSimHistJet(TString inFile, TH1 *hPt, bool isEff, TString effFilePro
       std::cout << "Error in getting trialsVpthard hist! Exiting..." << std::endl;
       return NULL;
     }
-    double trialsVpthard = htrialsVpthard->Integral();
+    double trialsVpthard = htrialsVpthard->Integral();//exactly equals events = hxsection->GetEntries() for PowhegPythia
     double scaling = xsection/trialsVpthard;
 
     TTree *tree;
@@ -167,23 +249,23 @@ TH1* GetInputSimHistJet(TString inFile, TH1 *hPt, bool isEff, TString effFilePro
     hPt = new TH1D("hPt","hjetpt",100,0,100);
 
     for (int k=0; k<tree->GetEntries(); k++) {
-    tree->GetEntry(k);
-    if (brJet->fEta < -jetEta || brJet->fEta > jetEta) continue;
+        tree->GetEntry(k);
+        if (brJet->fEta < -jetEta || brJet->fEta > jetEta) continue;
 
 
-    if(BFDsim){
-      if(brD->fPartonType != 5) continue;
-    }
-    else if(brD->fPartonType != 4) continue;
-    //if(brD->fAncestorPDG == 2212) continue; // check if not coming from proton
+        if(BFDsim){
+          if(brD->fPartonType != 5) continue;
+        }
+        else if(brD->fPartonType != 4) continue;
+        //if(brD->fAncestorPDG == 2212) continue; // check if not coming from proton
 
-    if(isDptcut){
-      for (int j=0; j<fptbinsDN; j++) {
-        if (brD->fPt < fptbinsDA[j] || brD->fPt >= fptbinsDA[j+1]) continue;
-        hjetpt[j]->Fill(brJet->fPt);
-      }//end of D-meson pT bin loop
-    }
-    else hPt->Fill(brJet->fPt);
+        if(isDptcut){
+          for (int j=0; j<fptbinsDN; j++) {
+            if (brD->fPt < fptbinsDA[j] || brD->fPt >= fptbinsDA[j+1]) continue;
+            hjetpt[j]->Fill(brJet->fPt);
+          }//end of D-meson pT bin loop
+        }
+        else hPt->Fill(brJet->fPt);
     }
 
 if(isDptcut){
