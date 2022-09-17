@@ -1,4 +1,4 @@
-import os, os.path
+import os, os.path, sys
 import array
 import matplotlib.pyplot as plt
 import ROOT as RT
@@ -11,6 +11,11 @@ from root_numpy import hist2array
 from matplotlib import colors as mcolors
 import random
 ##----------------------------------
+if len(sys.argv)==1:
+    print("   === Usage example: python SigSBsys.py R jetbin ")
+    print("   === e.g.: python SigSBsys.py 02 1")
+    exit()
+
 ## FUNCTIONS
 
 ##----------------------------------
@@ -27,8 +32,8 @@ RTcolors = [RT.kGreen+1, RT.kRed+2, RT.kGreen+2, RT.kBlue+2, RT.kOrange+2, RT.kV
 #--------------------------------
 # CONFIG SETTINGS
 #--------------------------------
-jetbinSlNo=3
-Rtitle='06'
+jetbinSlNo=int(sys.argv[2])#3
+Rtitle=str(sys.argv[1])#'06'
 jetbinname = ["5_7","7_10","10_15","15_50"]
 djetbin = [5,6,6,6]
 dptbins = djetbin[jetbinSlNo]
@@ -81,9 +86,9 @@ def varRatio(RMShists):
 
     return np.array(varhists)
 
-
 print(varRatio(RMShists))
 
+#--------------------------------------------------
 plt.figure()
 for i in range(len(varRatio(RMShists))):
     plt.hlines(varRatio(RMShists)[i], fptbinsZlo, fptbinsZhi,colors=pyColor[i],label=fileLabels[fileIndices[i+1]])

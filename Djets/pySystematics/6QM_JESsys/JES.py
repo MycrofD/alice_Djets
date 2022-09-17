@@ -26,7 +26,8 @@ RTcolors = [RT.kGreen+1, RT.kRed+2, RT.kGreen+2, RT.kBlue+2, RT.kOrange+2, RT.kV
 # CONFIG SETTINGS
 #--------------------------------
 jetbinSlNo=0
-Rtitle='04'
+R='06'
+Rtitle=R+'_25'
 jetbinname = ["5_7","7_10","10_15","15_50"]
 djetbin = [5,6,6,6]
 dptbins = djetbin[jetbinSlNo]
@@ -34,8 +35,8 @@ jetbin = jetbinname[jetbinSlNo]
 jetbintitle=['5-7 GeV', '7-10 GeV', '10-15 GeV', '15-50 GeV']
 
 #--------------------------------------------------
-file1 = RT.TFile('/media/jackbauer/data/z_out/R_04_25/unfolding/Bayes/alljetz2D/unfold2DoutFile2350APW.root','read')
-file2 = RT.TFile('/media/jackbauer/data/z_out/R_04_25/unfolding/Bayes/alljetz2D/unfold2DoutFileJES4APW.root','read')
+file1 = RT.TFile('/media/jackbauer/data/z_out/R_%s/unfolding/Bayes/alljetz2D/unfold2DoutFile2350APW.root'%(Rtitle),'read')
+file2 = RT.TFile('/media/jackbauer/data/z_out/R_%s/unfolding/Bayes/alljetz2D/unfold2DoutFileJES4APW.root'%(Rtitle),'read')
 files = [file1, file2]
 
 exec("hist1 = file1.UnfProjectX_%s.Clone('h1')" %(jetbinSlNo+1))
@@ -56,7 +57,7 @@ hists[0].SetMarkerColor(RT.kRed)
 hists[0].SetLineColor(RT.kRed)
 hists[1].SetMarkerColor(RT.kGreen+2)
 hists[1].SetLineColor(RT.kGreen+2)
-hists[0].SetTitle('R'+Rtitle+': '+jetbintitle[jetbinSlNo])
+hists[0].SetTitle('R'+R+': '+jetbintitle[jetbinSlNo])
 hists[0].GetXaxis().SetTitle('z')
 hists[0].GetYaxis().SetTitle('N')
 hists[0].Draw()
@@ -75,7 +76,7 @@ plt.hlines(  hist2array(hists[1])[1:] / hist2array(hists[0])[1:] , fptbinsZlo, f
 plt.plot(  (0.4,1.0) , (1.0,1.0), 'k.-.')
 plt.ylabel('Ratio')
 plt.xlabel('$z_{||}^{ch}$')
-plt.title('R=%s, jet $p_{T}$: %s'%(Rtitle, jetbintitle[jetbinSlNo]))
+plt.title('R=%s, jet $p_{T}$: %s'%(R, jetbintitle[jetbinSlNo]))
 
 #plt.show()
 plt.savefig('JES_'+Rtitle+str(jetbinSlNo)+'.pdf')
