@@ -36,8 +36,8 @@ bool isprefix=0 )
                 else histName = "histosD0";}
 
 
-    float zmin = 0, zmax = 1.0;
-    float jetptmin = (int)fptbinsJetA[(int)zjetbin-1], jetptmax = (int)fptbinsJetA[(int)zjetbin];
+    float zmin = 0, zmax = 1.02;
+    float jetptmin = fptbinsJetA[(int)zjetbin-1], jetptmax = fptbinsJetA[(int)zjetbin];
   //  float jetptmin =0, jetptmax = 60;//(int)fptbinsJetA[(int)zjetbin];
     float Dptmin = fptbinsDA[0], Dptmax = fptbinsDA[fptbinsDN];
 
@@ -86,16 +86,20 @@ bool isprefix=0 )
 
         sparseMC[i] = (THnSparseF*)histList[i]->FindObject("ResponseMatrix");
 
-        //sparseMC[i]->GetAxis(2)->SetRangeUser(Dptmin,Dptmax);//recent removal May20: during 2D unfolding
+        sparseMC[i]->GetAxis(2)->SetRangeUser(Dptmin,Dptmax);//recent removal May20: during 2D unfolding
         sparseMC[i]->GetAxis(1)->SetRangeUser(jetptmin,jetptmax);//recent removal May20
 //        sparseMC[i]->GetAxis(0)->SetRangeUser(zmin,zmax);
 
-	//if(fDmesonSpecie) sparseMC[i]->GetAxis(6)->SetRangeUser(Dptmin,Dptmax);
-       // else sparseMC[i]->GetAxis(7)->SetRangeUser(Dptmin,Dptmax);//Gen level cut on Dpt//recent removal May20
+	    if(fDmesonSpecie) sparseMC[i]->GetAxis(6)->SetRangeUser(Dptmin,Dptmax);
+        else sparseMC[i]->GetAxis(7)->SetRangeUser(Dptmin,Dptmax);//Gen level cut on Dpt//recent removal May20
 
         if(fDmesonSpecie) sparseMC[i]->GetAxis(5)->SetRangeUser(jetptmin,jetptmax); // Dstar tmp
         else sparseMC[i]->GetAxis(6)->SetRangeUser(jetptmin,jetptmax);//gen level cut on jetpt//recent removal May20
 
+        if(!fDmesonSpecie) {
+            sparseMC[i]->GetAxis(4)->SetRangeUser(-(0.9-fRpar),(0.9-fRpar)); 
+            sparseMC[i]->GetAxis(9)->SetRangeUser(-(0.9-fRpar),(0.9-fRpar)); 
+        }
 //        if(fDmesonSpecie) sparseMC[i]->GetAxis(4)->SetRangeUser(zmin,zmax);
 //        else sparseMC[i]->GetAxis(5)->SetRangeUser(zmin,zmax);//Gen level cut on Dpt
 
