@@ -58,9 +58,13 @@ def rootRMS(histpylist,*args):
 def ratioRMS(histpylist):
     hrmslist = histpylist[0].Clone('hrmslist')
     for binx in range(1,hrmslist.GetNbinsX()+1):
-        binx2 = 0
-        for i in range(len(histpylist)):
-            binx2 += (1-histpylist[i].GetBinContent(binx))**2
+        binx2 = sum(
+                (1-histpylist[i].GetBinContent(binx))**2 
+                for i in range(len(histpylist))
+                )
+        # binx2 = 0
+        # for i in range(len(histpylist)):
+        #     binx2 += (1-histpylist[i].GetBinContent(binx))**2
         hrmslist.SetBinContent(binx,np.sqrt(binx2/len(histpylist)))
         hrmslist.SetBinError(binx,0)
     return hrmslist
@@ -69,9 +73,10 @@ def rootMEAN(histpylist): #takes histos in list
     if(len(histpylist))==1: print('ERROR: not enough hists'); return histpylist[0]
     hmeanlist = histpylist[0].Clone('hmeanlist')
     for binx in range(hmeanlist.GetNbinsX()+1):
-        bincontentxsum = 0
-        for i in range(1,len(histpylist)):
-            bincontentxsum += (histpylist[i].GetBinContent(binx)-histpylist[0].GetBinContent(binx))
+        bincontentxsum = sum(
+                (histpylist[i].GetBinContent(binx)-histpylist[0].GetBinContent(binx)) 
+                for i in range(1, len(histpylist))
+                )
         bincontentx = ((bincontentxsum)/(len(histpylist)-1))
         hmeanlist.SetBinContent(binx,abs(bincontentx))
         hmeanlist.SetBinError(binx,0)
@@ -81,9 +86,10 @@ def rootMEAN(histpylist): #takes histos in list
 def ratioMEAN(histpylist):
     hmeanlist = histpylist[0].Clone('hmeanlist')
     for binx in range(1,hmeanlist.GetNbinsX()+1):
-        sumval = 0
-        for i in range(len(histpylist)):
-            sumval += 1-histpylist[i].GetBinContent(binx)
+        sumval = sum(
+                (1 - histpylist[i].GetBinContent(binx))
+                for i in range(len(histpylist))
+                )
         hmeanlist.SetBinContent(binx,abs(sumval/len(histpylist)))
         hmeanlist.SetBinError(binx,0)
     return hmeanlist
