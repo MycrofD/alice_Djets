@@ -1,20 +1,9 @@
 import os, os.path, sys
 import yaml
-import matplotlib.pyplot as plt
-import ROOT as RT
 import ROOT 
-import rootpy as rp
-import numpy as np
-import scipy as sp
-from rootpy.io import root_open
 import array
-#import root_numpy as rtnp
-from root_numpy import hist2array
-import matplotlib.pyplot as plt
-from scipy.optimize import curve_fit 
+import math
 
-from matplotlib import colors as mcolors
-import seaborn as sns
 ##----------------------------------------------------------------
 from ROOT import TCanvas, TLegend, TLine, TPad, TLatex, TF1, TH1D
 from funcsettings import *
@@ -38,15 +27,16 @@ if len(sys.argv)!=8:
     exit()
 
 ## ----------------------------------------------------------------
-type_=int(sys.argv[1])
-R=sys.argv[2]
-zBin=int(sys.argv[3]);
+type_ = int(sys.argv[1])
+R = sys.argv[2]
+zBin = int(sys.argv[3]);
 if(type_ == 0): zBin = 0;
-sysGlobal=int(sys.argv[4])
-energy_int=int(sys.argv[5])
-dy=2*(9.0-int(R))/10.
+sysGlobal = int(sys.argv[4])
+energy_int = int(sys.argv[5])
+dy = 2*(9.0-int(R))/10.
 pdf = {0:False,1:False,2:True}[type_]
-plotRanges=[0,2,10e-9,1]
+#plotRanges=[0,2,10e-9,1]
+plotRanges=[0,2.1,7e-7,1]
 ## ----------------------------------------------------------------
 ##--- LOAD YAML CONFIG, Read YAML file
 yaml_config_file = sys.argv[6]
@@ -85,7 +75,8 @@ outPlotDir=outSpectraDir+"/plots/"
 ROOT.gSystem.Exec("mkdir "+outPlotDir)
 ##--- Uncertainties
 # unc part 1
-systUncD_up,systUncD_down,systUncD_JES,systUncD_CUTS = np.zeros(xAxisBins),np.zeros(xAxisBins),np.zeros(xAxisBins),np.zeros(xAxisBins)
+#systUncD_up,systUncD_down,systUncD_JES,systUncD_CUTS = np.zeros(xAxisBins),np.zeros(xAxisBins),np.zeros(xAxisBins),np.zeros(xAxisBins)
+systUncD_up,systUncD_down,systUncD_JES,systUncD_CUTS =array.array('d',[0]*xAxisBins), array.array('d',[0]*xAxisBins), array.array('d',[0]*xAxisBins), array.array('d',[0]*xAxisBins)
 if(type_==0):
     systUncD_up,systUncD_down,systUncD_JES,systUncD_CUTS = unc_loaded[type_][R]['systUncD_up'],unc_loaded[type_][R]['systUncD_down'],unc_loaded[type_][R]['systUncD_JES'],unc_loaded[type_][R]['systUncD_CUTS']
 else:
@@ -103,7 +94,8 @@ if(type_==0 or type_==1):
         addBRDzeroUnc,addDtrackingUnc,addLumiUnc,separateCUTUnc,addJESUnc=0,1,1,0,1
 elif(type_==2):
     addBRDzeroUnc,addDtrackingUnc,addLumiUnc,separateCUTUnc,addJESUnc=0,0,0,0,1
-    plotRanges[2],plotRanges[3]=0,10
+    plotRanges[2],plotRanges[3]=-0.3,10
+    #plotRanges[0],plotRanges[1]=0,2.1
 
 # unc part 3
 bit = -1
@@ -115,8 +107,10 @@ for bin_ in range(xAxisBins):
     if(addLumiUnc): totalUnc+= LumiUnc**2
     if(addJESUnc): totalUnc += systUncD_JES[bin_]**2
     if(separateCUTUnc==0): totalUnc += systUncD_CUTS[bin_]**2
-    systUncD_up[bin_] = np.sqrt(systUncD_up[bin_]**2 + totalUnc)
-    systUncD_down[bin_] = np.sqrt(systUncD_down[bin_]**2 + totalUnc)
+    #systUncD_up[bin_] = np.sqrt(systUncD_up[bin_]**2 + totalUnc)
+    systUncD_up[bin_] = math.sqrt(systUncD_up[bin_]**2 + totalUnc)
+    #systUncD_down[bin_] = np.sqrt(systUncD_down[bin_]**2 + totalUnc)
+    systUncD_down[bin_] = math.sqrt(systUncD_down[bin_]**2 + totalUnc)
     #print(systUncD_up[bin_]," ",systUncD_down[bin_])
 # unc part 4: 
 #           add JES manually for ratio plots.
@@ -138,7 +132,7 @@ dataScaling = 1. /(BRDzero * dataLum)/2.;
 canvas, upPad, downPad,placeholder_up,placeholder_down = PrepareCanvas(xAxisBins, xAxis, zBin, pdf, plotRanges)
 ##--- DATA
 hDataSys, hData_binned, hDataSysRatio, hData_binned_ratio = GetData(dataFile,histBase,dataScaling,xAxisBins,xAxis,systUncD_down,systUncD_up,pdf,dy)
-PlaceOnPadData(upPad,hDataSys,hData_binned,0.9);
+PlaceOnPadData(upPad,hDataSys,hData_binned,1.2);
 PlaceOnPadData(downPad,hDataSysRatio,hData_binned_ratio,0);
 ##--- PROMPT SIMULATION
 if(type_):
@@ -191,16 +185,22 @@ if(ePythia8):
     print("get PYTHIA8")
     simPythia8, simPythia8_cent, simPythia8_up, simPythia8_down,hBlackHole = GetSim("simPythia8",type_, 1,fPythia8, simDir, simScaling, xAxisBins, xAxis, DpTbins, jetpTbins, zBin, pdf, dy, simPrefix,energy_int)
     simPythia8_R, simPythia8_cent_R, simPythia8_up_R, simPythia8_down_R = GetDataSimRatio("simPythia8",hData_binned,simPythia8_cent, simPythia8_up, simPythia8_down, xAxisBins, xAxis)
-    PlaceOnPadSim(upPad,simPythia8,ROOT.TColor.GetColor("#009933"),27,2);
-    PlaceOnPadSim(downPad,simPythia8_R,ROOT.TColor.GetColor("#009933"),27,2);
+    #PlaceOnPadSim(upPad,simPythia8,ROOT.TColor.GetColor("#009933"),27,2);
+    #PlaceOnPadSim(downPad,simPythia8_R,ROOT.TColor.GetColor("#009933"),27,2);
+    #PlaceOnPadSim(upPad,simPythia8,ROOT.kViolet+2,27,6);
+    #PlaceOnPadSim(downPad,simPythia8_R,ROOT.kViolet+2,27,6);
+    PlaceOnPadSim(upPad,simPythia8,ROOT.kOrange+7,27,6);
+    PlaceOnPadSim(downPad,simPythia8_R,ROOT.kOrange+7,27,6);
 ##-- pythia 8 soft mode 2
 #------------------------
 if(ePythia8SoftMode2):
     print("get PYTHIA8 soft mode2")
     simPythia8Soft2, simPythia8Soft2_cent, simPythia8Soft2_up, simPythia8Soft2_down,hBlackHole = GetSim("simPythia8Soft2",type_, 1,fPythia8SoftMode2, simDir, simScaling, xAxisBins, xAxis, DpTbins, jetpTbins, zBin, pdf, dy, simPrefix, energy_int)
     simPythia8Soft2_R, simPythia8Soft2_cent_R, simPythia8Soft2_up_R, simPythia8Soft2_down_R = GetDataSimRatio("simPythia8Soft2",hData_binned,simPythia8Soft2_cent, simPythia8Soft2_up, simPythia8Soft2_down, xAxisBins, xAxis)
-    PlaceOnPadSim(upPad,simPythia8Soft2,ROOT.kOrange+2,28,4)
-    PlaceOnPadSim(downPad,simPythia8Soft2_R,ROOT.kOrange+2,28,4);
+    #PlaceOnPadSim(upPad,simPythia8Soft2,ROOT.kOrange+2,28,4)
+    #PlaceOnPadSim(downPad,simPythia8Soft2_R,ROOT.kOrange+2,28,4);
+    PlaceOnPadSim(upPad,simPythia8Soft2,ROOT.kGreen+3,28,2)
+    PlaceOnPadSim(downPad,simPythia8Soft2_R,ROOT.kGreen+3,28,2);
 ##-- powheg pythia 6 dijet
 #-------------------------
 if(ePowhegPythia6dijet):
@@ -225,7 +225,8 @@ if(ePowhegPythia8dijet):
 leg = ROOT.TLegend()
 shift = 0.06*(ePowhegPythia6+ePowhegPythia8+ePythia6+ePythia8+ePythia8SoftMode2+ePowhegPythia6dijet)
 if(type_==0):leg = ROOT.TLegend(0.35,0.45,0.65,0.7,"","NB NDC");
-if(type_==1 or type_ ==2):leg = ROOT.TLegend(0.22,0.7-shift,0.5,0.7,"","NB NDC");
+#if(type_==1 or type_ ==2):leg = ROOT.TLegend(0.22,0.7-shift,0.5,0.7,"","NB NDC");
+if(type_==1 or type_ ==2):leg = ROOT.TLegend(0.22,0.65-shift,0.5,0.7,"","NB NDC");
 leg.SetBorderSize(0)
 leg.SetTextFont(43)
 leg.SetTextSize(21)
@@ -238,8 +239,9 @@ leg.AddEntry(hDataSys,"Data","fp")
 if(ePowhegPythia6):leg.AddEntry(simPowhegPythia6,"POWHEG hvq + PYTHIA 6","pf")
 if(ePowhegPythia8):leg.AddEntry(simPowhegPythia8,"POWHEG hvq + PYTHIA 8","pf")
 if(ePythia6):leg.AddEntry(simPythia6,"PYTHIA 6 Perugia 2011","l")
-if(ePythia8):leg.AddEntry(simPythia8,"PYTHIA 8 Monash 2013","l")
-if(ePythia8SoftMode2):leg.AddEntry(simPythia8Soft2,"PYTHIA 8 Monash 2013 mode 2","l")
+#if(ePythia8):leg.AddEntry(simPythia8,"PYTHIA 8 Monash 2013","l")
+if(ePythia8):leg.AddEntry(simPythia8,"PYTHIA 8 HardQCD Monash 2013","l")
+if(ePythia8SoftMode2):leg.AddEntry(simPythia8Soft2,"PYTHIA 8 SoftQCD Mode 2","l")
 if(ePowhegPythia6dijet):leg.AddEntry(simPowhegPythia6dijet,"POWHEG dijet + PYTHIA 8 hadi","pf")
 if(ePowhegPythia8dijet):leg.AddEntry(simPowhegPythia8dijet,"POWHEG dijet + PYTHIA 8","l")
 pt = [ROOT.TPaveText(),ROOT.TPaveText()]
@@ -255,11 +257,11 @@ for s in range(len(pt)):
 
 #pt[0]->AddText("ALICE Preliminary"); //uncomment
 pt[0].AddText("ALICE, pp, #sqrt{#it{s}} = "+energy+" TeV")
-pt[1].AddText("Charged Jets, anti-#it{k}_{T}, #it{R} = 0.%d, |#it{#eta}_{lab}^{jet}| < 0.%d"%(int(R),9-int(R)))
+pt[1].AddText("charged jets, anti-#it{k}_{T}, #it{R} = 0.%d, |#it{#eta}_{ch jet}| < 0.%d"%(int(R),9-int(R)))
 if(type_==0):pt[1].AddText("with D^{0}, %d < #it{p}_{T,D^{0}} < %d GeV/#it{c}"%(DpTbins[0],DpTbins[1]))
-#if(type_==1 or type_==2):pt[1].AddText("%d < #it{p}_{T,jet} < %d GeV/#it{c}"%(jetpTbins[zBin-1],jetpTbins[zBin]));
+#if(type_==1 or type_==2):pt[1].AddText("%d < #it{p}_{T,ch. jet} < %d GeV/#it{c}"%(jetpTbins[zBin-1],jetpTbins[zBin]));
 #if(type_==1 or type_==2):pt[1].AddText("with D^{0}, %d < #it{p}_{T,D^{0}} < %d GeV/#it{c}"%(DpTbins[0][zBin-1],DpTbins[1][zBin-1]))
-if(type_==1 or type_==2):pt[1].AddText("%d < #it{p}_{T,jet} < %d GeV/#it{c} with D^{0}, %d < #it{p}_{T,D^{0}} < %d GeV/#it{c}"%(jetpTbins[zBin-1],jetpTbins[zBin],DpTbins[0][zBin-1],DpTbins[1][zBin-1]))
+if(type_==1 or type_==2):pt[1].AddText("%d < #it{p}_{T,ch jet}< %d GeV/#it{c} with D^{0}, %d < #it{p}_{T,D^{0}} < %d GeV/#it{c}"%(jetpTbins[zBin-1],jetpTbins[zBin],DpTbins[0][zBin-1],DpTbins[1][zBin-1]))
 #if(type_==1 or type_==2):pt[1].AddText(""%(DpTbins[0][zBin-1],DpTbins[1][zBin-1]))
 upPad.cd()
 leg.Draw()
@@ -277,7 +279,16 @@ if(type_==0 or type_==1):
 elif(type_==2):
     sysmode = "_PDF_noneGlobal_addedCUTandJES"
 
-canvas.SaveAs(outPlotDir+"/finalSpectra_"+sysmode+".png")
+canvas.SaveAs(outPlotDir+"/test0_finalSpectra_"+sysmode+".png")
+canvas.SaveAs(outPlotDir+"/test0_finalSpectra_"+sysmode+".pdf")
+canvas.SaveAs(outPlotDir+"/test0_finalSpectra_"+sysmode+".root")
+canvas.SaveAs(outPlotDir+"/test0_finalSpectra_"+sysmode+".C")
+##########
+for i in range(hData_binned.GetNbinsX()+1):
+    print(hData_binned.GetBinContent(i+1))
+    print(hData_binned.GetBinCenter(i+1))
+    print("okay==")
+##########
 ofile = ROOT.TFile(outSpectraDir+"JetPtSpectrum_final"+sysmode+".root","recreate")
 hData_binned.Write()
 hDataSys.Write()
