@@ -44,7 +44,10 @@ bool fdivide = 1 )
 
 
   gStyle->SetOptStat(0000); //Mean and RMS shown
-	gStyle->SetPadRightMargin(0.1);
+	gStyle->   SetPadTopMargin(0.12);
+	gStyle-> SetPadRightMargin(0.12);
+	gStyle->  SetPadLeftMargin(0.12);
+	gStyle->SetPadBottomMargin(0.12);
 	gSystem->Exec(Form("mkdir %s",outDir.Data()));
 	gSystem->Exec(Form("mkdir %s/plots",outDir.Data()));
 
@@ -52,9 +55,9 @@ bool fdivide = 1 )
 if (useDeltaPt) {
   LoadBackgroundMatrix(bkgRMFile.Data(),"hBkgM");
   fMatrixDeltaPt->Sumw2();
-	fMatrixDeltaPt->GetXaxis()->SetTitle("p_{T,ch jet}^{rec.} (GeV/#it{c})");
+  fMatrixDeltaPt->GetXaxis()->SetTitle("p_{T,ch jet}^{rec.} (GeV/#it{c})");
   fMatrixDeltaPt->GetYaxis()->SetTitle("p_{T,ch jet}^{gen.} (GeV/#it{c})");
-	fMatrixDeltaPt->SetTitle("Bkg.Fluc. Matrix");
+  fMatrixDeltaPt->SetTitle("Bkg.Fluc. Matrix");
 }
 
 LoadDetectorMatrix(detRMFile.Data(),"hPtJet2d","hPtJetGen","hPtJetRec",0);
@@ -64,22 +67,22 @@ if (!fTrueSpectrum) { Error("Unfold", "No true spectrum!");	return 0; }
 if (!fMeasSpectrum) { Error("Unfold", "No reconstructed spectrum!"); return 0; }
 
 
-	fMatrixPP->GetXaxis()->SetTitle("p_{T,ch jet}^{rec.} (GeV/#it{c})");
-  fMatrixPP->GetYaxis()->SetTitle("p_{T,ch jet}^{gen.} (GeV/#it{c})");
-	fMatrixPP->SetTitle("Det.Res. Matrix");
+fMatrixPP->GetXaxis()->SetTitle("p_{T,ch jet}^{rec.} (GeV/#it{c})");
+fMatrixPP->GetYaxis()->SetTitle("p_{T,ch jet}^{gen.} (GeV/#it{c})");
+fMatrixPP->SetTitle("Det.Res. Matrix");
 
-	TCanvas *cMatrix = new TCanvas("cMatrix","cMatrix",1200,800);
-  TH1D* priorhisto = (TH1D*) fTrueSpectrum->Clone("priorhisto");
-  TH1D* hNormY;
-	TH2D *fMatrixProd;
-	if(useDeltaPt) {
+TCanvas *cMatrix = new TCanvas("cMatrix","cMatrix",1200,800);
+TH1D* priorhisto = (TH1D*) fTrueSpectrum->Clone("priorhisto");
+TH1D* hNormY;
+TH2D *fMatrixProd;
+if(useDeltaPt) {
     TH2D *MatrixComb = ProductMatrix(fMatrixDeltaPt,fMatrixPP);
     fMatrixProd = (TH2D*)MatrixComb->Clone("fMatrixProd");
     // weighting the matrix
     if (fDoWeighting) {
-  				hNormY=(TH1D*)fMatrixProd->ProjectionY("hNormY");
-  				hNormY->Divide(priorhisto);
-  				WeightMatrixY(fMatrixProd,hNormY,fdivide);
+		hNormY=(TH1D*)fMatrixProd->ProjectionY("hNormY");
+  		hNormY->Divide(priorhisto);
+  		WeightMatrixY(fMatrixProd,hNormY,fdivide);
   	}
 
     cMatrix->Divide(2,1);
@@ -89,16 +92,16 @@ if (!fMeasSpectrum) { Error("Unfold", "No reconstructed spectrum!"); return 0; }
   	cMatrix->cd(2);
   	gPad->SetLogz();
   	fMatrixPP->Draw("colz");
-  }
-  else {
+}
+else {
     fMatrixProd = (TH2D*)fMatrixPP->Clone("fMatrixProd");
-  }
+}
 
   if (!fMatrixProd) { Error("Unfold", "Error getting product matrix!"); return 0;	}
 
-	fMatrixProd->GetXaxis()->SetTitle("p_{T,ch jet}^{rec.} (GeV/#it{c})");
+  fMatrixProd->GetXaxis()->SetTitle("p_{T,ch jet}^{rec.} (GeV/#it{c})");
   fMatrixProd->GetYaxis()->SetTitle("p_{T,ch jet}^{gen.} (GeV/#it{c})");
-	fMatrixProd->SetTitle("Combined Matrix");
+  fMatrixProd->SetTitle("Combined Matrix");
 
   if(fSystem) MtxPlots(outDir,"probability",fMatrixProd);
 
@@ -141,65 +144,56 @@ if (!fMeasSpectrum) { Error("Unfold", "No reconstructed spectrum!"); return 0; }
   }
 
 
-  TPaveText *pvEn= new TPaveText(0.2,0.80,0.8,0.85,"brNDC");
+  TPaveText *pvEn= new TPaveText(0.69,0.88,0.9,0.94,"brNDC");
   pvEn->SetFillStyle(0);
   pvEn->SetBorderSize(0);
   pvEn->SetTextFont(42);
-  pvEn->SetTextSize(0.045);
+  pvEn->SetTextSize(0.025);
   pvEn->SetTextAlign(11);
   pvEn->AddText(Form("%s",fSystemS.Data()));
 
-  double shift = 0.35;
-  TPaveText *pvJet = new TPaveText(0.55,0.66-shift,0.9,0.7-shift,"brNDC");
+  double shift = 0.41;
+  TPaveText *pvJet = new TPaveText(0.58,0.62-shift,0.9,0.66-shift,"brNDC");
   pvJet->SetFillStyle(0);
   pvJet->SetBorderSize(0);
   pvJet->SetTextFont(42);
-  pvJet->SetTextSize(0.03);
+  pvJet->SetTextSize(0.025);
   pvJet->SetTextAlign(11);
-  pvJet->AddText(Form("Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.%d",Rpar));
+  pvJet->AddText(Form("charged jets, anti-#it{k}_{T}, #it{R} = 0.%d",Rpar));
 
-  TPaveText *pvD = new TPaveText(0.55,0.61-shift,0.9,0.65-shift,"brNDC");
+  TPaveText *pvD = new TPaveText(0.67,0.58-shift,0.9,0.62-shift,"brNDC");
   pvD->SetFillStyle(0);
   pvD->SetBorderSize(0);
   pvD->SetTextFont(42);
-  pvD->SetTextSize(0.03);
+  pvD->SetTextSize(0.025);
   pvD->SetTextAlign(11);
   if(isPrompt){
-    if(fDmesonSpecie) pvD->AddText("With D^{*+} #rightarrow D^{0}#pi^{+}");
-    else pvD->AddText("With D^{0} #rightarrow K^{-}#pi^{+}");
+    if(fDmesonSpecie) pvD->AddText("with D^{*+} #rightarrow D^{0}#pi^{+}");
+    else pvD->AddText("with D^{0} #rightarrow K^{-}#pi^{+}");
   }
   else {
-    if(fDmesonSpecie) pvD->AddText("With B #rightarrowD^{*+} #rightarrow D^{0}#pi^{+}");
-    else pvD->AddText("With B #rightarrow D^{0} #rightarrow K^{-}#pi^{+}");
+    if(fDmesonSpecie) pvD->AddText("with B #rightarrowD^{*+} #rightarrow D^{0}#pi^{+}");
+    else pvD->AddText("with B #rightarrow D^{0} #rightarrow K^{-}#pi^{+}");
   }
 
-  TPaveText *pvEta = new TPaveText(0.55,0.56-shift,0.8,0.6-shift,"brNDC");
-  pvEta->SetFillStyle(0);
-  pvEta->SetBorderSize(0);
-  pvEta->SetTextFont(42);
-  pvEta->SetTextSize(0.03);
-  pvEta->SetTextAlign(11);
-  pvEta->AddText(Form("|#it{#eta}_{jet}| < 0.%d",9-Rpar));
-
-  TPaveText *pv3 = new TPaveText(0.6,0.5-shift,0.9,0.54-shift,"brNDC");
+  TPaveText *pv3 = new TPaveText(0.55,0.54-shift,0.9,0.58-shift,"brNDC");
   pv3->SetFillStyle(0);
   pv3->SetBorderSize(0);
   pv3->SetTextFont(42);
-  pv3->SetTextSize(0.03);
+  pv3->SetTextSize(0.025);
   pv3->SetTextAlign(11);
-  pv3->AddText(Form("%d < p_{T,%s} < %d GeV/#it{c}",(Int_t)fptbinsDA[0],fDmesonS.Data(),(Int_t)fptbinsDA[fptbinsDN]));
+  pv3->AddText(Form("|#it{#eta}_{jet}| < 0.%d, %d < p_{T,%s} < %d GeV/#it{c}",9-Rpar,(Int_t)fptbinsDA[0],fDmesonS.Data(),(Int_t)fptbinsDA[fptbinsDN]));
 
-	TCanvas *cMatrixProd = new TCanvas();
-	cMatrixProd->SetLogz();
-	fMatrixProd->Draw("colz");
+  TCanvas *cMatrixProd = new TCanvas();
+  cMatrixProd->SetLogz();
+  fMatrixProd->Draw("colz");
 
   pv3->Draw("same");
   pvEn->Draw("same");
   pvD->Draw("same");
   pvJet->Draw("same");
-  pvEta->Draw("same");
 
-  TCanvas *cMatrixProdProb = new TCanvas();
+  TCanvas *cMatrixProdProb = new TCanvas("cMatrixProdProb","cMatrixProdProb",600,600);
 	cMatrixProdProb->SetLogz();
 	hMtxPro->Draw("colz");
 
@@ -207,7 +201,6 @@ if (!fMeasSpectrum) { Error("Unfold", "No reconstructed spectrum!"); return 0; }
   pvEn->Draw("same");
   pvD->Draw("same");
   pvJet->Draw("same");
-  pvEta->Draw("same");
 
 
   TFile *outMatrix;
@@ -219,46 +212,13 @@ if (!fMeasSpectrum) { Error("Unfold", "No reconstructed spectrum!"); return 0; }
   hMtxPro->Write();
   outMatrix->Close();
 
-  Matrix->GetXaxis()->SetRangeUser(fptbinsJetMeasA[0],fptbinsJetMeasA[fptbinsJetMeasN]+5);
-  Matrix->GetYaxis()->SetRangeUser(3,fptbinsJetTrueA[fptbinsJetTrueN]);
+  Matrix->GetXaxis()->SetRangeUser(fptbinsJetMeasA[0],fptbinsJetMeasA[fptbinsJetMeasN]);
+  Matrix->GetYaxis()->SetRangeUser(fptbinsJetTrueA[0],fptbinsJetTrueA[fptbinsJetTrueN]);
 
-  MatrixProb->GetXaxis()->SetRangeUser(fptbinsJetMeasA[0],fptbinsJetMeasA[fptbinsJetMeasN]+5);
-  MatrixProb->GetYaxis()->SetRangeUser(3,fptbinsJetTrueA[fptbinsJetTrueN]);
+  MatrixProb->GetXaxis()->SetRangeUser(fptbinsJetMeasA[0],fptbinsJetMeasA[fptbinsJetMeasN]);
+  MatrixProb->GetYaxis()->SetRangeUser(fptbinsJetTrueA[0],fptbinsJetTrueA[fptbinsJetTrueN]);
 
-
-  shift = 0.41;
-  pvJet = new TPaveText(0.5,0.66-shift,0.9,0.7-shift,"brNDC");
-  pvJet->SetFillStyle(0);
-  pvJet->SetBorderSize(0);
-  pvJet->SetTextFont(42);
-  pvJet->SetTextSize(0.03);
-  pvJet->SetTextAlign(11);
-  pvJet->AddText(Form("Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.%d",Rpar));
-
-  pvD = new TPaveText(0.5,0.61-shift,0.9,0.65-shift,"brNDC");
-  pvD->SetFillStyle(0);
-  pvD->SetBorderSize(0);
-  pvD->SetTextFont(42);
-  pvD->SetTextSize(0.03);
-  pvD->SetTextAlign(11);
-  if(isPrompt){
-    if(fDmesonSpecie) pvD->AddText("With D^{*+} #rightarrow D^{0}#pi^{+}");
-    else pvD->AddText("With D^{0} #rightarrow K^{-}#pi^{+}");
-  }
-  else {
-    if(fDmesonSpecie) pvD->AddText("With B #rightarrowD^{*+} #rightarrow D^{0}#pi^{+}");
-    else pvD->AddText("With B #rightarrow D^{0} #rightarrow K^{-}#pi^{+}");
-  }
-
-  pv3 = new TPaveText(0.5,0.56-shift,0.9,0.6-shift,"brNDC");
-  pv3->SetFillStyle(0);
-  pv3->SetBorderSize(0);
-  pv3->SetTextFont(42);
-  pv3->SetTextSize(0.03);
-  pv3->SetTextAlign(11);
-  pv3->AddText(Form("|#it{#eta}_{jet}| < 0.%d, %d < p_{T,%s} < %d GeV/#it{c}",9-Rpar,(Int_t)fptbinsDA[0],fDmesonS.Data(),(Int_t)fptbinsDA[fptbinsDN]));
-
-  TCanvas *cMatrixProdReb = new TCanvas();
+  TCanvas *cMatrixProdReb = new TCanvas("cMatrixProdReb","cMatrixProdReb",600,600);
   cMatrixProdReb->SetLogz();
   Matrix->Draw("colz");
   pvEn->Draw("same");
@@ -266,7 +226,7 @@ if (!fMeasSpectrum) { Error("Unfold", "No reconstructed spectrum!"); return 0; }
   pvJet->Draw("same");
   pv3->Draw("same");
 
-  TCanvas *cMatrixProdProbReb = new TCanvas();
+  TCanvas *cMatrixProdProbReb = new TCanvas("cMatrixProdProbReb","cMatrixProdProbReb",600,600);
   cMatrixProdProbReb->SetLogz();
   MatrixProb->Draw("colz");
   pvEn->Draw("same");
@@ -274,26 +234,26 @@ if (!fMeasSpectrum) { Error("Unfold", "No reconstructed spectrum!"); return 0; }
   pvJet->Draw("same");
   pv3->Draw("same");
 
-		if(isPrompt){
-			if(useDeltaPt) {
-         cMatrix->SaveAs(Form("%s/plots/Matrices.png",outDir.Data()));
-         cMatrixProb->SaveAs(Form("%s/plots/MatricesProb.png",outDir.Data()));
-       }
-			cMatrixProd->SaveAs(Form("%s/plots/ProdMatrix.png",outDir.Data()));
-      cMatrixProdProb->SaveAs(Form("%s/plots/ProdMatrixProb.png",outDir.Data()));
-			cMatrixProdReb->SaveAs(Form("%s/plots/ProdMatrixRebin.png",outDir.Data()));
-      cMatrixProdProbReb->SaveAs(Form("%s/plots/ProdMatrixPropRebin.png",outDir.Data()));
-		}
-		else {
-			if(useDeltaPt) {
-        cMatrix->SaveAs(Form("%s/plots/MatricesFD.png",outDir.Data()));
-        cMatrixProb->SaveAs(Form("%s/plots/MatricesProbFD.png",outDir.Data()));
-      }
-      cMatrixProd->SaveAs(Form("%s/plots/ProdMatrixFD.png",outDir.Data()));
-      cMatrixProdProb->SaveAs(Form("%s/plots/ProdMatrixProbFD.png",outDir.Data()));
-			cMatrixProdReb->SaveAs(Form("%s/plots/ProdMatrixRebinFD.png",outDir.Data()));
-      cMatrixProdProbReb->SaveAs(Form("%s/plots/ProdMatrixPropRebinFD.png",outDir.Data()));
-		}
+  if(isPrompt){
+	if(useDeltaPt) {
+      cMatrix->SaveAs(Form("%s/plots/Matrices.png",outDir.Data()));
+      cMatrixProb->SaveAs(Form("%s/plots/MatricesProb.png",outDir.Data()));
+    }
+	cMatrixProd->SaveAs(Form("%s/plots/ProdMatrix.png",outDir.Data()));
+    cMatrixProdProb->SaveAs(Form("%s/plots/ProdMatrixProb.png",outDir.Data()));
+	cMatrixProdReb->SaveAs(Form("%s/plots/ProdMatrixRebin.png",outDir.Data()));
+    cMatrixProdProbReb->SaveAs(Form("%s/plots/ProdMatrixProbRebin.png",outDir.Data()));
+  }
+  else {
+    if(useDeltaPt) {
+      cMatrix->SaveAs(Form("%s/plots/MatricesFD.png",outDir.Data()));
+      cMatrixProb->SaveAs(Form("%s/plots/MatricesProbFD.png",outDir.Data()));
+    }
+    cMatrixProd->SaveAs(Form("%s/plots/ProdMatrixFD.png",outDir.Data()));
+    cMatrixProdProb->SaveAs(Form("%s/plots/ProdMatrixProbFD.png",outDir.Data()));
+    cMatrixProdReb->SaveAs(Form("%s/plots/ProdMatrixRebinFD.png",outDir.Data()));
+    cMatrixProdProbReb->SaveAs(Form("%s/plots/ProdMatrixProbRebinFD.png",outDir.Data()));
+  }
 
 	return;
 

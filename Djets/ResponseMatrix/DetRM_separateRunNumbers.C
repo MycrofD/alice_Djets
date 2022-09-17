@@ -165,8 +165,6 @@ void DetRM(
             hPtR_cl2d[i] = (THnSparseD*)RMC[i]->Projection(DNresDim,DresDim,"E");//
         }
 
-
-
         hPtJet[i]->Sumw2(); 
         hPtJetD[i]->Sumw2();//
         hPtJetD_resp[i]->Sumw2();//closure response
@@ -176,7 +174,6 @@ void DetRM(
         hPtJetD[i]->SetName(Form("hPtJetD_%d",i));
         hPtG_clos[i]->SetName(Form("hPtG_clos_%d",i));
         hPtR_cl2d[i]->SetName(Form("hPtR_cl2d_%d",i));
-
 
         hPtG[i]->SetName(Form("hPtG_%d",i));
         hPtR[i]->SetName(Form("hPtR_%d",i));
