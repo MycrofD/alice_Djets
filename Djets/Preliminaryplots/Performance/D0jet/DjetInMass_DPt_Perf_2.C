@@ -1,10 +1,7 @@
 {
 //=========Macro generated from canvas: cMass/cMass
-//=========  (Wed Sep 19 15:27:27 2018) by ROOT version5.34/30
-
-   gStyle->SetCanvasPreferGL(kTRUE);
-
-   TCanvas *cMass = new TCanvas("cMass", "cMass",0,0,3000,900);
+//=========  (Sun Oct 27 02:41:25 2019) by ROOT version5.34/30
+   TCanvas *cMass = new TCanvas("cMass", "cMass",0,0,1920,900);
    gStyle->SetOptStat(0);
    cMass->Range(0,0,1,1);
    cMass->SetFillColor(0);
@@ -3266,73 +3263,73 @@
    fullfit_1->SetParLimits(5,0.2710241,0.2710241);
    fullfit_1->Draw("same");
    
-   TPaveText *pt = new TPaveText(0.62,0.74,0.9,0.77,"brNDC");
+   TPaveText *pt = new TPaveText(0.62,0.74,0.9,0.775,"brNDC");
    pt->SetBorderSize(0);
    pt->SetFillStyle(0);
    pt->SetTextFont(42);
-   pt->SetTextSize(0.045);
+   pt->SetTextSize(0.046);
    TText *text = pt->AddText("4 < #it{p}_{T,D^{0}} < 5 GeV/#it{c}");
    pt->Draw();
    
-   pt = new TPaveText(0.18,0.9,0.6,0.94,"brNDC");
+   pt = new TPaveText(0.18,0.89,0.6,0.93,"brNDC");
    pt->SetBorderSize(0);
    pt->SetFillStyle(0);
    pt->SetTextAlign(11);
    pt->SetTextFont(42);
-   pt->SetTextSize(0.045);
+   pt->SetTextSize(0.048);
    text = pt->AddText("ALICE Preliminary");
    pt->Draw();
    
-   pt = new TPaveText(0.18,0.85,0.55,0.89,"brNDC");
+   pt = new TPaveText(0.18,0.84,0.55,0.875,"brNDC");
    pt->SetBorderSize(0);
    pt->SetFillStyle(0);
    pt->SetTextAlign(11);
    pt->SetTextFont(42);
-   pt->SetTextSize(0.045);
+   pt->SetTextSize(0.047);
    text = pt->AddText("D^{0} #rightarrow K^{-}#pi^{+} and charge conj.");
    pt->Draw();
    
-   pt = new TPaveText(0.181,0.8,0.55,0.84,"brNDC");
+   pt = new TPaveText(0.181,0.79,0.55,0.83,"brNDC");
    pt->SetBorderSize(0);
    pt->SetFillStyle(0);
    pt->SetTextAlign(11);
    pt->SetTextFont(42);
-   pt->SetTextSize(0.045);
-   text = pt->AddText("in Charged Jets, Anti-#it{k}_{T}, #it{R} = 0.3");
+   pt->SetTextSize(0.046);
+   text = pt->AddText("in charged jets, anti-#it{k}_{T}, #it{R} = 0.3");
    pt->Draw();
    
-   pt = new TPaveText(0.178,0.67,0.62,0.71,"brNDC");
+   pt = new TPaveText(0.178,0.67,0.62,0.72,"brNDC");
    pt->SetBorderSize(0);
    pt->SetFillStyle(0);
    pt->SetTextAlign(11);
    pt->SetTextFont(42);
-   pt->SetTextSize(0.04);
-   text = pt->AddText("#mu = 1.869 #pm 0.000357 MeV/#it{c}^{2}");
+   pt->SetTextSize(0.046);
+   text = pt->AddText("#mu = 1.87 #pm 0.00 GeV/#it{c}^{2}");
    pt->Draw();
    
-   pt = new TPaveText(0.179,0.63,0.62,0.67,"brNDC");
+   pt = new TPaveText(0.179,0.62,0.62,0.68,"brNDC");
    pt->SetBorderSize(0);
    pt->SetFillStyle(0);
    pt->SetTextAlign(11);
    pt->SetTextFont(42);
-   pt->SetTextSize(0.04);
+   pt->SetTextSize(0.046);
    text = pt->AddText("#sigma = 10.8 #pm 0.3 MeV/#it{c}^{2}");
    pt->Draw();
    
-   pt = new TPaveText(0.123,0.45,0.5,0.49,"brNDC");
+   pt = new TPaveText(0.17,0.45,0.5,0.49,"brNDC");
    pt->SetBorderSize(0);
    pt->SetFillStyle(0);
    pt->SetTextFont(42);
-   pt->SetTextSize(0.04);
+   pt->SetTextSize(0.046);
    text = pt->AddText("S/B (2#sigma) = 4.02");
    pt->Draw();
    
-   pt = new TPaveText(0.1881,0.75,0.4,0.79,"brNDC");
+   pt = new TPaveText(0.1881,0.725,0.4,0.78,"brNDC");
    pt->SetBorderSize(0);
    pt->SetFillStyle(0);
    pt->SetTextAlign(11);
    pt->SetTextFont(42);
-   pt->SetTextSize(0.045);
+   pt->SetTextSize(0.046);
    text = pt->AddText("|#it{#eta}_{lab}^{jet}| < 0.6");
    pt->Draw();
    cMass_1->Modified();
@@ -6573,46 +6570,46 @@
    fullfit_5->SetParLimits(5,0.2325625,0.2325625);
    fullfit_5->Draw("same");
    
-   pt = new TPaveText(0.62,0.84,0.85,0.88,"brNDC");
+   pt = new TPaveText(0.62,0.86,0.85,0.86,"brNDC");
    pt->SetBorderSize(0);
    pt->SetFillStyle(0);
    pt->SetTextFont(42);
-   pt->SetTextSize(0.045);
+   pt->SetTextSize(0.046);
    text = pt->AddText("8 < #it{p}_{T,D^{0}} < 10 GeV/#it{c}");
    pt->Draw();
    
-   pt = new TPaveText(0.168,0.9,0.8,0.94,"brNDC");
+   pt = new TPaveText(0.168,0.88,0.8,0.92,"brNDC");
    pt->SetBorderSize(0);
    pt->SetFillStyle(0);
    pt->SetTextAlign(11);
    pt->SetTextFont(42);
-   pt->SetTextSize(0.045);
+   pt->SetTextSize(0.048);
    text = pt->AddText("pp, #sqrt{#it{s}} = 5.02 TeV");
    pt->Draw();
    
-   pt = new TPaveText(0.178,0.77,0.62,0.81,"brNDC");
+   pt = new TPaveText(0.178,0.785,0.62,0.81,"brNDC");
    pt->SetBorderSize(0);
    pt->SetFillStyle(0);
    pt->SetTextAlign(11);
    pt->SetTextFont(42);
-   pt->SetTextSize(0.04);
-   text = pt->AddText("#mu = 1.868 #pm 0.000740 MeV/#it{c}^{2}");
+   pt->SetTextSize(0.046);
+   text = pt->AddText("#mu = 1.87 #pm 0.00 GeV/#it{c}^{2}");
    pt->Draw();
    
-   pt = new TPaveText(0.1797,0.73,0.62,0.77,"brNDC");
+   pt = new TPaveText(0.1797,0.735,0.62,0.77,"brNDC");
    pt->SetBorderSize(0);
    pt->SetFillStyle(0);
    pt->SetTextAlign(11);
    pt->SetTextFont(42);
-   pt->SetTextSize(0.04);
+   pt->SetTextSize(0.046);
    text = pt->AddText("#sigma = 14.6 #pm 0.7 MeV/#it{c}^{2}");
    pt->Draw();
    
-   pt = new TPaveText(0.13,0.45,0.5,0.49,"brNDC");
+   pt = new TPaveText(0.17,0.45,0.5,0.49,"brNDC");
    pt->SetBorderSize(0);
    pt->SetFillStyle(0);
    pt->SetTextFont(42);
-   pt->SetTextSize(0.04);
+   pt->SetTextSize(0.046);
    text = pt->AddText("S/B (2#sigma) = 4.85");
    pt->Draw();
    cMass_2->Modified();
@@ -9823,37 +9820,37 @@
    fullfit_7->SetParLimits(5,0.2010621,0.2010621);
    fullfit_7->Draw("same");
    
-   pt = new TPaveText(0.62,0.79,0.85,0.83,"brNDC");
+   pt = new TPaveText(0.62,0.81,0.85,0.82,"brNDC");
    pt->SetBorderSize(0);
    pt->SetFillStyle(0);
    pt->SetTextFont(42);
-   pt->SetTextSize(0.045);
+   pt->SetTextSize(0.046);
    text = pt->AddText("12 < #it{p}_{T,D^{0}} < 16 GeV/#it{c}");
    pt->Draw();
    
-   pt = new TPaveText(0.178,0.72,0.62,0.76,"brNDC");
+   pt = new TPaveText(0.17,0.73,0.62,0.76,"brNDC");
    pt->SetBorderSize(0);
    pt->SetFillStyle(0);
    pt->SetTextAlign(11);
    pt->SetTextFont(42);
-   pt->SetTextSize(0.04);
-   text = pt->AddText("#mu = 1.867 #pm 0.001593 MeV/#it{c}^{2}");
+   pt->SetTextSize(0.046);
+   text = pt->AddText("#mu = 1.87 #pm 0.00 GeV/#it{c}^{2}");
    pt->Draw();
    
-   pt = new TPaveText(0.1797,0.68,0.62,0.72,"brNDC");
+   pt = new TPaveText(0.17,0.68,0.62,0.72,"brNDC");
    pt->SetBorderSize(0);
    pt->SetFillStyle(0);
    pt->SetTextAlign(11);
    pt->SetTextFont(42);
-   pt->SetTextSize(0.04);
+   pt->SetTextSize(0.046);
    text = pt->AddText("#sigma = 18.4 #pm 1.6 MeV/#it{c}^{2}");
    pt->Draw();
    
-   pt = new TPaveText(0.132,0.45,0.5,0.49,"brNDC");
+   pt = new TPaveText(0.17,0.45,0.5,0.49,"brNDC");
    pt->SetBorderSize(0);
    pt->SetFillStyle(0);
    pt->SetTextFont(42);
-   pt->SetTextSize(0.04);
+   pt->SetTextSize(0.046);
    text = pt->AddText("S/B (2#sigma) = 3.25");
    pt->Draw();
    
@@ -9879,7 +9876,7 @@
    entry->SetMarkerStyle(21);
    entry->SetMarkerSize(1);
    entry->SetTextFont(42);
-   entry=leg->AddEntry("hmass_l_0","Side Bands","f");
+   entry=leg->AddEntry("hmass_l_0","Side bands","f");
 
    ci = TColor::GetColor("#006600");
    entry->SetFillColor(ci);
@@ -9889,6 +9886,32 @@
    entry->SetLineColor(ci);
    entry->SetLineStyle(1);
    entry->SetLineWidth(1);
+   entry->SetMarkerColor(1);
+   entry->SetMarkerStyle(21);
+   entry->SetMarkerSize(1);
+   entry->SetTextFont(42);
+   leg->Draw();
+   
+   leg = new TLegend(0.65,0.86,0.9,0.95,NULL,"brNDC");
+   leg->SetBorderSize(0);
+   leg->SetTextSize(0.04);
+   leg->SetLineColor(1);
+   leg->SetLineStyle(1);
+   leg->SetLineWidth(1);
+   leg->SetFillColor(0);
+   leg->SetFillStyle(1001);
+   entry=leg->AddEntry("fullfit_7","Signal + bkg","l");
+   entry->SetLineColor(4);
+   entry->SetLineStyle(1);
+   entry->SetLineWidth(2);
+   entry->SetMarkerColor(1);
+   entry->SetMarkerStyle(21);
+   entry->SetMarkerSize(1);
+   entry->SetTextFont(42);
+   entry=leg->AddEntry("bkgFitWRef_7","Background","l");
+   entry->SetLineColor(2);
+   entry->SetLineStyle(1);
+   entry->SetLineWidth(2);
    entry->SetMarkerColor(1);
    entry->SetMarkerStyle(21);
    entry->SetMarkerSize(1);

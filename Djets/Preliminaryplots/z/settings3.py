@@ -50,3 +50,12 @@ val=[]
 for i in range(6): val.append(histData.GetBinContent(i+1))
 yvalues2[5]=2.2*(max(val[:]))
 
+
+
+#savedFile = ROOT.TFile("finalXsection_R"+str()+str(),"recreate")
+savedFile = ROOT.TFile("finalXsection_R"+str(R)+str(jetbin)+".root","recreate")
+hT1[0].Write()
+hT1[0].SetName("central_powPyth6")
+histData.Write()
+histData.SetName("histData")
+savedFile.Close()

@@ -6,8 +6,8 @@ import numpy as np
 
 # Settings for plotting: Which R and (xsec or prob)
 #------------------------------------------------
-xsec = 0 # if xsec = 0 it is probability, else xsec
-R = 3
+xsec = 1 # if xsec = 0 it is probability, else xsec
+R = 6
 #jetbins = 4 # actually 5
 jetbin = 4 # 0,1,2,3,4 don't use 0
 if xsec == 0:
@@ -123,9 +123,9 @@ for i in range(numbincenters):
 
 # ROOT FILES, datafiles
 # unfolded data
-r3file2D = ROOT.TFile('/media/jackbauer/data/z_out/R_03_35/unfolding/Bayes/alljetz2D/unfold2DoutFile.root','read')
-r4file2D = ROOT.TFile('/media/jackbauer/data/z_out/R_04_35/unfolding/Bayes/alljetz2D/unfold2DoutFile.root','read')
-r6file2D = ROOT.TFile('/media/jackbauer/data/z_out/R_06_35/unfolding/Bayes/alljetz2D/unfold2DoutFile.root','read')
+r3file2D = ROOT.TFile('/media/jackbauer/data/z_out/R_03_35/unfolding/Bayes/alljetz2D/unfold2DoutFileAPW.root','read')
+r4file2D = ROOT.TFile('/media/jackbauer/data/z_out/R_04_35/unfolding/Bayes/alljetz2D/unfold2DoutFileAPW.root','read')
+r6file2D = ROOT.TFile('/media/jackbauer/data/z_out/R_06_35/unfolding/Bayes/alljetz2D/unfold2DoutFileAPW.root','read')
 
 # Data Train
 data3=ROOT.TFile("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/AnalysisResults_437.root","read")
@@ -149,6 +149,9 @@ dataLum3 = data3.Get("PWG3_D2H_DmesonsForJetCorrelationsMBN0").Get("Normalizatio
 dataLum4 = data4.Get("PWG3_D2H_DmesonsForJetCorrelationsMBN0").Get("NormalizationCounter").GetNEventsForNorm()/sigma_in
 dataLum6 = data6.Get("PWG3_D2H_DmesonsForJetCorrelationsMBN0").Get("NormalizationCounter").GetNEventsForNorm()/sigma_in
 
+
+print(dataLum3, dataLum4, dataLum6)
+
 # List of theory sim files for each radius
 Tr3file2D, Tr3filePYT6, Tr3filePYT8 = [], [], []
 Tr4file2D, Tr4filePYT6, Tr4filePYT8 = [], [], []
@@ -162,7 +165,7 @@ for jetR in range(len(jetRs)):
             if jetR == 0: Tr3file2D.append(filename)
             elif jetR == 1: Tr4file2D.append(filename)
             elif jetR == 2: Tr6file2D.append(filename)
-
+print(len(Tr6file2D))
 #Pyt6
 for jetR in range(len(jetRs)):
     for jdname in range(len(jetnames)):
@@ -203,4 +206,5 @@ elif R == 6:
 
 datascaling = 1/(2*BRDzero*dataLum)
 dy = 2*((9-R)/10.0)
+print(dy)
 

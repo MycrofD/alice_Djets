@@ -68,9 +68,14 @@ def TGRAPH(n,xvalues1,yvalues1,xerr1,yerr1do,yerr1up,xedges,color):
 #######################################################################
 
 xsec = 1    ## if xsec == 0, it is probability, else xsec
-R = 4       ## JET RADIUS
+R = 6       ## JET RADIUS
 jetbin = 4  ## JET PT interval: 0,1,2,3,4 don't use 0
-if R == 4:
+if R == 2:
+    yups = [2.2,2.3,2.2,2.2] ## x-sec upper limit, this times the max
+    ylimitRs = [[0.01,1.5],[0.05,1.5],[0.21,1.7],[0.1,2.7]]
+    ylimits = [[-0.15,5.6], [-0.15,5.6], [-0.15,5.6], [-0.15,5.6]] ## Probability upper limit
+    yupsR = [0.55,0.55,0.55,0.55] ## prob upperlimit ratio, 1 +/- this
+elif R == 4:
     yups = [2.2,2.3,2.2,2.2] ## x-sec upper limit, this times the max
     ylimitRs = [[0.01,1.5],[0.05,1.5],[0.21,1.7],[0.1,2.7]]
     ylimits = [[-0.15,5.6], [-0.15,5.6], [-0.15,5.6], [-0.15,5.6]] ## Probability upper limit
@@ -123,16 +128,20 @@ colors = [ROOT.kBlue+2, ROOT.kRed+2, ROOT.kGreen+2, ROOT.kYellow+2, ROOT.kOrange
 #######################################################################
 ######### FILES contatining unfolded spectra
 dirname = '_25'
+dirnameR02='_finaltry'
 EOS=''#'/eos/user/a/amohanty/'
+r2file2D = RT.TFile(EOS+'/media/jackbauer/data/z_out/R_02'+dirnameR02+'/unfolding/Bayes/alljetz2D/unfold2DoutFileAPW.root','read')
 r4file2D = RT.TFile(EOS+'/media/jackbauer/data/z_out/R_04'+dirname+'/unfolding/Bayes/alljetz2D/unfold2DoutFileAPW.root','read')
 r6file2D = RT.TFile(EOS+'/media/jackbauer/data/z_out/R_06'+dirname+'/unfolding/Bayes/alljetz2D/unfold2DoutFileAPW.root','read')
 ######### DATA Train files
+data2=RT.TFile(EOS+'/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/AnalysisResults_632_R02.root','read')
 data4=RT.TFile(EOS+'/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/AnalysisResults_503_R04.root','read')
 data6=RT.TFile(EOS+'/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/AnalysisResults_504_R06.root','read')
 # Scaling settings
 simScaling = 0.5
-BRDzero = 0.0389
+BRDzero = 0.0389 # 0.0389should be changed to 0.0004. The branching ratio is 3.89 +- 0.04 %
 sigma_in = 50.77
+dataLum2 = data2.Get('PWG3_D2H_DmesonsForJetCorrelationsMBN0').Get('NormalizationCounter').GetNEventsForNorm()/sigma_in
 dataLum4 = data4.Get('PWG3_D2H_DmesonsForJetCorrelationsMBN0').Get('NormalizationCounter').GetNEventsForNorm()/sigma_in
 dataLum6 = data6.Get('PWG3_D2H_DmesonsForJetCorrelationsMBN0').Get('NormalizationCounter').GetNEventsForNorm()/sigma_in
 #######################################################################4
@@ -140,22 +149,33 @@ dataLum6 = data6.Get('PWG3_D2H_DmesonsForJetCorrelationsMBN0').Get('Normalizatio
 #######################################################################
 jetRs = ['4','6']
 jetnames = ['5_7','7_10','10_15','15_50']
-dptnames = ['2_7','3_10','5_15','5_36']
-powpyt6names = ['central', 'F1R2_1536594271','F1R05_1536598175','F2R1_1535916012','F2R2_1535895146','F05R1_1536604800','F05R05_1535894261','m13_1536595965','m17_1536655729']
-Tr3file2D, Tr4file2D, Tr6file2D = [], [], [] ###### List of theory sum files for each radius
+if R==2:
+    dptnames = ['2_7','4_10','5_15','10_36']
+    powpyt6names = ['central', 'central','central', 'central','central', 'central','central', 'central','central']
+    #powpyt6names = ['central']#, 'F1R2_1536594271','F1R05_1536598175','F2R1_1535916012','F2R2_1535895146','F05R1_1536604800','F05R05_1535894261','m13_1536595965','m17_1536655729']
+else:
+    dptnames = ['2_7','3_10','5_15','5_36']
+    powpyt6names = ['central', 'F1R2_1536594271','F1R05_1536598175','F2R1_1535916012','F2R2_1535895146','F05R1_1536604800','F05R05_1535894261','m13_1536595965','m17_1536655729']
+#powpyt6names = ['central', 'F1R2_1536594271','F1R05_1536598175','F2R1_1535916012','F2R2_1535895146','F05R1_1536604800','F05R05_1535894261','m13_1536595965','m17_1536655729']
+Tr2file2D, Tr4file2D, Tr6file2D = [], [], [] ###### List of theory sum files for each radius
 #Pow+Pyt6
+#for jetR in range(len(jetRs)):
 for jetR in range(len(jetRs)):
     for jdname in range(len(jetnames)):
         for powpyt6name in powpyt6names:
             filename = RT.TFile('/media/jackbauer/data/z_out/R_0'+jetRs[jetR]+'_25Sim/SimFiles/Prompt/Jetpt'+jetnames[jdname]+'/Z_AnalysisResults_FastSim_powheg+pythia6_charm_'+powpyt6name+'_Jetpt'+jetnames[jdname]+'_Dpt'+dptnames[jdname]+'_Dzero.root','read')
-            #if jetR == 0: Tr3file2D.append(filename)
+            #if jetR == 0: Tr2file2D.append(filename)
             if jetR == 0: Tr4file2D.append(filename)
             elif jetR == 1: Tr6file2D.append(filename)
 
 #######################################################################5
 #########          FINAL DATA and THEORY  SETTINGS         ############
 #######################################################################
-if R == 4:
+if R == 2:
+    dataLum = dataLum2
+    RFILE = r2file2D
+    THFILES = Tr2file2D
+elif R == 4:
     dataLum = dataLum4
     RFILE = r4file2D
     THFILES = Tr4file2D
@@ -167,6 +187,8 @@ print('data lum',dataLum)
 datascaling = 1/(2*BRDzero*dataLum)
 dy = 2*((9-R)/10.0)
 print('dy: ',dy)
+print(datascaling)
+exit()
 #######################################################################6
 #########          FINAL DATA and THEORY HISTOGRAMS        ############
 #######################################################################
@@ -200,7 +222,20 @@ yerr2up = []
 syspercentUp = np.array([85,95,95,95,95])*0.01
 syspercentDo = np.array([85,95,95,95,95])*0.01
 
-if R == 4:
+if R == 2:
+    if jetbin == 1:
+        syspercentUp = np.array([15,11, 8, 5, 9])*0.01
+        syspercentDo = np.array([17,12, 9, 6, 9])*0.01
+    elif jetbin == 2:
+        syspercentUp = np.array([17,13, 7, 7, 5])*0.01
+        syspercentDo = np.array([23,13, 8, 7, 6])*0.01
+    elif jetbin == 3:
+        syspercentUp = np.array([14,11, 7, 6, 7])*0.01
+        syspercentDo = np.array([19,11, 8, 7, 7])*0.01
+    elif jetbin == 4:
+        syspercentUp = np.array([18, 7,10,10,11])*0.01
+        syspercentDo = np.array([27, 7,10,11,11])*0.01
+elif R == 4:
     if jetbin == 1:
         syspercentUp = np.array([15,11, 8, 5, 9])*0.01
         syspercentDo = np.array([17,12, 9, 6, 9])*0.01
@@ -226,7 +261,8 @@ elif R == 6:
     elif jetbin == 4:
         syspercentUp = np.array([12, 8, 7,14,16])*0.01
         syspercentDo = np.array([14, 8, 8,14,16])*0.01
-normScale = (2.1**2 + BRDzero**2)*0.0001
+#normScale = (2.1**2 + BRDzero**2)*0.0001
+normScale = (2.1**2 + 0.0004**2)*0.0001
 if xsec == 1:
     syspercentUp = np.sqrt(syspercentUp**2 + normScale)
     syspercentDo = np.sqrt(syspercentDo**2 + normScale)
@@ -239,7 +275,7 @@ for i in range(histData.GetNbinsX()):
 # powheg+pythia6
 hT1 = TheoryPred(THFILES, powpyt6names, xsec, jetbin)
 
-print(len(Tr6file2D))
+print(len(Tr2file2D))
 #### data data ratio
 hTR0 = histRatio([histData],histData)
 
@@ -296,6 +332,7 @@ p1.AddText(jetbintitle)
 ######### READYING THE FIRST PAD
 pad1 = RT.TPad('p1','p1',0.01,0.38,1,1)   ####      Defining the first pad
 pad1.SetMargin(0.16,1,0,1)              ####      Setting margin
+#pad1.SetBorderMode(1)
 pad1.Draw()                             ####      Drawing the first pad
 pad1.cd()                               ####      Entering the first pad
 #if xsec == 1:
@@ -323,7 +360,7 @@ gr2 = TGRAPH(numbincenters,xvalues1,yvalues2,xerr1,yerr2do,yerr2up,xedges,cidsys
 gr2.SetFillStyle(1001)
 #transcol = RT.GetColorTransparent(cidsys,0.35)
 transcol=cidsys
-gr2.SetFillColorAlpha(transcol,0.7)
+gr2.SetFillColorAlpha(transcol,1.0)
 gr2.SetLineWidth(0) #1504
 gr2.SetLineColorAlpha(cidsys,0) #1504
 
@@ -370,7 +407,7 @@ gr1b = TGRAPH(numbincenters,xvalues1,yvalues1R,xerr1,yerr1doR,yerr1upR,xedges,co
 gr1b.SetFillStyle(0)
 gr2b = TGRAPH(numbincenters,xvalues1,yvalues2R,xerr1,syspercentDo,syspercentUp,xedges,colors[0])
 gr2b.SetFillStyle(1001)
-gr2b.SetFillColorAlpha(cidsys,0.70)
+gr2b.SetFillColorAlpha(cidsys,1.0)
 gr2b.SetLineWidth(0) #1504
 gr2b.SetLineColorAlpha(cidsys,0) #1504
 
@@ -394,9 +431,9 @@ hTR0[0].Draw('same')  #Data central
 ######### DRAWING THE CANVAS
 c1.Update()
 c1.Draw()
-c1.SaveAs('QM_JIRA_linear_29Oct/pdf/'+str(R)+'_'+str(xsec)+'_'+str(jetbin)+'.pdf')
-c1.SaveAs('QM_JIRA_linear_29Oct/eps/'+str(R)+'_'+str(xsec)+'_'+str(jetbin)+'.eps')
-c1.SaveAs('QM_JIRA_linear_29Oct/png/'+str(R)+'_'+str(xsec)+'_'+str(jetbin)+'.png')
+c1.SaveAs('QM_JIRA_linear_29Oct/pdf/n'+str(R)+'_'+str(xsec)+'_'+str(jetbin)+'.pdf')
+c1.SaveAs('QM_JIRA_linear_29Oct/eps/n'+str(R)+'_'+str(xsec)+'_'+str(jetbin)+'.eps')
+c1.SaveAs('QM_JIRA_linear_29Oct/png/n'+str(R)+'_'+str(xsec)+'_'+str(jetbin)+'.png')
 
 ######### SAVING IN A ROOT FILE
 yerr2doROOT = histData.Clone('yerr2doROOT')

@@ -216,7 +216,6 @@ for i in range(jetrange-1,jetrange):
     pad2.Draw()
     pad2.cd()
 
-    mg = ROOT.TMultiGraph()
 
     hTR = []
     for item in range(len(hT)):
@@ -246,18 +245,14 @@ for i in range(jetrange-1,jetrange):
     graphhistR.GetXaxis().SetLabelSize(20)
     graphhistR.GetXaxis().SetLabelFont(43)
 
-    #[graphR2, graphhistR2] = TGRAPH(fptbinsZN, zval, syscentR, exlh, sysdoR, sysupR, colors2use[1], 3005, zedges, hURatio, "Theory/data", xtitle)
-    #graphR.Draw("a2same")
-    mg.Add(graphR)
-    #mg.Add(graphR2)
-    mg.Draw("AC")
-    #hURatio.Draw("same")
-    #hTR[0].Draw("same")
+    graphR.Draw("a2same")
+    hURatio.Draw("same")
+    hTR[0].Draw("same")
 
-ROOT.gStyle.SetOptStat(000)
 c1.Draw()
 
-c1.SaveAs("dataVtheory.png")
+#c1.SaveAs("dataVtheory.png")
+input()
 
 print(dy)
 print(datascaling)

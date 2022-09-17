@@ -6,10 +6,6 @@
 
 setHistoDetails(TH1 *h, Color_t color, Style_t Mstyle, Width_t width);
 
- //double zmin = 0, zmax = 2.;
-    //double jetmin = 0, jetmax = 50;
-    //double plotmin = 0, plotmax = 50;
-
     const int ptbinsDN = 10;
     float ptDbins[ptbinsDN+1] = { 3,4,5,6,7,8,10,12,16,24,36 };
 
@@ -18,7 +14,6 @@ setHistoDetails(TH1 *h, Color_t color, Style_t Mstyle, Width_t width);
 
     int massColor = kBlack;
     int signalColor = kRed+1;
-    //int SBColor = kGreen+3;
     int SBColor = kGreen+3;
     int subColor = kBlue+1;
     double markersize = 2.;
@@ -56,12 +51,7 @@ sst.clear(); sst.str("");
     int islog = 1;
 
 
-    TH1F* hjetpt[ptbinsDN];
     //TH1F* hjetpt[ptbinsDN]=new TH1F("yo","yo",100,4.8,50.2);
-    TH1F* hjetpt_s[ptbinsDN];
-    TH1F* hjetptsub[ptbinsDN];
-    TH1F* hmass_c[ptbinsDN];
-
     TH1F* hjetpt[ptbinsDN];
     TH1F* hjetpt_s[ptbinsDN];
     TH1F* hjetptsub[ptbinsDN];
