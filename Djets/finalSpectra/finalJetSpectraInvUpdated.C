@@ -81,46 +81,46 @@ static TString fPowhegPythia6[9] = {
     //"AnalysisResults_FastSim_powheg+pythia6_charm_uF2uR2"
     };
 static TString fPowhegPythia8[9] = {
-     "AnalysisResults_FastSim_powheg+pythia8_charm_central_1593017599"
-    ,"AnalysisResults_FastSim_powheg+pythia8_charm_m13_1593091148"
-    ,"AnalysisResults_FastSim_powheg+pythia8_charm_m17_1593090378"
-    ,"AnalysisResults_FastSim_powheg+pythia8_charm_F1R05_1593338244"
-    ,"AnalysisResults_FastSim_powheg+pythia8_charm_F05R1_1593337904"
-    ,"AnalysisResults_FastSim_powheg+pythia8_charm_F2R1_1593341637"
-    ,"AnalysisResults_FastSim_powheg+pythia8_charm_F1R2_1593339352"
-    ,"AnalysisResults_FastSim_powheg+pythia8_charm_F05R05_1593334134"
-    ,"AnalysisResults_FastSim_powheg+pythia8_charm_F2R2_1593354950"
-    //"AnalysisResults_FastSim_powheg+pythia8_charm_central",
-    //"AnalysisResults_FastSim_powheg+pythia8_charm_mc13",
-    //"AnalysisResults_FastSim_powheg+pythia8_charm_mc17",
-    //"AnalysisResults_FastSim_powheg+pythia8_charm_uF1uR05",
-    //"AnalysisResults_FastSim_powheg+pythia8_charm_uF05uR1",
-    //"AnalysisResults_FastSim_powheg+pythia8_charm_uF2uR1",
-    //"AnalysisResults_FastSim_powheg+pythia8_charm_uF1uR2",
-    //"AnalysisResults_FastSim_powheg+pythia8_charm_uF05uR05",
-    //"AnalysisResults_FastSim_powheg+pythia8_charm_uF2uR2"
-    };
+    "AnalysisResults_FastSim_powheg+pythia8_charm_central_1593017599"
+        ,"AnalysisResults_FastSim_powheg+pythia8_charm_m13_1593091148"
+        ,"AnalysisResults_FastSim_powheg+pythia8_charm_m17_1593090378"
+        ,"AnalysisResults_FastSim_powheg+pythia8_charm_F1R05_1593338244"
+        ,"AnalysisResults_FastSim_powheg+pythia8_charm_F05R1_1593337904"
+        ,"AnalysisResults_FastSim_powheg+pythia8_charm_F2R1_1593341637"
+        ,"AnalysisResults_FastSim_powheg+pythia8_charm_F1R2_1593339352"
+        ,"AnalysisResults_FastSim_powheg+pythia8_charm_F05R05_1593334134"
+        ,"AnalysisResults_FastSim_powheg+pythia8_charm_F2R2_1593354950"
+        //"AnalysisResults_FastSim_powheg+pythia8_charm_central",
+        //"AnalysisResults_FastSim_powheg+pythia8_charm_mc13",
+        //"AnalysisResults_FastSim_powheg+pythia8_charm_mc17",
+        //"AnalysisResults_FastSim_powheg+pythia8_charm_uF1uR05",
+        //"AnalysisResults_FastSim_powheg+pythia8_charm_uF05uR1",
+        //"AnalysisResults_FastSim_powheg+pythia8_charm_uF2uR1",
+        //"AnalysisResults_FastSim_powheg+pythia8_charm_uF1uR2",
+        //"AnalysisResults_FastSim_powheg+pythia8_charm_uF05uR05",
+        //"AnalysisResults_FastSim_powheg+pythia8_charm_uF2uR2"
+};
 
 
 static TString fPythia6[9] = {
-   //"AnalysisResults_FastSim_pythia6_charm"
-   "AnalysisResults_FastSim_pythia6_charm_1594235514"
+    //"AnalysisResults_FastSim_pythia6_charm"
+    "AnalysisResults_FastSim_pythia6_charm_1594235514"
 };
 
 static TString fPythia8[9] = {
-   //"AnalysisResults_FastSim_pythia8_charm"
-   "AnalysisResults_FastSim_pythia8_charm_1594137862"
+    //"AnalysisResults_FastSim_pythia8_charm"
+    "AnalysisResults_FastSim_pythia8_charm_1594137862"
 };
 
 static TString fPythia8SoftMode2[9] = {
-   //"AnalysisResults_FastSim_pythia8_charm_Color2Soft50"
-   "AnalysisResults_FastSim_pythia8_charm_soft2color_1598639645"
+    //"AnalysisResults_FastSim_pythia8_charm_Color2Soft50"
+    "AnalysisResults_FastSim_pythia8_charm_soft2color_1598639645"
 };
 static TString fPowhegPythia6dijet[9] = {
-   "AnalysisResults_FastSim_powheg+pythia8_dijetHadi"
+    "AnalysisResults_FastSim_powheg+pythia8_dijetHadi"
 };
 static TString fPowhegPythia8dijet[9] = {
-   "AnalysisResults_FastSim_powheg+pythia8_dijetSalvatore"
+    "AnalysisResults_FastSim_powheg+pythia8_dijetSalvatore"
 };
 
 std::tuple<TGraphAsymmErrors*, TH1D*, TH1D*, TH1D*, TH1D**> GetSim(TString simname, Int_t type, Int_t nFiles, TString *names, TString simDir, Double_t simScaling, UInt_t nBins, Double_t *xBins);
@@ -133,44 +133,45 @@ void TerminateCanvas(TPad* pad1,TPad* pad2,TH1D* histo1,TH1D* histo2);
 
 
 void finalJetSpectraInvUpdated(
-Int_t type = 0, //0 - pt x-section, 1 - z x-section, 2 - z PDF
-Int_t radius = 4, // 2, 4 or 6
-Int_t z = 0, //which z jet pT bin 1,2,3,4,5
-Int_t sysGlobal = 0, //0 - (defualt )add LumiUnc, BRUnc and Tracking Unc. + add cut var and JES;  for x-section
-                     //1 - (R comparison) no global Unc; cut var separate and no JES - available only for pT x-section (type 0)
-                     //2 - (energy comparison) add LumiUnc and Tracking Unc cut var and JES
-TString dataFile = "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR04_paperCuts/Default/unfolding_Bayes_4/unfoldedSpectrum_unfoldedJetSpectrum.root",
-TString dataAnalysisFile = "/mnt/hgfs/vmware/data_R04_050219/data/AnalysisResults_Run2w18b.root",
-TString simDir = "/home/kvapil/work/analysis/pp_run2/D0jet/BaseCuts/Simulations/Prompt/AnalysisResults_Run2w18b.root",
-TString outSpectraDir = "/home/kvapil/work/analysis/pp_run2/D0jet/BaseCuts/Default_AnalysisResults_Run2w18b.root/unfolding_2D_5/finalSpectraNEW",
-TString histBase = "unfoldedSpectrumKineEff"
-)
+        Int_t type = 0, //0 - pt x-section, 1 - z x-section, 2 - z PDF
+        Int_t radius = 4, // 2, 4 or 6
+        Int_t z = 0, //which z jet pT bin 1,2,3,4,5
+        Int_t sysGlobal = 0, //0 - (defualt )add LumiUnc, BRUnc and Tracking Unc. + add cut var and JES;  for x-section
+        //1 - (R comparison) no global Unc; cut var separate and no JES - available only for pT x-section (type 0)
+        //2 - (energy comparison) add LumiUnc and Tracking Unc cut var and JES
+        TString dataFile = "/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR04_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root",
+        TString dataAnalysisFile = "/mnt/hgfs/vmware/data_R04_050219/data/AnalysisResults_Run2w18b.root",
+        TString simDir = "/home/kvapil/work/analysis/pp_run2/D0jet/BaseCuts/Simulations/Prompt/AnalysisResults_Run2w18b.root",
+        TString outSpectraDir = "/home/kvapil/work/analysis/pp_run2/D0jet/BaseCuts/Default_AnalysisResults_Run2w18b.root/unfolding_2D_5/finalSpectraNEW",
+        TString histBase = "unfoldedSpectrumKineEff"
+        )
 /*
-void finalJetSpectraInvUpdated(
-Int_t type = 0,
-Int_t radius = 4,
-Int_t z = 0,
-TString dataFile = "/home/kvapil/work/analysis/pp_run2/D0jet/BaseCuts_ztest/Default_AnalysisResults_Run2w18b.root/unfolding_2D_5/unfoldedSpectrum_unfoldedJetSpectrum.root",
-TString dataAnalysisFile = "/mnt/hgfs/vmware/data_R04_050219/data/AnalysisResults_Run2w18b.root",
-TString simDir = "/home/kvapil/work/analysis/pp_run2/D0jet/BaseCuts_ztest/Simulations/Prompt/AnalysisResults_Run2w18b.root",
-TString outSpectraDir = "/home/kvapil/work/analysis/pp_run2/D0jet/BaseCuts_ztest/Default_AnalysisResults_Run2w18b.root/unfolding_2D_5/finalSpectraNEW",
-TString histBase = "unfoldedSpectrumKineEff"
-)*/
+   void finalJetSpectraInvUpdated(
+   Int_t type = 0,
+   Int_t radius = 4,
+   Int_t z = 0,
+   TString dataFile = "/home/kvapil/work/analysis/pp_run2/D0jet/BaseCuts_ztest/Default_AnalysisResults_Run2w18b.root/unfolding_2D_5/unfoldedSpectrum_unfoldedJetSpectrum.root",
+   TString dataAnalysisFile = "/mnt/hgfs/vmware/data_R04_050219/data/AnalysisResults_Run2w18b.root",
+   TString simDir = "/home/kvapil/work/analysis/pp_run2/D0jet/BaseCuts_ztest/Simulations/Prompt/AnalysisResults_Run2w18b.root",
+   TString outSpectraDir = "/home/kvapil/work/analysis/pp_run2/D0jet/BaseCuts_ztest/Default_AnalysisResults_Run2w18b.root/unfolding_2D_5/finalSpectraNEW",
+   TString histBase = "unfoldedSpectrumKineEff"
+   )*/
 {
-bool fivetev = 1;
-radius = 4;
-dataFile = Form("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR0%d_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root",(int)radius);
-dataAnalysisFile="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/AnalysisResults_";//745_R04_pp_5cuts.root";
-if (radius == 2){dataAnalysisFile+="744_R02_pp_5cuts.root";}
-else if (radius == 4){dataAnalysisFile+="745_R04_pp_5cuts.root";}
-else if (radius == 6){dataAnalysisFile+="751_R06_pp_5cuts.root";}
-simDir=Form("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR0%d_paperCuts/Simulations/Prompt/",(int)radius);
-outSpectraDir = Form("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR0%d_paperCuts/Default/unfolding_Bayes_5/final/",(int)radius);
-histBase="unfoldedSpectrum";
+    bool fivetev = 1;
+    radius = 6;
+    dataFile = Form("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR0%d_paperCuts/Default/unfolding_Bayes_5/unfoldedSpectrum_unfoldedJetSpectrum.root",(int)radius);
+    dataAnalysisFile="/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/outData/AnalysisResults_";//745_R04_pp_5cuts.root";
+    if (radius == 2){dataAnalysisFile+="744_R02_pp_5cuts.root";}
+    else if (radius == 3){dataAnalysisFile+="757_R03_pp_5cuts.root";}
+    else if (radius == 4){dataAnalysisFile+="745_R04_pp_5cuts.root";}
+    else if (radius == 6){dataAnalysisFile+="751_R06_pp_5cuts.root";}
+    simDir=Form("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR0%d_paperCuts/Simulations/Prompt/",(int)radius);
+    outSpectraDir = Form("/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR0%d_paperCuts/Default/unfolding_Bayes_5/final/",(int)radius);
+    histBase="unfoldedSpectrum";
     TString outPlotDir = outSpectraDir;
     outPlotDir+="/plots";
- //   gSystem->Exec(Form("mkdir %s",outSpectraDir.Data()));
- //   gSystem->Exec(Form("mkdir %s",outPlotDir.Data()));
+    //   gSystem->Exec(Form("mkdir %s",outSpectraDir.Data()));
+    //   gSystem->Exec(Form("mkdir %s",outPlotDir.Data()));
 
     Bool_t addBRDzeroUnc = false;
     Bool_t addDtrackingUnc = false;
@@ -208,7 +209,7 @@ histBase="unfoldedSpectrum";
     // ----------------------------------------------------------------
     Double_t sigma_in = 0.0578;
     const Double_t  BRDzero = 0.0389;
-    Double_t BRDzeroUnc = 0.0004;
+    Double_t BRDzeroUnc = 0.008;
     Double_t DtrackingUnc = 0.05;
     Double_t LumiUnc = 0.05;
     if(fivetev){
@@ -272,11 +273,11 @@ histBase="unfoldedSpectrum";
 
     if(type ==2){plotRanges[2]=0; plotRanges[3]=10;}
 
-   // std::cout<<DpTbins[0][2]<<" "<<DpTbins[1][4]<<std::endl;
+    // std::cout<<DpTbins[0][2]<<" "<<DpTbins[1][4]<<std::endl;
     gSystem->Exec(Form("mkdir %s",outSpectraDir.Data()));
     gSystem->Exec(Form("mkdir %s",outPlotDir.Data()));
 
-   // gSystem->Exec(Form("mkdir %s",outSpectraDir.Data()));
+    // gSystem->Exec(Form("mkdir %s",outSpectraDir.Data()));
 
     // ----------------------------------------------------------------
     // ------------ SET SYSTEMATICS AND PLOT RANGES HERE --------------
@@ -473,7 +474,7 @@ histBase="unfoldedSpectrum";
     double dataLum = nEv/(sigma_in*1000) ;//Luminosity in mbar
     double simScaling = 0.5; //pp 0.5
     double dataScaling = 1. /(BRDzero * dataLum)/2.;
-//    std::cout<<"scalings "<<jetEta<<" "<<dy<<" "<<dataScaling<<" "<<BRDzero<<" "<<dataLum<<" "<<nEv<<" "<<sigma_in<<std::endl;
+    //    std::cout<<"scalings "<<jetEta<<" "<<dy<<" "<<dataScaling<<" "<<BRDzero<<" "<<dataLum<<" "<<nEv<<" "<<sigma_in<<std::endl;
     std::cout<<"scalings: "<<dy<<" "<<dataScaling<<" "<<BRDzero<<" "<<dataLum<<" "<<nEv<<" "<<sigma_in<<std::endl;
 
 
@@ -621,8 +622,8 @@ histBase="unfoldedSpectrum";
     pt[0]->AddText(Form("ALICE, pp, #sqrt{#it{s}} = %s TeV",fivetev?"5.02":"13"));
     pt[1]->AddText(Form("Charged Jets, anti-#it{k}_{T}, #it{R} = 0.%d, |#it{#eta}_{lab}^{jet}| < 0.%d",radius,9-radius));
     if(type==0)pt[1]->AddText(Form ("with D^{0}, %d < #it{p}_{T,D^{0}} < %d GeV/#it{c}",static_cast<int>(2),static_cast<int>(36)));
-   // if(type==1 ||type==2)pt[1]->AddText(Form ("%d < #it{p}_{T,jet} < %d GeV/#it{c}",jetpTbins[zBin-1],jetpTbins[zBin]));
-   // if(type==1 ||type==2)pt[1]->AddText(Form ("with D^{0}, %d < #it{p}_{T,D^{0}} < %d GeV/#it{c}",DpTbins[0][zBin-1],DpTbins[1][zBin-1]));
+    // if(type==1 ||type==2)pt[1]->AddText(Form ("%d < #it{p}_{T,jet} < %d GeV/#it{c}",jetpTbins[zBin-1],jetpTbins[zBin]));
+    // if(type==1 ||type==2)pt[1]->AddText(Form ("with D^{0}, %d < #it{p}_{T,D^{0}} < %d GeV/#it{c}",DpTbins[0][zBin-1],DpTbins[1][zBin-1]));
     if(type==1 ||type==2)pt[1]->AddText(Form ("%d < #it{p}_{T,jet} < %d GeV/#it{c} with D^{0}, %d < #it{p}_{T,D^{0}} < %d GeV/#it{c}",jetpTbins[zBin-1],jetpTbins[zBin],DpTbins[0][zBin-1],DpTbins[1][zBin-1]));
     //if(type==1 ||type==2)pt[1]->AddText(Form ("",DpTbins[0][zBin-1],DpTbins[1][zBin-1]));
 
@@ -630,7 +631,7 @@ histBase="unfoldedSpectrum";
     leg->Draw();
     pt[0]->Draw();
     pt[1]->Draw();
-std::cout<<"a"<<std::endl;
+    std::cout<<"a"<<std::endl;
     // ----------------- Terminate Canvas ---------------------
     TerminateCanvas(upPad,dowmPad,placeholder_up,placeholder_down);
     //canvas->SaveAs(outPlotDir+"/finalSpectra.png");
@@ -722,21 +723,21 @@ std::cout<<"a"<<std::endl;
             simPowhegPythia6dijetvar[ivar]->Write();
         }
     }
-std::cout<<"a"<<std::endl;
+    std::cout<<"a"<<std::endl;
     if(ePowhegPythia8dijet){
         simPowhegPythia8dijet_cent->Write();
-      //  simPowhegPythia8dijet_up->Write();
-      //  simPowhegPythia8dijet_down->Write();
+        //  simPowhegPythia8dijet_up->Write();
+        //  simPowhegPythia8dijet_down->Write();
         simPowhegPythia8dijet->Write();
         simPowhegPythia8dijet_cent_R->Write();
-     //   simPowhegPythia8dijet_up_R->Write();
-     //   simPowhegPythia8dijet_down_R->Write();
+        //   simPowhegPythia8dijet_up_R->Write();
+        //   simPowhegPythia8dijet_down_R->Write();
         simPowhegPythia8dijet_R->Write();
-     //   for(Int_t ivar = 1; ivar < 9; ivar++){
-    //        simPowhegPythia8dijetvar[ivar]->Write();
-     //   }
+        //   for(Int_t ivar = 1; ivar < 9; ivar++){
+        //        simPowhegPythia8dijetvar[ivar]->Write();
+        //   }
     }
-std::cout<<"a"<<std::endl;
+    std::cout<<"a"<<std::endl;
     ofile->Close();
     return;
 }
@@ -757,8 +758,8 @@ void PlaceOnPadSim(TPad* pad,TGraphAsymmErrors* histo, Color_t ci, Style_t style
     histo->SetMarkerColor(ci);
     histo->SetMarkerStyle(style);
     histo->SetLineStyle(linestyle);
-   // histo->SetFillStyle(3005);
-   // histo->SetMarkerSize(markersize); //add up
+    // histo->SetFillStyle(3005);
+    // histo->SetMarkerSize(markersize); //add up
     histo->SetLineWidth(2);
     TString odraaw = "";
     if(linestyle ==1) odraaw = "2p";
