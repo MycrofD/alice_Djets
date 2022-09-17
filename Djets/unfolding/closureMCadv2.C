@@ -17,7 +17,7 @@
 double plotmin = fptbinsZMeasA[0], plotmax =  fptbinsZMeasA[fptbinsZMeasN];
 // to fill the response matrix
 const int fJetptbinsGenN=6; TString truebinnum="";
-double fJetptbinsGenA[fJetptbinsGenN+1]={4,5,7,10,15,50,100};
+double fJetptbinsGenA[fJetptbinsGenN+1]={3,5,7,10,15,50,100};
     int deltaJbin = 1; // this is for the data part: 3,4,5,7,10,15,50
     int deltaJRbin = 2; // this is for the data part: 3,4,5,7,10,15,50
     int deltaZbin = 0;
@@ -36,6 +36,7 @@ int zRec = 0, jetRec = 1, DRec = 2;
 int zGen = 5, jetGen = 6, DGen = 7; 
 int Ddim[DnDim]   = {zRec,jetRec,zGen,jetGen,DRec,DGen};//for extacting 6D info from THnSparse
 int dim[nDim]   = {zRec,jetRec,zGen,jetGen};//for extacting 4D info from THnSparse
+TH2D *fSpec2Dproj;
 TH1D *fRawSpec2Dproj[fJetptbinsN];
 TH1D *fGenSpec2Dproj[fJetptbinsN];
 TH1D *fRawSpec2DprojUp[fJetptbinsN];//FD systematics
@@ -176,23 +177,23 @@ void closureMCadv2(
 
     //int eventcount = 0;
     double binval = 0;
-    double splitPC = 0.7;
-    double splitPC2 = 0.4;
+    double splitPC = 0.8;
+    double splitPC2 = 0.3;
     //----------- fill 4D histo response matrix
     int totalBins = hZjetRecGenD->GetNbins();
     int responseBins = (int)(totalBins*splitPC);
-    //int MCdataBins =  totalBins - responseBins;
-    int MCdataBins =  (int)totalBins*splitPC2;
+    int MCdataBins =  totalBins - responseBins;
+    //int MCdataBins =  (int)totalBins*splitPC2;
 
     //Getting an array of random numbers
     int responseBinsFinal = 0;
 
     mt19937 mt_resp(random_device{}());
-    uniform_int_distribution<int> dist_resp(0,totalBins*1.2);
+    uniform_int_distribution<int> dist_resp(0,totalBins*1.);
     vector<int> result_resp;
     result_resp.reserve(responseBins);
     vector<int> result_reco;
-    result_reco.reserve(MCdataBins);
+//    result_reco.reserve(MCdataBins);
     set<int> seen_resp;
 
     for (int i = 0; i< responseBins;){
@@ -203,16 +204,21 @@ void closureMCadv2(
         }
     }
 
-    for (int i=1; i<totalBins ; i++){
+    for (int i=1; i<totalBins+1 ;i++){
         if(find(result_resp.begin(), result_resp.end(), i)!=result_resp.end())
-            i+=1;
-        else result_reco.insert (result_reco.end(),i);
+        {} 
+        else {result_reco.insert (result_reco.end(),i);}
+    }
+    for (int i=1; i<totalBins*0.3 ;i++){
+        result_reco.insert (result_reco.end(),result_resp[i+1]);
     }
     cout<<result_resp.size()<<endl;
     cout<<result_reco.size()<<endl;
     cout<<result_reco.size() + result_resp.size()<<endl;
     cout<<hZjetRecGenD->GetNbins()<<endl;
     cout<<(double)(result_reco.size() + result_resp.size())/hZjetRecGenD->GetNbins()<<endl;
+    cout<<(double)(result_reco.size() )/hZjetRecGenD->GetNbins()<<endl;
+    cout<<(double)( result_resp.size())/hZjetRecGenD->GetNbins()<<endl;
 
     /***************************
     #### MC data settings ####
@@ -244,6 +250,19 @@ void closureMCadv2(
     mcdata4.Sumw2();
     mcdata5.Sumw2();
 
+    THnSparseD mcdataG0("mcdata","mcdata",minDim,bins,xmin,xmax);
+    THnSparseD mcdataG1("mcdata","mcdata",minDim,bins,xmin,xmax);
+    THnSparseD mcdataG2("mcdata","mcdata",minDim,bins,xmin,xmax);
+    THnSparseD mcdataG3("mcdata","mcdata",minDim,bins,xmin,xmax);
+    THnSparseD mcdataG4("mcdata","mcdata",minDim,bins,xmin,xmax);
+    THnSparseD mcdataG5("mcdata","mcdata",minDim,bins,xmin,xmax);
+    mcdataG0.Sumw2();
+    mcdataG1.Sumw2();
+    mcdataG2.Sumw2();
+    mcdataG3.Sumw2();
+    mcdataG4.Sumw2();
+    mcdataG5.Sumw2();
+
 //    THnSparseD mcdataVX = (THnSparseD)mcdata0.Clone();
     for(int z=1; z<=result_reco.size(); z++){
         int coord[DnDim]={0,0,0,0,0,0};
@@ -263,6 +282,13 @@ void closureMCadv2(
         mcdata3.Fill(xbin,weight);
         mcdata4.Fill(xbin,weight);
         mcdata5.Fill(xbin,weight);
+
+        mcdataG0.Fill(xbin,weight);
+        mcdataG1.Fill(xbin,weight);
+        mcdataG2.Fill(xbin,weight);
+        mcdataG3.Fill(xbin,weight);
+        mcdataG4.Fill(xbin,weight);
+        mcdataG5.Fill(xbin,weight);
     }
 
     // A-----------------------
@@ -277,7 +303,13 @@ void closureMCadv2(
     //
     TH1D* hZR[fJetptbinsN]; TH1D* hZG[fJetptbinsN]; // Z distributions for different jetpt intervals
 
-    double dmin[] = {2.0,2.0,2.0,3.0,5.0,5.0};
+    double dmin[] = {1.0,2.0,2.0,3.0,5.0,5.0};
+//    mcdata0.GetAxis(0)->SetRangeUser(0.4,1.02);
+//    mcdata1.GetAxis(0)->SetRangeUser(0.4,1.02);
+//    mcdata2.GetAxis(0)->SetRangeUser(0.4,1.02);
+//    mcdata3.GetAxis(0)->SetRangeUser(0.4,1.02);
+//    mcdata4.GetAxis(0)->SetRangeUser(0.4,1.02);
+//    mcdata5.GetAxis(0)->SetRangeUser(0.4,1.02);
     mcdata0.GetAxis(1)->SetRangeUser(fJetptbinsA[0],fJetptbinsA[1]);
     mcdata1.GetAxis(1)->SetRangeUser(fJetptbinsA[1],fJetptbinsA[2]);
     mcdata2.GetAxis(1)->SetRangeUser(fJetptbinsA[2],fJetptbinsA[3]);
@@ -291,12 +323,25 @@ void closureMCadv2(
     mcdata4.GetAxis(2)->SetRangeUser(dmin[4],fJetptbinsA[5]);
     mcdata5.GetAxis(2)->SetRangeUser(dmin[5],fJetptbinsA[6]);
 
-    mcdata0.GetAxis(4)->SetRangeUser(fJetptbinsA[0],fJetptbinsA[1]);
-    mcdata1.GetAxis(4)->SetRangeUser(fJetptbinsA[1],fJetptbinsA[2]);
-    mcdata2.GetAxis(4)->SetRangeUser(fJetptbinsA[2],fJetptbinsA[3]);
-    mcdata3.GetAxis(4)->SetRangeUser(fJetptbinsA[3],fJetptbinsA[4]);
-    mcdata4.GetAxis(4)->SetRangeUser(fJetptbinsA[4],fJetptbinsA[5]);
-    mcdata5.GetAxis(4)->SetRangeUser(fJetptbinsA[5],fJetptbinsA[6]);
+//    mcdata0.GetAxis(3)->SetRangeUser(0.4,1.02);
+//    mcdata1.GetAxis(3)->SetRangeUser(0.4,1.02);
+//    mcdata2.GetAxis(3)->SetRangeUser(0.4,1.02);
+//    mcdata3.GetAxis(3)->SetRangeUser(0.4,1.02);
+//    mcdata4.GetAxis(3)->SetRangeUser(0.4,1.02);
+//    mcdata5.GetAxis(3)->SetRangeUser(0.4,1.02);
+    mcdataG0.GetAxis(4)->SetRangeUser(fJetptbinsA[0],fJetptbinsA[1]);
+    mcdataG1.GetAxis(4)->SetRangeUser(fJetptbinsA[1],fJetptbinsA[2]);
+    mcdataG2.GetAxis(4)->SetRangeUser(fJetptbinsA[2],fJetptbinsA[3]);
+    mcdataG3.GetAxis(4)->SetRangeUser(fJetptbinsA[3],fJetptbinsA[4]);
+    mcdataG4.GetAxis(4)->SetRangeUser(fJetptbinsA[4],fJetptbinsA[5]);
+    mcdataG5.GetAxis(4)->SetRangeUser(fJetptbinsA[5],fJetptbinsA[6]);
+    mcdataG0.GetAxis(5)->SetRangeUser(dmin[0],fJetptbinsA[1]);
+    mcdataG1.GetAxis(5)->SetRangeUser(dmin[1],fJetptbinsA[2]);
+    mcdataG2.GetAxis(5)->SetRangeUser(dmin[2],fJetptbinsA[3]);
+    mcdataG3.GetAxis(5)->SetRangeUser(dmin[3],fJetptbinsA[4]);
+    mcdataG4.GetAxis(5)->SetRangeUser(dmin[4],fJetptbinsA[5]);
+    mcdataG5.GetAxis(5)->SetRangeUser(dmin[5],fJetptbinsA[6]);
+//double fJetptbinsGenA[fJetptbinsGenN+1]={3,5,7,10,15,50,100};
     //----------------------------------
     // Above the mcdata are cut for each jetpt interval at reco level
     // and on Dpt reco
@@ -305,17 +350,17 @@ void closureMCadv2(
     // The gen level info should only be used for finding kinematic efficiency, maybe
 
     hZR[0]=(TH1D*)mcdata0.Projection(0);
-    hZG[0]=(TH1D*)mcdata0.Projection(3);
+    hZG[0]=(TH1D*)mcdataG0.Projection(3);
     hZR[1]=(TH1D*)mcdata1.Projection(0);
-    hZG[1]=(TH1D*)mcdata1.Projection(3);
+    hZG[1]=(TH1D*)mcdataG1.Projection(3);
     hZR[2]=(TH1D*)mcdata2.Projection(0);
-    hZG[2]=(TH1D*)mcdata2.Projection(3);
+    hZG[2]=(TH1D*)mcdataG2.Projection(3);
     hZR[3]=(TH1D*)mcdata3.Projection(0);
-    hZG[3]=(TH1D*)mcdata3.Projection(3);
+    hZG[3]=(TH1D*)mcdataG3.Projection(3);
     hZR[4]=(TH1D*)mcdata4.Projection(0);
-    hZG[4]=(TH1D*)mcdata4.Projection(3);
+    hZG[4]=(TH1D*)mcdataG4.Projection(3);
     hZR[5]=(TH1D*)mcdata5.Projection(0);
-    hZG[5]=(TH1D*)mcdata5.Projection(3);
+    hZG[5]=(TH1D*)mcdataG5.Projection(3);
 
     TH1D* hzRreb_tmp[fJetptbinsN];
     TH1D* hzGreb_tmp[fJetptbinsN];
@@ -326,7 +371,6 @@ void closureMCadv2(
         hzGreb_tmp[i] = (TH1D*)hZG[i]->Clone(Form("hzGreb_tmp%d",i));
         hzRreb[i] = (TH1D*)hzRreb_tmp[i]->Rebin(fptbinsZMeasN,"hzRreb",fptbinsZMeasA);
         hzGreb[i] = (TH1D*)hzGreb_tmp[i]->Rebin(fptbinsZMeasN,"hzGreb",fptbinsZMeasA);
-    
     }
     
     //==========================================================
@@ -336,10 +380,11 @@ void closureMCadv2(
     TH2D* hData2DS = new TH2D("hFD_zjet", "hFD_zjet", fptbinsZMeasN, fptbinsZMeasA, fJetptbinsN, fJetptbinsA);
     TH2D* hData2DUp = new TH2D("hFD_zjetUp", "hFD_zjetUp", fptbinsZMeasN, fptbinsZMeasA, fJetptbinsN, fJetptbinsA);
     TH2D* hData2DDo = new TH2D("hFD_zjetDo", "hFD_zjetDo", fptbinsZMeasN, fptbinsZMeasA, fJetptbinsN, fJetptbinsA);
-    TString data2D[fJetptbinsN];
+    //TString data2D[fJetptbinsN];
     // ---------------------------------------
     // reading data from each 1D
     // ---------------------------------------
+    //    fSpec2Dproj = (TH2D*)hzRreb[binjet]->Clone();
     for (int binjet=0; binjet < fJetptbinsN; binjet++){
         // ---------------------------------------
         // 1D projections of FD subtracted spectra
@@ -405,7 +450,10 @@ void closureMCadv2(
             double DG_center = hZjetRecGenD->GetAxis(5)->GetBinCenter(p);
 
             bool measurement_ok = kTRUE;
-            if( DR_center<2 ){
+            if( DR_center<1 || DG_center<1 ){
+                  measurement_ok = kFALSE;
+            }
+            if( (DR_center<2 && jR_center>=4.25) || (DG_center<2 && jG_center>=4.25) ){
                   measurement_ok = kFALSE;
             }
             //if( DR_center<2 && jR_center>=2 ){
@@ -414,10 +462,10 @@ void closureMCadv2(
             //if( DR_center<2 && jR_center>=5 ){
             //      measurement_ok = kFALSE;
             //}
-            if( DR_center<3 && jR_center>=7 ){
+            if( (DR_center<3 && jR_center>=7) || (DG_center<3 && jG_center>=7) ){
                   measurement_ok = kFALSE;
             }
-            if(DR_center<5 && jR_center>=10 ){
+            if((DR_center<5 && jR_center>=10 )|| (DG_center<5 && jG_center>=10) ){
                   measurement_ok = kFALSE;
             }
             if (measurement_ok){
@@ -538,7 +586,10 @@ void closureMCadv2(
             double DG_center = hZjetRecGenD->GetAxis(5)->GetBinCenter(p);
 
             bool measurement_ok = kTRUE;
-            if( DR_center<2){
+            if( DR_center<1 || DG_center<1 ){
+                  measurement_ok = kFALSE;
+            }
+            if( (DR_center<2 && jR_center>=4.25) || (DG_center<2 && jG_center>=4.25) ){
                   measurement_ok = kFALSE;
             }
             //if( DR_center<2 && jR_center>=3 ){
@@ -547,16 +598,16 @@ void closureMCadv2(
             //if( DR_center<2 && jR_center>=5 ){
             //      measurement_ok = kFALSE;
             //}
-            if( DR_center<3 && jR_center>=7 ){
+            if(( DR_center<3 && jR_center>=7 )||( DG_center<3 && jG_center>=7 )){
                   measurement_ok = kFALSE;
             }
-            if( DR_center<5 && jR_center>=10 ){
+            if(( DR_center<5 && jR_center>=10 )||( DG_center<5 && jG_center>=10 )){
                   measurement_ok = kFALSE;
             }
             if( measurement_ok ){
                 kineEffFull->Fill(zG_center,jG_center,weight);
             }
-            if( jR_center < 5  || jR_center > 50){
+            if( jR_center < 3  || jR_center > 50 || jG_center < 3 || jG_center > 50){
                 measurement_ok = kFALSE;           
             }
             if( measurement_ok ){
@@ -624,12 +675,12 @@ void closureMCadv2(
     // Unfolded Reco v. Gen
     // --------------------
     TH1D* hUnfP[fJetptbinsN];TH1D* hUnfPF[fJetptbinsN];
-    TCanvas* cGenUnf = new TCanvas("MCClosure","MClosure",1400,900);
-    cGenUnf->Divide(3,2);
+    //TCanvas* cGenUnf = new TCanvas("MCClosure","MClosure",1400,900);
+    //cGenUnf->Divide(3,2);
     //for (int binjet=1; binjet <= hData2D->GetNbinsY(); binjet++){
     for (int binjet=1; binjet <= finalbins; binjet++){
-        cGenUnf->cd(binjet);
-        cGenUnf->cd(binjet)->SetLogy();
+    //    cGenUnf->cd(binjet);
+    //    cGenUnf->cd(binjet)->SetLogy();
         hUnfP[binjet-1] = (TH1D*)fUnfoldedBayes[regBayes-1]->ProjectionX(Form("UnfProjectX_%d",binjet-1), binjet+deltaJbin, binjet+deltaJbin, "E");
         hUnfP[binjet-1]->Sumw2();
    //     hData2Dplot->SetLineWidth(2);
@@ -644,19 +695,18 @@ void closureMCadv2(
 //        fGenSpec2Dproj[binjet-1]->SetMarkerColor(kBlue+2);
         fGenSpec2Dproj[binjet+1]->SetMarkerStyle(23);
 
-        //Draw----
-        hUnfP[binjet-1]->SetTitle(Form("%s",jetpttitle[binjet].Data()));
-        hUnfP[binjet-1]->Draw();
-        fGenSpec2Dproj[binjet+1]->Draw("same");// = (TH1D*)LoadRawSpec(data2D[binjet].Data(),"hzGreb");
+    //    //Draw----
+    //    hUnfP[binjet-1]->SetTitle(Form("%s",jetpttitle[binjet].Data()));
+    //    hUnfP[binjet-1]->Draw();
+    //    fGenSpec2Dproj[binjet+1]->Draw("same");// = (TH1D*)LoadRawSpec(data2D[binjet].Data(),"hzGreb");
     }
-    TLegend* lGenUnf = new TLegend(0.35,0.45,0.85,0.85);
-    cGenUnf->cd(finalbins+1);
-    //lGenUnf->AddEntry(hUnfP[fUnfoldedBayes[regBayes-1]->GetNbinsY()-1],"Unfolded","l");
-    lGenUnf->AddEntry(hUnfP[1],"Unfolded","l");
-    //lGenUnf->AddEntry(fGenSpec2Dproj[fUnfoldedBayes[regBayes-1]->GetNbinsY()-1],"True","l");
-    lGenUnf->AddEntry(fGenSpec2Dproj[1],"True","l");
-    lGenUnf->Draw();
-
+    //TLegend* lGenUnf = new TLegend(0.35,0.45,0.85,0.85);
+    //cGenUnf->cd(finalbins+1);
+    ////lGenUnf->AddEntry(hUnfP[fUnfoldedBayes[regBayes-1]->GetNbinsY()-1],"Unfolded","l");
+    //lGenUnf->AddEntry(hUnfP[1],"Unfolded","l");
+    ////lGenUnf->AddEntry(fGenSpec2Dproj[fUnfoldedBayes[regBayes-1]->GetNbinsY()-1],"True","l");
+    //lGenUnf->AddEntry(fGenSpec2Dproj[1],"True","l");
+    //lGenUnf->Draw();
     //
     cout<<hUnfP[0]->GetNbinsX()<<endl;
     cout<<fGenSpec2Dproj[0]->GetNbinsX()<<endl;
@@ -705,11 +755,11 @@ void closureMCadv2(
         hUnfP[binjet-1]->Draw("same");
     cTRp->cd(binjet-1)->Update();
     }
-//    TLegend* lGenUnf2 = new TLegend(0.4,0.4,0.85,0.85);
-//    cTRp->cd(fUnfoldedBayes[regBayes-1]->GetNbinsY()+1);
-//    lGenUnf2->AddEntry(hUnfP[fUnfoldedBayes[regBayes-1]->GetNbinsY()-1],"Unfolded","l");
-//    lGenUnf2->AddEntry(fGenSpec2Dproj[fUnfoldedBayes[regBayes-1]->GetNbinsY()-1],"True","l");
-//    lGenUnf2->Draw();
+    TLegend* lGenUnf2 = new TLegend(0.4,0.6,0.85,0.85);
+    cTRp->cd(finalbins+1);
+    lGenUnf2->AddEntry(hUnfP[finalbins-1],"Unfolded","l");
+    lGenUnf2->AddEntry(fGenSpec2Dproj[finalbins-1],"True","l");
+    lGenUnf2->Draw();
 
 return;
     // Folded/Measured spectra comparison
