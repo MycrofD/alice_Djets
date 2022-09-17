@@ -14,11 +14,12 @@
 const int fptbinsZGenN=10, fJetptbinsGenN=9;
 double fptbinsZGenA[fptbinsZGenN+1]={0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.02};
 double fJetptbinsGenA[fJetptbinsGenN+1]={0,2,3,4,5,7,10,15,50,60};
-const int nDim    = 4;//the four dimensions
-double bins[nDim] = {fptbinsZGenN,fJetptbinsGenN,fptbinsZGenN,fJetptbinsGenN};//for creating 4D ResponseMatrix
-int dim[nDim]     = {0,1,5,6};//for extacting 4D info from THnSparse
+const int nDim    = 5;//the five dimensions
+double bins[nDim] = {fptbinsZGenN,fJetptbinsGenN,fptbinsZGenN,fJetptbinsGenN,fDptRespN};//for creating 4D ResponseMatrix
+int zRec = 0, jetRec = 1, DRec = 2;
+int zGen = 5, jetGen = 6;
+int dim[nDim]     = {zRec,jetRec,zGen,jetGen,DRec};//for extacting 5D info from THnSparse
 
-double zmin   = 0, zmax   = 1.02;
 double jetmin = 0, jetmax = 60;
 
 void DetRM_zjet(
@@ -55,107 +56,5 @@ bool isprefix=0 )
 //    TH1D* hZR[NDMC];
 
 return;
-	  TList      *histList[NDMC];
-	  THnSparseF *sparseMC[NDMC];
-	  THnSparseF *sparsereco[NDMC];
-
-    THnD *hZjet4d;
-    TH2D *hZjetGen;
-    TH2D *hZjetRec;
-
-
-    for(int i=0; i<NDMC; i++){
-       if(!isprefix){
-          if(postfix) {
-             histList[i] =  (TList*)dir->Get(Form("%s%d%sMCrec",histName.Data(),i,listName.Data())); }
-          else {
-             if(isPrompt) histList[i] =  (TList*)dir->Get(Form("%s%dMCrec",histName.Data(),i));
-             else histList[i] =  (TList*)dir->Get(Form("%s%dFDMCrec",histName.Data(),i));
-          }
-       }
-       else{
-          if(postfix) {
-            if(isPrompt){ histList[i] =  (TList*)dir->Get(Form("%s%sMBN%dMCrec",histName.Data(),listName.Data(),i)); }
-            else{    histList[i] =  (TList*)dir->Get(Form("%s%sMBN%dFDMCrec",histName.Data(),listName.Data(),i)); }
-          }
-          else { cout<<"-----postfix has to be true if prefix is true!! check again----------------"<<endl; return;       }
-       }
-
-
-        sparseMC[i] = (THnSparseF*)histList[i]->FindObject("ResponseMatrix");
-//        sparseMC[i]->GetAxis(2)->SetRangeUser(Dmin,Dmax);
-        sparseMC[i]->GetAxis(6)->SetRangeUser(jetmin,jetmax);
-        sparseMC[i]->GetAxis(5)->SetRangeUser(zmin,zmax);
-//        sparseMC[i]->GetAxis(0)->SetRangeUser(zmin,zmax);
-
-//        if(fDmesonSpecie) sparseMC[i]->GetAxis(4)->SetRangeUser(zmin,zmax);
-//        else sparseMC[i]->GetAxis(5)->SetRangeUser(zmin,zmax);//Gen level cut on Dpt
-
-        if(fDmesonSpecie) hZ[i] = (TH4D*)sparseMC[i]->Projection(4,0,5,1,"E"); //Dstar tmp
-        else hZ[i] = (TH4D*)sparseMC[i]->Projection(5,0,6,1,"E");
-
-        hZ[i]->Sumw2();
-        hZ[i]->SetName(Form("hZ_%d",i));
-
-//        if(fDmesonSpecie) hZG[i] = (TH1D*)sparseMC[i]->Projection(4); //Dstar tmp
-//        else   hZG[i] = (TH1D*)sparseMC[i]->Projection(5);
-
-//        hZG[i]->SetName(Form("hZG_%d",i));
-//        hZR[i] = (TH1D*)sparseMC[i]->Projection(0);
-//        hZR[i]->SetName(Form("hZR_%d",i));
-//        hZG[i]->Sumw2();
-//        hZR[i]->Sumw2();
-
-	if (!i){
-  	        hZ4d  = (TH4D*)hZ[0] ->Clone("hZ4d");
-//  	        hZGen = (TH1D*)hZG[0]->Clone("hZGen");
-//  	        hZRec = (TH1D*)hZR[0]->Clone("hZRec");
-        }
-        else {
-		hZ4d ->Add(hZ[i]);
-//		hZGen->Add(hZG[i]);
-//		hZRec->Add(hZR[i]);
-        }
-
-    }
-
-
-    hZ4d->SetTitle("hZ4d");
-    hZ4d->SetName("hZ4d");
-//    hZ2d->GetXaxis()->SetTitle("z_{||}^{rec.} ");
-//    hZ2d->GetXaxis()->SetRangeUser(zmin,zmax);
-//    hZ2d->GetYaxis()->SetTitle("z_{||}^{gen.} ");
-//    hZ2d->GetYaxis()->SetRangeUser(zmin,zmax);
-//
-//    hZGen->SetName("hZGen");
-//    hZRec->SetName("hZRec");
-//    hZGen->SetLineColor(kBlue+2);
-//    hZRec->SetLineColor(kRed+2);
-//
-//
-//    TCanvas *cZ = new TCanvas("cZ","cZ",800,600);
-//    cZ->SetLogy();
-//    hZGen->Draw();
-//    hZRec->Draw("same");
-//    //cZ->SaveAs(Form("%s/Zdist_Dpt%d_%d.png",outDir, (int)Dptmin, (int)Dptmax));
-//
-//
-//    TCanvas *cZ2d = new TCanvas("cZ2d","cZ2d",800,600);
-//    cZ2d->SetLogz();
-//    hZ2d->Draw("colz");
-//    pv2->Draw("same");
-//
-//
-//    //cZ2d->SaveAs(Form("%s/plots/DetMatrix_%s_Dpt%d_%d.png",outDir.Data(), isPrompt ? "prompt" : "nonPrompt", (int)Dptmin, (int)Dptmax));
-//    cZ2d->SaveAs(Form("%s/plots/DetMatrix_%s_Jet%d_%d_Dpt%d_%d.png",outDir.Data(), isPrompt ? "prompt" : "nonPrompt",(int)fptbinsJetA[(int)zjetbin-1],(int)fptbinsJetA[(int)zjetbin], (int)fptbinsDA[0], (int)fptbinsDA[fptbinsDN]));
-
-    TFile *ofile = new TFile(Form("%s/DetMatrix_%s.root",outDir.Data(), isPrompt ? "prompt" : "nonPrompt"),"RECREATE");
-
-//    hZGen->Write();
-//    hZRec->Write();
-    hZ4d->Write();
-    ofile->Close();
-
-   return;
 
 }
