@@ -1,0 +1,8 @@
+uproot
+awkward
+numpy
+pandas
+polars
+hist[plot]
+black
+
