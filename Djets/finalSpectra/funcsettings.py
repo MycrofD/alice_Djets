@@ -3,8 +3,8 @@ ROOT.TH1.AddDirectory(False)
 from style import *
 from ROOT import TCanvas, gStyle,TPad,TH1D
 import array
-import numpy as np
-
+#import numpy as np
+import array
 
 def PrepareCanvas(xAxisBins,xAxis,zBin,pdf,plotRanges):
     xAxis = array.array('d',xAxis)
@@ -53,13 +53,18 @@ def PrepareCanvas(xAxisBins,xAxis,zBin,pdf,plotRanges):
     pad_bottom.SetTicky(1);
     pad_bottom.SetLeftMargin(0.18);
     pad_bottom.SetTopMargin(0);
-    pad_bottom.SetBottomMargin(0.27);
+    pad_bottom.SetBottomMargin(0.35);
     pad_bottom.SetFrameBorderMode(0);
     pad_bottom.SetFrameBorderMode(0);
 
     pad_top.cd();
     #hEmpty_up = TH1D("hEmpty_up","Central Values",xAxisBins, array.array('d',xAxis));
-    hEmpty_up = TH1D("hEmpty_up","Central Values",xAxisBins, xAxis);
+    xAxisBins2 = xAxisBins
+    xAxis2 = xAxis
+    if(zBin==0):
+        xAxisBins2 = 9
+        xAxis2 = array.array('d',[3,5,6,8,10,14,20,30,50,52])
+    hEmpty_up = TH1D("hEmpty_up","Central Values",xAxisBins2, xAxis2);
     hEmpty_up.SetMinimum(plotRanges[2]);
     hEmpty_up.SetMaximum(plotRanges[3]);
     hEmpty_up.GetXaxis().SetTitle("#it{p}_{T,ch jet} (GeV/#it{c})");
@@ -67,8 +72,10 @@ def PrepareCanvas(xAxisBins,xAxis,zBin,pdf,plotRanges):
     hEmpty_up.GetXaxis().SetLabelSize(0.035);
     hEmpty_up.GetXaxis().SetTitleSize(0.035);
     hEmpty_up.GetXaxis().SetTitleFont(42);
-    if(zBin==0):hEmpty_up.GetYaxis().SetTitle("#frac{d^{2}#it{#sigma}}{d#it{p}_{T}d#it{#eta}} [mb (GeV/#it{c})^{#minus1}]");
-    elif(pdf==False):hEmpty_up.GetYaxis().SetTitle("#frac{d^{2}#it{#sigma}}{d#it{z}_{#parallel}d#it{#eta}} (mb)");
+    if(zBin==0):
+        hEmpty_up.GetYaxis().SetTitle("#frac{d^{2}#it{#sigma}}{d#it{p}_{T,ch jet}d#it{#eta}_{ch jet}} (mb (GeV/#it{c})^{#minus1})");
+        #hEmpty_up.GetXaxis().SetRangeUser(4,51)
+    elif(pdf==False):hEmpty_up.GetYaxis().SetTitle("#frac{d^{2}#it{#sigma}}{d#it{z}_{#parallel}d#it{#eta_{ch jet}}} (mb)");
     else:hEmpty_up.GetYaxis().SetTitle("Probability density");
     hEmpty_up.GetYaxis().SetLabelFont(43);
     hEmpty_up.GetYaxis().SetLabelSize(22);
@@ -80,17 +87,20 @@ def PrepareCanvas(xAxisBins,xAxis,zBin,pdf,plotRanges):
     hEmpty_up.Draw("axis");
 
     pad_bottom.cd();
-    hEmpty_bottom = TH1D("hEmpty_bottom","Central Values",xAxisBins,xAxis);
+    #hEmpty_bottom = TH1D("hEmpty_bottom","Central Values",xAxisBins,xAxis);
+    hEmpty_bottom = TH1D("hEmpty_bottom","Central Values",xAxisBins2,xAxis2);
     hEmpty_bottom.SetMinimum(plotRanges[0]);
     hEmpty_bottom.SetMaximum(plotRanges[1]);
     if(zBin ==0):hEmpty_bottom.GetXaxis().SetTitle("#it{p}_{T,ch jet} (GeV/#it{c})");
-    else:hEmpty_bottom.GetXaxis().SetTitle("z_{#parallel}");
+    else:hEmpty_bottom.GetXaxis().SetTitle("#it{z}_{||}^{ch}   ");
     hEmpty_bottom.GetXaxis().SetLabelFont(43);
     hEmpty_bottom.GetXaxis().SetLabelSize(22);
-    hEmpty_bottom.GetXaxis().SetTitleSize(26);
-    hEmpty_bottom.GetXaxis().SetTitleOffset(3.);
+    hEmpty_bottom.GetXaxis().SetTitleSize(29);
+    if(zBin ==0):hEmpty_bottom.GetXaxis().SetTitleOffset(3.);
+    else:hEmpty_bottom.GetXaxis().SetTitleOffset(2.);
     hEmpty_bottom.GetXaxis().SetTitleFont(43);
-    hEmpty_bottom.GetYaxis().SetTitle("theory / data");
+    #hEmpty_bottom.GetYaxis().SetTitle("theory / data");
+    hEmpty_bottom.GetYaxis().SetTitle("MC / data");
     hEmpty_bottom.GetYaxis().SetNdivisions(509);
     hEmpty_bottom.GetYaxis().CenterTitle();
     hEmpty_bottom.GetYaxis().SetDecimals();
@@ -98,7 +108,7 @@ def PrepareCanvas(xAxisBins,xAxis,zBin,pdf,plotRanges):
     hEmpty_bottom.GetXaxis().SetLabelOffset(0.02);
     hEmpty_bottom.GetYaxis().SetLabelFont(43);
     hEmpty_bottom.GetYaxis().SetLabelSize(22);
-    hEmpty_bottom.GetYaxis().SetTitleSize(26);
+    hEmpty_bottom.GetYaxis().SetTitleSize(27);
     hEmpty_bottom.GetYaxis().SetTitleOffset(2.);
     hEmpty_bottom.GetYaxis().SetTitleFont(43);
     hEmpty_bottom.Draw("axis");
@@ -126,15 +136,21 @@ def GetData(dataFile,histBase,dataScaling,nBins,xBins,systUncD_down,systUncD_up,
     hData_binned.SetTitle("");
     hData_binned.SetMaximum(hData_binned.GetMaximum()*2);
     #hData_binned.GetYaxis().SetTitle("d^{2}#sigma/dp_{T}d#it{#eta} (mb)");
-    if(pdf==False):hData_binned.GetYaxis().SetTitle("#frac{d^{2}#sigma}{d#it{p}_{T}d#it{#eta}} mb (GeV/#it{c})^{-1}")
+    if(pdf==False):hData_binned.GetYaxis().SetTitle("#frac{d^{2}#sigma}{d#it{p}_{T,ch jet}d#it{#eta_{ch jet}}} mb (GeV/#it{c})^{-1}")
     else:hData_binned.GetYaxis().SetTitle("Probability density");
 
-    sysuncAbs_down = np.zeros(nBins)
-    sysuncAbs_up = np.zeros(nBins)
-    statunc = np.zeros(nBins)
-    value = np.zeros(nBins)
-    xval = np.zeros(nBins)
-    xvalwidth = np.zeros(nBins)
+    #sysuncAbs_down = np.zeros(nBins)
+    #sysuncAbs_up = np.zeros(nBins)
+    #statunc = np.zeros(nBins)
+    #value = np.zeros(nBins)
+    #xval = np.zeros(nBins)
+    #xvalwidth = np.zeros(nBins)
+    sysuncAbs_down = array.array('d',[0]*nBins)
+    sysuncAbs_up = array.array('d',[0]*nBins)
+    statunc = array.array('d',[0]*nBins)
+    value = array.array('d',[0]*nBins)
+    xval = array.array('d',[0]*nBins)
+    xvalwidth = array.array('d',[0]*nBins)
     for j in range(nBins):
         xval[j] = (xBins[j]+xBins[j+1]) / 2.
         xvalwidth[j] = (xBins[j+1]-xBins[j]) / 2.
@@ -149,9 +165,9 @@ def GetData(dataFile,histBase,dataScaling,nBins,xBins,systUncD_down,systUncD_up,
     grsysl.SetName("haeData_binned_syst")
     hData_binned_ratio = hData_binned.Clone("hData_binned_ratio")
     hData_binned_ratio.SetName("hData_binned_ratio")
-    sysuncRatio_up = np.zeros(nBins)
-    sysuncRatio_down = np.zeros(nBins)
-    valRatio = np.zeros(nBins)
+    sysuncRatio_up = array.array('d',[0]*nBins) #np.zeros(nBins)
+    sysuncRatio_down = array.array('d',[0]*nBins) # np.zeros(nBins)
+    valRatio = array.array('d',[0]*nBins) # np.zeros(nBins)
     for j in range(nBins):
         xval[j] = (xBins[j]+xBins[j+1]) / 2.;
         xvalwidth[j] = (xBins[j+1]-xBins[j]) / 2.;
@@ -229,11 +245,11 @@ def GetSim(simname, type_, nFiles, names, simDir, simScaling, nBins, xBins, DpTb
             hPrompt_binned[nr].Scale(simScaling)
             hPrompt_binned[nr].Scale(1,"width")
             hPrompt_binned[nr].Scale(1./dy)
-    xval = np.zeros(nBins)
-    xvalwidth = np.zeros(nBins)
-    valuetheory = np.zeros(nBins)
-    valuetheoryerrup = np.zeros(nBins)
-    valuetheoryerrdown = np.zeros(nBins)
+    xval = array.array('d',[0]*nBins) #np.zeros(nBins)
+    xvalwidth = array.array('d',[0]*nBins) # np.zeros(nBins)
+    valuetheory = array.array('d',[0]*nBins) # np.zeros(nBins)
+    valuetheoryerrup = array.array('d',[0]*nBins) #np.zeros(nBins)
+    valuetheoryerrdown = array.array('d',[0]*nBins) # np.zeros(nBins)
     for j in range(nBins):
         xval[j] = (xBins[j]+xBins[j+1]) / 2.
         xvalwidth[j] = (xBins[j+1]-xBins[j]) / 2.
@@ -257,11 +273,11 @@ def GetDataSimRatio(simname, data_cent, sim_cent, sim_up, sim_down, nBins, xBins
     hPrompt_up_ratio = sim_up.Clone(name_up+"_ratio")
     hPrompt_up_ratio.Divide(data_cent)
     hPrompt_down_ratio.Divide(data_cent)
-    ptvaltheoryratio = np.zeros(nBins)
-    ptvalunctheoryratio = np.zeros(nBins)
-    valuetheoryratio = np.zeros(nBins)
-    valuetheoryerrupratio = np.zeros(nBins)
-    valuetheoryerrdownratio = np.zeros(nBins)
+    ptvaltheoryratio =array.array('d',[0]*nBins) #np.zeros(nBins)
+    ptvalunctheoryratio =array.array('d',[0]*nBins) #np.zeros(nBins)
+    valuetheoryratio = array.array('d',[0]*nBins) #np.zeros(nBins)
+    valuetheoryerrupratio =array.array('d',[0]*nBins) #np.zeros(nBins)
+    valuetheoryerrdownratio =array.array('d',[0]*nBins) #np.zeros(nBins)
     for j in range(nBins):
         ptvaltheoryratio[j] = (xBins[j]+xBins[j+1]) / 2.
         ptvalunctheoryratio[j] = (xBins[j+1]-xBins[j]) / 2.
@@ -318,9 +334,9 @@ def PlaceOnPadSim(pad, histo, ci, style, linestyle):
     #histo.SetMarkerSize(markersize); #add up
     histo.SetLineWidth(2);
     odraaw = "";
-    if(linestyle ==1):odraaw = "2p"
-    else:
-        histo.SetLineWidth(3)
+    if(linestyle ==1):odraaw = "2p" # for powheg+pythia
+    else: # for pythia
+        histo.SetLineWidth(4)
         histo.SetMarkerSize(0)
         odraaw = "E"
     histo.Draw(odraaw)
@@ -328,7 +344,7 @@ def PlaceOnPadSim(pad, histo, ci, style, linestyle):
 def PlaceOnPadData( pad, histo1, histo2, markersize):
     pad.cd()
     ci = ROOT.TColor.GetColor("#990000")
-    ci = ROOT.kBlack
+    #ci = ROOT.kBlack
     histo1.SetLineColor(ci);
     histo1.SetMarkerColor(ci);
     histo1.SetMarkerStyle(20);
@@ -338,8 +354,8 @@ def PlaceOnPadData( pad, histo1, histo2, markersize):
     histo1.SetLineColor(ci);
     histo1.Draw("2p");
     #data central w stat. unc.
-    #ci = static_cast<Color_t>(TColor::GetColor("#990000"));
-    ci = ROOT.kBlack;
+    ci = ROOT.TColor.GetColor("#990000")
+    #ci = ROOT.kBlack;
     histo2.SetLineColor(ci);
     histo2.SetMarkerColor(ci);
     histo2.SetMarkerStyle(20);
@@ -367,5 +383,5 @@ def setHistoDetails(hh, color, Mstyle, Msize, Lwidth, Lstyle):
     hh.SetMarkerSize(Msize)
     hh.SetLineStyle(Lstyle)
     hh.SetTitle("")
-    hh.GetXaxis().SetTitle("p_{T}^{ch,jet} (GeV/c)")
+    hh.GetXaxis().SetTitle("p_{T,ch jet} (GeV/c)")
 
