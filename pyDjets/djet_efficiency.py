@@ -1,6 +1,7 @@
 import contextlib
 from pprint import pprint
 import json
+from os.path import exists
 
 import uproot
 import numpy as np
@@ -37,16 +38,23 @@ def djet_efficiency(
         # pprint(dir(hist_list[0]))
         # sparse_dphiz.append(np.array(hist_list[i].bases))
         # print('break')
-        file_name = f'hist_file_ndmc_{i}.json'
-        if not file_name:
+        file_name = f'histos_{f_dmeson_species}_MBN{i}MCrec{fix_name}.json'
+        if not exists(file_name):
             with open(file_name, 'w', encoding='utf-8') as f:
                 json.dump(hist_list[i].tojson(), f, ensure_ascii=False, indent=4)
-        with open(file_name) as f:
-            json_data = json.loads(f.read())
-            print(len(json_data))
-            for item in json_data["arr"]:
-                print(len(item))
-                print(item['fName'])
+
+        if exists(file_name):
+            with open(file_name, 'r') as f:
+                json_data = json.loads(f.read())
+                print(len(json_data))
+                for item in json_data["arr"]:
+                    if item['fName'] == 'hsDphiz':
+                        sparse_dphiz.append(item)
+                        print(item['fName'])
+                        print(type(item))
+                        print(len(item['fAxes']["arr"]))
+                        # with open(f'test_{i}.json', 'w', encoding='utf-8') as t:
+                        #     json.dump(item, t, ensure_ascii=False, indent=4)
 
 
 djet_efficiency(mc_eff_file=run_mc_eff_file)
