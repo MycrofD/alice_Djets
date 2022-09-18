@@ -1,19 +1,23 @@
+import contextlib
+from pprint import pprint
+import json
+
 import uproot
 import numpy as np
 from central_config import f_dmeson_species, NDMC
-from run_settings import run_eff_file, run_is_prefix, run_is_postfix
+from run_settings import run_mc_eff_file, run_is_prefix, run_is_postfix
 
 
 def djet_efficiency(
-    eff_file: str = run_eff_file,
+    mc_eff_file: str = run_mc_eff_file,
     is_prefix: bool = run_is_prefix,
     is_postfix: bool = run_is_postfix,
     fix_name: str = "",
 ):
-    root_file = uproot.open(eff_file)
+    root_file = uproot.open(mc_eff_file)
     directory_file = root_file["DmesonsForJetCorrelations"]
 
-    hist_list = []
+    hist_list, sparse_dphiz = [], []
     for i in range(NDMC):
         if not is_prefix and not is_postfix:
             hist_list.append(directory_file[f"histos{f_dmeson_species}MBN{i}MCrec"])
@@ -28,27 +32,21 @@ def djet_efficiency(
         if is_prefix and not is_postfix:
             raise "Postfix has to be true if prefix is!"
 
-        print(vars(hist_list[i]))
-        print(hist_list[i].members)
-    # hist_list[0] is [hstat, hCentDjet, ...]
-    print("break 0=======")
-    shs_dphiz = np.array(hist_list[0].bases)
-    for item in shs_dphiz[0]:
-        print("====-----------------")
-        print(vars(item))
-        # print(item.name)
-    print("break 1=======")
-    t = shs_dphiz[0][-1].bases
-    print(type(t))
-    print(len(t))
-    for item in t:
-        print(vars(item))
-        print("break --- =======")
-        print(vars(item.bases[0]))
-        print(item.bases[0])
-        print("break --- =======")
-        print(item.bases[0].members)
-    print("break 2=======")
+        # print(vars(hist_list[i]))
+        # print('dir,')
+        # pprint(dir(hist_list[0]))
+        # sparse_dphiz.append(np.array(hist_list[i].bases))
+        # print('break')
+        file_name = f'hist_file_ndmc_{i}.json'
+        if not file_name:
+            with open(file_name, 'w', encoding='utf-8') as f:
+                json.dump(hist_list[i].tojson(), f, ensure_ascii=False, indent=4)
+        with open(file_name) as f:
+            json_data = json.loads(f.read())
+            print(len(json_data))
+            for item in json_data["arr"]:
+                print(len(item))
+                print(item['fName'])
 
 
-djet_efficiency(eff_file=run_eff_file)
+djet_efficiency(mc_eff_file=run_mc_eff_file)
