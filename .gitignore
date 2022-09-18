@@ -18,3 +18,5 @@ Djets/run_*.csh
 Djets/run.csh
 Djets/configDzero*.h
 Djets/configDstar*.h
+Djets/DsignalExtraction/zrun.csh
+Djets/DsignalExtraction/configDzero_ppz.h
