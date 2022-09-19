@@ -12,7 +12,7 @@
 #---------------
 # Executing 'bash zrun_main.csh' on your terminal in AliPhysics environment,
 # in turn, runs this file 'zrun.csh'
-## Writing the configDzero_pp.h file: Setting up D pT bins
+## Writing the configDzero_ppz.h file: Setting up D pT bins
 ##--------------------------------------------------------
 bin_zjet=$1 # The arguments here are passed from zrun_main.csh
 R=$2        # Jet radius, fed as an argument from zrun_main.csh 
@@ -182,15 +182,43 @@ ctry=$[ctry+1]
 elif [ $flagSBSig -eq 1 ]; then
 boundSigma=0;fsigmafactor=1;fixedMass=0;bkgType=0;minfSys=1.71;maxfSys=2.1;fMassBinWidthFactor=2
 out=$OUT/signalExtraction
-ctry=0
-  for sigmaWindow in 2 3; do
-    for SBout in 9 8; do
-      for SBint in 4 3.5 4.5; do
-root -l -b -q signalExtraction_SBz.C'("'$data'", '$flagEff', "'$prompteff'", '$flagRef', "'$refFile'", '$ispostfix', "'$listName'", "'$out'", '$save', '$isMoreFiles', "'$prod'", '$isprefix', "'$saveDir'", '$boundSigma', '$fsigmafactor', '$fixedMass', '$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$ctry','$flagSBSig','$sigmaWindow','-$SBout','-$SBint','$SBint','$SBout')'
+    root -l -b -q signalExtraction_SBz.C'("'$data'", '$flagEff', "'$prompteff'", '$flagRef', "'$refFile'", '$ispostfix', "'$listName'", "'$out'", '$save', '$isMoreFiles', "'$prod'", '$isprefix', "'$saveDir'", '$boundSigma')'
+ctry=1
+#  for sigmaWindow in 2 3; do
+#    for SBout in 9 8; do
+#      for SBint in 4 3.5 4.5; do
+#root -l -b -q signalExtraction_SBz.C'("'$data'", '$flagEff', "'$prompteff'", '$flagRef', "'$refFile'", '$ispostfix', "'$listName'", "'$out'", '$save', '$isMoreFiles', "'$prod'", '$isprefix',"'$saveDir'", '$boundSigma', '$fsigmafactor', '$fixedMass', '$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$ctry','$flagSBSig','$sigmaWindow','-$SBout','-$SBint','$SBint','$SBout')'
+#ctry=$[ctry+1]
+#      done
+#    done
+#  done
+#fi
+
+# 2, (3,8)
+sigmaWindow=2;SBout=8;SBint=3
+    root -l -b -q signalExtraction_SBz.C'("'$data'", '$flagEff', "'$prompteff'", '$flagRef', "'$refFile'", '$ispostfix', "'$listName'", "'$out'", '$save', '$isMoreFiles', "'$prod'", '$isprefix',"'$saveDir'", '$boundSigma', '$fsigmafactor', '$fixedMass', '$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$ctry','$flagSBSig','$sigmaWindow','-$SBout','-$SBint','$SBint','$SBout')'
 ctry=$[ctry+1]
-      done
-    done
-  done
+# 2, (4,10)
+sigmaWindow=2;SBout=10;SBint=4
+    root -l -b -q signalExtraction_SBz.C'("'$data'", '$flagEff', "'$prompteff'", '$flagRef', "'$refFile'", '$ispostfix', "'$listName'", "'$out'", '$save', '$isMoreFiles', "'$prod'", '$isprefix',"'$saveDir'", '$boundSigma', '$fsigmafactor', '$fixedMass', '$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$ctry','$flagSBSig','$sigmaWindow','-$SBout','-$SBint','$SBint','$SBout')'
+ctry=$[ctry+1]
+# 2, (4,12)
+sigmaWindow=2;SBout=12;SBint=4
+    root -l -b -q signalExtraction_SBz.C'("'$data'", '$flagEff', "'$prompteff'", '$flagRef', "'$refFile'", '$ispostfix', "'$listName'", "'$out'", '$save', '$isMoreFiles', "'$prod'", '$isprefix',"'$saveDir'", '$boundSigma', '$fsigmafactor', '$fixedMass', '$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$ctry','$flagSBSig','$sigmaWindow','-$SBout','-$SBint','$SBint','$SBout')'
+ctry=$[ctry+1]
+# 2, (4,15)
+sigmaWindow=2;SBout=15;SBint=4
+    root -l -b -q signalExtraction_SBz.C'("'$data'", '$flagEff', "'$prompteff'", '$flagRef', "'$refFile'", '$ispostfix', "'$listName'", "'$out'", '$save', '$isMoreFiles', "'$prod'", '$isprefix',"'$saveDir'", '$boundSigma', '$fsigmafactor', '$fixedMass', '$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$ctry','$flagSBSig','$sigmaWindow','-$SBout','-$SBint','$SBint','$SBout')'
+ctry=$[ctry+1]
+# 3, (4,9)
+sigmaWindow=3;SBout=9;SBint=4
+    root -l -b -q signalExtraction_SBz.C'("'$data'", '$flagEff', "'$prompteff'", '$flagRef', "'$refFile'", '$ispostfix', "'$listName'", "'$out'", '$save', '$isMoreFiles', "'$prod'", '$isprefix',"'$saveDir'", '$boundSigma', '$fsigmafactor', '$fixedMass', '$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$ctry','$flagSBSig','$sigmaWindow','-$SBout','-$SBint','$SBint','$SBout')'
+ctry=$[ctry+1]
+# 3, (4,12)
+sigmaWindow=3;SBout=12;SBint=4
+    root -l -b -q signalExtraction_SBz.C'("'$data'", '$flagEff', "'$prompteff'", '$flagRef', "'$refFile'", '$ispostfix', "'$listName'", "'$out'", '$save', '$isMoreFiles', "'$prod'", '$isprefix',"'$saveDir'", '$boundSigma', '$fsigmafactor', '$fixedMass', '$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$ctry','$flagSBSig','$sigmaWindow','-$SBout','-$SBint','$SBint','$SBout')'
+ctry=$[ctry+1]
+
 fi
 ## B-feed down simulation
 ##-----------------------
