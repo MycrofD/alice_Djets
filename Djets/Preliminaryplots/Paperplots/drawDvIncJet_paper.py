@@ -24,9 +24,14 @@ if len(sys.argv)!=4:
     print("python file.py R(2,3,4,6) sys.yaml eos{Y/N}")
     print("Y/N means yes or no.")
     print("e.g. python file.py 2 5TeVunc.yaml N")
+    print('Known to work in Ubuntu with pyroot through snap')
+    print('python3.8-venv, pyroot -m pip install yaml')
+    exit()
 eos_config = '/'
 if sys.argv[3] == 'Y':
     eos_config = '/eos/user/a/amohanty/'
+if sys.argv[3] == 'M':
+    eos_config = '/Users/auro.mohanty/cernbox/'
 ### SETTINGS
 Rpar=int(sys.argv[1]) # R=2,3,4,6
 if Rpar == 2:
@@ -323,8 +328,8 @@ for i in range(4): # number of jet radii to be plotted
     pavetext_right[i].AddText(enumIndex[Rpar]+" #it{R} = 0.%d"%(int(Rpar)))
 
 pavetext_left[0].AddText("ALICE, pp, #sqrt{#it{s}} = 5.02 TeV")
-pavetext_left[2].AddText("charged jets, anti-#scale[0.5]{ }#it{k}_{T}")
-pavetext_left[2].AddText("|#it{#eta}_{ch jet}| < 0.9 #font[122]{-}#it{R}")
+pavetext_left[2].AddText("charged jets, anti-#scale[0.5]{}#it{k}_{T}")
+pavetext_left[2].AddText("|#it{#eta}_{ch jet}| < 0.9#font[122]{-}#it{R}")
 pavetext_left[3].AddText("2 < #it{p}_{T,D^{0}} < 36 GeV/#it{c}") 
 
 if Rpar == 3:
@@ -353,7 +358,7 @@ cDvI = ROOT.TCanvas("cDvI","cDvI",620,510);
 grdat.GetYaxis().SetDecimals() #POWHEG SYSTEMATICS
 grdat.Draw("2ap") # DATA SYSTEMATICS
 grsys.Draw("p2same")
-hR_Data.Draw("same p e0 x0")
+hR_Data.Draw("ex0 p same")
 hR_mb.Draw("same")
 
 leg.AddEntry(grdat,"Data","pf");
@@ -377,3 +382,4 @@ ofile = ROOT.TFile("plots/DJetsVIncJets_R0"+str(Rpar)+"_paper_JHEP.root","recrea
 grdat.Write("grdat_R0"+str(Rpar))
 hR_Data.Write("hR_Data_R0"+str(Rpar))
 ofile.Close()
+
