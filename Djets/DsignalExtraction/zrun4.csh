@@ -141,12 +141,13 @@ out=$OUT/signalExtraction
 ctry=1
 fsigmafactor=1
 
+# (1)*2*2*2*2*2=32
   for boundSigma in 0; do
-    for bkgType in 0 1 2; do
+    for bkgType in 0 1; do
       for fixedMass in 0 1; do
-        for minfSys in 1.71 1.72 1.70; do
-          for maxfSys in 2.1 2.09 2.11; do
-            for fMassBinWidthFactor in 2 4 1; do
+        for minfSys in 1.72 1.74; do
+          for maxfSys in 2.00 2.03; do
+            for fMassBinWidthFactor in 2 4; do
 
 root -l -b -q signalExtraction_SBz.C'("'$data'", '$flagEff', "'$prompteff'", '$flagRef', "'$refFile'", '$ispostfix', "'$listName'", "'$out'", '$save', '$isMoreFiles', "'$prod'", '$isprefix', "'$saveDir'", '$boundSigma', '$fsigmafactor', '$fixedMass', '$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$ctry','$flagMulti')'
 
@@ -159,13 +160,14 @@ ctry=$[ctry+1]
     done
   done
 
+# (1*1*)2*2*2*2*2=32
   for boundSigma in 1; do
-  for fsigmafactor in 1 1.1 0.9; do
-    for bkgType in 0 1 2; do
+  for fsigmafactor in 1; do
+    for bkgType in 0 1; do
       for fixedMass in 0 1; do
-        for minfSys in 1.71 1.72 1.70; do
-          for maxfSys in 2.1 2.09 2.11; do
-            for fMassBinWidthFactor in 2 4 1; do
+        for minfSys in 1.72 1.74; do
+          for maxfSys in 2.00 2.03; do
+            for fMassBinWidthFactor in 2 4; do
 
 root -l -b -q signalExtraction_SBz.C'("'$data'", '$flagEff', "'$prompteff'", '$flagRef', "'$refFile'", '$ispostfix', "'$listName'", "'$out'", '$save', '$isMoreFiles', "'$prod'", '$isprefix', "'$saveDir'", '$boundSigma', '$fsigmafactor', '$fixedMass', '$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$ctry','$flagMulti')'
 ctry=$[ctry+1]
@@ -177,6 +179,27 @@ ctry=$[ctry+1]
     done
   done
   done
+
+# (1*)*2*2*1*2*2*2=32
+  for boundSigma in 1; do
+  for fsigmafactor in 1.1 0.9; do
+    for bkgType in 0 1; do
+      for fixedMass in 0; do
+        for minfSys in 1.72 1.74; do
+          for maxfSys in 2.00 2.03; do
+            for fMassBinWidthFactor in 2 4; do
+
+root -l -b -q signalExtraction_SBz.C'("'$data'", '$flagEff', "'$prompteff'", '$flagRef', "'$refFile'", '$ispostfix', "'$listName'", "'$out'", '$save', '$isMoreFiles', "'$prod'", '$isprefix', "'$saveDir'", '$boundSigma', '$fsigmafactor', '$fixedMass', '$bkgType','$minfSys','$maxfSys','$fMassBinWidthFactor','$ctry','$flagMulti')'
+ctry=$[ctry+1]
+
+            done
+          done
+        done
+      done
+    done
+  done
+  done
+
 
 # Side-Band Signal ranges
 elif [ $flagSBSig -eq 1 ]; then
