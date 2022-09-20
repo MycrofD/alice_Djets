@@ -2,7 +2,7 @@ import os, os.path, sys
 import ROOT
 ROOT.TH1.AddDirectory(False)
 ROOT.gROOT.SetBatch()
-import style_settings
+from style_settings import *
 import array
 import yaml
 #import numpy as np
@@ -20,8 +20,13 @@ ROOT.gStyle.SetPadBottomMargin(0.15)
 os.system('cp ../../finalSpectra/5TeVunc.yaml 5TeVunc.yaml')
 
 ### Sanity check
-if len(sys.argv)!=3:
-    print("python file.py R(2,3,4,6) sys.yaml")
+if len(sys.argv)!=4:
+    print("python file.py R(2,3,4,6) sys.yaml eos{Y/N}")
+    print("Y/N means yes or no.")
+    print("e.g. python file.py 2 5TeVunc.yaml N")
+eos_config = '/'
+if sys.argv[3] == 'Y':
+    eos_config = '/eos/user/a/amohanty/'
 ### SETTINGS
 Rpar=int(sys.argv[1]) # R=2,3,4,6
 if Rpar == 2:
@@ -79,8 +84,8 @@ for i in range(fptbinsJN):
 print(djetsUp)
 print(djetsDo)
 ####### GATHERING DATA
-fileDJ = ROOT.TFile("/eos/user/a/amohanty/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR0"+str(Rpar)+"_paperCuts/Default/unfolding_Bayes_5/final/JetPtSpectrum_final_fullGlobal_addedCUTandJES.root","read")
-fileIJ = ROOT.TFile("/eos/user/a/amohanty/home/jackbauer/ALICE_HeavyFlavour/work/Djets/alice_Djets/InclusiveJetsPP502TeV/HEPData-ins1733689-v1-root.root","read")
+fileDJ = ROOT.TFile(str(eos_config)+"//home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR0"+str(Rpar)+"_paperCuts/Default/unfolding_Bayes_5/final/JetPtSpectrum_final_fullGlobal_addedCUTandJES.root","read")
+fileIJ = ROOT.TFile(str(eos_config)+"//home/jackbauer/ALICE_HeavyFlavour/work/Djets/alice_Djets/InclusiveJetsPP502TeV/HEPData-ins1733689-v1-root.root","read")
 ####### Creating DATA histograms
 # D jets
 hDJ = fileDJ.Get("hData_binned");
@@ -138,8 +143,8 @@ hR_DatasystDo.Divide(hIJsystReb)
 #######################################################################################################################################################
 ###############     Theory
 ###----1. Pythia 8 Monash
-fileDJmonash = ROOT.TFile("/eos/user/a/amohanty/home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR0"+str(Rpar)+"_paperCuts/Default/unfolding_Bayes_5/final/JetPtSpectrum_final_fullGlobal_addedCUTandJES.root","read")
-fileIJmonash = ROOT.TFile("/eos/user/a/amohanty/home/jackbauer/ALICE_HeavyFlavour/work/Djets/alice_Djets/InclusiveJetsPP502TeV/theoryMonashR0"+str(Rpar)+".root","read")
+fileDJmonash = ROOT.TFile(str(eos_config)+"//home/jackbauer/Work/alice/analysis/pp5TeV/D0jet/results_APW/Final_DzeroR0"+str(Rpar)+"_paperCuts/Default/unfolding_Bayes_5/final/JetPtSpectrum_final_fullGlobal_addedCUTandJES.root","read")
+fileIJmonash = ROOT.TFile(str(eos_config)+"//home/jackbauer/ALICE_HeavyFlavour/work/Djets/alice_Djets/InclusiveJetsPP502TeV/theoryMonashR0"+str(Rpar)+".root","read")
 
 hDJmb   = fileDJmonash.Get("hsimPythia8_central")
 hIJmb   = fileIJmonash.Get("fSpecPythia8_R0"+str(Rpar)+"_PYTHIA8_Monash_2013_reb")
@@ -148,7 +153,7 @@ hIJmb   = fileIJmonash.Get("fSpecPythia8_R0"+str(Rpar)+"_PYTHIA8_Monash_2013_reb
 hDJpow8 = fileDJmonash.Get("hsimPowhegPythia8_central")
 hDJpow8Err = [fileDJmonash.Get("hsimPowhegPythia8_up"),fileDJmonash.Get("hsimPowhegPythia8_down")]
 
-fileIJpowheg = ROOT.TFile("/eos/user/a/amohanty/home/jackbauer/ALICE_HeavyFlavour/work/Djets/alice_Djets/InclusiveJetsPP502TeV/theoryPowhegR0"+str(Rpar)+".root")
+fileIJpowheg = ROOT.TFile(str(eos_config)+"//home/jackbauer/ALICE_HeavyFlavour/work/Djets/alice_Djets/InclusiveJetsPP502TeV/theoryPowhegR0"+str(Rpar)+".root")
 hIJpow8 = fileIJpowheg.Get("R0"+str(Rpar)+"PwgScaleErr")
 ###### Histograms UNSCALE AND REBIN:
 ##--D jets min bias pythia 8
@@ -366,9 +371,9 @@ else:
 
 cDvI.Update()
 
-cDvI.SaveAs("plots/DJetsVIncJets_R0"+str(Rpar)+"_paper.png")
-cDvI.SaveAs("plots/DJetsVIncJets_R0"+str(Rpar)+"_paper.pdf")
-ofile = ROOT.TFile("DvInc_R0"+str(Rpar)+".root","recreate")
+cDvI.SaveAs("plots/DJetsVIncJets_R0"+str(Rpar)+"_paper_JHEP.png")
+cDvI.SaveAs("plots/DJetsVIncJets_R0"+str(Rpar)+"_paper_JHEP.pdf")
+ofile = ROOT.TFile("plots/DJetsVIncJets_R0"+str(Rpar)+"_paper_JHEP.root","recreate")
 grdat.Write("grdat_R0"+str(Rpar))
 hR_Data.Write("hR_Data_R0"+str(Rpar))
 ofile.Close()
